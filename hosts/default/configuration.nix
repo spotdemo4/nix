@@ -10,14 +10,13 @@
     inputs.catppuccin.nixosModules.catppuccin
     ./hardware-configuration.nix
 
+    # Programs
     ../../modules/nixos/hyprland.nix
     ../../modules/nixos/zsh.nix
     ../../modules/nixos/sddm.nix
     ../../modules/nixos/pipewire.nix
     ../../modules/nixos/gnome-auth-agent.nix
     ../../modules/nixos/git.nix
-
-    ../../modules/scripts/update.nix
   ];
 
   # Boot loader
@@ -39,6 +38,19 @@
 
   # Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # System
+  system.autoUpgrade = {
+    enable = true;
+    flake = inputs.self.outPath;
+    flags = [
+      "--update-input"
+      "nixpkgs"
+      "-L" # print build logs
+    ];
+    dates = "02:00";
+    randomizedDelaySec = "45min";
+  };
 
   # Networking
   networking.hostName = "nixos"; # Define your hostname.
@@ -102,6 +114,26 @@
     feh
     grimblast
 
+    (writeShellApplication {
+      name = "update";
+
+      runtimeInputs = with pkgs; [ git ];
+
+      text = ''
+        pushd /etc/nixos
+        echo "NixOS Rebuilding..."
+
+        sudo nixos-rebuild switch --flake /etc/nixos#default
+        gen=$(nixos-rebuild list-generations | grep current)
+
+        sudo git add .
+        sudo git commit -m "$gen"
+        sudo git push -u origin main
+
+        popd
+      '';
+    })
+
     # BS QT shit
     kdePackages.qt6ct
     libsForQt5.qt5ct
@@ -128,19 +160,6 @@
   pipewire-nix.enable = true;
   gnome-auth-agent-nix.enable = true;
   git-nix.enable = true;
-
-  # System
-  system.autoUpgrade = {
-    enable = true;
-    flake = inputs.self.outPath;
-    flags = [
-      "--update-input"
-      "nixpkgs"
-      "-L" # print build logs
-    ];
-    dates = "02:00";
-    randomizedDelaySec = "45min";
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

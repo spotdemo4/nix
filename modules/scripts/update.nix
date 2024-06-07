@@ -1,7 +1,9 @@
-{ pkgs, ... }:
-
+{ pkgs }:
+ 
 pkgs.writeShellApplication {
   name = "update";
+
+  runtimeInputs = with pkgs; [ git ];
 
   text = ''
     sudo su
