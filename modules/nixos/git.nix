@@ -17,6 +17,8 @@
           name = "trev";
           email = "me@trev.xyz";
         };
+
+        safe.directory = "/etc/nixos";
       };
     };
   };
