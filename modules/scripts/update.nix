@@ -1,22 +1,31 @@
-{ pkgs }:
+{ lib, config, pkgs, ... }:
  
-pkgs.writeShellApplication {
-  name = "update";
+{
+  options.update-script = {
+    enable = lib.mkEnableOption "enable update script";
+  };
 
-  runtimeInputs = with pkgs; [ git ];
+  config = lib.mkIf config.update-script.enable {
+    environment.systemPackages = with pkgs; [
+      (writeShellApplication {
+        name = "update";
 
-  text = ''
-    sudo su
-    pushd /etc/nixos
-    echo "NixOS Rebuilding..."
+        runtimeInputs = with pkgs; [ git ];
 
-    nixos-rebuild switch --flake /etc/nixos#default
-    gen=$(nixos-rebuild list-generations | grep current)
+        text = ''
+          pushd /etc/nixos
+          echo "NixOS Rebuilding..."
 
-    git add .
-    git commit -m "$gen"
-    git push -u origin main
+          sudo nixos-rebuild switch --flake /etc/nixos#default
+          gen=$(nixos-rebuild list-generations | grep current)
 
-    popd
-  '';
+          sudo git add .
+          sudo git commit -m "$gen"
+          sudo git push -u origin main
+
+          popd
+        '';
+      })
+    ];
+  };
 }

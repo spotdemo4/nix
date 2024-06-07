@@ -17,6 +17,9 @@
     ../../modules/nixos/pipewire.nix
     ../../modules/nixos/gnome-auth-agent.nix
     ../../modules/nixos/git.nix
+
+    # Scripts
+    ../../modules/scripts/update.nix
   ];
 
   # Boot loader
@@ -114,26 +117,6 @@
     feh
     grimblast
 
-    (writeShellApplication {
-      name = "update";
-
-      runtimeInputs = with pkgs; [ git ];
-
-      text = ''
-        pushd /etc/nixos
-        echo "NixOS Rebuilding..."
-
-        sudo nixos-rebuild switch --flake /etc/nixos#default
-        gen=$(nixos-rebuild list-generations | grep current)
-
-        sudo git add .
-        sudo git commit -m "$gen"
-        sudo git push -u origin main
-
-        popd
-      '';
-    })
-
     # BS QT shit
     kdePackages.qt6ct
     libsForQt5.qt5ct
@@ -154,12 +137,16 @@
     font-awesome
   ];
 
+  # Programs
   hyprland-nix.enable = true;
   zsh-nix.enable = true;
   sddm-nix.enable = true;
   pipewire-nix.enable = true;
   gnome-auth-agent-nix.enable = true;
   git-nix.enable = true;
+
+  # Scripts
+  update-script.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
