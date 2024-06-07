@@ -1,15 +1,13 @@
-{ pkgs };
+{ pkgs, ... }:
 
 pkgs.writeShellApplication {
   name = "update";
-
-  runtimeInputs = [ git ];
 
   text = ''
     sudo su
     pushd /etc/nixos
     echo "NixOS Rebuilding..."
-    
+
     nixos-rebuild switch --flake /etc/nixos#default
     gen=$(nixos-rebuild list-generations | grep current)
 
