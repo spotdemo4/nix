@@ -9,12 +9,15 @@
     inputs.home-manager.nixosModules.home-manager
     inputs.catppuccin.nixosModules.catppuccin
     ./hardware-configuration.nix
+
     ../../modules/nixos/hyprland.nix
     ../../modules/nixos/zsh.nix
     ../../modules/nixos/sddm.nix
     ../../modules/nixos/pipewire.nix
     ../../modules/nixos/gnome-auth-agent.nix
     ../../modules/nixos/git.nix
+
+    ../../modules/scripts/update.nix
   ];
 
   # Boot loader
