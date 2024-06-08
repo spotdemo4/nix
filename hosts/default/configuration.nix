@@ -17,6 +17,7 @@
     ../../modules/nixos/pipewire.nix
     ../../modules/nixos/gnome-auth-agent.nix
     ../../modules/nixos/git.nix
+    ../../modules/nixos/syncthing.nix
 
     # Scripts
     ../../modules/scripts/update.nix
@@ -146,6 +147,7 @@
   pipewire-nix.enable = true;
   gnome-auth-agent-nix.enable = true;
   git-nix.enable = true;
+  syncthing-nix.enable = true;
 
   # Scripts
   update-script.enable = true;

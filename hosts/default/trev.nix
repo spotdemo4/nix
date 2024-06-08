@@ -12,7 +12,6 @@
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/mako.nix
     ../../modules/home-manager/hyprpaper.nix
-    ../../modules/home-manager/syncthing.nix
   ];
 
   hyprland-conf.enable = true;
@@ -23,7 +22,6 @@
   kitty-conf.enable = true;
   mako-conf.enable = true;
   hyprpaper-conf.enable = true;
-  syncthing-conf.enable = true;
 
   # Enable Catppuccin theme for QT (WARNING: REQUIRES MANUAL CONFIGURATION VIA QT5CT & QT6CT)
   qt = {
