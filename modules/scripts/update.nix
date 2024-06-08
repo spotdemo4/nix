@@ -15,11 +15,11 @@
         text = ''
           pushd /etc/nixos
           echo "NixOS Rebuilding..."
+          sudo git add .
 
           sudo nixos-rebuild switch --flake /etc/nixos#default
           gen=$(nixos-rebuild list-generations | grep current)
 
-          sudo git add .
           sudo git commit -m "$gen"
           sudo git push -u origin main
 
