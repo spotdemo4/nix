@@ -116,6 +116,7 @@
     fastfetch
     feh
     grimblast
+    obsidian
 
     # BS QT shit
     kdePackages.qt6ct
