@@ -9,6 +9,8 @@
     services.syncthing = {
       enable = true;
       openDefaultPorts = true;
+      user = "trev";
+      dataDir = "/home/trev";
       settings = {
         devices = {
           "server" = {
