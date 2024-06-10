@@ -121,6 +121,7 @@
     jetbrains.datagrip
     android-studio
     plexamp
+    yt-dlp
 
     # BS QT shit
     kdePackages.qt6ct
