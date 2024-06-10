@@ -120,6 +120,7 @@
     obsidian
     jetbrains.datagrip
     android-studio
+    android-tools
     plexamp
     yt-dlp
 
