@@ -146,6 +146,7 @@
 
   # Programs
   programs.direnv.enable = true;
+  programs.steam.enable = true;
   hyprland-nix.enable = true;
   zsh-nix.enable = true;
   sddm-nix.enable = true;
