@@ -179,7 +179,9 @@
         /*    background-color: rgba(0,0,0,0.3); */
       }
 
-      #workspaces button:hover {
+      #workspaces button.active {
+        background-color: rgba(0,0,0,0.3);
+        border-top: 2px solid #c9545d;
       }
 
       #workspaces button.focused {
