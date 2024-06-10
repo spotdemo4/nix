@@ -140,8 +140,8 @@
   # Fonts
   fonts.packages = with pkgs; [
     noto-fonts
+    noto-fonts-monochrome-emoji
     meslo-lgs-nf
-    font-awesome
     fira-code
   ];
 
