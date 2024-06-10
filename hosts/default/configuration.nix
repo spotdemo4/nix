@@ -120,6 +120,7 @@
     obsidian
     jetbrains.datagrip
     android-studio
+    plexamp
 
     # BS QT shit
     kdePackages.qt6ct
