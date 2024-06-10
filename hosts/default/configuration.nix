@@ -118,6 +118,7 @@
     feh
     grimblast
     obsidian
+    jetbrains.datagrip
 
     # BS QT shit
     kdePackages.qt6ct
