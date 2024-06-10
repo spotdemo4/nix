@@ -167,7 +167,7 @@
       /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
       button:hover {
         background: inherit;
-        border-top: 2px solid #c9545d;
+        border-top: 2px solid #89dceb;
       }
 
       #workspaces button {
