@@ -119,6 +119,7 @@
     grimblast
     obsidian
     jetbrains.datagrip
+    android-studio
 
     # BS QT shit
     kdePackages.qt6ct
