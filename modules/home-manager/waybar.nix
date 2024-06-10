@@ -147,9 +147,6 @@
         background-color: transparent;
       }
 
-      #workspaces {
-      }
-
       #window {
         margin: 2;
         padding-left: 8;
@@ -176,7 +173,6 @@
       #workspaces button {
         padding: 0 4px;
         color: #ffffff;
-        /*    background-color: rgba(0,0,0,0.3); */
       }
 
       #workspaces button.active {
@@ -185,9 +181,7 @@
       }
 
       #workspaces button.focused {
-        /*    box-shadow: inset 0 -2px #c9545d; */
         background-color: rgba(0,0,0,0.3);
-        color:#c9545d;
         border-top: 2px solid #c9545d;
       }
 
