@@ -14,6 +14,7 @@
         { id = "bkkmolkhemgaeaeggcmfbghljjjoofoh"; } # Catppuccin Chrome Theme
         { id = "nngceckbapebfimnlniiiahkandclblb"; } # Bitwarden
         { id = "mnjggcdmjocbbbhaepdhchncahnbgone"; } # Sponsorblock
+        { id = "clngdbkpkpeebahjckkjfobafhncgmne"; } # Stylus
       ];
     };
   };
