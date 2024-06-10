@@ -177,12 +177,12 @@
 
       #workspaces button.active {
         background-color: rgba(0,0,0,0.3);
-        border-top: 2px solid #c9545d;
+        border-top: 2px solid #89dceb;
       }
 
       #workspaces button.focused {
         background-color: rgba(0,0,0,0.3);
-        border-top: 2px solid #c9545d;
+        border-top: 2px solid #89dceb;
       }
 
       #workspaces button.urgent {
