@@ -139,6 +139,9 @@
 
   # Fonts
   fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-emoji
+    noto-fonts-cjk
     meslo-lgs-nf
     font-awesome
   ];
