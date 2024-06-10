@@ -94,7 +94,7 @@
               "critical" = 15;
             };
             "format" = "{icon} {capacity}%"; 
-            "format-charging" = "🔌 {capacity}%";
+            "format-charging" = " {capacity}%";
             "format-plugged" = " {capacity}%";
           };
 
