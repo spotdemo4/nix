@@ -142,6 +142,7 @@
     noto-fonts
     meslo-lgs-nf
     font-awesome
+    fira-code
   ];
 
   # Programs
