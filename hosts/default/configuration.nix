@@ -123,6 +123,7 @@
     android-tools
     plexamp
     yt-dlp
+    thunderbird
 
     # BS QT shit
     kdePackages.qt6ct
