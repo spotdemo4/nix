@@ -119,6 +119,7 @@
     grimblast
     obsidian
     jetbrains.datagrip
+    jetbrains.idea-community-bin
     android-studio
     android-tools
     plexamp
