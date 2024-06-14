@@ -13,6 +13,7 @@
     ../../modules/home-manager/mako.nix
     ../../modules/home-manager/hyprpaper.nix
     ../../modules/home-manager/mpv.nix
+    ../../modules/home-manager/zsh.nix
   ];
 
   programs.direnv = {
@@ -29,6 +30,7 @@
   mako-conf.enable = true;
   hyprpaper-conf.enable = true;
   mpv-conf.enable = true;
+  zsh-conf.enable = true;
 
   # Enable Catppuccin theme for QT (WARNING: REQUIRES MANUAL CONFIGURATION VIA QT5CT & QT6CT)
   qt = {
