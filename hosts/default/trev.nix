@@ -15,6 +15,11 @@
     ../../modules/home-manager/mpv.nix
   ];
 
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    enableZshIntegration = true;
+  };
   hyprland-conf.enable = true;
   vscode-conf.enable = true;
   waybar-conf.enable = true;
