@@ -82,6 +82,7 @@
 
         master = {
           "mfact" = "0.5";
+          "new_on_top" = true;
         };
 
         gestures = {
