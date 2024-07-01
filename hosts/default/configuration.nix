@@ -101,24 +101,27 @@
 
   # List packages installed in system profile. To search, run nix search wget
   environment.systemPackages = with pkgs; [
-    wget
-    unzip
-    fastfetch
+    # GUI
     cinnamon.nemo
     cinnamon.nemo-fileroller
     gnome.file-roller
     vesktop
-    fastfetch
     feh
-    grimblast
     obsidian
     jetbrains.datagrip
     jetbrains.idea-community-bin
     android-studio
-    android-tools
     plexamp
-    yt-dlp
     thunderbird
+
+    # CLI
+    wget
+    unzip
+    fastfetch
+    grimblast
+    android-tools
+    yt-dlp
+    openvpn
 
     # BS QT shit
     kdePackages.qt6ct
