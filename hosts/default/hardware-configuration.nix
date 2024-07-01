@@ -8,6 +8,14 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
+  # Add boot option for arch
+  boot.loader.systemd-boot.extraEntries."arch.conf" = ''
+    title Arch Linux
+    linux /vmlinuz-linux
+    initrd /initramfs-linux.img
+    options root=/dev/nvme0n1p4 rw add_efi_memmap
+  '';
+
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];

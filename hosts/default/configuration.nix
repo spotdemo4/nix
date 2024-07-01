@@ -24,12 +24,6 @@
 
   # Boot loader
   boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.extraEntries."arch.conf" = ''
-    title Arch Linux
-    linux /vmlinuz-linux
-    initrd /initramfs-linux.img
-    options root=/dev/nvme0n1p4 rw add_efi_memmap
-  '';
   boot.loader.timeout = 10;
   boot.loader.efi.canTouchEfiVariables = true;
 
