@@ -65,7 +65,7 @@
         colorVariants = ["dark"];
         themeVariants = ["teal"];
       };
-      name = "Colloid-Dark-Catppuccin";
+      name = "Colloid-Teal-Dark-Catppuccin";
     };
     iconTheme = {
       package = pkgs.tela-icon-theme;
