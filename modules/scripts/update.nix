@@ -17,6 +17,7 @@
           echo "NixOS Rebuilding..."
           sudo git add .
 
+          sudo nix flake update
           sudo nixos-rebuild switch --flake /etc/nixos#default
           gen=$(nixos-rebuild list-generations | grep current)
 
