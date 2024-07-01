@@ -54,11 +54,11 @@
   # Enable Catppuccin theme for GTK & install some icons
   gtk = {
     enable = true;
-    catppuccin = {
-      enable = true;
-      accent = "sky";
-      flavor = "mocha";
-    };
+    # catppuccin = {
+    #   enable = true;
+    #   accent = "sky";
+    #   flavor = "mocha";
+    # };
     iconTheme = {
       package = pkgs.tela-icon-theme;
       name = "Tela";
