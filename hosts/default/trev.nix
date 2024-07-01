@@ -59,6 +59,14 @@
     #   accent = "sky";
     #   flavor = "mocha";
     # };
+    theme = {
+      package = pkgs.colloid-gtk-theme.override {
+        tweaks = ["catppuccin"];
+        colorVariants = ["dark"];
+        themeVariants = ["teal"];
+      };
+      name = "Colloid-Dark-Catppuccin";
+    };
     iconTheme = {
       package = pkgs.tela-icon-theme;
       name = "Tela";
