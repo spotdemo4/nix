@@ -121,7 +121,7 @@
     grimblast
     android-tools
     yt-dlp
-    openvpn
+    openconnect
 
     # BS QT shit
     kdePackages.qt6ct
