@@ -89,6 +89,7 @@
 
   # Home manager
   home-manager = {
+    useGlobalPkgs = true;
     extraSpecialArgs = { inherit inputs; };
     users = {
       trev.imports = [ ./trev.nix ];

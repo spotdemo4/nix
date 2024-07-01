@@ -14,6 +14,7 @@
         jnoortheen.nix-ide
         catppuccin.catppuccin-vsc
         usernamehw.errorlens
+        github.copilot
       ];
     };
   };
