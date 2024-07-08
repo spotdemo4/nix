@@ -17,6 +17,7 @@
     ../../modules/nixos/gnome-auth-agent.nix
     ../../modules/nixos/git.nix
     ../../modules/nixos/syncthing.nix
+    ../../modules/nixos/postgres.nix
 
     # Scripts
     ../../modules/scripts/update.nix
@@ -152,6 +153,7 @@
   gnome-auth-agent-nix.enable = true;
   git-nix.enable = true;
   syncthing-nix.enable = true;
+  postgres-nix.enable = true;
 
   # Scripts
   update-script.enable = true;
