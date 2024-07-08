@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ lib, config, pkgs, inputs, ... }:
  
 {
   options.vscode-conf = {
@@ -9,21 +9,16 @@
     programs.vscode = {
       enable = true;
       package = pkgs.vscodium;
-      extensions = with pkgs.vscode-extensions; [
+      extensions = (with pkgs.vscode-extensions; [
         svelte.svelte-vscode
         jnoortheen.nix-ide
         catppuccin.catppuccin-vsc
         usernamehw.errorlens
         github.copilot
         golang.go
-      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-        {
-          name = "templ";
-          publisher = "a-h";
-          version = "0.0.26";
-          sha256 = "/77IO+WjgWahUrj6xVl0tkvICh9Cy+MtfH2dewxH8LE=";
-        }
-      ];
+      ]) ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux; [
+        open-vsx.a-h.templ
+      ]);
     };
   };
 }
