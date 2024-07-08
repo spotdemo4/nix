@@ -104,7 +104,7 @@
     # GUI
     cinnamon.nemo
     cinnamon.nemo-fileroller
-    gnome.file-roller
+    file-roller
     vesktop
     feh
     obsidian
