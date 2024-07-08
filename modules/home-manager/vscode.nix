@@ -12,14 +12,17 @@
       extensions = (with pkgs.vscode-extensions; [
         svelte.svelte-vscode
         jnoortheen.nix-ide
-        catppuccin.catppuccin-vsc
         usernamehw.errorlens
         github.copilot
         golang.go
       ]) ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux; [
         open-vsx.a-h.templ
         vscode-marketplace.trapfether.tailwind-raw-reorder
-      ]);
+      ]) ++ [
+        (pkgs.catppuccin-vsc.override {
+          accent = "sky";
+        })
+      ];
     };
   };
 }
