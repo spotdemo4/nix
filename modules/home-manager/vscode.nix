@@ -16,6 +16,13 @@
         usernamehw.errorlens
         github.copilot
         golang.go
+      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+        {
+          name = "templ";
+          publisher = "a-h";
+          version = "0.0.26";
+          sha256 = "/77IO+WjgWahUrj6xVl0tkvICh9Cy+MtfH2dewxH8LE=";
+        }
       ];
     };
   };
