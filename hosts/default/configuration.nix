@@ -123,6 +123,7 @@
     android-tools
     yt-dlp
     openconnect
+    ncdu
 
     # BS QT shit
     kdePackages.qt6ct
