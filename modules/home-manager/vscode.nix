@@ -18,6 +18,7 @@
       ]) ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux; [
         open-vsx.a-h.templ
         vscode-marketplace.trapfether.tailwind-raw-reorder
+        vscode-marketplace.pcbowers.alpine-intellisense
       ]) ++ [
         (pkgs.catppuccin-vsc.override {
           accent = "sky";
