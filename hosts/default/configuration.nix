@@ -83,7 +83,7 @@
   users.users.trev = {
     isNormalUser = true;
     description = "trev";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [];
     shell = pkgs.zsh;
   };
@@ -96,6 +96,9 @@
       trev.imports = [ ./trev.nix ];
     };
   };
+
+  # Docker
+  virtualisation.docker.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
