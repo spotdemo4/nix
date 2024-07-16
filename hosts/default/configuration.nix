@@ -118,6 +118,7 @@
     android-studio
     plexamp
     thunderbird
+    kdePackages.kdenlive
 
     # CLI
     wget
