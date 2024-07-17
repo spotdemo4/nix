@@ -119,6 +119,7 @@
     plexamp
     thunderbird
     kdePackages.kdenlive
+    bruno
 
     # CLI
     wget
