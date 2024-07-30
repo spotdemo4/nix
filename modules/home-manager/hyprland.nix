@@ -34,6 +34,7 @@
         # Display configuration
         monitor = [
           "eDP-1,preferred,auto,1"
+          "desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A,3440x1440@99.99,auto,auto"
           ",preferred,auto,auto"
         ];
 
