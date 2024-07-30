@@ -132,6 +132,7 @@
     yt-dlp
     openconnect
     ncdu
+    nmap
 
     # BS QT shit
     kdePackages.qt6ct
