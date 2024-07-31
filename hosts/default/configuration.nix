@@ -122,6 +122,7 @@
     thunderbird
     kdePackages.kdenlive
     bruno
+    onlyoffice-bin_latest
 
     # CLI
     wget
