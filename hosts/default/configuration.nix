@@ -123,6 +123,7 @@
     kdePackages.kdenlive
     bruno
     onlyoffice-bin_latest
+    prismlauncher
 
     # CLI
     wget
