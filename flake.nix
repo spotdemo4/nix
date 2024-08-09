@@ -4,6 +4,12 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # Use Lix https://lix.systems/
+    lix-module = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.90.0.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Catppuccin
     catppuccin.url = "github:catppuccin/nix";
     catppuccin-vsc.url = "https://flakehub.com/f/catppuccin/vscode/*.tar.gz";
@@ -29,10 +35,13 @@
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: {
+  outputs = { self, nixpkgs, lix-module, ... }@inputs: {
     nixosConfigurations.default = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
-      modules = [ ./hosts/default/configuration.nix ];
+      modules = [ 
+        ./hosts/default/configuration.nix 
+        lix-module.nixosModules.default
+      ];
     };
   };
 }
