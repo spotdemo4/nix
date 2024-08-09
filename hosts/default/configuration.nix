@@ -106,9 +106,6 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [ inputs.catppuccin-vsc.overlays.default ];
 
-  # Enable native wayland support for electron/chrome
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-
   # List packages installed in system profile. To search, run nix search wget
   environment.systemPackages = with pkgs; [
     # GUI
