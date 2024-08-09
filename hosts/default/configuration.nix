@@ -124,6 +124,7 @@
     bruno
     onlyoffice-bin_latest
     prismlauncher
+    moonlight-qt
 
     # CLI
     wget
