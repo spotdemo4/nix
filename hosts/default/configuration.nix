@@ -136,6 +136,7 @@
     openconnect
     ncdu
     nmap
+    btop
 
     # BS QT shit
     kdePackages.qt6ct
