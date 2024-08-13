@@ -20,8 +20,11 @@
           sudo git add .
 
           sudo nixos-rebuild switch --flake /etc/nixos#default
-          gen=$(nixos-rebuild list-generations | grep current)
 
+          echo "Waiting for network..."
+          until ping -c1 www.google.com >/dev/null 2>&1; do :; done
+
+          gen=$(nixos-rebuild list-generations | grep current)
           sudo git commit -m "$gen"
           sudo git push -u origin main
 
