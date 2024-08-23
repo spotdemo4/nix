@@ -125,6 +125,7 @@
     onlyoffice-bin_latest
     prismlauncher
     moonlight-qt
+    inputs.zen-browser.packages."${system}".default
 
     # CLI
     wget

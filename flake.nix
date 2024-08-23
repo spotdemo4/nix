@@ -6,9 +6,12 @@
 
     # Use Lix https://lix.systems/
     lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.90.0.tar.gz";
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Zen browser
+    zen-browser.url = "github:MarceColl/zen-browser-flake";
 
     # Catppuccin
     catppuccin.url = "github:catppuccin/nix";
