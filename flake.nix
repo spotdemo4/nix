@@ -39,10 +39,10 @@
   };
 
   outputs = { self, nixpkgs, lix-module, ... }@inputs: {
-    nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
       modules = [ 
-        ./hosts/default/configuration.nix 
+        ./hosts/laptop/configuration.nix 
         lix-module.nixosModules.default
       ];
     };
