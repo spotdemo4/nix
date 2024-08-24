@@ -35,21 +35,28 @@
   # Enable Catppuccin theme for QT (WARNING: REQUIRES MANUAL CONFIGURATION VIA QT5CT & QT6CT)
   qt = {
     enable = true;
-    platformTheme.name = "qtct";
-    style.name = "kvantum";
+    platformTheme.name = "kvantum";
+    style = {
+      name = "kvantum";
+      catppuccin = {
+        enable = true;
+        accent = "sky";
+        flavor = "mocha";
+      };
+    };
   };
 
-  xdg.configFile = {
-    "Kvantum/kvantum.kvconfig".text = ''
-      [General]
-      theme=Catppuccin-Mocha-Sky
-    '';
+  # xdg.configFile = {
+  #   "Kvantum/kvantum.kvconfig".text = ''
+  #     [General]
+  #     theme=Catppuccin-Mocha-Sky
+  #   '';
 
-    "Kvantum/Catppuccin-Mocha-Sky".source = "${(pkgs.catppuccin-kvantum.override {
-      variant = "Mocha";
-      accent = "Sky";
-    })}/share/Kvantum/Catppuccin-Mocha-Sky";
-  };
+  #   "Kvantum/Catppuccin-Mocha-Sky".source = "${(pkgs.catppuccin-kvantum.override {
+  #     variant = "Mocha";
+  #     accent = "Sky";
+  #   })}/share/Kvantum/Catppuccin-Mocha-Sky";
+  # };
 
   # Enable Catppuccin theme for GTK & install some icons
   gtk = {
@@ -71,11 +78,6 @@
       package = pkgs.tela-icon-theme;
       name = "Tela";
     };
-    # cursorTheme = {
-    #   package = pkgs.catppuccin-cursors.mochaDark;
-    #   name = "catppuccin-mocha-dark-cursors";
-    #   size = 22;
-    # };
   };
 
   catppuccin.pointerCursor = {
