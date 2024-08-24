@@ -572,11 +572,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1724347856,
-        "narHash": "sha256-OQxWHztlw5hSJYCRWoJ98+bgqWinRSTR0KZos7aq2h8=",
+        "lastModified": 1724477253,
+        "narHash": "sha256-oOxxeQDWdC9/hO/ARec6uPqpyjuAEwZVYT9SHgFdAQY=",
         "owner": "MarceColl",
         "repo": "zen-browser-flake",
-        "rev": "96dffb45b36141261e97a8f83438e4c88911fefa",
+        "rev": "2224fbac59406aa2e7fa69bbd21e1607d3f3da03",
         "type": "github"
       },
       "original": {

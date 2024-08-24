@@ -8,12 +8,12 @@
     ../../modules/home-manager/vscode.nix
     ../../modules/home-manager/waybar.nix
     ../../modules/home-manager/wofi.nix
-    ../../modules/home-manager/brave.nix
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/mako.nix
     ../../modules/home-manager/hyprpaper.nix
     ../../modules/home-manager/mpv.nix
     ../../modules/home-manager/zsh.nix
+    ../../modules/home-manager/vivaldi.nix
   ];
 
   programs.direnv = {
@@ -25,12 +25,12 @@
   vscode-conf.enable = true;
   waybar-conf.enable = true;
   wofi-conf.enable = true;
-  brave-conf.enable = true;
   kitty-conf.enable = true;
   mako-conf.enable = true;
   hyprpaper-conf.enable = true;
   mpv-conf.enable = true;
   zsh-conf.enable = true;
+  vivaldi-conf.enable = true;
 
   # Enable Catppuccin theme for QT
   qt = {
