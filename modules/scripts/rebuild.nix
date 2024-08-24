@@ -19,7 +19,7 @@
         sudo git fetch
         sudo git checkout origin/main -- flake.lock
 
-        printf "\033[0;36mNixOS Rebuilding...\n\033[0m"
+        printf "\033[0;36mRebuilding...\n\033[0m"
         sudo git add .
         sudo nixos-rebuild switch --flake "/etc/nixos#$1"
 
