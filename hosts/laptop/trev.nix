@@ -29,7 +29,6 @@
   kitty-conf.enable = true;
   mako-conf.enable = true;
   hyprpaper-conf.enable = true;
-  mpv-conf.enable = true;
   zsh-conf.enable = true;
 
   # Enable Catppuccin theme for QT
