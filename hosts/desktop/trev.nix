@@ -13,6 +13,8 @@
     ../../modules/home-manager/hyprpaper.nix
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/vivaldi.nix
+  ] ++ map (x: ./. + "/../../modules/home-manager/${x}.nix") [
+    "mpv"
   ];
 
   programs.direnv = {
