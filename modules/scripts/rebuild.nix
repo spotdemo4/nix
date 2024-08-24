@@ -3,20 +3,21 @@
 {
   environment.systemPackages = with pkgs; [
     (writeShellApplication {
-      name = "update";
+      name = "rebuild";
 
       runtimeInputs = with pkgs; [ git ];
 
       text = ''
         if [ -z "$1" ]; then
-          echo "Usage: update <host name>"
+          echo "Usage: rebuild <host name>"
           exit 1
         fi
 
         pushd /etc/nixos
 
-        echo "NixOS Updating..."
-        sudo nix flake update
+        echo "Getting most recent good flake.lock..."
+        sudo git fetch
+        sudo git checkout origin/main -- flake.lock
 
         echo "NixOS Rebuilding..."
         sudo git add .
