@@ -102,7 +102,7 @@
   # Docker
   virtualisation.docker.enable = true;
 
-  # Allow unfree packages
+  # Allow unfree packages and add overlays
   nixpkgs = {
     overlays = [ inputs.catppuccin-vsc.overlays.default ];
     config.allowUnfree = true;

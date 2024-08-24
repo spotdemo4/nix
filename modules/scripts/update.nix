@@ -1,41 +1,35 @@
-{ lib, config, pkgs, ... }:
+{ pkgs, ... }:
  
 {
-  options.update-script = {
-    enable = lib.mkEnableOption "enable update script";
-  };
+  environment.systemPackages = with pkgs; [
+    (writeShellApplication {
+      name = "update";
 
-  config = lib.mkIf config.update-script.enable {
-    environment.systemPackages = with pkgs; [
-      (writeShellApplication {
-        name = "update";
+      runtimeInputs = with pkgs; [ git ];
 
-        runtimeInputs = with pkgs; [ git ];
+      text = ''
+        if [ -z "$1" ]; then
+          echo "Usage: update <host name>"
+          exit 1
+        fi
 
-        text = ''
-          if [ -z "$1" ]; then
-            echo "Usage: update <host name>"
-            exit 1
-          fi
+        pushd /etc/nixos
+        echo "NixOS Rebuilding..."
+        sudo nix flake update
+        
+        sudo git add .
 
-          pushd /etc/nixos
-          echo "NixOS Rebuilding..."
-          sudo nix flake update
-          
-          sudo git add .
+        sudo nixos-rebuild switch --flake "/etc/nixos#$1"
 
-          sudo nixos-rebuild switch --flake "/etc/nixos#$1"
+        echo "Waiting for network..."
+        until ping -c1 www.google.com >/dev/null 2>&1; do :; done
 
-          echo "Waiting for network..."
-          until ping -c1 www.google.com >/dev/null 2>&1; do :; done
+        gen=$(nixos-rebuild list-generations | grep current)
+        sudo git commit -m "$gen"
+        sudo git push -u origin main
 
-          gen=$(nixos-rebuild list-generations | grep current)
-          sudo git commit -m "$gen"
-          sudo git push -u origin main
-
-          popd
-        '';
-      })
-    ];
-  };
+        popd
+      '';
+    })
+  ];
 }
