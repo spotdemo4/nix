@@ -71,16 +71,16 @@
       package = pkgs.tela-icon-theme;
       name = "Tela";
     };
-    cursorTheme = {
-      package = pkgs.catppuccin-cursors.mochaDark;
-      name = "catppuccin-mocha-dark-cursors";
-      size = 22;
-    };
+    # cursorTheme = {
+    #   package = pkgs.catppuccin-cursors.mochaDark;
+    #   name = "catppuccin-mocha-dark-cursors";
+    #   size = 22;
+    # };
   };
 
   catppuccin.pointerCursor = {
     enable = true;
-    accent = "sky";
+    accent = "dark";
     flavor = "mocha";
   };
 
