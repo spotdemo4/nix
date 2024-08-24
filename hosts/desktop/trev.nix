@@ -11,7 +11,6 @@
     ../../modules/home-manager/kitty.nix
     ../../modules/home-manager/mako.nix
     ../../modules/home-manager/hyprpaper.nix
-    ../../modules/home-manager/mpv.nix
     ../../modules/home-manager/zsh.nix
     ../../modules/home-manager/vivaldi.nix
   ];
