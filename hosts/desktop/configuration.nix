@@ -87,8 +87,13 @@
     flavor = "mocha";
   };
 
-  # Flakes
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # Nix Settings
+  nix = {
+    settings.experimental-features = [ "nix-command" "flakes" ];
+    extraOptions = ''
+      warn-dirty = false
+    '';
+  };
 
   # Auto Upgrade
   system.autoUpgrade = {
