@@ -15,18 +15,18 @@
 
         pushd /etc/nixos
 
-        echo "Getting most recent good flake.lock..."
+        printf "\033[4;36m Getting most recent good flake.lock...\n"
         sudo git fetch
         sudo git checkout origin/main -- flake.lock
 
-        echo "NixOS Rebuilding..."
+        printf "\033[4;36m NixOS Rebuilding...\n"
         sudo git add .
         sudo nixos-rebuild switch --flake "/etc/nixos#$1"
 
-        echo "Waiting for network..."
+        printf "\033[4;36m Waiting for network...\n"
         until ping -c1 www.google.com >/dev/null 2>&1; do :; done
 
-        echo "Committing and pushing..."
+        printf "\033[4;36m Committing and pushing...\n"
         gen=$(nixos-rebuild list-generations | grep current)
         sudo git commit -m "$gen"
         sudo git push -u origin main
