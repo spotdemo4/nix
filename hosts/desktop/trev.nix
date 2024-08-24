@@ -78,6 +78,12 @@
     };
   };
 
+  catppuccin.pointerCursor = {
+    enable = true;
+    accent = "sky";
+    flavor = "mocha";
+  };
+
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "trev";
