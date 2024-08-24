@@ -5,7 +5,10 @@
   imports = [
     inputs.catppuccin.homeManagerModules.catppuccin
   ] ++ map (x: ./. + "/../../modules/home-manager/${x}.nix") [
+    # Home Manager modules to import
+    
     "cursor"
+    "direnv"
     "gtk"
     "hyprland"
     "hyprpaper"
@@ -19,12 +22,6 @@
     "wofi"
     "zsh"
   ];
-
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-    enableZshIntegration = true;
-  };
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.

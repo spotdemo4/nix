@@ -102,9 +102,11 @@
   # Docker
   virtualisation.docker.enable = true;
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.overlays = [ inputs.catppuccin-vsc.overlays.default ];
+  # Allow unfree packages and add overlays
+  nixpkgs = {
+    config.allowUnfree = true;
+    overlays = [ inputs.catppuccin-vsc.overlays.default ];
+  };
 
   # List packages installed in system profile. To search, run nix search wget
   environment.systemPackages = with pkgs; [
