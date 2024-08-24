@@ -4,7 +4,7 @@
   # Imports
   imports = [
     inputs.catppuccin.homeManagerModules.catppuccin
-  ] ++ map (x: ./. + "/../../modules/home-manager/${x}.nix") [
+  ] ++ map (x: ./../../modules/home-manager/${x}.nix) [
     # Home Manager modules to import
     
     "brave"
