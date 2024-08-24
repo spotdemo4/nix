@@ -4,70 +4,26 @@
   # Imports
   imports = [
     inputs.catppuccin.homeManagerModules.catppuccin
-    ../../modules/home-manager/hyprland.nix
-    ../../modules/home-manager/vscode.nix
-    ../../modules/home-manager/waybar.nix
-    ../../modules/home-manager/wofi.nix
-    ../../modules/home-manager/kitty.nix
-    ../../modules/home-manager/mako.nix
-    ../../modules/home-manager/hyprpaper.nix
-    ../../modules/home-manager/zsh.nix
-    ../../modules/home-manager/vivaldi.nix
   ] ++ map (x: ./. + "/../../modules/home-manager/${x}.nix") [
+    "cursor"
+    "gtk"
+    "hyprland"
+    "hyprpaper"
+    "kitty"
+    "mako"
     "mpv"
+    "qt"
+    "vivaldi"
+    "vscode"
+    "waybar"
+    "wofi"
+    "zsh"
   ];
 
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
     enableZshIntegration = true;
-  };
-  hyprland-conf.enable = true;
-  vscode-conf.enable = true;
-  waybar-conf.enable = true;
-  wofi-conf.enable = true;
-  kitty-conf.enable = true;
-  mako-conf.enable = true;
-  hyprpaper-conf.enable = true;
-  zsh-conf.enable = true;
-  vivaldi-conf.enable = true;
-
-  # Enable Catppuccin theme for QT
-  qt = {
-    enable = true;
-    platformTheme.name = "kvantum";
-    style = {
-      name = "kvantum";
-      catppuccin = {
-        enable = true;
-        accent = "sky";
-        flavor = "mocha";
-      };
-    };
-  };
-
-  # Enable Catppuccin theme for GTK & install some icons
-  gtk = {
-    enable = true;
-    theme = {
-      package = pkgs.colloid-gtk-theme.override {
-        tweaks = ["catppuccin"];
-        colorVariants = ["dark"];
-        themeVariants = ["teal"];
-      };
-      name = "Colloid-Teal-Dark-Catppuccin";
-    };
-    iconTheme = {
-      package = pkgs.tela-icon-theme;
-      name = "Tela";
-    };
-  };
-
-  # Enable Catppuccin cursor theme
-  catppuccin.pointerCursor = {
-    enable = true;
-    accent = "dark";
-    flavor = "mocha";
   };
 
   # Home Manager needs a bit of information about you and the paths it should

@@ -1,19 +1,13 @@
-{ lib, config, pkgs, inputs, ... }:
- 
-{
-  options.mako-conf = {
-    enable = lib.mkEnableOption "enable mako config";
-  };
+{ ... }:
 
-  config = lib.mkIf config.mako-conf.enable {
-    services.mako = {
+{
+  services.mako = {
+    enable = true;
+    defaultTimeout = 5000;
+    borderRadius = 10;
+    catppuccin = {
       enable = true;
-      defaultTimeout = 5000;
-      borderRadius = 10;
-      catppuccin = {
-        enable = true;
-        flavor = "mocha";
-      };
+      flavor = "mocha";
     };
   };
 }
