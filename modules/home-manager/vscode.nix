@@ -24,6 +24,18 @@
           accent = "sky";
         })
       ];
+      userSettings = {
+        "workbench.colorTheme" = "Catppuccin Mocha";
+        "catppuccin.accentColor" = "sky";
+        "workbench.editor.labelFormat" = "short";
+        "workbench.tree.indent" = 16;
+        "explorer.sortOrder" = "filesFirst";
+        "explorer.compactFolders" = false;
+        "editor.fontFamily" = "Fira Code";
+        "editor.fontLigatures" = true;
+        "svelte.enable-ts-plugin" = true;
+        "alpine-intellisense.settings.languageScopes" = "html,templ";
+      };
     };
   };
 }

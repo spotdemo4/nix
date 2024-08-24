@@ -32,7 +32,7 @@
   mpv-conf.enable = true;
   zsh-conf.enable = true;
 
-  # Enable Catppuccin theme for QT (WARNING: REQUIRES MANUAL CONFIGURATION VIA QT5CT & QT6CT)
+  # Enable Catppuccin theme for QT
   qt = {
     enable = true;
     platformTheme.name = "kvantum";
@@ -46,26 +46,9 @@
     };
   };
 
-  # xdg.configFile = {
-  #   "Kvantum/kvantum.kvconfig".text = ''
-  #     [General]
-  #     theme=Catppuccin-Mocha-Sky
-  #   '';
-
-  #   "Kvantum/Catppuccin-Mocha-Sky".source = "${(pkgs.catppuccin-kvantum.override {
-  #     variant = "Mocha";
-  #     accent = "Sky";
-  #   })}/share/Kvantum/Catppuccin-Mocha-Sky";
-  # };
-
   # Enable Catppuccin theme for GTK & install some icons
   gtk = {
     enable = true;
-    # catppuccin = {
-    #   enable = true;
-    #   accent = "sky";
-    #   flavor = "mocha";
-    # };
     theme = {
       package = pkgs.colloid-gtk-theme.override {
         tweaks = ["catppuccin"];
