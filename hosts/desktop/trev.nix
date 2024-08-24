@@ -63,6 +63,7 @@
     };
   };
 
+  # Enable Catppuccin cursor theme
   catppuccin.pointerCursor = {
     enable = true;
     accent = "dark";
