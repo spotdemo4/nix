@@ -139,11 +139,6 @@
     nmap
     btop
 
-    # BS QT shit
-    kdePackages.qt6ct
-    libsForQt5.qt5ct
-    kdePackages.qtstyleplugin-kvantum
-
     # Applets
     networkmanagerapplet
     pavucontrol
