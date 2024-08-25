@@ -59,6 +59,7 @@
     ncdu
     nmap
     btop
+    ffmpeg
 
     # Applets
     networkmanagerapplet
