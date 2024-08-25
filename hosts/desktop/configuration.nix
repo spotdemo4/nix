@@ -46,6 +46,7 @@
     prismlauncher
     moonlight-qt
     inputs.zen-browser.packages."${system}".default
+    obs-studio
 
     # CLI
     wget
