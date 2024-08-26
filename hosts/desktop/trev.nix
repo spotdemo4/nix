@@ -11,7 +11,6 @@
     "direnv"
     "gtk"
     "hyprland"
-    "hyprpaper"
     "kitty"
     "mako"
     "mpv"

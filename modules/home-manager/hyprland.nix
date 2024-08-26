@@ -10,7 +10,6 @@
         "nm-applet --indicator"
         "blueman-applet"
         "waybar"
-        "hyprpaper"
       ];
 
       # Env vars

@@ -46,6 +46,7 @@
     prismlauncher
     moonlight-qt
     inputs.zen-browser.packages."${system}".default
+    inputs.swww.packages.${pkgs.system}.swww
     obs-studio
 
     # CLI
@@ -60,16 +61,10 @@
     nmap
     btop
     ffmpeg
-    wireshark
-    traceroute
 
     # Applets
     networkmanagerapplet
     pavucontrol
-    
-    # Hyprlandia
-    hyprcursor
-    hyprpaper
   ];
 
   # Fonts to install
