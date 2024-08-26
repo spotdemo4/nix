@@ -6,11 +6,11 @@
     inputs.catppuccin.homeManagerModules.catppuccin
   ] ++ map (x: ./../../modules/home-manager/${x}.nix) [
     # Home Manager modules to import
-    
     "cursor"
     "direnv"
     "gtk"
     "hyprland"
+    "hyprpaper"
     "kitty"
     "mako"
     "mpv"

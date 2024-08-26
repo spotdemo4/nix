@@ -1,6 +1,10 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
+  home.packages = with pkgs; [
+    hyprpaper
+  ];
+
   xdg.configFile = {
     "hypr/hyprpaper.conf".text = ''
       preload = ~/Photos/wallpaper.jpg
