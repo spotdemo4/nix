@@ -13,6 +13,8 @@
       wallpaper = eDP-1,~/Photos/wallpaper.jpg
       wallpaper = desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A 23072B001686,~/Photos/fishy.png
 
+      unload unused
+
       ipc = off
     '';
   };
