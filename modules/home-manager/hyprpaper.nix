@@ -9,11 +9,11 @@
     "hypr/hyprpaper.conf".text = ''
       preload = ~/Photos/wallpaper.jpg
       preload = ~/Photos/fishy.png
-      preload = ~/Photos/fishy2.jpg
+      preload = ~/Photos/fishy2.png
 
       wallpaper = eDP-1,~/Photos/wallpaper.jpg
       wallpaper = desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A 23072B001686,~/Photos/fishy.png
-      wallpaper = desc:Dell Inc. S2719DGF 1HSYBY2,~/Photos/fishy2.jpg
+      wallpaper = desc:Dell Inc. S2719DGF 1HSYBY2,~/Photos/fishy2.png
 
       ipc = off
     '';
