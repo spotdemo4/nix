@@ -60,6 +60,7 @@
     nmap
     btop
     ffmpeg
+    wireshark
 
     # Applets
     networkmanagerapplet
