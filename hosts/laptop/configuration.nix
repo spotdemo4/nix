@@ -62,10 +62,6 @@
     # Applets
     networkmanagerapplet
     pavucontrol
-    
-    # Hyprlandia
-    hyprcursor
-    hyprpaper
   ];
 
   # Fonts to install
