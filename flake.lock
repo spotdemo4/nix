@@ -193,11 +193,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1724442134,
-        "narHash": "sha256-RpA3GmcBvd6DLssIWfYKdDfiumLv8w4KIhDaI+//6ls=",
+        "lastModified": 1724596623,
+        "narHash": "sha256-pLbNiAfpE8rW2e1Ih7Epi0LfyDmFv+UYU2BXg7Sj66U=",
         "ref": "refs/heads/main",
-        "rev": "688fe5c14781c63a1db23d4d02bf239283068ff6",
-        "revCount": 5131,
+        "rev": "b672118f9238a48a18efd741cbcda387c5552238",
+        "revCount": 5136,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/hyprwm/Hyprland"
@@ -386,11 +386,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1724494643,
-        "narHash": "sha256-TwD72tnzpzfvwEg9r18BMbazR6wkjFMmcrGsAH7znn4=",
+        "lastModified": 1724635787,
+        "narHash": "sha256-01rsv0PLT/x5BZybqTnrlYipnG1CFF5s7ZX9otCnFlM=",
         "owner": "nix-community",
         "repo": "nix-vscode-extensions",
-        "rev": "f571fed086e592b5a7b2184dc6f42e0e3467c6bc",
+        "rev": "d1980fd00e84460f6769cc1684899fead5224080",
         "type": "github"
       },
       "original": {
@@ -572,11 +572,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1724477253,
-        "narHash": "sha256-oOxxeQDWdC9/hO/ARec6uPqpyjuAEwZVYT9SHgFdAQY=",
+        "lastModified": 1724518795,
+        "narHash": "sha256-no9r2yJ61kWx6RN8vqaIhZaXi4/HPwUiON5M+VhpAMg=",
         "owner": "MarceColl",
         "repo": "zen-browser-flake",
-        "rev": "2224fbac59406aa2e7fa69bbd21e1607d3f3da03",
+        "rev": "dc0a13e833b2bb1529d2348fa1b97b6220f9e899",
         "type": "github"
       },
       "original": {

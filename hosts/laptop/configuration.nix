@@ -104,7 +104,7 @@
   };
 
   # Networking
-  networking.hostName = "nixos-desktop"; # Define your hostname.
+  networking.hostName = "nixos-laptop"; # Define your hostname.
   networking.networkmanager.enable = true;
   networking.firewall.enable = false;
   services.tailscale.enable = true;
