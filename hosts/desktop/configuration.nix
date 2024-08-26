@@ -61,6 +61,7 @@
     btop
     ffmpeg
     wireshark
+    traceroute
 
     # Applets
     networkmanagerapplet
