@@ -32,5 +32,6 @@
       "svelte.enable-ts-plugin" = true;
       "alpine-intellisense.settings.languageScopes" = "html,templ";
     };
+    mutableExtensionsDir = false;
   };
 }
