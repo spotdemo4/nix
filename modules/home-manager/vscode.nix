@@ -10,6 +10,7 @@
       usernamehw.errorlens
       github.copilot
       golang.go
+      gleam.gleam
     ]) ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux; [
       vscode-marketplace.a-h.templ
       vscode-marketplace.trapfether.tailwind-raw-reorder
