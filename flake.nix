@@ -36,6 +36,9 @@
 
     # Nix vscode extensions
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
+
+    # Filebrowser-upload
+    filebrowser-upload.url = "github:spotdemo4/filebrowser-upload";
   };
 
   outputs = { self, nixpkgs, lix-module, ... }@inputs: {

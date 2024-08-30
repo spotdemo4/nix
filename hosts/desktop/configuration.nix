@@ -60,6 +60,7 @@
     nmap
     btop
     ffmpeg
+    filebrowser-upload
 
     # Applets
     networkmanagerapplet
@@ -161,7 +162,10 @@
   # Allow unfree packages and add overlays
   nixpkgs = {
     config.allowUnfree = true;
-    overlays = [ inputs.catppuccin-vsc.overlays.default ];
+    overlays = [ 
+      inputs.catppuccin-vsc.overlays.default
+      inputs.filebrowser-upload.overlays.default
+    ];
   };
 
   # This value determines the NixOS release from which the default
