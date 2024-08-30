@@ -72,11 +72,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1725008890,
-        "narHash": "sha256-Fad8JBFLkAs0apuoCAgt7dIfF6RWhU0SxSkV50slfPQ=",
+        "lastModified": 1725009604,
+        "narHash": "sha256-AZFyycYqqXKpPN3TbuTaJd7LhqeWHdI4O+gO2tgg0r0=",
         "owner": "spotdemo4",
         "repo": "filebrowser-upload",
-        "rev": "641e776fb47315129341cb0c4f2127a3d8491e42",
+        "rev": "a21642e5d949c2f936a5197b919bf4a4dd7f4d12",
         "type": "github"
       },
       "original": {
