@@ -46,7 +46,6 @@
     prismlauncher
     moonlight-qt
     inputs.zen-browser.packages."${system}".default
-    inputs.swww.packages.${pkgs.system}.swww
     obs-studio
 
     # CLI

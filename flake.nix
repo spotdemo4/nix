@@ -13,9 +13,6 @@
     # Zen browser
     zen-browser.url = "github:MarceColl/zen-browser-flake";
 
-    # Swww
-    swww.url = "github:LGFae/swww";
-
     # Catppuccin
     catppuccin.url = "github:catppuccin/nix";
     catppuccin-vsc.url = "https://flakehub.com/f/catppuccin/vscode/*.tar.gz";
