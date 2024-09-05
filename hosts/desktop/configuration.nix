@@ -154,7 +154,7 @@
   users.users.trev = {
     isNormalUser = true;
     description = "trev";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "scanner" "lp" ];
     packages = with pkgs; [];
     shell = pkgs.zsh;
   };
