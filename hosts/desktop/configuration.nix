@@ -62,6 +62,9 @@
     ffmpeg
     filebrowser-upload
 
+    # Drivers
+    brscan5
+
     # Applets
     networkmanagerapplet
     pavucontrol
