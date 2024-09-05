@@ -62,9 +62,6 @@
     ffmpeg
     filebrowser-upload
 
-    # Drivers
-    brscan5
-
     # Applets
     networkmanagerapplet
     pavucontrol
@@ -72,6 +69,9 @@
 
   # Fonts to install
   fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
     meslo-lgs-nf
     fira-code
   ];
@@ -169,6 +169,12 @@
       inputs.catppuccin-vsc.overlays.default
       inputs.filebrowser-upload.overlays.default
     ];
+  };
+
+  # Scanner support
+  hardware.sane = {
+    enable = true;
+    brscan5.enable = true;
   };
 
   # This value determines the NixOS release from which the default
