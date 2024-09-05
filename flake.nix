@@ -56,5 +56,12 @@
         lix-module.nixosModules.default
       ];
     };
+    nixosConfigurations.server = nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit inputs; };
+      modules = [
+        ./hosts/server/configuration.nix
+        lix-module.nixosModules.default
+      ];
+    };
   };
 }
