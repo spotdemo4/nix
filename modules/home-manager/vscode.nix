@@ -15,6 +15,7 @@
       vscode-marketplace.a-h.templ
       vscode-marketplace.trapfether.tailwind-raw-reorder
       vscode-marketplace.pcbowers.alpine-intellisense
+      vscode-marketplace.peterj.proto
     ]) ++ [
       (pkgs.catppuccin-vsc.override {
         accent = "sky";
