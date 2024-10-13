@@ -47,6 +47,7 @@
     moonlight-qt
     inputs.zen-browser.packages."${system}".default
     obs-studio
+    heroic
 
     # CLI
     wget
