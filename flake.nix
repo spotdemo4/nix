@@ -11,7 +11,7 @@
     };
 
     # Zen browser
-    zen-browser.url = "github:MarceColl/zen-browser-flake";
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
     # Catppuccin
     catppuccin.url = "github:catppuccin/nix";
