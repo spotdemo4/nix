@@ -15,7 +15,7 @@
     "mako"
     "mpv"
     "qt"
-    "vivaldi"
+    "chromium"
     "vscode"
     "waybar"
     "wofi"
