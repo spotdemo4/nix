@@ -21,7 +21,7 @@
         if [ -z "$CHANGES" ]; then
           echo "No changes found."
         else
-          echo "Changes found, aborting..."
+          echo "Changes found, aborting."
           exit 1
         fi
 
