@@ -165,7 +165,10 @@
 
   # Allow unfree packages and add overlays
   nixpkgs = {
-    config.allowUnfree = true;
+    config = {
+      allowUnfree = true;
+      rcomSupport = true;
+    };
     overlays = [ 
       inputs.catppuccin-vsc.overlays.default
       inputs.filebrowser-upload.overlays.default
