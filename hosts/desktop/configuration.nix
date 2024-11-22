@@ -168,7 +168,7 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      rcomSupport = true;
+      rocmSupport = true;
     };
     overlays = [ 
       inputs.catppuccin-vsc.overlays.default
