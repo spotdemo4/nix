@@ -33,7 +33,6 @@
         fi
 
         printf "\033[0;36mGetting most recent flake.lock...\n\033[0m"
-        sudo git fetch
         sudo git checkout origin/main -- flake.lock
 
         printf "\033[0;36mStopping tailscale...\n\033[0m"
