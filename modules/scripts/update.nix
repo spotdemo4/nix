@@ -18,6 +18,9 @@
         printf "\033[0;36mUpdating...\n\033[0m"
         sudo nix flake update
 
+        printf "\033[0;36mStopping tailscale...\n\033[0m"
+        sudo systemctl stop tailscaled
+
         printf "\033[0;36mRebuilding...\n\033[0m"
         sudo git add .
         sudo nixos-rebuild switch --flake "/etc/nixos#$1"
@@ -29,6 +32,9 @@
         gen=$(nixos-rebuild list-generations | grep current)
         sudo git commit -m "$gen"
         sudo git push -u origin main
+
+        printf "\033[0;36mStarting tailscale...\n\033[0m"
+        sudo systemctl start tailscaled
 
         popd
       '';
