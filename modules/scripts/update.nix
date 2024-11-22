@@ -15,6 +15,23 @@
 
         pushd /etc/nixos
 
+        printf "\033[0;36mChecking for changes in remote...\n\033[0m"
+        sudo git fetch
+        LOCAL=$(git rev-parse @)
+        REMOTE=$(git rev-parse "@{u}")
+        BASE=$(git merge-base @ "@{u}")
+        if [ "$LOCAL" = "$REMOTE" ]; then
+          echo "Up-to-date? Nothing to do."
+        elif [ "$LOCAL" = "$BASE" ]; then
+          echo "Need to pull. Aborting..."
+          exit 1
+        elif [ "$REMOTE" = "$BASE" ]; then
+          echo "Good to push."
+        else
+          echo "Diverged. Aborting..."
+          exit 1
+        fi
+
         printf "\033[0;36mUpdating...\n\033[0m"
         sudo nix flake update
 

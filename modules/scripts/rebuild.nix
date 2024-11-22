@@ -15,6 +15,23 @@
 
         pushd /etc/nixos
 
+        printf "\033[0;36mChecking for changes in remote...\n\033[0m"
+        sudo git fetch
+        LOCAL=$(git rev-parse @)
+        REMOTE=$(git rev-parse "@{u}")
+        BASE=$(git merge-base @ "@{u}")
+        if [ "$LOCAL" = "$REMOTE" ]; then
+          echo "Up-to-date."
+        elif [ "$LOCAL" = "$BASE" ]; then
+          echo "Need to pull. Aborting..."
+          exit 1
+        elif [ "$REMOTE" = "$BASE" ]; then
+          echo "Good to push."
+        else
+          echo "Diverged. Aborting..."
+          exit 1
+        fi
+
         printf "\033[0;36mGetting most recent flake.lock...\n\033[0m"
         sudo git fetch
         sudo git checkout origin/main -- flake.lock
