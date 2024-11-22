@@ -176,6 +176,9 @@
     ];
   };
 
+  # Make Ollama use amd gpu
+  services.ollama.rocmOverrideGfx = "11.0.0";
+
   # Scanner support
   hardware.sane = {
     enable = true;
