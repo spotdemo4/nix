@@ -17,9 +17,9 @@
 
         printf "\033[0;36mChecking for changes in remote...\n\033[0m"
         sudo git fetch
-        LOCAL=$(git rev-parse @)
-        REMOTE=$(git rev-parse "@{u}")
-        BASE=$(git merge-base @ "@{u}")
+        LOCAL=$(sudo git rev-parse @)
+        REMOTE=$(sudo git rev-parse "@{u}")
+        BASE=$(sudo git merge-base @ "@{u}")
         if [ "$LOCAL" = "$REMOTE" ]; then
           echo "Up-to-date."
         elif [ "$LOCAL" = "$BASE" ]; then
