@@ -176,7 +176,7 @@
     ];
   };
 
-  # Make Ollama use amd gpu
+  # Make Ollama use amd gpu 
   services.ollama.rocmOverrideGfx = "11.0.0";
 
   # Scanner support
