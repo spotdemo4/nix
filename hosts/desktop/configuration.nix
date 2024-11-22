@@ -14,6 +14,7 @@
     "git"
     "gnome-auth-agent"
     "hyprland"
+    "ollama"
     "pipewire"
     "postgres"
     "sddm"
