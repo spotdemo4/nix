@@ -9,7 +9,7 @@
       exec-once = [
         "nm-applet --indicator"
         "blueman-applet"
-        "waybar"
+        "trevbar"
         "hyprpaper"
       ];
 
