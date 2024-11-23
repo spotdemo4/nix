@@ -39,6 +39,9 @@
 
     # Filebrowser-upload
     filebrowser-upload.url = "github:spotdemo4/filebrowser-upload";
+
+    # Trevbar
+    trevbar.url = "github:spotdemo4/trevbar";
   };
 
   outputs = { self, nixpkgs, lix-module, ... }@inputs: {
