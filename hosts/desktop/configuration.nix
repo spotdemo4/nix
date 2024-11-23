@@ -49,6 +49,7 @@
     inputs.zen-browser.packages."${system}".default
     obs-studio
     heroic
+    inputs.trevbar.packages."${system}".default
 
     # CLI
     wget
@@ -173,7 +174,6 @@
     overlays = [ 
       inputs.catppuccin-vsc.overlays.default
       inputs.filebrowser-upload.overlays.default
-      inputs.trevbar.overlays.default
     ];
   };
 
