@@ -8,6 +8,9 @@
   imports = [
     inputs.home-manager.nixosModules.home-manager
     (modulesPath + "/virtualisation/proxmox-lxc.nix")
+  ] ++ map (x: ./../../modules/nixos/${x}.nix) [
+    # Programs to import
+    "git"
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
     # Scripts to import
     "update"
