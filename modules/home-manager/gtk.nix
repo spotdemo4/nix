@@ -16,7 +16,7 @@
         schemeVariants = ["catppuccin"];
         colorVariants = ["teal"];
       };
-      name = "Colloid";
+      name = "Colloid-Teal-Catppuccin-Dark";
     };
   };
 }
