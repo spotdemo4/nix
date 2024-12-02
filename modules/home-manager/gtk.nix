@@ -4,15 +4,19 @@
   gtk = {
     enable = true;
     theme = {
-      package = pkgs.magnetic-catppuccin-gtk.override {
-        accent = ["teal"];
-        shade = "dark";
+      package = pkgs.colloid-gtk-theme.override {
+        tweaks = ["catppuccin"];
+        colorVariants = ["dark"];
+        themeVariants = ["teal"];
       };
-      name = "Catppuccin-GTK";
+      name = "Colloid-Teal-Dark-Catppuccin";
     };
     iconTheme = {
-      package = pkgs.tela-icon-theme;
-      name = "Tela";
+      package = pkgs.colloid-icon-theme.override {
+        schemeVariants = ["catppuccin"];
+        colorVariants = ["teal"];
+      };
+      name = "Colloid";
     };
   };
 }
