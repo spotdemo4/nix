@@ -63,7 +63,7 @@
     nmap
     btop
     ffmpeg
-    filebrowser-upload
+    inputs.filebrowser-upload.packages."${system}".default
 
     # Applets
     networkmanagerapplet
@@ -173,7 +173,6 @@
     };
     overlays = [ 
       inputs.catppuccin-vsc.overlays.default
-      inputs.filebrowser-upload.overlays.default
     ];
   };
 

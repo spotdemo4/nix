@@ -4,12 +4,11 @@
   gtk = {
     enable = true;
     theme = {
-      package = pkgs.colloid-gtk-theme.override {
-        tweaks = ["catppuccin"];
-        colorVariants = ["dark"];
-        themeVariants = ["teal"];
+      package = pkgs.magnetic-catppuccin-gtk.override {
+        accent = ["teal"];
+        shade = "dark";
       };
-      name = "Colloid-Teal-Dark-Catppuccin";
+      name = "Catppuccin-GTK";
     };
     iconTheme = {
       package = pkgs.tela-icon-theme;
