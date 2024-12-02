@@ -808,11 +808,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1733138199,
-        "narHash": "sha256-UMAHFJdbUscnwNg71yf6ZJtysBZA/hRjM16ccWf32uE=",
+        "lastModified": 1733140863,
+        "narHash": "sha256-coiY+tRpwt8m3sYWA2j+MHnmgGjuQKHnmKbVqJdDbRE=",
         "owner": "spotdemo4",
         "repo": "trevbar",
-        "rev": "872893bc7886465c308e1d5865527b59d1274643",
+        "rev": "454889f6f3dafa776c80db0cbdd0f5f808632c18",
         "type": "github"
       },
       "original": {
