@@ -21,6 +21,7 @@
     "steam"
     "syncthing"
     "zsh"
+    "virt-manager"
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
     # Scripts to import
     "update"
@@ -157,7 +158,7 @@
   users.users.trev = {
     isNormalUser = true;
     description = "trev";
-    extraGroups = [ "networkmanager" "wheel" "docker" "scanner" "lp" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "scanner" "lp" "libvirtd" ];
     packages = with pkgs; [];
     shell = pkgs.zsh;
   };
