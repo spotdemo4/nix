@@ -14,13 +14,13 @@
     "git"
     "gnome-auth-agent"
     "hyprland"
-    "ollama"
     "pipewire"
     "postgres"
     "sddm"
     "steam"
     "syncthing"
     "zsh"
+    "ollama"
     "virt-manager"
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
     # Scripts to import
