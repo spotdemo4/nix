@@ -25,6 +25,9 @@
           exit 1
         fi
 
+        printf "\033[0;36mDeleting old generations...\n\033[0m"
+        sudo nix-collect-garbage --delete-older-than 7d
+
         printf "\033[0;36mUpdating...\n\033[0m"
         sudo nix flake update
 
