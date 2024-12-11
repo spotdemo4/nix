@@ -10,7 +10,6 @@
         "nm-applet --indicator"
         "blueman-applet"
         "trevbar"
-        "hyprpaper"
       ];
 
       # Env vars
