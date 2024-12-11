@@ -152,6 +152,9 @@
   # Docker
   virtualisation.docker.enable = true;
 
+  # Upower
+  services.upower.enable = true;
+
   # Allow unfree packages and add overlays
   nixpkgs = {
     config.allowUnfree = true;
