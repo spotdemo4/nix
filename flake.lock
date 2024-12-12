@@ -877,11 +877,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1733939367,
-        "narHash": "sha256-5GszjqIpKvFVkEO+H+MpQl2YMN48xRViofy6Mw+HNO0=",
+        "lastModified": 1733961528,
+        "narHash": "sha256-Q/HZLNfXNbWwYdPUC8PuLRNik1XemgNVopiq++aqMS4=",
         "owner": "spotdemo4",
         "repo": "trevbar",
-        "rev": "7efcaf6cf0e12a230699c07a4e506495f19f7cd9",
+        "rev": "e504d4246f2ea18e88e8cd02dd365053c2a1147b",
         "type": "github"
       },
       "original": {
