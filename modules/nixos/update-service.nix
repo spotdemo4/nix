@@ -24,5 +24,14 @@
         ];
       };
     };
+
+    systemd.timers.update = {
+      description = "Timer to update nixos in the background";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = "daily";
+        Unit = "update.service";
+      };
+    };
   };
 }
