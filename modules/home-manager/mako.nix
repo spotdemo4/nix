@@ -5,9 +5,10 @@
     enable = true;
     defaultTimeout = 5000;
     borderRadius = 10;
-    catppuccin = {
-      enable = true;
-      flavor = "mocha";
-    };
+  };
+
+  catppuccin.mako = {
+    enable = true;
+    flavor = "mocha";
   };
 }

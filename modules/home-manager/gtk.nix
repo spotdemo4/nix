@@ -11,13 +11,11 @@
       };
       name = "Colloid-Teal-Dark-Catppuccin";
     };
+  };
 
-    catppuccin = {
-      icon = {
-        enable = true;
-        accent = "sky";
-        flavor = "mocha";
-      };
-    };
+  catppuccin.gtk.icon = {
+    enable = true;
+    accent = "sky";
+    flavor = "mocha";
   };
 }

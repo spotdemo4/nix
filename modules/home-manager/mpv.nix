@@ -3,10 +3,11 @@
 {
   programs.mpv = {
     enable = true;
-    catppuccin = {
-      enable = true;
-      flavor = "mocha";
-      accent = "sky";
-    };
+  };
+
+  catppuccin.mpv = {
+    enable = true;
+    flavor = "mocha";
+    accent = "sky";
   };
 }

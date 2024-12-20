@@ -78,8 +78,8 @@
   boot.loader.timeout = 10;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Console
-  console.catppuccin = {
+  # TTY
+  catppuccin.tty = {
     enable = true;
     flavor = "mocha";
   };

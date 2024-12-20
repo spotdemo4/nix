@@ -3,9 +3,10 @@
 {
   programs.kitty = {
     enable = true;
-    catppuccin = {
-      enable = true;
-      flavor = "mocha";
-    };
+  };
+
+  catppuccin.kitty = {
+    enable = true;
+    flavor = "mocha";
   };
 }

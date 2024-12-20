@@ -6,11 +6,12 @@
     platformTheme.name = "kvantum";
     style = {
       name = "kvantum";
-      catppuccin = {
-        enable = true;
-        accent = "sky";
-        flavor = "mocha";
-      };
     };
+  };
+
+  catppuccin.kvantum = {
+    enable = true;
+    accent = "sky";
+    flavor = "mocha";
   };
 }

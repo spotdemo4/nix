@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  catppuccin.pointerCursor = {
+  catppuccin.cursors = {
     enable = true;
     accent = "dark";
     flavor = "mocha";
