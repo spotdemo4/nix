@@ -17,12 +17,17 @@
 
         printf "\033[0;36mChecking for changes in remote...\n\033[0m"
         sudo git fetch
-        CHANGES=$(sudo git diff HEAD origin/main)
-        if [ -z "$CHANGES" ]; then
-          echo "No changes found."
+        if [ -z "$(sudo git diff HEAD origin/main)" ]; then
+          echo "No remote changes found."
         else
-          echo "Changes found, aborting."
-          exit 1
+          echo "Changes in remote found. Checking for local changes..."
+          if [ -z "$(sudo git status --porcelain --untracked-files=no)" ]; then
+            echo "Local changes found, please merge local & remote. Aborting update."
+            exit 1
+          else
+            echo "No local changes found. Pulling from remote..."
+            sudo git pull origin main
+          fi
         fi
 
         printf "\033[0;36mDeleting old generations...\n\033[0m"
@@ -42,8 +47,7 @@
         until ping -c1 www.google.com >/dev/null 2>&1; do :; done
 
         printf "\033[0;36mCommitting and pushing...\n\033[0m"
-        gen=$(nixos-rebuild list-generations | grep current)
-        sudo git commit -m "$gen"
+        sudo git commit -m "$(nixos-rebuild list-generations | grep current)"
         sudo git push -u origin main
 
         printf "\033[0;36mStarting tailscale...\n\033[0m"
