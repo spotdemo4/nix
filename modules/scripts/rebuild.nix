@@ -5,7 +5,10 @@
     (writeShellApplication {
       name = "rebuild";
 
-      runtimeInputs = with pkgs; [ git ];
+      runtimeInputs = with pkgs; [
+        git
+        libnotify
+      ];
 
       text = ''
         if [ -z "$1" ]; then
