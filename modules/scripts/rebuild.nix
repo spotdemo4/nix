@@ -33,9 +33,6 @@
         printf "\033[0;36mDeleting old generations...\n\033[0m"
         sudo nix-collect-garbage --delete-older-than 7d
 
-        printf "\033[0;36mGetting most recent flake.lock...\n\033[0m"
-        sudo git checkout origin/main -- flake.lock
-
         printf "\033[0;36mStopping tailscale...\n\033[0m"
         sudo systemctl stop tailscaled
 
