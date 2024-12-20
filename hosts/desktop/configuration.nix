@@ -56,6 +56,7 @@
     # CLI
     wget
     unzip
+    zip
     fastfetch
     grimblast
     android-tools
@@ -66,6 +67,7 @@
     btop
     ffmpeg
     inputs.filebrowser-upload.packages."${system}".default
+    libnotify
 
     # Applets
     networkmanagerapplet
