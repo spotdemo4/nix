@@ -22,7 +22,7 @@
     "zsh"
     "ollama"
     "virt-manager"
-    "update-service"
+    "updater"
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
     # Scripts to import
     "update"
@@ -102,21 +102,10 @@
     '';
   };
 
-  # Auto Upgrade
-  # system.autoUpgrade = {
-  #   enable = true;
-  #   flake = inputs.self.outPath;
-  #   flags = [
-  #     "--update-input"
-  #     "nixpkgs"
-  #     "-L" # print build logs
-  #   ];
-  #   dates = "02:00";
-  #   randomizedDelaySec = "45min";
-  # };
-  update-service = {
+  # Auto update
+  updater = {
     enable = true;
-    host = "desktop";
+    hostname = "desktop";
   };
 
   # Networking

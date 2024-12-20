@@ -20,6 +20,7 @@
     "steam"
     "syncthing"
     "zsh"
+    "updater"
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
     # Scripts to import
     "update"
@@ -87,17 +88,10 @@
   # Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  # Auto Upgrade
-  system.autoUpgrade = {
+  # Auto update
+  updater = {
     enable = true;
-    flake = inputs.self.outPath;
-    flags = [
-      "--update-input"
-      "nixpkgs"
-      "-L" # print build logs
-    ];
-    dates = "02:00";
-    randomizedDelaySec = "45min";
+    hostname = "laptop";
   };
 
   # Networking

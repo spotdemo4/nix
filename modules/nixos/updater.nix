@@ -1,9 +1,9 @@
 { lib, config, pkgs, ... }:
  
 {
-  options.update-service = {
-    enable = lib.mkEnableOption "enable update service";
-    host = lib.mkOption {
+  options.updater = {
+    enable = lib.mkEnableOption "enable updater service";
+    hostname = lib.mkOption {
       type = lib.types.str;
       default = "localhost";
       description = ''
@@ -12,7 +12,7 @@
     };
   };
 
-  config = lib.mkIf config.update-service.enable {
+  config = lib.mkIf config.updater.enable {
     systemd.services.update = {
       description = "Update nixos in the background";
       path = [ "/run/current-system/sw" ];
@@ -20,7 +20,7 @@
         Type = "oneshot";
         Environment = "PATH=/run/current-system/sw/bin:$PATH";
         ExecStart = [
-          "/run/current-system/sw/bin/update ${config.update-service.host}"
+          "/run/current-system/sw/bin/update ${config.updater.hostname}"
         ];
       };
     };
@@ -29,6 +29,7 @@
       description = "Timer to update nixos in the background";
       wantedBy = [ "timers.target" ];
       timerConfig = {
+        OnBootSec = "15min";
         OnCalendar = "daily";
         Unit = "update.service";
       };
