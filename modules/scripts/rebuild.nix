@@ -13,16 +13,19 @@
       text = ''
         USER=trev
         USER_ID=1000
-        alias notify='sudo -u $USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus notify-send'
+
+        function notify() {
+          sudo -u $USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus notify-send "$@"
+        }
 
         if [ -z "$1" ]; then
           echo "Usage: rebuild <host name>"
           exit 1
         fi
         
-        notify --urgency=normal "Updater" "Starting rebuild."
         pushd /etc/nixos
 
+        notify --urgency=normal "Updater" "Starting rebuild."
         printf "\033[0;36mChecking for changes in remote...\n\033[0m"
         sudo git fetch
         if [ -z "$(sudo git diff HEAD origin/main)" ]; then

@@ -11,6 +11,13 @@
       ];
 
       text = ''
+        USER=trev
+        USER_ID=1000
+
+        function notify() {
+          sudo -u $USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus notify-send "$@"
+        }
+
         if [ -z "$1" ]; then
           echo "Usage: update <host name>"
           exit 1
@@ -18,6 +25,7 @@
 
         pushd /etc/nixos
 
+        notify --urgency=normal "Updater" "Starting update."
         printf "\033[0;36mChecking for remote changes...\n\033[0m"
         sudo git fetch
         if [ -z "$(sudo git diff HEAD origin/main)" ]; then
@@ -25,6 +33,7 @@
         else
           echo "Changes in remote found. Checking for local changes..."
           if [ -z "$(sudo git status --porcelain --untracked-files=no)" ]; then
+            notify --urgency=critical "Updater" "Aborted rebuild due to diverged branches."
             echo "Local changes found, please merge local & remote. Aborting update."
             exit 1
           else
@@ -55,6 +64,8 @@
 
         printf "\033[0;36mStarting tailscale...\n\033[0m"
         sudo systemctl start tailscaled
+
+        notify --urgency=normal "Updater" "Finished update."
 
         popd
       '';
