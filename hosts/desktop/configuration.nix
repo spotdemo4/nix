@@ -39,6 +39,7 @@
     feh
     obsidian
     jetbrains.datagrip
+    jetbrains.rider
     jetbrains.idea-community-bin
     android-studio
     plexamp
