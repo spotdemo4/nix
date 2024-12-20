@@ -13,6 +13,7 @@
       continue.continue
       ms-vscode.cpptools
       ms-dotnettools.csdevkit
+      ms-dotnettools.csharp
     ]) ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux; [
       vscode-marketplace.a-h.templ
       vscode-marketplace.trapfether.tailwind-raw-reorder
