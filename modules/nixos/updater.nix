@@ -31,6 +31,7 @@
       timerConfig = {
         OnBootSec = "15min";
         OnCalendar = "daily";
+        RandomizedDelaySec = "1h";
         Unit = "update.service";
       };
     };
