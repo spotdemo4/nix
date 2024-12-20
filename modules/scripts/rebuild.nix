@@ -11,11 +11,16 @@
       ];
 
       text = ''
+        USER=trev
+        USER_ID=1000
+        alias notify='sudo -u $USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus notify-send'
+
         if [ -z "$1" ]; then
           echo "Usage: rebuild <host name>"
           exit 1
         fi
-
+        
+        notify --urgency=normal "Updater" "Starting rebuild."
         pushd /etc/nixos
 
         printf "\033[0;36mChecking for changes in remote...\n\033[0m"
@@ -26,6 +31,7 @@
           echo "Changes in remote found. Checking for local changes..."
           if [ -z "$(sudo git status --porcelain --untracked-files=no)" ]; then
             echo "Local changes found, please merge local & remote. Aborting update."
+            notify --urgency=critical "Updater" "Aborted rebuild due to diverged branches."
             exit 1
           else
             echo "No local changes found. Pulling from remote..."
@@ -52,6 +58,8 @@
 
         printf "\033[0;36mStarting tailscale...\n\033[0m"
         sudo systemctl start tailscaled
+
+        notify --urgency=normal "Updater" "Finished rebuild."
 
         popd
       '';
