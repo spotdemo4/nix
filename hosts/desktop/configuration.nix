@@ -20,7 +20,6 @@
     "steam"
     "syncthing"
     "zsh"
-    "ollama"
     "virt-manager"
     "updater"
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
