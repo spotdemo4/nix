@@ -22,6 +22,7 @@
     "zsh"
     "virt-manager"
     "updater"
+    "ollama"
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
     # Scripts to import
     "update"
