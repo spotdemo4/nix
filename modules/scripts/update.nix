@@ -33,12 +33,13 @@
         else
           echo "Changes in remote found. Checking for local changes..."
           if [ -z "$(sudo git status --porcelain --untracked-files=no)" ]; then
+            notify --urgency=normal "Updater" "Pulling update from remote..."
+            echo "No local changes found. Pulling from remote..."
+            sudo git pull origin main
+          else
             notify --urgency=critical "Updater" "Aborted rebuild due to diverged branches."
             echo "Local changes found, please merge local & remote. Aborting update."
             exit 1
-          else
-            echo "No local changes found. Pulling from remote..."
-            sudo git pull origin main
           fi
         fi
 
