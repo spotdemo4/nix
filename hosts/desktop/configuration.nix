@@ -22,7 +22,6 @@
     "zsh"
     "virt-manager"
     "updater"
-    "ollama"
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
     # Scripts to import
     "update"
@@ -175,7 +174,7 @@
   };
 
   # Make Ollama use amd gpu 
-  services.ollama.rocmOverrideGfx = "11.0.0";
+  # services.ollama.rocmOverrideGfx = "11.0.0";
 
   # Scanner support
   hardware.sane = {

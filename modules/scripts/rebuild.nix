@@ -43,9 +43,6 @@
           fi
         fi
 
-        printf "\033[0;36mDeleting old generations...\n\033[0m"
-        sudo nix-collect-garbage --delete-older-than 7d
-
         printf "\033[0;36mStopping tailscale...\n\033[0m"
         sudo systemctl stop tailscaled
 
@@ -62,6 +59,9 @@
 
         printf "\033[0;36mStarting tailscale...\n\033[0m"
         sudo systemctl start tailscaled
+
+        printf "\033[0;36mDeleting old generations...\n\033[0m"
+        sudo nix-collect-garbage --delete-older-than 7d
 
         notify --urgency=normal "Updater" "Finished rebuild."
 
