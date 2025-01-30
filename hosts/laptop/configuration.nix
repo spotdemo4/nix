@@ -36,8 +36,8 @@
     vesktop
     feh
     obsidian
-    jetbrains.datagrip
     jetbrains.idea-community-bin
+    dbeaver-bin
     android-studio
     plexamp
     thunderbird
