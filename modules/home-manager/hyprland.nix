@@ -27,10 +27,15 @@
 
       # Display configuration
       monitor = [
+        # Laptop
         "eDP-1,preferred,auto,1"
+        "desc:Samsung Electric Company S34J55x H4LT901888,3440x1440@74.98Hz,auto,auto"
+
+        #Desktop
         "desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A,3440x1440@60,auto,auto"
         "desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A 23072B001686,3440x1440@144,auto,auto"
         "desc:Dell Inc. S2719DGF 1HSYBY2,2560x1440@60,auto,auto,transform,1"
+        
         ",preferred,auto,auto"
       ];
 
