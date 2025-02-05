@@ -11,6 +11,7 @@
     ./hardware-configuration.nix
   ] ++ map (x: ./../../modules/nixos/${x}.nix) [
     # Programs to import
+    "cache"
     "git"
     "gnome-auth-agent"
     "hyprland"
@@ -87,10 +88,7 @@
 
   # Nix settings
   nix = {
-    settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" "trev" ];
-    };
+    settings.experimental-features = [ "nix-command" "flakes" ];
 
     extraOptions = ''
       warn-dirty = false
