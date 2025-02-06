@@ -5,7 +5,6 @@
     enable = true;
     package = pkgs.vscodium;
     extensions = (with pkgs.vscode-extensions; [
-      svelte.svelte-vscode
       jnoortheen.nix-ide
       usernamehw.errorlens
       golang.go
@@ -17,6 +16,7 @@
       ms-dotnettools.vscode-dotnet-runtime
       ziglang.vscode-zig
     ]) ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux; [
+      vscode-marketplace.svelte.svelte-vscode
       vscode-marketplace.a-h.templ
       vscode-marketplace.trapfether.tailwind-raw-reorder
       vscode-marketplace.pcbowers.alpine-intellisense
