@@ -916,11 +916,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1738908810,
-        "narHash": "sha256-Ja2aSVdA+A7Edejyp1hJmmTDQ/LUNKlXLLmEpoW2BIE=",
+        "lastModified": 1738909166,
+        "narHash": "sha256-nd08zIEz3rzUfSGl4RCZnYS8iEDKCR2nQigQOwjSI7A=",
         "owner": "spotdemo4",
         "repo": "trevbar",
-        "rev": "35fd245391609b78d3218e6953aa0f179536f388",
+        "rev": "79b48c5de5608c79f4602f2079ddacfc6cd33837",
         "type": "github"
       },
       "original": {
