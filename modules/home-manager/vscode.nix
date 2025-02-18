@@ -37,6 +37,7 @@
       "editor.fontLigatures" = true;
       "svelte.enable-ts-plugin" = true;
       "alpine-intellisense.settings.languageScopes" = "html,templ";
+      "tailwind-raw-reorder.IgnoreConfigNotFound" = true;
     };
     mutableExtensionsDir = false;
   };
