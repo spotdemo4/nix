@@ -22,6 +22,14 @@
           echo "Usage: rebuild <host name>"
           exit 1
         fi
+
+        DELETE=false
+        while getopts 'd' flag; do
+          case "$flag" in
+            d) DELETE=true ;;
+            *) echo "Invalid flag: $flag" ;;
+          esac
+        done
         
         pushd /etc/nixos
 
@@ -60,8 +68,10 @@
         printf "\033[0;36mStarting tailscale...\n\033[0m"
         sudo systemctl start tailscaled
 
-        printf "\033[0;36mDeleting old generations...\n\033[0m"
-        sudo nix-collect-garbage --delete-older-than 7d
+        if [ "$DELETE" = true ] ; then
+          printf "\033[0;36mDeleting old generations...\n\033[0m"
+          sudo nix-collect-garbage --delete-older-than 7d
+        fi
 
         notify --urgency=normal "Updater" "Finished rebuild."
 
