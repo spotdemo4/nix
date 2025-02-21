@@ -102,8 +102,8 @@
 
       # Group config 
       group = {
-        "col.border_active" = "rgba(ff9900ee) rgba(ff1a00ee) 45deg";
-        "col.inactive_border" = "rgba(595959aa)";
+        "col.active" = "rgba(ff9900ee) rgba(ff1a00ee) 45deg";
+        "col.inactive" = "rgba(595959aa)";
 
         groupbar = {
           "stacked" = true;
