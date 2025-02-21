@@ -113,7 +113,7 @@
             sudo nix-collect-garbage --delete-older-than 7d
           fi
 
-          gprint "Finished update."
+          gprint "Finished update"
           rm /tmp/updatelock
           popd
         '';
