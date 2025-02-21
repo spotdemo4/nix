@@ -107,6 +107,7 @@
         "$mod, V, togglefloating,"
         "$mod, G, layoutmsg, swapwithmaster"
         "$mod, S, exec, $screenshot"
+        "$mod, T, togglegroup"
 
         # Switch workspace with mainMod + [0-9]
         "$mod, 1, workspace, 1"
@@ -134,9 +135,9 @@
         "$mod SHIFT, left, workspace, r-1"
         "$mod SHIFT, right, workspace, r+1"
 
-        # Scroll through workspaces
-        "$mod, mouse_down, workspace, e-1"
-        "$mod, mouse_up, workspace, e+1"
+        # Scroll through group
+        "$mod, mouse_down, changegroupactive, b"
+        "$mod, mouse_up, changegroupactive, f"
       ];
 
       bindm = [
