@@ -106,7 +106,9 @@
         "col.border_inactive" = "rgba(595959aa)";
 
         groupbar = {
-          "stacked" = true;
+          "col.active" = "rgba(80, 80, 80, .4)";
+          "col.inactive" = "rgba(0, 0, 0, .4)";
+          "rounding" = 10;
         };
       };
 
