@@ -38,6 +38,16 @@
             sudo -u ${config.update.user} DISPLAY=:0 "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus" notify-send "$@"
           }
 
+          function gprint() {
+            printf "\033[0;36m%s\n\033[0m" "$1"
+            notify --urgency=normal "Updater" "$1"
+          }
+
+          function bprint() {
+            printf "\033[0;31m%s\n\033[0m" "$1"
+            notify --urgency=critical "Updater" "$1"
+          }
+
           DELETE=false
           FLAKE=false
           while getopts 'df' flag; do
@@ -49,42 +59,38 @@
           done
 
           if [ -f /tmp/updatelock ]; then
-            echo "updatelock file exists, abandoning update."
-            notify --urgency=critical "Updater" "Lock file exists, aborting update."
+            bprint "Lock file exists, aborting update"
             exit 1
           fi
           touch /tmp/updatelock
 
-          notify --urgency=normal "Updater" "Starting update."
+          gprint "Starting update"
           pushd /etc/nixos
 
-          printf "\033[0;36mChecking for remote changes...\n\033[0m"
           sudo git fetch
           if [ -z "$(sudo git diff HEAD origin/main)" ]; then
-            echo "No remote changes found."
+            echo "No remote changes found"
           else
             echo "Changes in remote found. Checking for local changes..."
             if [ -z "$(sudo git status --porcelain --untracked-files=no)" ]; then
-              notify --urgency=normal "Updater" "Pulling update from remote..."
-              echo "No local changes found. Pulling from remote..."
+              gprint "Pulling changes from github..."
               sudo git pull origin main
             else
-              notify --urgency=critical "Updater" "Braches are diverged, aborting update."
-              echo "Local changes found, please merge local & remote. Aborting update."
+              bprint "Branches are diverged, aborting update"
+              rm /tmp/updatelock
               exit 1
             fi
           fi
 
           if [ "$FLAKE" = true ]; then
-            printf "\033[0;36mUpdating flake...\n\033[0m"
+            gprint "Updating flake..."
             sudo nix flake update
           fi
 
           printf "\033[0;36mStopping tailscale...\n\033[0m"
           sudo systemctl stop tailscaled
 
-          notify --urgency=normal "Updater" "Rebuilding..."
-          printf "\033[0;36mRebuilding...\n\033[0m"
+          gprint "Rebuilding..."
           sudo git add .
           sudo nixos-rebuild switch --flake "/etc/nixos#${config.update.hostname}"
 
@@ -94,7 +100,7 @@
           if sudo git diff-index --quiet HEAD; then
             echo "No local changes found, not pushing."
           else
-            printf "\033[0;36mCommitting and pushing...\n\033[0m"
+            gprint "Pushing to github..."
             sudo git commit -m "$(nixos-rebuild list-generations | grep current)"
             sudo git push -u origin main
           fi
@@ -103,12 +109,11 @@
           sudo systemctl start tailscaled
 
           if [ "$DELETE" = true ]; then
-            notify --urgency=normal "Updater" "Deleting old generations..."
-            printf "\033[0;36mDeleting old generations...\n\033[0m"
+            gprint "Deleting old generations..."
             sudo nix-collect-garbage --delete-older-than 7d
           fi
 
-          notify --urgency=normal "Updater" "Finished update."
+          gprint "Finished update."
           rm /tmp/updatelock
           popd
         '';
