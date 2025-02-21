@@ -39,16 +39,25 @@
           }
 
           DELETE=false
-          while getopts 'd' flag; do
+          FLAKE=false
+          while getopts 'df' flag; do
             case "$flag" in
               d) DELETE=true ;;
+              f) FLAKE=true ;;
               *) echo "Invalid flag: $flag" ;;
             esac
           done
 
-          pushd /etc/nixos
+          if [ -f /tmp/updatelock ]; then
+            echo "updatelock file exists, abandoning update."
+            notify --urgency=critical "Updater" "Lock file exists, aborting update."
+            exit 1
+          fi
+          touch /tmp/updatelock
 
           notify --urgency=normal "Updater" "Starting update."
+          pushd /etc/nixos
+
           printf "\033[0;36mChecking for remote changes...\n\033[0m"
           sudo git fetch
           if [ -z "$(sudo git diff HEAD origin/main)" ]; then
@@ -60,18 +69,21 @@
               echo "No local changes found. Pulling from remote..."
               sudo git pull origin main
             else
-              notify --urgency=critical "Updater" "Aborted rebuild due to diverged branches."
+              notify --urgency=critical "Updater" "Braches are diverged, aborting update."
               echo "Local changes found, please merge local & remote. Aborting update."
               exit 1
             fi
           fi
 
-          printf "\033[0;36mUpdating...\n\033[0m"
-          sudo nix flake update
+          if [ "$FLAKE" = true ]; then
+            printf "\033[0;36mUpdating flake...\n\033[0m"
+            sudo nix flake update
+          fi
 
           printf "\033[0;36mStopping tailscale...\n\033[0m"
           sudo systemctl stop tailscaled
 
+          notify --urgency=normal "Updater" "Rebuilding..."
           printf "\033[0;36mRebuilding...\n\033[0m"
           sudo git add .
           sudo nixos-rebuild switch --flake "/etc/nixos#${config.update.hostname}"
@@ -91,12 +103,13 @@
           sudo systemctl start tailscaled
 
           if [ "$DELETE" = true ]; then
+            notify --urgency=normal "Updater" "Deleting old generations..."
             printf "\033[0;36mDeleting old generations...\n\033[0m"
             sudo nix-collect-garbage --delete-older-than 7d
           fi
 
           notify --urgency=normal "Updater" "Finished update."
-
+          rm /tmp/updatelock
           popd
         '';
       })

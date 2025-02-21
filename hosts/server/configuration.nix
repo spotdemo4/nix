@@ -14,7 +14,6 @@
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
     # Scripts to import
     "update"
-    "rebuild"
   ];
 
   # Packages to install
@@ -38,17 +37,16 @@
     '';
   };
 
-  # Auto Upgrade
-  system.autoUpgrade = {
+  # Update script
+  update = {
     enable = true;
-    flake = inputs.self.outPath;
-    flags = [
-      "--update-input"
-      "nixpkgs"
-      "-L" # print build logs
-    ];
-    dates = "02:00";
-    randomizedDelaySec = "45min";
+    hostname = "server";
+    user = "trev";
+  };
+
+  # Auto update
+  updater = {
+    enable = true;
   };
 
   # Networking

@@ -26,7 +26,6 @@
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
     # Scripts to import
     "update"
-    "rebuild"
   ];
 
   # Packages to install

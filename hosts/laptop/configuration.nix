@@ -25,7 +25,6 @@
   ] ++ map (x: ./../../modules/scripts/${x}.nix) [
     # Scripts to import
     "update"
-    "rebuild"
   ];
 
   # Packages to install
@@ -95,10 +94,16 @@
     '';
   };
 
+  # Update script
+  update = {
+    enable = true;
+    hostname = "laptop";
+    user = "trev";
+  };
+
   # Auto update
   updater = {
     enable = true;
-    hostname = "laptop";
   };
 
   # Networking
