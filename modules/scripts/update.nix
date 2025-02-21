@@ -67,14 +67,18 @@
         printf "\033[0;36mWaiting for network...\n\033[0m"
         until ping -c1 www.google.com >/dev/null 2>&1; do :; done
 
-        printf "\033[0;36mCommitting and pushing...\n\033[0m"
-        sudo git commit -m "$(nixos-rebuild list-generations | grep current)"
-        sudo git push -u origin main
-
+        if sudo git diff-index --quiet HEAD; then
+          echo "No local changes found, not pushing."
+        else
+          printf "\033[0;36mCommitting and pushing...\n\033[0m"
+          sudo git commit -m "$(nixos-rebuild list-generations | grep current)"
+          sudo git push -u origin main
+        fi
+        
         printf "\033[0;36mStarting tailscale...\n\033[0m"
         sudo systemctl start tailscaled
 
-        if [ "$DELETE" = true ] ; then
+        if [ "$DELETE" = true ]; then
           printf "\033[0;36mDeleting old generations...\n\033[0m"
           sudo nix-collect-garbage --delete-older-than 7d
         fi
