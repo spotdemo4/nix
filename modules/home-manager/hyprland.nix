@@ -106,9 +106,10 @@
         "col.border_inactive" = "rgba(595959aa)";
 
         groupbar = {
+          "enabled" = false;
           "col.active" = "rgba(50505066)";
           "col.inactive" = "rgba(00000066)";
-          "gradient_rounding" = 10;
+          # "rounding" = 10;
         };
       };
 
