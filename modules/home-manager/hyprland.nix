@@ -113,6 +113,11 @@
         };
       };
 
+      # Bind config
+      binds = {
+        "scroll_event_delay" = 100;
+      };
+
       #Keyboard binds
       bind = [
         "$mod, C, killactive,"
