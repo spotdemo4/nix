@@ -105,10 +105,16 @@
     '';
   };
 
+  # Update script
+  update = {
+    enable = true;
+    hostname = "desktop";
+    user = "trev";
+  };
+
   # Auto update
   updater = {
     enable = true;
-    hostname = "desktop";
   };
 
   # Networking

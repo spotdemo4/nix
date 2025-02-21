@@ -3,13 +3,6 @@
 {
   options.updater = {
     enable = lib.mkEnableOption "enable updater service";
-    hostname = lib.mkOption {
-      type = lib.types.str;
-      default = "localhost";
-      description = ''
-        The hostname of the client.
-      '';
-    };
   };
 
   config = lib.mkIf config.updater.enable {
@@ -20,7 +13,7 @@
         Type = "oneshot";
         Environment = "PATH=/run/current-system/sw/bin:$PATH";
         ExecStart = [
-          "/run/current-system/sw/bin/update ${config.updater.hostname}"
+          "/run/current-system/sw/bin/update -d"
         ];
       };
     };
