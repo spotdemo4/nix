@@ -18,10 +18,13 @@
           sudo -u $USER DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus notify-send "$@"
         }
 
-        if [ -z "$1" ]; then
-          echo "Usage: update <host name>"
+        HOST=$1
+        if [ -z "$HOST" ]; then
+          echo "Usage: update <host name> (-d)"
           exit 1
         fi
+
+        shift
 
         DELETE=false
         while getopts 'd' flag; do
@@ -59,7 +62,7 @@
 
         printf "\033[0;36mRebuilding...\n\033[0m"
         sudo git add .
-        sudo nixos-rebuild switch --flake "/etc/nixos#$1"
+        sudo nixos-rebuild switch --flake "/etc/nixos#$HOST"
 
         printf "\033[0;36mWaiting for network...\n\033[0m"
         until ping -c1 www.google.com >/dev/null 2>&1; do :; done
