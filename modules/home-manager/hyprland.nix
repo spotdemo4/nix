@@ -106,7 +106,8 @@
         "col.border_inactive" = "rgba(595959aa)";
 
         groupbar = {
-          "enabled" = false;
+          "enabled" = true;
+          "font_size" = 8;
           "col.active" = "rgba(50505066)";
           "col.inactive" = "rgba(00000066)";
           # "rounding" = 10;
