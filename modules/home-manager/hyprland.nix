@@ -108,8 +108,8 @@
         groupbar = {
           "enabled" = true;
           "font_size" = 14;
-          "col.active" = "rgba(505050ee)";
-          "col.inactive" = "rgba(000000ee)";
+          "col.active" = "rgba(505050cc)";
+          "col.inactive" = "rgba(000000cc)";
           # "rounding" = 10;
         };
       };
