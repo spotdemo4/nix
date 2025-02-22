@@ -107,7 +107,7 @@
 
         groupbar = {
           "enabled" = true;
-          "font_size" = 8;
+          "font_size" = 14;
           "col.active" = "rgba(50505066)";
           "col.inactive" = "rgba(00000066)";
           # "rounding" = 10;
