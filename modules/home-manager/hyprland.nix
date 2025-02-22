@@ -110,7 +110,7 @@
           "font_size" = 14;
           "col.active" = "rgba(1e1e2ecc)";
           "col.inactive" = "rgba(11111bcc)";
-          # "rounding" = 10;
+          "rounding" = 10;
         };
       };
 
