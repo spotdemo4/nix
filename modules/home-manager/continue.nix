@@ -3,11 +3,18 @@
 {
   age.secrets.vllm-api.file = ../../secrets/vllm-api.age;
 
+  # home.activation = {
+  #   continue = lib.hm.dag.entryAfter ["installPackages"] ''
+  #     secret=$(cat "${config.age.secrets.vllm-api.path}")
+  #     configFile=$HOME/.continue/config.json
+  #     ${pkgs.gnused}/bin/sed -i "s#@vllm-api-key@#$secret#" "$configFile"
+  #   '';
+  # };
+
   home.activation = {
     continue = lib.hm.dag.entryAfter ["installPackages"] ''
       secret=$(cat "${config.age.secrets.vllm-api.path}")
-      configFile=$HOME/.continue/config.json
-      ${pkgs.gnused}/bin/sed -i "s#@vllm-api-key@#$secret#" "$configFile"
+      echo $secret
     '';
   };
 
