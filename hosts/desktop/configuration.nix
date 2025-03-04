@@ -67,7 +67,6 @@
     ffmpeg
     inputs.filebrowser-upload.packages."${system}".default
     libnotify
-    inputs.agenix.packages.${system}.default
 
     # Applets
     networkmanagerapplet

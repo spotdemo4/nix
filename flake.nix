@@ -10,9 +10,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Agenix
-    agenix.url = "github:ryantm/agenix";
-
     # Zen browser
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
@@ -43,13 +40,12 @@
     trevbar.url = "github:spotdemo4/trevbar";
   };
 
-  outputs = { self, nixpkgs, lix-module, agenix, ... }@inputs: {
+  outputs = { self, nixpkgs, lix-module, ... }@inputs: {
     nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
       modules = [ 
         ./hosts/laptop/configuration.nix 
         lix-module.nixosModules.default
-        agenix.nixosModules.default
       ];
     };
     nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
@@ -57,7 +53,6 @@
       modules = [
         ./hosts/desktop/configuration.nix
         lix-module.nixosModules.default
-        agenix.nixosModules.default
       ];
     };
     nixosConfigurations.server = nixpkgs.lib.nixosSystem {
@@ -65,7 +60,6 @@
       modules = [
         ./hosts/server/configuration.nix
         lix-module.nixosModules.default
-        agenix.nixosModules.default
       ];
     };
   };
