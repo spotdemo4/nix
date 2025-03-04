@@ -8,18 +8,18 @@
           {
             "model": "AUTODETECT",
             "title": "vLLM",
+            "provider": "openai",
             "completionOptions": {},
             "apiBase": "http://main:8000/v1",
-            "apiKey": "whatthechungus",
-            "provider": "openai"
+            "apiKey": "whatthechungus"
           }
         ],
         "tabAutocompleteModel": {
+          "model": "Qwen/Qwen2.5-Coder-7B",
           "title": "Qwen2.5-Coder",
           "provider": "openai",
           "apiBase": "http://main:8000/v1",
-          "apiKey": "@vllm-api-key@",
-          "model": "Qwen/Qwen2.5-Coder-7B"
+          "apiKey": "whatthechungus"
         },
         "contextProviders": [
           {
