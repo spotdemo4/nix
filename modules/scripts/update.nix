@@ -92,7 +92,7 @@
 
           gprint "Rebuilding..."
           sudo git add .
-          sudo nixos-rebuild switch --flake "/etc/nixos#${config.update.hostname}" --impure
+          sudo nixos-rebuild switch --flake "/etc/nixos#${config.update.hostname}"
 
           printf "\033[0;36mWaiting for network...\n\033[0m"
           until ping -c1 www.google.com >/dev/null 2>&1; do :; done
