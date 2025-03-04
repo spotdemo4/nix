@@ -9,14 +9,11 @@
       usernamehw.errorlens
       golang.go
       gleam.gleam
-      continue.continue
       ms-vscode.cpptools
-      ms-dotnettools.csdevkit
-      ms-dotnettools.csharp
-      ms-dotnettools.vscode-dotnet-runtime
       ziglang.vscode-zig
     ]) ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux; [
       vscode-marketplace.svelte.svelte-vscode
+      vscode-marketplace.continue.continue
       vscode-marketplace.a-h.templ
       vscode-marketplace.trapfether.tailwind-raw-reorder
       vscode-marketplace.pcbowers.alpine-intellisense
