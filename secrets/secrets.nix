@@ -1,8 +1,10 @@
 let
-  desktop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILhbWUnHfLabigfXHSpkVv1YdrGSAoB0KXp23BsW+cZs";
-  laptop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKzxQgondgEYcLpcPdJLrTdNgZ2gznOHCAxMdaceTUT1";
-  systems = [ desktop laptop ];
+  trev-desktop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILhbWUnHfLabigfXHSpkVv1YdrGSAoB0KXp23BsW+cZs";
+  users = [ trev-desktop ];
+
+  desktop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPVS4TRJ2LrjQNkRqW5XnP6tbNRE18LJurGQwZ9GEKj2";
+  systems = [ desktop ];
 in
 {
-  "secret1.age".publicKeys = systems;
+  "vllm-api.age".publicKeys = users ++ systems;
 }

@@ -4,6 +4,7 @@
   # Imports
   imports = [
     inputs.catppuccin.homeManagerModules.catppuccin
+    inputs.agenix.homeManagerModules.default
   ] ++ map (x: ./../../modules/home-manager/${x}.nix) [
     # Home Manager modules to import
     "cursor"
@@ -17,6 +18,7 @@
     "qt"
     "chromium"
     "vscode"
+    "continue"
     "waybar"
     "wofi"
     "zsh"

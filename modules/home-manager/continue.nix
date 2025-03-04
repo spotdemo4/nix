@@ -1,6 +1,22 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
+  age.secrets.vllm-api.file = ../../secrets/vllm-api.age;
+
+  # home.activation = {
+  #   continue = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  #     secret=$(cat "${config.age.secrets.vllm-api.path}")
+  #     configFile=$HOME/.continue/config.json
+  #     ${pkgs.gnused}/bin/sed -i "s#@vllm-api-key@#$secret#" "$configFile"
+  #   '';
+  # };
+
+  # system.activationScripts."vllm-api-key-secret" = ''
+  #   secret=$(cat "${config.age.secrets.vllm-api.path}")
+  #   configFile=$HOME/.continue/config.json
+  #   ${pkgs.gnused}/bin/sed -i "s#@vllm-api-key@#$secret#" "$configFile"
+  # '';
+
   home.file = {
     ".continue/config.json".text = ''
       {
@@ -10,7 +26,7 @@
             "title": "vLLM",
             "completionOptions": {},
             "apiBase": "http://main:8000/v1",
-            "apiKey": "whatthechungus",
+            "apiKey": "@vllm-api-key@",
             "provider": "openai"
           }
         ],
@@ -18,7 +34,7 @@
           "title": "Qwen2.5-Coder",
           "provider": "openai",
           "apiBase": "http://main:8000/v1",
-          "apiKey": "whatthechungus",
+          "apiKey": "@vllm-api-key@",
           "model": "Qwen/Qwen2.5-Coder-7B"
         },
         "contextProviders": [
