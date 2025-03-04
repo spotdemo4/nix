@@ -102,6 +102,7 @@
 
     extraOptions = ''
       warn-dirty = false
+      allowed-impure-host-deps = /home/trev/.secrets
     '';
   };
 
