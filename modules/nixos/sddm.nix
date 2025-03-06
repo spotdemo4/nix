@@ -13,8 +13,9 @@
   #   })
   # ];
 
-  catppuccin.sddm = {
-   enable = true;
-   flavor = "mocha";
-  };
+  # Causes SDDM not to work btw
+  # catppuccin.sddm = {
+  #  enable = true;
+  #  flavor = "mocha";
+  # };
 }
