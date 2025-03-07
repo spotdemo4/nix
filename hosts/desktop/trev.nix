@@ -15,7 +15,7 @@
     "mako"
     "mpv"
     "qt"
-    "chromium"
+    "edge"
     "vscode"
     "continue"
     "waybar"
