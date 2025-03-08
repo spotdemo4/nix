@@ -10,16 +10,14 @@
             "title": "vLLM",
             "provider": "openai",
             "completionOptions": {},
-            "apiBase": "http://main:8000/v1",
-            "apiKey": "whatthechungus"
+            "apiBase": "http://main:8080/v1",
           }
         ],
         "tabAutocompleteModel": {
           "model": "Qwen/Qwen2.5-Coder-7B",
           "title": "Qwen2.5-Coder",
           "provider": "openai",
-          "apiBase": "http://main:8000/v1",
-          "apiKey": "whatthechungus"
+          "apiBase": "http://main:8080/v1",
         },
         "contextProviders": [
           {
