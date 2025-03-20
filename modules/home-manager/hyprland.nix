@@ -84,6 +84,7 @@
 
       master = {
         "mfact" = "0.5";
+        "allow_small_split" = true;
       };
 
       gestures = {
