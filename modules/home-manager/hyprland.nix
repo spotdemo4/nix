@@ -39,6 +39,8 @@
         ",preferred,auto,auto"
       ];
 
+      workspace = "name:vertical, monitor:desc:Dell Inc. S2719DGF 1HSYBY2, default:true, layoutopt:orientation:top";
+
       general = {
         "gaps_in" = 5;
         "gaps_out" = 20;
@@ -84,7 +86,6 @@
 
       master = {
         "mfact" = "0.5";
-        "allow_small_split" = true;
       };
 
       gestures = {
