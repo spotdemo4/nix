@@ -48,6 +48,7 @@
     moonlight-qt
     inputs.zen-browser.packages."${system}".default
     inputs.trevbar.packages."${system}".default
+    protonvpn-gui
 
     # CLI
     wget
