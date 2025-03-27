@@ -61,6 +61,7 @@
     ncdu
     nmap
     btop
+    brightnessctl
 
     # Applets
     networkmanagerapplet
@@ -123,12 +124,6 @@
 
   # Time zone
   time.timeZone = "America/Detroit";
-
-  # Backlight
-  programs.light = {
-    enable = true;
-    brightnessKeys.enable = true;
-  };
 
   # Internationalisation properties
   i18n.defaultLocale = "en_US.UTF-8";
