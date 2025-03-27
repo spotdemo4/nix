@@ -61,6 +61,7 @@
     ncdu
     nmap
     btop
+    light
 
     # Applets
     networkmanagerapplet
@@ -151,7 +152,12 @@
   users.users.trev = {
     isNormalUser = true;
     description = "trev";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "video"
+    ];
     packages = with pkgs; [];
     shell = pkgs.zsh;
   };
