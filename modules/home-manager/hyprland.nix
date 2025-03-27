@@ -159,10 +159,6 @@
         # Scroll through group
         "$mod, mouse_down, changegroupactive, b"
         "$mod, mouse_up, changegroupactive, f"
-
-        # Change brightness
-        "$mod, F7, exec, light -U 5"
-        "$mod, F8, exec, light -A 5"
       ];
 
       bindm = [
