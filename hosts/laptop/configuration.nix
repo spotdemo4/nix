@@ -61,7 +61,6 @@
     ncdu
     nmap
     btop
-    light
 
     # Applets
     networkmanagerapplet
@@ -124,6 +123,9 @@
 
   # Time zone
   time.timeZone = "America/Detroit";
+
+  # Backlight
+  programs.light.enable = true;
 
   # Internationalisation properties
   i18n.defaultLocale = "en_US.UTF-8";
