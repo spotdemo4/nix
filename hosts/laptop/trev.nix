@@ -3,7 +3,7 @@
 {
   # Imports
   imports = [
-    inputs.catppuccin.homeManagerModules.catppuccin
+    inputs.catppuccin.homeModules.catppuccin
   ] ++ map (x: ./../../modules/home-manager/${x}.nix) [
     # Home Manager modules to import
     "cursor"
