@@ -38,7 +38,6 @@
     feh
     obsidian
     jetbrains.idea-community-bin
-    dbeaver-bin
     android-studio
     plexamp
     thunderbird
@@ -51,6 +50,7 @@
     obs-studio
     heroic
     inputs.trevbar.packages."${system}".default
+    beekeeper-studio
 
     # CLI
     wget
@@ -174,6 +174,9 @@
     config = {
       allowUnfree = true;
       rocmSupport = true;
+      permittedInsecurePackages = [
+        "beekeeper-studio-5.1.5"
+      ];
     };
     overlays = [ 
       inputs.catppuccin-vsc.overlays.default
