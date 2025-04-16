@@ -51,6 +51,7 @@
     heroic
     inputs.trevbar.packages."${system}".default
     beekeeper-studio
+    jetbrains.datagrip
 
     # CLI
     wget

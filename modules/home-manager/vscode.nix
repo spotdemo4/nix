@@ -15,7 +15,6 @@
         vscode-marketplace.bradlc.vscode-tailwindcss
         vscode-marketplace.zxh404.vscode-proto3
         vscode-marketplace.dorzey.vscode-sqlfluff
-        vscode-marketplace.oracle.sql-developer
       ]) ++ [
         (pkgs.catppuccin-vsc.override {
           accent = "sky";
@@ -31,8 +30,6 @@
         "editor.fontFamily" = "Fira Code";
         "editor.fontLigatures" = true;
         "svelte.enable-ts-plugin" = true;
-        "sqldeveloper.sqlHistory.historyLimit" = 500;
-        "sqldeveloper.telemetry.enabled" = true;
       };
     };
     mutableExtensionsDir = false;
