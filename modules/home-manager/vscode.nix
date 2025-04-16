@@ -31,6 +31,7 @@
         "editor.fontFamily" = "Fira Code";
         "editor.fontLigatures" = true;
         "svelte.enable-ts-plugin" = true;
+        "sqldeveloper.sqlHistory.historyLimit" = 500;
       };
     };
     mutableExtensionsDir = false;
