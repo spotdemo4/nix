@@ -32,6 +32,7 @@
         "editor.fontLigatures" = true;
         "svelte.enable-ts-plugin" = true;
         "sqldeveloper.sqlHistory.historyLimit" = 500;
+        "sqldeveloper.telemetry.enabled" = true;
       };
     };
     mutableExtensionsDir = false;
