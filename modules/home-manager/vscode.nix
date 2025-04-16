@@ -15,6 +15,7 @@
         vscode-marketplace.bradlc.vscode-tailwindcss
         vscode-marketplace.zxh404.vscode-proto3
         vscode-marketplace.dorzey.vscode-sqlfluff
+        vscode-marketplace.oracle.sql-developer
       ]) ++ [
         (pkgs.catppuccin-vsc.override {
           accent = "sky";
