@@ -1,20 +1,26 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, pkgs, inputs, modulesPath, ... }:
-
 {
-  imports = [
-    inputs.home-manager.nixosModules.home-manager
-    (modulesPath + "/virtualisation/proxmox-lxc.nix")
-  ] ++ map (x: ./../../modules/nixos/${x}.nix) [
-    # Programs to import
-    "git"
-  ] ++ map (x: ./../../modules/scripts/${x}.nix) [
-    # Scripts to import
-    "update"
-  ];
+  config,
+  pkgs,
+  inputs,
+  modulesPath,
+  ...
+}: {
+  imports =
+    [
+      inputs.home-manager.nixosModules.home-manager
+      (modulesPath + "/virtualisation/proxmox-lxc.nix")
+    ]
+    ++ map (x: ./../../modules/nixos/${x}.nix) [
+      # Programs to import
+      "git"
+    ]
+    ++ map (x: ./../../modules/scripts/${x}.nix) [
+      # Scripts to import
+      "update"
+    ];
 
   # Packages to install
   environment.systemPackages = with pkgs; [
@@ -31,7 +37,7 @@
 
   # Nix Settings
   nix = {
-    settings.experimental-features = [ "nix-command" "flakes" ];
+    settings.experimental-features = ["nix-command" "flakes"];
     extraOptions = ''
       warn-dirty = false
     '';
@@ -75,9 +81,9 @@
   # Home manager
   home-manager = {
     useGlobalPkgs = true;
-    extraSpecialArgs = { inherit inputs; };
+    extraSpecialArgs = {inherit inputs;};
     users = {
-      trev.imports = [ ./trev.nix ];
+      trev.imports = [./trev.nix];
     };
   };
 
@@ -85,7 +91,7 @@
   users.users.trev = {
     isNormalUser = true;
     description = "trev";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = ["networkmanager" "wheel" "docker"];
     packages = with pkgs; [];
     shell = pkgs.zsh;
   };

@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   # home.packages = with pkgs; [
   #   hyprpaper
   # ];
@@ -23,7 +21,7 @@
     enable = true;
     settings = {
       ipc = "on";
-      
+
       preload = [
         "/etc/nixos/static/fishy.png"
         "/etc/nixos/static/fishy1080.png"

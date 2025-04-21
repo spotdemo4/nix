@@ -40,27 +40,55 @@
     trevbar.url = "github:spotdemo4/trevbar";
   };
 
-  outputs = { self, nixpkgs, lix-module, ... }@inputs: {
-    nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
-      modules = [ 
-        ./hosts/laptop/configuration.nix 
-        lix-module.nixosModules.default
-      ];
+  outputs = {
+    self,
+    nixpkgs,
+    lix-module,
+    ...
+  } @ inputs: let
+    build-systems = [
+      "x86_64-linux"
+      "aarch64-linux"
+      "x86_64-darwin"
+      "aarch64-darwin"
+    ];
+    forSystem = f:
+      nixpkgs.lib.genAttrs build-systems (
+        system:
+          f {
+            inherit system;
+            pkgs = import nixpkgs {
+              inherit system;
+            };
+          }
+      );
+  in {
+    nixosConfigurations = {
+      laptop = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/laptop/configuration.nix
+          lix-module.nixosModules.default
+        ];
+      };
+
+      desktop = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/desktop/configuration.nix
+          lix-module.nixosModules.default
+        ];
+      };
+
+      server = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/server/configuration.nix
+          lix-module.nixosModules.default
+        ];
+      };
     };
-    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
-      modules = [
-        ./hosts/desktop/configuration.nix
-        lix-module.nixosModules.default
-      ];
-    };
-    nixosConfigurations.server = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
-      modules = [
-        ./hosts/server/configuration.nix
-        lix-module.nixosModules.default
-      ];
-    };
+
+    formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
   };
 }

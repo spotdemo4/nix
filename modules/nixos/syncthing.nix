@@ -1,6 +1,4 @@
-{ ... }:
- 
-{
+{...}: {
   services.syncthing = {
     enable = true;
     openDefaultPorts = true;
@@ -15,7 +13,7 @@
       folders = {
         "/home/trev/Notes" = {
           id = "isqv7-pchjw";
-          devices = [ "server" ];
+          devices = ["server"];
         };
       };
     };

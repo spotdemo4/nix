@@ -1,9 +1,7 @@
-{ ... }:
-
-{
+{...}: {
   wayland.windowManager.hyprland = {
     enable = true;
-  
+
     settings = {
       # Startup
       exec-once = [
@@ -20,7 +18,7 @@
       ];
 
       # Define variables
-      "$mod" = "SUPER";      
+      "$mod" = "SUPER";
       "$menu" = "wofi --show drun";
       "$terminal" = "konsole";
       "$screenshot" = "grimblast copy area";
@@ -35,7 +33,7 @@
         "desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A,3440x1440@60,auto,auto"
         "desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A 23072B001686,3440x1440@144,auto,auto"
         "desc:Dell Inc. S2719DGF 1HSYBY2,2560x1440@60,auto,auto,transform,1"
-        
+
         ",preferred,auto,auto"
       ];
 
@@ -94,7 +92,7 @@
 
       misc = {
         "force_default_wallpaper" = 0;
-      };          
+      };
 
       #Keyboard config
       input = {
@@ -102,7 +100,7 @@
         "follow_mouse" = 1;
       };
 
-      # Group config 
+      # Group config
       group = {
         "col.border_active" = "rgba(ff9900ee) rgba(ff1a00ee) 45deg";
         "col.border_inactive" = "rgba(595959aa)";

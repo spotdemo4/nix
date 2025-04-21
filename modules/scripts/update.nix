@@ -1,6 +1,9 @@
-{ lib, config, pkgs, ... }:
- 
 {
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   options.update = {
     enable = lib.mkEnableOption "enable update script";
 

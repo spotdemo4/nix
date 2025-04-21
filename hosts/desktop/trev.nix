@@ -1,28 +1,33 @@
-{ config, pkgs, inputs, ... }:
-
 {
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
   # Imports
-  imports = [
-    inputs.catppuccin.homeModules.catppuccin
-  ] ++ map (x: ./../../modules/home-manager/${x}.nix) [
-    # Home Manager modules to import
-    "cursor"
-    "direnv"
-    "gtk"
-    "hyprland"
-    "hyprpaper"
-    "kitty"
-    "mako"
-    "mpv"
-    "qt"
-    "chromium"
-    "vscode"
-    "continue"
-    "waybar"
-    "wofi"
-    "zsh"
-    "discord"
-  ];
+  imports =
+    [
+      inputs.catppuccin.homeModules.catppuccin
+    ]
+    ++ map (x: ./../../modules/home-manager/${x}.nix) [
+      # Home Manager modules to import
+      "cursor"
+      "direnv"
+      "gtk"
+      "hyprland"
+      "hyprpaper"
+      "kitty"
+      "mako"
+      "mpv"
+      "qt"
+      "chromium"
+      "vscode"
+      "continue"
+      "waybar"
+      "wofi"
+      "zsh"
+      "discord"
+    ];
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -92,7 +97,7 @@
   #
   home.sessionVariables = {
   };
-  
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }

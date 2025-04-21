@@ -1,6 +1,9 @@
-{ config, pkgs, inputs, ... }:
-
 {
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
   # Imports
   imports = map (x: ./../../modules/home-manager/${x}.nix) [
     # Home Manager modules to import
@@ -76,7 +79,7 @@
   #
   home.sessionVariables = {
   };
-  
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
