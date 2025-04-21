@@ -10,17 +10,17 @@
         "models": [
           {
             "model": "AUTODETECT",
-            "title": "vLLM",
-            "provider": "openai",
+            "title": "Ollama",
+            "provider": "ollama",
             "completionOptions": {},
-            "apiBase": "http://main:8080/v1",
+            "apiBase": "http://main:11434/v1",
           }
         ],
         "tabAutocompleteModel": {
-          "model": "Qwen/Qwen2.5-Coder-7B",
+          "model": "qwen2.5-coder:3b",
           "title": "Qwen2.5-Coder",
-          "provider": "openai",
-          "apiBase": "http://main:8080/v1",
+          "provider": "ollama",
+          "apiBase": "http://main:11434/v1",
         },
         "contextProviders": [
           {
