@@ -13,14 +13,14 @@
             "title": "Ollama",
             "provider": "ollama",
             "completionOptions": {},
-            "apiBase": "http://main:11434/v1",
+            "apiBase": "http://main:11434",
           }
         ],
         "tabAutocompleteModel": {
           "model": "qwen2.5-coder:3b",
           "title": "Qwen2.5-Coder",
           "provider": "ollama",
-          "apiBase": "http://main:11434/v1",
+          "apiBase": "http://main:11434",
         },
         "contextProviders": [
           {
