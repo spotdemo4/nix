@@ -87,6 +87,19 @@
       };
     };
 
+    checks = forSystem ({pkgs, ...}: {
+      nix = with pkgs;
+        runCommandLocal "check-nix" {
+          nativeBuildInputs = with pkgs; [
+            alejandra
+          ];
+        } ''
+          cd ${./.}
+          alejandra -c .
+          touch $out
+        '';
+    });
+
     formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
   };
 }
