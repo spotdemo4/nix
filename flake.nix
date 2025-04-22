@@ -13,12 +13,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Use Lix https://lix.systems/
-    lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-1.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Zen browser
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
@@ -77,7 +71,6 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/laptop/configuration.nix
-          lix-module.nixosModules.default
         ];
       };
 
@@ -85,7 +78,6 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/desktop/configuration.nix
-          lix-module.nixosModules.default
         ];
       };
 
@@ -93,7 +85,6 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/server/configuration.nix
-          lix-module.nixosModules.default
         ];
       };
     };
