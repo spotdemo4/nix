@@ -11,6 +11,7 @@
   imports =
     [
       inputs.home-manager.nixosModules.home-manager
+      inputs.catppuccin.nixosModules.catppuccin
       ./hardware-configuration.nix
     ]
     ++ map (x: ./../../modules/nixos/${x}.nix) [
