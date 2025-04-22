@@ -16,7 +16,10 @@
     ]
     ++ map (x: ./../../modules/nixos/${x}.nix) [
       # Programs to import
+      "fail2ban"
       "git"
+      "openssh"
+      "tailscale"
       "updater"
       "zsh"
     ]
@@ -68,7 +71,6 @@
   networking.hostName = "nixos-server"; # Define your hostname.
   networking.networkmanager.enable = true;
   networking.firewall.enable = false;
-  services.tailscale.enable = true;
 
   # Time zone
   time.timeZone = "America/Detroit";

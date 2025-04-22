@@ -24,8 +24,9 @@
       "sddm"
       "steam"
       "syncthing"
-      "zsh"
+      "tailscale"
       "updater"
+      "zsh"
     ]
     ++ map (x: ./../../modules/scripts/${x}.nix) [
       # Scripts to import
@@ -118,7 +119,6 @@
   networking.hostName = "nixos-laptop"; # Define your hostname.
   networking.networkmanager.enable = true;
   networking.firewall.enable = false;
-  services.tailscale.enable = true;
 
   # Bluetooth
   hardware.bluetooth.enable = true;

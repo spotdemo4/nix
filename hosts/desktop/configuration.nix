@@ -24,9 +24,10 @@
       "sddm"
       "steam"
       "syncthing"
-      "zsh"
-      "virt-manager"
+      "tailscale"
       "updater"
+      "virt-manager"
+      "zsh"
     ]
     ++ map (x: ./../../modules/scripts/${x}.nix) [
       # Scripts to import
@@ -126,7 +127,6 @@
   networking.hostName = "nixos-desktop"; # Define your hostname.
   networking.networkmanager.enable = true;
   networking.firewall.enable = false;
-  services.tailscale.enable = true;
 
   # Bluetooth
   hardware.bluetooth.enable = true;
