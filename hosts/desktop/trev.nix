@@ -26,6 +26,7 @@
       "waybar"
       "wofi"
       "zsh"
+      "starship"
       "discord"
     ];
 

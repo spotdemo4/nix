@@ -90,9 +90,6 @@
             sudo nix flake update
           fi
 
-          printf "\033[0;36mStopping tailscale...\n\033[0m"
-          sudo systemctl stop tailscaled
-
           gprint "Rebuilding..."
           sudo git add .
           sudo nixos-rebuild switch --flake "/etc/nixos#${config.update.hostname}"
@@ -107,9 +104,6 @@
             sudo git commit -m "$(nixos-rebuild list-generations | grep current)"
             sudo git push -u origin main
           fi
-
-          printf "\033[0;36mStarting tailscale...\n\033[0m"
-          sudo systemctl start tailscaled
 
           if [ "$DELETE" = true ]; then
             gprint "Deleting old generations..."
