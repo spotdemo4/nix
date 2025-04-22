@@ -115,6 +115,7 @@
   # Allow unfree packages and add overlays
   nixpkgs = {
     config.allowUnfree = true;
+    overlays = [inputs.catppuccin-vsc.overlays.default];
   };
 
   # This value determines the NixOS release from which the default
