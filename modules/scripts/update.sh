@@ -8,17 +8,17 @@ USER=@user@
 USER_ID=$(id -u ${USER})
 
 function notify() {
-    sudo -u ${USER} DISPLAY=:0 "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus" notify-send "$@"
+    sudo -u ${USER} DISPLAY=:0 "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus" notify-send "$@" > /dev/null 2>&1 || true
 }
 
 function gprint() {
     printf "\033[0;36m%s\n\033[0m" "$1"
-    notify --urgency=normal "Updater" "$1" || true
+    notify --urgency=normal "Updater" "$1"
 }
 
 function bprint() {
     printf "\033[0;31m%s\n\033[0m" "$1"
-    notify --urgency=critical "Updater" "$1" || true
+    notify --urgency=critical "Updater" "$1"
 }
 
 DELETE=false
