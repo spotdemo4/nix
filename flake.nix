@@ -88,23 +88,6 @@
       };
     };
 
-    apps = forSystem ({pkgs, ...}: {
-      update = {
-        type = "app";
-        program = pkgs.lib.getExe (pkgs.writeShellApplication {
-          name = "update";
-          runtimeInputs = with pkgs; [
-            git
-            nix
-            nodejs_22
-            go
-            nix-update
-          ];
-          text = builtins.readFile ./.scripts/update.sh;
-        });
-      };
-    });
-
     formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
   };
 }
