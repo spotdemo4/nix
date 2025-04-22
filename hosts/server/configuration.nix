@@ -10,8 +10,8 @@
 }: {
   imports =
     [
-      inputs.home-manager.nixosModules.home-manager
       (modulesPath + "/virtualisation/proxmox-lxc.nix")
+      inputs.home-manager.nixosModules.home-manager
     ]
     ++ map (x: ./../../modules/nixos/${x}.nix) [
       # Programs to import
@@ -37,10 +37,22 @@
 
   # Nix Settings
   nix = {
-    settings.experimental-features = ["nix-command" "flakes"];
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      sandbox = false;
+    };
     extraOptions = ''
       warn-dirty = false
     '';
+  };
+
+  # Proxmox Settings
+  proxmoxLXC = {
+    manageNetwork = false;
+    privileged = false;
   };
 
   # Update script
@@ -91,7 +103,11 @@
   users.users.trev = {
     isNormalUser = true;
     description = "trev";
-    extraGroups = ["networkmanager" "wheel" "docker"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+    ];
     packages = with pkgs; [];
     shell = pkgs.zsh;
   };
