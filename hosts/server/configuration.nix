@@ -17,6 +17,7 @@
       # Programs to import
       "git"
       "updater"
+      "zsh"
     ]
     ++ map (x: ./../../modules/scripts/${x}.nix) [
       # Scripts to import
