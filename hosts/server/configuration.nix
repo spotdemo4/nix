@@ -16,6 +16,7 @@
     ++ map (x: ./../../modules/nixos/${x}.nix) [
       # Programs to import
       "git"
+      "updater"
     ]
     ++ map (x: ./../../modules/scripts/${x}.nix) [
       # Scripts to import
