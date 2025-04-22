@@ -159,7 +159,7 @@
     useGlobalPkgs = true;
     extraSpecialArgs = {inherit inputs;};
     users = {
-      trev.imports = [./trev.nix];
+      trev.imports = [./../../users/trev.nix];
     };
   };
 

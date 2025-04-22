@@ -9,7 +9,7 @@
     [
       inputs.catppuccin.homeModules.catppuccin
     ]
-    ++ map (x: ./../../modules/home-manager/${x}.nix) [
+    ++ map (x: ./../modules/home-manager/${x}.nix) [
       # Home Manager modules to import
       "cursor"
       "direnv"
@@ -20,12 +20,14 @@
       "mako"
       "mpv"
       "qt"
-      "brave"
+      "chromium"
       "vscode"
+      "continue"
       "waybar"
       "wofi"
       "zsh"
       "starship"
+      "discord"
     ];
 
   # Home Manager needs a bit of information about you and the paths it should
