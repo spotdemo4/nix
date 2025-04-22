@@ -1,4 +1,4 @@
-name: Update Workflow
+name: Update
 
 on:
   schedule:
@@ -37,6 +37,7 @@ jobs:
         with:
           delete-branch: true
           title: Bump deps
+          commit-message: "build(deps): update nix"
 
       - name: Enable Pull Request Automerge
         run: gh pr merge --merge --auto "1"
