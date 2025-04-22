@@ -34,9 +34,10 @@
           libnotify
         ];
 
-        text = pkgs.replaceVars ./update.sh {
+        text = builtins.readFile (pkgs.replaceVars ./update.sh {
+          hostname = "${config.update.hostname}";
           user = "${config.update.user}";
-        };
+        });
       })
     ];
   };

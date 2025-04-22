@@ -3,6 +3,7 @@
 # Escalate to root if not root
 [ "$UID" -eq 0 ] || exec sudo "$0" "$@"
 
+HOSTNAME=@hostname@
 USER=@user@
 USER_ID=$(id -u ${USER})
 
@@ -33,6 +34,7 @@ done
 gprint "Updating"
 pushd /etc/nixos
 
+LOCAL_CHANGES=false
 git fetch
 if ! git diff --quiet HEAD origin/main; then
     echo "Remote changes found, pulling"
@@ -41,6 +43,7 @@ fi
 
 if ! git diff --quiet; then
     echo "Local changes found, formatting and checking"
+    LOCAL_CHANGES=true
     nix fmt .
     nix flake check
 fi
@@ -52,12 +55,12 @@ fi
 
 gprint "Rebuilding"
 git add .
-nixos-rebuild switch --flake "/etc/nixos#${USER}"
+nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}"
 
 echo "Waiting for network"
 until ping -c1 www.google.com >/dev/null 2>&1; do :; done
 
-if ! git diff --quiet; then
+if [ "$LOCAL_CHANGES" = true ]; then
     gprint "Pushing to github"
     git commit -m "$(nixos-rebuild list-generations | grep current)"
     git push -u origin main
