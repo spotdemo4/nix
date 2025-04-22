@@ -11,9 +11,10 @@
     ]
     ++ map (x: ./../modules/home-manager/${x}.nix) [
       # Home Manager modules to import
+      "authorized-keys"
       "direnv"
-      "zsh"
       "starship"
+      "zsh"
     ];
 
   # Home Manager needs a bit of information about you and the paths it should
