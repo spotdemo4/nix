@@ -43,12 +43,12 @@
 
           function gprint() {
             printf "\033[0;36m%s\n\033[0m" "$1"
-            notify --urgency=normal "Updater" "$1"
+            notify --urgency=normal "Updater" "$1" || true
           }
 
           function bprint() {
             printf "\033[0;31m%s\n\033[0m" "$1"
-            notify --urgency=critical "Updater" "$1"
+            notify --urgency=critical "Updater" "$1" || true
           }
 
           DELETE=false
