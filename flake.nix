@@ -1,5 +1,14 @@
 {
-  description = "Nixos config flake";
+  description = "Trev's config flake";
+
+  nixConfig = {
+    extra-substituters = [
+      "https://trix.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "trix.cachix.org-1:uZzPf9A0ij1eIlDn9jg7fZyxUGfbZrcRujVMIG6apVA="
+    ];
+  };
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -88,6 +97,23 @@
         ];
       };
     };
+
+    apps = forSystem ({pkgs, ...}: {
+      update = {
+        type = "app";
+        program = pkgs.lib.getExe (pkgs.writeShellApplication {
+          name = "update";
+          runtimeInputs = with pkgs; [
+            git
+            nix
+            nodejs_22
+            go
+            nix-update
+          ];
+          text = builtins.readFile ./.scripts/update.sh;
+        });
+      };
+    });
 
     formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
   };
