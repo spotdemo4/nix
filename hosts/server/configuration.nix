@@ -10,8 +10,8 @@
 }: {
   imports =
     [
-      (modulesPath + "/virtualisation/proxmox-lxc.nix")
       inputs.home-manager.nixosModules.home-manager
+      ./hardware-configuration.nix
     ]
     ++ map (x: ./../../modules/nixos/${x}.nix) [
       # Programs to import
@@ -47,12 +47,6 @@
     extraOptions = ''
       warn-dirty = false
     '';
-  };
-
-  # Proxmox Settings
-  proxmoxLXC = {
-    manageNetwork = false;
-    privileged = false;
   };
 
   # Update script
@@ -95,7 +89,7 @@
     useGlobalPkgs = true;
     extraSpecialArgs = {inherit inputs;};
     users = {
-      trev.imports = [./trev.nix];
+      trev.imports = [./../../users/trev.nix];
     };
   };
 
