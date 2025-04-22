@@ -46,7 +46,6 @@
   outputs = {
     self,
     nixpkgs,
-    lix-module,
     ...
   } @ inputs: let
     build-systems = [
