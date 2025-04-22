@@ -12,6 +12,7 @@
     ++ map (x: ./../modules/home-manager/${x}.nix) [
       # Home Manager modules to import
       "direnv"
+      "kitty"
       "starship"
       "zsh"
     ];
