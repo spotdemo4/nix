@@ -6,6 +6,7 @@
     ports = [ 22 ];
     settings = {
       PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
     };
   };
 }

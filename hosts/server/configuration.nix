@@ -18,6 +18,7 @@
       # Programs to import
       "fail2ban"
       "git"
+      "keys"
       "openssh"
       "tailscale"
       "updater"
@@ -109,6 +110,7 @@
     ];
     packages = with pkgs; [];
     shell = pkgs.zsh;
+    inherit (import ./../../modules/nixos/keys.nix) openssh.authorizedKeys.keys;
   };
 
   # Docker
