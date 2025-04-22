@@ -55,7 +55,6 @@
     obs-studio
     heroic
     inputs.trevbar.packages."${system}".default
-    beekeeper-studio
     jetbrains.datagrip
 
     # CLI
@@ -180,13 +179,7 @@
     config = {
       allowUnfree = true;
       rocmSupport = true;
-      permittedInsecurePackages = [
-        "beekeeper-studio-5.1.5"
-      ];
     };
-    overlays = [
-      inputs.catppuccin-vsc.overlays.default
-    ];
   };
 
   # Make Ollama use amd gpu

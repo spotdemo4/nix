@@ -18,7 +18,6 @@
 
     # Catppuccin
     catppuccin.url = "github:catppuccin/nix";
-    catppuccin-vsc.url = "https://flakehub.com/f/catppuccin/vscode/*.tar.gz";
 
     # Hyprland
     hyprland.url = "github:hyprwm/Hyprland";

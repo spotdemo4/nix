@@ -19,15 +19,8 @@
           vscode-marketplace.bradlc.vscode-tailwindcss
           vscode-marketplace.zxh404.vscode-proto3
           vscode-marketplace.dorzey.vscode-sqlfluff
-        ])
-        ++ [
-          (pkgs.catppuccin-vsc.override {
-            accent = "sky";
-          })
-        ];
+        ]);
       userSettings = {
-        "workbench.colorTheme" = "Catppuccin Mocha";
-        "catppuccin.accentColor" = "sky";
         "workbench.editor.labelFormat" = "short";
         "workbench.tree.indent" = 16;
         "explorer.sortOrder" = "filesFirst";
@@ -38,5 +31,11 @@
       };
     };
     mutableExtensionsDir = false;
+  };
+
+  catppuccin.vscode = {
+    enable = true;
+    accent = "sky";
+    flavor = "mocha";
   };
 }
