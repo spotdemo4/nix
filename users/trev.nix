@@ -11,8 +11,10 @@
     ]
     ++ map (x: ./../modules/home-manager/${x}.nix) [
       # Home Manager modules to import
+      "continue"
       "cursor"
       "direnv"
+      "discord"
       "gtk"
       "hyprland"
       "hyprpaper"
@@ -20,15 +22,12 @@
       "mako"
       "mpv"
       "qt"
-      "chromium"
+      "starship"
       "vscode"
-      "continue"
       "waybar"
       "wofi"
       "zen"
       "zsh"
-      "starship"
-      "discord"
     ];
 
   # Home Manager needs a bit of information about you and the paths it should

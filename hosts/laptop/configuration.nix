@@ -52,7 +52,6 @@
     onlyoffice-bin_latest
     prismlauncher
     moonlight-qt
-    inputs.zen-browser.packages."${system}".default
     inputs.trevbar.packages."${system}".default
     protonvpn-gui
     plex-desktop
