@@ -17,4 +17,6 @@
     manageNetwork = false;
     privileged = false;
   };
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
