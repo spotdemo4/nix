@@ -25,6 +25,7 @@
       "continue"
       "waybar"
       "wofi"
+      "zen"
       "zsh"
       "starship"
       "discord"

@@ -52,7 +52,6 @@
     onlyoffice-bin_latest
     prismlauncher
     moonlight-qt
-    inputs.zen-browser.packages."${system}".default
     obs-studio
     heroic
     inputs.trevbar.packages."${system}".default

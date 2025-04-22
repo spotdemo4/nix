@@ -14,16 +14,15 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Zen browser
-    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Catppuccin
-    catppuccin.url = "github:catppuccin/nix";
-
-    # Hyprland
-    hyprland.url = "github:hyprwm/Hyprland";
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-      inputs.hyprland.follows = "hyprland";
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Home manager
@@ -33,18 +32,41 @@
     };
 
     # Nix vscode extensions
-    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
+    nix-vscode-extensions = {
+      url = "github:nix-community/nix-vscode-extensions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Nix user repository
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Filebrowser-upload
-    filebrowser-upload.url = "github:spotdemo4/filebrowser-upload";
+    filebrowser-upload = {
+      url = "github:spotdemo4/filebrowser-upload";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Trevbar
-    trevbar.url = "github:spotdemo4/trevbar";
+    trevbar = {
+      url = "github:spotdemo4/trevbar";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Hyprland
+    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
+    nur,
     ...
   } @ inputs: let
     build-systems = [
@@ -68,6 +90,7 @@
       laptop = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
+          nur.modules.nixos.default
           ./hosts/laptop/configuration.nix
         ];
       };
@@ -75,6 +98,7 @@
       desktop = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
+          nur.modules.nixos.default
           ./hosts/desktop/configuration.nix
         ];
       };

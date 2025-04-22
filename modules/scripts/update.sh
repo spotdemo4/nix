@@ -44,6 +44,7 @@ fi
 if ! git diff --quiet; then
     echo "Local changes found, formatting and checking"
     LOCAL_CHANGES=true
+    git add .
     nix fmt .
     nix flake check
 fi
@@ -54,7 +55,6 @@ if [ "$FLAKE" = true ]; then
 fi
 
 gprint "Rebuilding"
-git add .
 nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}"
 
 echo "Waiting for network"
