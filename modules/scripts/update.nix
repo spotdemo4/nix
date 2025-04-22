@@ -61,12 +61,6 @@
             esac
           done
 
-          if [ -f /tmp/updatelock ]; then
-            bprint "Lock file exists, aborting update"
-            exit 1
-          fi
-          touch /tmp/updatelock
-
           gprint "Starting update"
           pushd /etc/nixos
 
@@ -80,7 +74,6 @@
               sudo git pull origin main
             else
               bprint "Branches are diverged, aborting update"
-              rm /tmp/updatelock
               exit 1
             fi
           fi
@@ -111,7 +104,6 @@
           fi
 
           gprint "Finished update"
-          rm /tmp/updatelock
           popd
         '';
       })

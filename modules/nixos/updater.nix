@@ -16,7 +16,7 @@
         Type = "oneshot";
         Environment = "PATH=/run/current-system/sw/bin:$PATH";
         ExecStart = [
-          "/run/current-system/sw/bin/update -d -f"
+          "/run/current-system/sw/bin/update -d"
         ];
       };
     };
