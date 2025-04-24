@@ -101,26 +101,22 @@
   # Users & groups
   users = {
     groups = {
-      share = {
-        gid = 1005;
+      trev = {
+        gid = 1000;
       };
     };
 
     users = {
-      root = {
-        extraGroups = [
-          "share"
-        ];
-      };
-
       trev = {
         isNormalUser = true;
+        uid = 1000;
         description = "trev";
+
+        group = "trev";
         extraGroups = [
           "networkmanager"
           "wheel"
           "docker"
-          "share"
         ];
         packages = with pkgs; [];
         shell = pkgs.zsh;
