@@ -98,18 +98,35 @@
     };
   };
 
-  # User accounts
-  users.users.trev = {
-    isNormalUser = true;
-    description = "trev";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "docker"
-    ];
-    packages = with pkgs; [];
-    shell = pkgs.zsh;
-    inherit (import ./../../modules/nixos/keys.nix) openssh;
+  # Users & groups
+  users = {
+    groups = {
+      share = {
+        gid = 1005;
+      };
+    };
+
+    users = {
+      root = {
+        extraGroups = [
+          "share"
+        ];
+      };
+
+      trev = {
+        isNormalUser = true;
+        description = "trev";
+        extraGroups = [
+          "networkmanager"
+          "wheel"
+          "docker"
+          "share"
+        ];
+        packages = with pkgs; [];
+        shell = pkgs.zsh;
+        inherit (import ./../../modules/nixos/keys.nix) openssh;
+      };
+    };
   };
 
   # Docker
