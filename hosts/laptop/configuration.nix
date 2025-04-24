@@ -53,7 +53,6 @@
     prismlauncher
     moonlight-qt
     inputs.trevbar.packages."${system}".default
-    protonvpn-gui
     plex-desktop
 
     # CLI
