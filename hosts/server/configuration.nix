@@ -128,7 +128,7 @@
     daemon.settings = {
       hosts = [
         "unix:///var/run/docker.sock"
-        "tcp://0.0.0.0:2375"
+        "tcp://127.0.0.1:2375"
       ];
     };
   };
