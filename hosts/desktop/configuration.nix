@@ -25,13 +25,10 @@
       "steam"
       "syncthing"
       "tailscale"
+      "update"
       "updater"
       "virt-manager"
       "zsh"
-    ]
-    ++ map (x: ./../../modules/scripts/${x}.nix) [
-      # Scripts to import
-      "update"
     ];
 
   # Packages to install

@@ -20,12 +20,9 @@
       "git"
       "openssh"
       "tailscale"
+      "update"
       "updater"
       "zsh"
-    ]
-    ++ map (x: ./../../modules/scripts/${x}.nix) [
-      # Scripts to import
-      "update"
     ];
 
   # Packages to install

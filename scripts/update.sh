@@ -42,7 +42,7 @@ if ! git diff --quiet HEAD origin/main; then
 fi
 
 if ! git diff --quiet; then
-    echo "Local changes found, formatting and checking"
+    gprint "Checking"
     LOCAL_CHANGES=true
     git add .
     nix fmt .
@@ -61,7 +61,7 @@ echo "Waiting for network"
 until ping -c1 www.google.com >/dev/null 2>&1; do :; done
 
 if [ "$LOCAL_CHANGES" = true ]; then
-    gprint "Pushing to github"
+    echo "Pushing to github"
     git commit -m "$(nixos-rebuild list-generations | grep current)"
     git push -u origin main
 fi
