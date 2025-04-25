@@ -67,7 +67,7 @@
   # Networking
   networking.hostName = "nixos-server"; # Define your hostname.
   networking.networkmanager.enable = true;
-  networking.firewall.enable = true;
+  networking.firewall.enable = false;
 
   # Time zone
   time.timeZone = "America/Detroit";
