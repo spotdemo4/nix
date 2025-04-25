@@ -55,7 +55,14 @@ if [ "$FLAKE" = true ]; then
 fi
 
 gprint "Rebuilding"
-nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}"
+systemctl stop tailscaled || true
+if nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}"; then
+    systemctl start tailscaled || true
+else
+    bprint "Rebuild failed"
+    systemctl start tailscaled || true
+    exit 1
+fi
 
 echo "Waiting for network"
 until ping -c1 www.google.com >/dev/null 2>&1; do :; done
