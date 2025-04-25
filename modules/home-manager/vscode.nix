@@ -13,6 +13,7 @@
           usernamehw.errorlens
           golang.go
           ms-python.python
+          charliermarsh.ruff
         ])
         ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux; [
           vscode-marketplace.svelte.svelte-vscode
