@@ -12,6 +12,7 @@
           jnoortheen.nix-ide
           usernamehw.errorlens
           golang.go
+          ms-python.python
         ])
         ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux; [
           vscode-marketplace.svelte.svelte-vscode
