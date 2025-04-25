@@ -16,7 +16,6 @@
     ]
     ++ map (x: ./../../modules/nixos/${x}.nix) [
       # Programs to import
-      "fail2ban"
       "git"
       "openssh"
       "tailscale"
@@ -126,11 +125,9 @@
   virtualisation.docker = {
     enable = true;
     daemon.settings = {
-      hosts = [
-        "unix:///var/run/docker.sock"
-        "tcp://0.0.0.0:2375"
-      ];
+      live-restore = false;
     };
+    autoPrune.enable = true;
   };
 
   # Allow unfree packages and add overlays
