@@ -56,9 +56,7 @@ fi
 
 gprint "Rebuilding"
 systemctl stop tailscaled || true
-if nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}"; then
-    systemctl start tailscaled || true
-else
+if ! nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}"; then
     bprint "Rebuild failed"
     systemctl start tailscaled || true
     exit 1
@@ -66,6 +64,7 @@ fi
 
 echo "Waiting for network"
 until ping -c1 www.google.com >/dev/null 2>&1; do :; done
+systemctl start tailscaled || true
 
 if [ "$LOCAL_CHANGES" = true ]; then
     echo "Pushing to github"
