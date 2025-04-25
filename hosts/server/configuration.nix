@@ -123,7 +123,15 @@
   };
 
   # Docker
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    daemon.settings = {
+      hosts = [
+        "unix:///var/run/docker.sock"
+        "tcp://127.0.0.1:2375"
+      ];
+    };
+  };
 
   # Allow unfree packages and add overlays
   nixpkgs = {
