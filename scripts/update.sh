@@ -33,6 +33,7 @@ done
 
 gprint "Updating"
 pushd /etc/nixos
+git add .
 
 LOCAL_CHANGES=false
 git fetch
@@ -44,7 +45,6 @@ fi
 if ! git diff --quiet; then
     gprint "Checking"
     LOCAL_CHANGES=true
-    git add .
     nix fmt .
     nix flake check
 fi
