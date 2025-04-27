@@ -3,11 +3,15 @@
     enable = true;
     package = pkgs.chromium;
     extensions = [
-      {id = "cjpalhdlnbpafiamejdnhcphjbkeiagm";} # UBlock Origin
-      {id = "bkkmolkhemgaeaeggcmfbghljjjoofoh";} # Catppuccin Chrome Theme
+      {id = "ddkjiahejlhfcafbddmgiahcphecmpfh";} # UBlock Origin Lite
       {id = "nngceckbapebfimnlniiiahkandclblb";} # Bitwarden
       {id = "mnjggcdmjocbbbhaepdhchncahnbgone";} # Sponsorblock
       {id = "clngdbkpkpeebahjckkjfobafhncgmne";} # Stylus
     ];
+  };
+
+  catppuccin.chromium = {
+    enable = true;
+    flavor = "mocha";
   };
 }
