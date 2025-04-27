@@ -33,18 +33,18 @@ done
 
 gprint "Updating"
 pushd /etc/nixos
-git add .
 
-LOCAL_CHANGES=false
 git fetch
 if ! git diff --quiet HEAD origin/main; then
     echo "Remote changes found, pulling"
     git pull origin main
 fi
 
-if ! git diff --quiet; then
-    gprint "Checking"
+LOCAL_CHANGES=false
+if [ -n "$(git status --porcelain)" ]; then
     LOCAL_CHANGES=true
+    gprint "Checking"
+    git add .
     nix fmt .
     nix flake check
 fi
