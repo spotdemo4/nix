@@ -35,6 +35,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.PAT }}
           delete-branch: true
           title: Bump deps
           commit-message: "build(deps): update nix"
