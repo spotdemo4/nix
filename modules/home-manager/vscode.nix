@@ -22,6 +22,7 @@
           vscode-marketplace.zxh404.vscode-proto3
           vscode-marketplace.dorzey.vscode-sqlfluff
           vscode-marketplace.dbaeumer.vscode-eslint
+          vscode-marketplace.esbenp.prettier-vscode
         ]);
       userSettings = {
         "workbench.editor.labelFormat" = "short";
