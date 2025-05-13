@@ -1,8 +1,10 @@
 {...}: {
   services.mako = {
     enable = true;
-    defaultTimeout = 5000;
-    borderRadius = 10;
+    settings = {
+      default-timeout = 5000;
+      border-radius = 10;
+    };
   };
 
   catppuccin.mako = {
