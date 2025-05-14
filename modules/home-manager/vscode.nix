@@ -23,7 +23,7 @@
           vscode-marketplace.dbaeumer.vscode-eslint
           vscode-marketplace.esbenp.prettier-vscode
           vscode-marketplace.kamadorueda.alejandra
-          vscode-marketplace.tooltitudeteam.tooltitude-pb
+          vscode-marketplace.bufbuild.vscode-buf
         ]);
       userSettings = {
         "workbench.editor.labelFormat" = "short";
