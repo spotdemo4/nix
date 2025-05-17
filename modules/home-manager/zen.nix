@@ -36,6 +36,7 @@
         sponsorblock
       ];
       userChrome = builtins.readFile "${catppuccin-zen-browser}/userChrome.css";
+      userContent = builtins.readFile "${catppuccin-zen-browser}/userContent.css";
     };
   };
 }
