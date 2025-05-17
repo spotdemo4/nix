@@ -69,6 +69,7 @@
     ffmpeg
     inputs.filebrowser-upload.packages."${system}".default
     libnotify
+    alejandra
 
     # Applets
     networkmanagerapplet
