@@ -184,7 +184,7 @@
   # Scanner support
   hardware.sane = {
     enable = true;
-    brscan5.enable = true;
+    # brscan5.enable = true;
   };
 
   # This value determines the NixOS release from which the default
