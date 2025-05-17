@@ -37,14 +37,16 @@ jobs:
         run: nix flake update
 
       - name: Create Pull Request
+        id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
+          branch: update
           title: update
           body: automatic update
           commit-message: "build(deps): update nix"
 
       - name: Enable Automerge
-        run: gh pr merge --merge --auto "1"
+        run: gh pr merge --merge --auto "${{ steps.cpr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.PAT }}
 
