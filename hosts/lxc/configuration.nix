@@ -17,8 +17,6 @@
       "git"
       "openssh"
       "tailscale"
-      "update"
-      "updater"
       "zsh"
     ];
 

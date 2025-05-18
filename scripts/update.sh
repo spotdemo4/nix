@@ -23,56 +23,78 @@ function bprint() {
 
 DELETE=false
 FLAKE=false
+WATCH=false
 while getopts 'df' flag; do
     case "$flag" in
         d) DELETE=true ;;
         f) FLAKE=true ;;
+        w) WATCH=true ;;
         *) echo "Invalid flag: $flag" ;;
     esac
 done
 
-gprint "Updating"
-pushd /etc/nixos
+FIRST_RUN=true
 
-git fetch
-if ! git diff --quiet HEAD origin/main; then
-    echo "Remote changes found, pulling"
-    git pull origin main
-fi
+while true; do
+    if [ "$WATCH" = false && "$FIRST_RUN" = false ]; then
+        break
+    fi
+    if [ "$WATCH" = true && "$FIRST_RUN" = false ]; then
+        sleep 1m
+    fi
+    FIRST_RUN=false
+    
+    echo "Checking for updates"
+    pushd /etc/nixos
 
-LOCAL_CHANGES=false
-if [ -n "$(git status --porcelain)" ]; then
-    LOCAL_CHANGES=true
-    gprint "Checking"
-    git add .
-    nix fmt .
-    nix flake check
-fi
+    git fetch
 
-if [ "$FLAKE" = true ]; then
-    gprint "Updating flake"
-    nix flake update
-fi
+    REMOTE_CHANGES=false
+    if ! git diff --quiet HEAD origin/main; then
+        REMOTE_CHANGES=true
+        echo "Remote changes found, pulling"
+        git pull origin main
+    fi
 
-gprint "Rebuilding"
-if ! nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}"; then
-    bprint "Rebuild failed"
-    exit 1
-fi
+    LOCAL_CHANGES=false
+    if [ -n "$(git status --porcelain)" ]; then
+        LOCAL_CHANGES=true
+        echo "Local changes found, checking"
+        git add .
+        nix fmt .
+        nix flake check
+    fi
 
-echo "Waiting for network"
-until ping -c1 www.google.com >/dev/null 2>&1; do :; done
+    if [ "$FLAKE" = true ]; then
+        echo "Updating flake"
+        nix flake update
+    fi
 
-if [ "$LOCAL_CHANGES" = true ]; then
-    echo "Pushing to github"
-    git commit -m "$(nixos-rebuild list-generations | grep current)"
-    git push -u origin main
-fi
+    if [ "$FLAKE" = false && "$LOCAL_CHANGES" = false && "$REMOTE_CHANGES" = false ]; then
+        echo "No changes found, skipping"
+        continue
+    fi
 
-if [ "$DELETE" = true ]; then
-    gprint "Deleting old generations"
-    nix-collect-garbage --delete-older-than 7d
-fi
+    gprint "Updating"
+    if ! nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}"; then
+        bprint "Update failed"
+        continue
+    fi
 
-gprint "Finished update"
-popd
+    if [ "$LOCAL_CHANGES" = true ]; then
+        echo "Waiting for network"
+        until ping -c1 www.google.com >/dev/null 2>&1; do :; done
+
+        echo "Pushing to github"
+        git commit -m "$(nixos-rebuild list-generations | grep current)"
+        git push -u origin main
+    fi
+
+    if [ "$DELETE" = true ]; then
+        echo "Deleting old generations"
+        nix-collect-garbage --delete-older-than 7d
+    fi
+
+    gprint "Update finished"
+    popd
+done

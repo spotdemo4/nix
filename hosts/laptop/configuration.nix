@@ -26,7 +26,6 @@
       "syncthing"
       "tailscale"
       "update"
-      "updater"
       "zsh"
     ];
 
@@ -103,11 +102,6 @@
     enable = true;
     hostname = "laptop";
     user = "trev";
-  };
-
-  # Auto update
-  updater = {
-    enable = true;
   };
 
   # Networking

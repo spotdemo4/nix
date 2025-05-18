@@ -26,7 +26,6 @@
       "syncthing"
       "tailscale"
       "update"
-      "updater"
       "virt-manager"
       "zsh"
     ];
@@ -114,11 +113,6 @@
     enable = true;
     hostname = "desktop";
     user = "trev";
-  };
-
-  # Auto update
-  updater = {
-    enable = true;
   };
 
   # Networking

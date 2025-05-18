@@ -40,5 +40,18 @@
         });
       })
     ];
+
+    systemd.services.update = {
+      description = "Update nixos in the background";
+      path = ["/run/current-system/sw"];
+      wantedBy = ["multi-user.target"];
+      serviceConfig = {
+        Type = "oneshot";
+        Environment = "PATH=/run/current-system/sw/bin:$PATH";
+        ExecStart = [
+          "/run/current-system/sw/bin/update -w -d"
+        ];
+      };
+    };
   };
 }

@@ -1,7 +1,12 @@
 {...}: {
-  imports = [
-    ../hosts/lxc/configuration.nix
-  ];
+  imports =
+    [
+      ../hosts/lxc/configuration.nix
+    ]
+    ++ map (x: ./../modules/nixos/${x}.nix) [
+      # Programs to import
+      "update"
+    ];
 
   networking.hostName = "build";
 
@@ -10,10 +15,5 @@
     enable = true;
     hostname = "build";
     user = "trev";
-  };
-
-  # Auto update
-  updater = {
-    enable = true;
   };
 }
