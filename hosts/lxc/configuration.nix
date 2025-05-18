@@ -1,4 +1,4 @@
-# Configuration file that applies to every lxc server.
+# Config for every LXC server
 {
   config,
   pkgs,

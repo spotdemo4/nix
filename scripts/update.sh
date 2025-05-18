@@ -45,8 +45,7 @@ while true; do
     FIRST_RUN=false
     
     echo "Checking for updates"
-    pushd /etc/nixos
-
+    cd /etc/nixos
     git fetch
 
     REMOTE_CHANGES=false
@@ -96,5 +95,4 @@ while true; do
     fi
 
     gprint "Update finished"
-    popd
 done
