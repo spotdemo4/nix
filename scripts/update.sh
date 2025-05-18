@@ -24,7 +24,7 @@ function bprint() {
 DELETE=false
 FLAKE=false
 WATCH=false
-while getopts 'df' flag; do
+while getopts 'dfw' flag; do
     case "$flag" in
         d) DELETE=true ;;
         f) FLAKE=true ;;
@@ -34,13 +34,13 @@ while getopts 'df' flag; do
 done
 
 FIRST_RUN=true
-
 while true; do
-    if [ "$WATCH" = false && "$FIRST_RUN" = false ]; then
-        break
-    fi
-    if [ "$WATCH" = true && "$FIRST_RUN" = false ]; then
-        sleep 1m
+    if [ "$FIRST_RUN" = false ]; then
+        if [ "$WATCH" = false ]; then
+            break
+        else
+            sleep 1m
+        fi
     fi
     FIRST_RUN=false
     
@@ -70,7 +70,7 @@ while true; do
         nix flake update
     fi
 
-    if [ "$FLAKE" = false && "$LOCAL_CHANGES" = false && "$REMOTE_CHANGES" = false ]; then
+    if [ "$FLAKE" = false ] && [ "$LOCAL_CHANGES" = false ] && [ "$REMOTE_CHANGES" = false ]; then
         echo "No changes found, skipping"
         continue
     fi
