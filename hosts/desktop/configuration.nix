@@ -70,6 +70,7 @@
     inputs.filebrowser-upload.packages."${system}".default
     libnotify
     alejandra
+    protonvpn-cli
 
     # Applets
     networkmanagerapplet
