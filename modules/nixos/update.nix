@@ -46,7 +46,7 @@
       path = ["/run/current-system/sw"];
       wantedBy = ["multi-user.target"];
       serviceConfig = {
-        Type = "oneshot";
+        Type = "exec";
         Environment = "PATH=/run/current-system/sw/bin:$PATH";
         ExecStart = [
           "/run/current-system/sw/bin/update -w -d"
