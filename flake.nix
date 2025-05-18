@@ -85,31 +85,40 @@
             };
           }
       );
+
+    servers =
+      nixpkgs.lib.mapAttrs' (
+        name: value:
+          nixpkgs.lib.nameValuePair
+          (nixpkgs.lib.removeSuffix ".nix" name)
+          (nixpkgs.lib.nixosSystem {
+            specialArgs = {inherit inputs;};
+            modules = [
+              ./servers/${name}
+            ];
+          })
+      )
+      (builtins.readDir ./servers);
   in {
-    nixosConfigurations = {
-      laptop = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          nur.modules.nixos.default
-          ./hosts/laptop/configuration.nix
-        ];
-      };
+    nixosConfigurations =
+      {
+        laptop = nixpkgs.lib.nixosSystem {
+          specialArgs = {inherit inputs;};
+          modules = [
+            nur.modules.nixos.default
+            ./hosts/laptop/configuration.nix
+          ];
+        };
 
-      desktop = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          nur.modules.nixos.default
-          ./hosts/desktop/configuration.nix
-        ];
-      };
-
-      server = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/server/configuration.nix
-        ];
-      };
-    };
+        desktop = nixpkgs.lib.nixosSystem {
+          specialArgs = {inherit inputs;};
+          modules = [
+            nur.modules.nixos.default
+            ./hosts/desktop/configuration.nix
+          ];
+        };
+      }
+      // servers;
 
     checks = forSystem ({pkgs, ...}: {
       nix = with pkgs;

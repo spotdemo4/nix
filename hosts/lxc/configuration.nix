@@ -1,6 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# Configuration file that applies to every lxc server.
 {
   config,
   pkgs,
@@ -49,18 +47,6 @@
     extraOptions = ''
       warn-dirty = false
     '';
-  };
-
-  # Update script
-  update = {
-    enable = true;
-    hostname = "server";
-    user = "trev";
-  };
-
-  # Auto update
-  updater = {
-    enable = true;
   };
 
   # Networking
