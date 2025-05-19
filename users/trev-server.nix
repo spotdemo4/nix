@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  self,
   ...
 }: {
   # Imports
@@ -9,7 +10,7 @@
     [
       inputs.catppuccin.homeModules.catppuccin
     ]
-    ++ map (x: inputs.self + /modules/home-manager/${x}.nix) [
+    ++ map (x: self + /modules/home-manager/${x}.nix) [
       # Home Manager modules to import
       "direnv"
       "kitty"

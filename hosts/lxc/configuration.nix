@@ -74,7 +74,10 @@
   # Home manager
   home-manager = {
     useGlobalPkgs = true;
-    extraSpecialArgs = {inherit inputs;};
+    extraSpecialArgs = {
+      inherit inputs;
+      inherit self;
+    };
     users = {
       trev.imports = [(self + /users/trev-server.nix)];
     };
@@ -103,9 +106,9 @@
         packages = with pkgs; [];
         shell = pkgs.zsh;
         openssh.authorizedKeys = let
-          inherit (import (self + /secrets/keys.nix)) local_keys;
+          nixKeys = import (self + /secrets/keys.nix);
         in {
-          keys = local_keys;
+          keys = nixKeys.local;
         };
       };
     };

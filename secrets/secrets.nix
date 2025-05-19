@@ -1,8 +1,9 @@
 let
-  inherit (import ./keys.nix) keys;
+  keys = import ./keys.nix;
 in {
-  "gitea-runner.age".publicKeys = keys;
-  "authelia-session.age".publicKeys = keys;
-  "authelia-hmac.age".publicKeys = keys;
-  "authelia-private-key.age".publicKeys = keys;
+  "gitea-runner.age".publicKeys = keys.all;
+  "authelia-session.age".publicKeys = keys.all;
+  "authelia-hmac.age".publicKeys = keys.all;
+  "authelia-private-key.age".publicKeys = keys.all;
+  "tailscale.age".publicKeys = keys.all;
 }

@@ -147,7 +147,10 @@
   # Home manager
   home-manager = {
     useGlobalPkgs = true;
-    extraSpecialArgs = {inherit inputs;};
+    extraSpecialArgs = {
+      inherit inputs;
+      inherit self;
+    };
     users = {
       trev.imports = [(self + /users/trev.nix)];
     };
@@ -161,6 +164,7 @@
     packages = with pkgs; [];
     shell = pkgs.zsh;
   };
+  age.identityPaths = ["/home/trev/.ssh/id_ed25519"];
 
   # Docker
   virtualisation.docker.enable = true;
