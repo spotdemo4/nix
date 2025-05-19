@@ -18,7 +18,7 @@
     identity_providers.oidc = {
       jwks = [
         {
-          key = "{{ secret \"/secret/private-key\" | mindent 10 \"|\" | msquote }}";
+          key = ''{{ secret "/secret/private-key" | mindent 10 "|" | msquote }}'';
         }
       ];
 
@@ -127,6 +127,7 @@ in {
         TZ = "America/Detroit";
         AUTHELIA_SESSION_SECRET_FILE = "/secret/session";
         AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE = "/secret/hmac";
+        X_AUTHELIA_CONFIG_FILTERS = "template";
       };
       labels = {
         "traefik.enable" = "true";
