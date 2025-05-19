@@ -17,7 +17,6 @@
       "traefik-kop"
       "prometheus"
       "grafana"
-      "intel-gpu-exporter"
     ];
 
   networking.hostName = "monitor";
