@@ -20,7 +20,7 @@ in {
         GF_AUTH_GENERIC_OAUTH_NAME = "Authelia";
         GF_AUTH_GENERIC_OAUTH_ICON = "signin";
         GF_AUTH_GENERIC_OAUTH_CLIENT_ID = "pmdxrEV_TTNxQe3FwL9yfybbuFNLdbUjfBpOU5kSczmEfMkQPlAvpormWW~xIQNsf17JeJ5x";
-        GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET = "$__file{/secrets/client}";
+        GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET = "$__file{/etc/secrets/client}";
         GF_AUTH_GENERIC_OAUTH_SCOPES = "openid profile email groups";
         GF_AUTH_GENERIC_OAUTH_EMPTY_SCOPES = "false";
         GF_AUTH_GENERIC_OAUTH_AUTH_URL = "https://auth.trev.zip/api/oidc/authorization";
@@ -33,7 +33,7 @@ in {
         GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH = "";
       };
       volumes = [
-        "${config.age.secrets."grafana".path}:/secrets/client"
+        "${config.age.secrets."grafana".path}:/etc/secrets/client"
         "grafana_data:/var/lib/grafana"
       ];
       ports = [
