@@ -40,6 +40,9 @@ in {
       ports = [
         "3000:3000"
       ];
+      networks = [
+        "prometheus"
+      ];
       labels = {
         "traefik.enable" = "true";
         "traefik.http.routers.grafana.rule" = "Host(`grafana.trev.zip`)";
