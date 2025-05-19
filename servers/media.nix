@@ -27,6 +27,7 @@
     user = "trev";
   };
 
+  # Traefik mapping to gateway
   traefik-kop = {
     enable = true;
     ip = "10.10.10.107";

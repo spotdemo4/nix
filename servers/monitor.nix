@@ -14,7 +14,9 @@
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
       "portainer-agent"
+      "traefik-kop"
       "prometheus"
+      "grafana"
     ];
 
   networking.hostName = "monitor";
@@ -24,5 +26,11 @@
     enable = true;
     hostname = "monitor";
     user = "trev";
+  };
+
+  # Traefik mapping to gateway
+  traefik-kop = {
+    enable = true;
+    ip = "10.10.10.109";
   };
 }
