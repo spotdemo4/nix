@@ -13,6 +13,9 @@ in {
       volumes = [
         "grafana_data:/var/lib/grafana"
       ];
+      ports = [
+        "3000:3000"
+      ];
       labels = {
         "traefik.enable" = "true";
         "traefik.http.routers.grafana.rule" = "Host(`grafana.trev.zip`)";

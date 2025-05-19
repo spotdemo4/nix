@@ -102,6 +102,7 @@
           "networkmanager"
           "wheel"
           "docker"
+          "podman"
         ];
         packages = with pkgs; [];
         shell = pkgs.zsh;
