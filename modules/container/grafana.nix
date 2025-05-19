@@ -32,7 +32,7 @@ in
           GF_AUTH_GENERIC_OAUTH_GROUPS_ATTRIBUTE_PATH = "groups";
           GF_AUTH_GENERIC_OAUTH_NAME_ATTRIBUTE_PATH = "name";
           GF_AUTH_GENERIC_OAUTH_USE_PKCE = "true";
-          GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH = "";
+          GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH = "contains(groups[*], 'admins') && 'Admin' || contains(groups[*], 'editor') && 'Editor' || 'Viewer'";
         };
         volumes = [
           "grafana_data:/var/lib/grafana"
