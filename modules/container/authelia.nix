@@ -16,12 +16,6 @@
     };
 
     identity_providers.oidc = {
-      jwks = [
-        {
-          key = ''{{ secret "/secret/private-key" | mindent 10 "|" | msquote }}'';
-        }
-      ];
-
       clients = [
         {
           client_id = "UDdG1zZOSI_Dc2rgwT4CZHUKH2PZ7JtIbz9LV6qlsmHT5RLutOOMsSz6EreDu7W4sVj6sOgp";
@@ -127,7 +121,7 @@ in {
         TZ = "America/Detroit";
         AUTHELIA_SESSION_SECRET_FILE = "/secret/session";
         AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE = "/secret/hmac";
-        X_AUTHELIA_CONFIG_FILTERS = "template";
+        AUTHELIA_IDENTITY_PROVIDERS_OIDC_ISSUER_PRIVATE_KEY_FILE = "/secret/private-key";
       };
       labels = {
         "traefik.enable" = "true";
