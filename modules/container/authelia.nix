@@ -30,7 +30,7 @@
           client_name = "Portainer";
           client_secret = "$pbkdf2-sha512$310000$b8BYivPoYH.pDy2MSv2yIQ$crkn3J9RY5.zFJ.ie28S403vzxqIcVk5AL6rV59tbtJ4HVz7.6R5yOCbgcRKcaowUD3/SpiOxatLrc1fnKcmeg";
           public = false;
-          authorization_policy = "one_factor";
+          authorization_policy = "two_factor";
           redirect_uris = [
             "https://port.trev.zip"
           ];
