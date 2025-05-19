@@ -19,6 +19,7 @@
       "openssh"
       "tailscale"
       "zsh"
+      "cadvisor"
     ];
 
   # Packages to install
