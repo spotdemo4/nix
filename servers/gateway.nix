@@ -15,7 +15,6 @@
       # Containers to import
       "traefik"
       "portainer"
-      "radarr"
     ];
 
   networking.hostName = "gateway";

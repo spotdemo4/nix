@@ -15,6 +15,7 @@
       # Containers to import
       "portainer-agent"
       "traefik-kop"
+      "radarr"
     ];
 
   networking.hostName = "media";

@@ -1,4 +1,9 @@
 {pkgs, ...}: {
+  # Create volume for radarr
+  system.activationScripts.mkPortainer = ''
+    ${pkgs.podman}/bin/podman volume create radarr_data
+  '';
+
   virtualisation.oci-containers.containers = {
     radarr = {
       image = "lscr.io/linuxserver/radarr:latest";
@@ -10,6 +15,7 @@
       };
       volumes = [
         "/mnt/pool/movies:/movies"
+        "radarr_data:/config"
       ];
       ports = [
         "7878:7878"
