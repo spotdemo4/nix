@@ -17,7 +17,7 @@
       ];
       labels = {
         "traefik.enable" = "true";
-        "traefik.http.routers.portainer.rule" = "Host(`portainer.trev.zip`)";
+        "traefik.http.routers.portainer.rule" = "Host(`port.trev.zip`)";
         "traefik.http.routers.portainer.tls" = "true";
         "traefik.http.routers.portainer.tls.certresolver" = "letsencrypt";
         "traefik.http.services.portainer.loadbalancer.server.scheme" = "http";
