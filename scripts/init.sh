@@ -6,7 +6,7 @@ if [[ -z "$1" ]]; then
 fi
 
 nix-shell -I nixpkgs=channel:nixos-unstable -p git --run "git clone https://github.com/spotdemo4/nix.git /etc/nixos"
-nixos-rebuild switch --flake "/etc/nixos#${1}"
+nixos-rebuild switch --flake "/etc/nixos#${1}" --accept-flake-config
 
 echo "set root password:"
 passwd
