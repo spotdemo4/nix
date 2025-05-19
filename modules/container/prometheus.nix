@@ -10,6 +10,18 @@
               "10.10.10.105:8069"
               "10.10.10.107:8069"
               "10.10.10.108:8069"
+              "10.10.10.109:8069"
+            ];
+          }
+        ];
+      }
+      {
+        job_name = "intel-gpu-exporter";
+        static_configs = [
+          {
+            targets = [
+              "intel-gpu-exporter-card0"
+              "intel-gpu-exporter-card1"
             ];
           }
         ];
@@ -19,6 +31,7 @@
 
   utils = import ./utils.nix;
 in {
+  inherit (utils.mkNetwork "prometheus");
   inherit (utils.mkVolume "prometheus_data");
 
   virtualisation.oci-containers.containers = {
@@ -28,6 +41,9 @@ in {
       volumes = [
         "${configFile}:/etc/prometheus/prometheus.yml"
         "prometheus_data:/prometheus"
+      ];
+      networks = [
+        "prometheus"
       ];
     };
   };
