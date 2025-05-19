@@ -75,7 +75,7 @@ while true; do
     fi
 
     gprint "Updating"
-    if ! nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}"; then
+    if ! nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
         bprint "Update failed"
         continue
     fi
