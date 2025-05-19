@@ -1,5 +1,5 @@
 let
-  inherit (./keys.nix) keys;
+  inherit (import ./keys.nix) keys;
 in {
-  "gitea-runner".publicKeys = keys;
+  "gitea-runner.age".publicKeys = keys;
 }
