@@ -9,7 +9,7 @@ in {
       pull = "newer";
       environment = {
         GF_SERVER_ROOT_URL = "https://grafana.trev.zip";
-        GF_AUTH_GENERIC_OAUTH_ENABLED = "true";
+        GF_AUTH_GENERIC_OAUTH_ENABLED = "false";
         GF_AUTH_GENERIC_OAUTH_NAME = "Authelia";
         GF_AUTH_GENERIC_OAUTH_ICON = "signin";
         GF_AUTH_GENERIC_OAUTH_CLIENT_ID = "pmdxrEV_TTNxQe3FwL9yfybbuFNLdbUjfBpOU5kSczmEfMkQPlAvpormWW~xIQNsf17JeJ5x";
