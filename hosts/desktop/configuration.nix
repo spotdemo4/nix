@@ -65,10 +65,10 @@
     btop
     ffmpeg
     inputs.filebrowser-upload.packages."${system}".default
+    inputs.agenix.packages."${system}".default
     libnotify
     alejandra
     protonvpn-cli
-    agenix-cli
 
     # Applets
     networkmanagerapplet

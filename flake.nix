@@ -113,6 +113,7 @@
         laptop = nixpkgs.lib.nixosSystem {
           specialArgs = {inherit inputs;};
           modules = [
+            agenix.nixosModules.default
             nur.modules.nixos.default
             ./hosts/laptop/configuration.nix
           ];
@@ -121,6 +122,7 @@
         desktop = nixpkgs.lib.nixosSystem {
           specialArgs = {inherit inputs;};
           modules = [
+            agenix.nixosModules.default
             nur.modules.nixos.default
             ./hosts/desktop/configuration.nix
           ];
