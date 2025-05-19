@@ -2,6 +2,7 @@
   configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
     log.level = "DEBUG";
     api.insecure = true;
+    metrics.prometheus = true;
 
     providers = {
       docker = {
