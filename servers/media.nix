@@ -14,15 +14,20 @@
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
       "portainer-agent"
-      "gitea-act-runner"
+      "traefik-kop"
     ];
 
-  networking.hostName = "build";
+  networking.hostName = "media";
 
   # Update script
   update = {
     enable = true;
-    hostname = "build";
+    hostname = "media";
     user = "trev";
+  };
+
+  traefik-kop = {
+    enable = true;
+    ip = "10.10.10.107";
   };
 }

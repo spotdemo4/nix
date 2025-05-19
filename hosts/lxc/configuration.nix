@@ -110,10 +110,15 @@
     };
   };
 
-  # Docker
-  virtualisation.docker = {
+  # Podman
+  virtualisation.podman = {
     enable = true;
-    autoPrune.enable = true;
+    autoPrune = {
+      enable = true;
+      flags = [
+        "--all"
+      ];
+    };
   };
 
   # Allow unfree packages and add overlays

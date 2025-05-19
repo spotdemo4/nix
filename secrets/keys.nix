@@ -5,6 +5,7 @@ let
   ];
   remote = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAxD3eccbwfEkahm6zLR+JIVnshwSBFO3dX3roFHndgp root@build"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIInThVD92YRSlKIxCdhqLwsGkmvRUvRQFHwOuCQEOQlh root@media"
   ];
 in {
   local_keys = local;
