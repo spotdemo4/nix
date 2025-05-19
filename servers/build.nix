@@ -17,6 +17,7 @@
     user = "trev";
   };
 
+  # Gitea runner
   age.secrets."gitea-runner".file = ./../secrets/gitea-runner.age;
   virtualisation.oci-containers.containers = {
     gitea-act-runner = {
