@@ -68,6 +68,7 @@
     libnotify
     alejandra
     protonvpn-cli
+    agenix-cli
 
     # Applets
     networkmanagerapplet

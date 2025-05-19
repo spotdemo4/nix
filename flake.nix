@@ -19,6 +19,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Agenix
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Catppuccin
     catppuccin = {
       url = "github:catppuccin/nix";
@@ -67,6 +73,7 @@
     self,
     nixpkgs,
     nur,
+    agenix,
     ...
   } @ inputs: let
     build-systems = [
@@ -94,6 +101,7 @@
           (nixpkgs.lib.nixosSystem {
             specialArgs = {inherit inputs;};
             modules = [
+              agenix.nixosModules.default
               ./servers/${name}
             ];
           })

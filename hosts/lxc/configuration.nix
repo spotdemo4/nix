@@ -100,7 +100,11 @@
         ];
         packages = with pkgs; [];
         shell = pkgs.zsh;
-        inherit (import ./../../modules/nixos/keys.nix) openssh;
+        openssh.authorizedKeys = let
+          inherit (import ./../../secrets/keys.nix) local_keys;
+        in {
+          keys = local_keys;
+        };
       };
     };
   };
