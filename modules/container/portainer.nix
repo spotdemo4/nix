@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   # Create volume for portainer
   system.activationScripts.mkPortainer = ''
-    ${pkgs.podman}/bin/podman volume create portainer_data
+    ${pkgs.podman}/bin/podman volume inspect portainer_data || ${pkgs.podman}/bin/podman volume create portainer_data
   '';
 
   virtualisation.oci-containers.containers = {

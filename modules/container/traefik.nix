@@ -27,7 +27,7 @@
 in {
   # Create network for traefik
   system.activationScripts.mkTraefik = ''
-    ${pkgs.podman}/bin/podman network create traefik
+    ${pkgs.podman}/bin/podman network inspect traefik || ${pkgs.podman}/bin/podman network create traefik
   '';
 
   virtualisation.oci-containers.containers = {
