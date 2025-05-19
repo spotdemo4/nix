@@ -1,8 +1,4 @@
-{
-  config,
-  self,
-  ...
-}: {
+{...}: {
   virtualisation.oci-containers.containers = {
     portainer-agent = {
       image = "portainer/agent:latest";
