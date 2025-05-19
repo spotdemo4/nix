@@ -25,6 +25,11 @@
     };
   };
 in {
+  # Create network for traefik
+  system.activationScripts.mkTraefik = ''
+    ${pkgs.podman}/bin/podman network create traefik
+  '';
+
   virtualisation.oci-containers.containers = {
     traefik = {
       image = "traefik:latest";
