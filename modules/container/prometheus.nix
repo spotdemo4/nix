@@ -48,6 +48,9 @@ in
           "${configFile}:/etc/prometheus/prometheus.yml"
           "prometheus_data:/prometheus"
         ];
+        ports = [
+          "9090:9090"
+        ];
         networks = [
           "prometheus"
         ];
