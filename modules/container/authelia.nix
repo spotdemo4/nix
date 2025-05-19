@@ -7,8 +7,11 @@
   configFile = (pkgs.formats.yaml {}).generate "configuration.yml" {
     server.address = "tcp://:9091";
     log.level = "debug";
-    totp.issuer = "trev.zip";
-    authentication_backend.file.path = "/config/users.yml";
+    authentication_backend = {
+      password_change.disable = true;
+      password_reset.disable = true;
+      file.path = "/config/users.yml";
+    };
 
     access_control = {
       default_policy = "deny";
@@ -41,6 +44,11 @@
     storage = {
       encryption_key = "mOuTF00uet6bTHfXm9kjD";
       local.path = "/data/db.sqlite3";
+    };
+
+    notifier = {
+      disable_startup_check = true;
+      filesystem.filename = "/data/notification.txt";
     };
   };
 
