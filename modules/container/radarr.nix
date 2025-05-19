@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   # Create volume for radarr
-  system.activationScripts.mkPortainer = ''
+  system.activationScripts.mkRadarr = ''
     ${pkgs.podman}/bin/podman volume inspect radarr_data || ${pkgs.podman}/bin/podman volume create radarr_data
   '';
 
