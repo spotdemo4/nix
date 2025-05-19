@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  config,
+  ...
+}: let
   utils = import ./utils.nix;
 in {
   inherit (utils.mkVolume "grafana_data");
