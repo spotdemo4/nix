@@ -14,6 +14,7 @@
     ++ map (x: self + /modules/container/${x}.nix) [
       # Docker containers to import
       "gitea-act-runner"
+      "portainer-agent"
     ];
 
   networking.hostName = "build";
