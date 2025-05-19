@@ -17,6 +17,7 @@
     };
 
     # Second factor
+    totp.disable = true;
     webauthn = {
       disable = false;
       enable_passkey_login = true;
