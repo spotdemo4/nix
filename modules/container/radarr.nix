@@ -1,24 +1,4 @@
 {pkgs, ...}: let
-  configFile = builtins.toFile "config.xml" (builtins.toXML {
-    Config = {
-      BindAddress = "*";
-      Port = 7878;
-      SslPort = 9898;
-      EnableSsl = false;
-      LaunchBrowser = true;
-      ApiKey = "8d2672daea5241c5afbfeecf4df41cee";
-      AuthenticationMethod = "External";
-      AuthenticationRequired = "Enabled";
-      Branch = "master";
-      LogLevel = "debug";
-      SslCertPath = "";
-      SslCertPassword = "";
-      UrlBase = "";
-      InstanceName = "Radarr";
-      UpdateMechanism = "Docker";
-    };
-  });
-
   utils = import ./utils.nix;
 in {
   inherit (utils.mkVolume "radarr_data");
@@ -33,7 +13,6 @@ in {
         TZ = "America/Detroit";
       };
       volumes = [
-        "${configFile}:/config/config.xml"
         "/mnt/pool/movies:/movies"
         "radarr_data:/config"
       ];
