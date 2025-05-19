@@ -99,7 +99,10 @@
           nixpkgs.lib.nameValuePair
           (nixpkgs.lib.removeSuffix ".nix" name)
           (nixpkgs.lib.nixosSystem {
-            specialArgs = {inherit inputs;};
+            specialArgs = {
+              inherit inputs;
+              inherit self;
+            };
             modules = [
               agenix.nixosModules.default
               ./servers/${name}
@@ -111,7 +114,10 @@
     nixosConfigurations =
       {
         laptop = nixpkgs.lib.nixosSystem {
-          specialArgs = {inherit inputs;};
+          specialArgs = {
+            inherit inputs;
+            inherit self;
+          };
           modules = [
             agenix.nixosModules.default
             nur.modules.nixos.default
@@ -120,7 +126,10 @@
         };
 
         desktop = nixpkgs.lib.nixosSystem {
-          specialArgs = {inherit inputs;};
+          specialArgs = {
+            inherit inputs;
+            inherit self;
+          };
           modules = [
             agenix.nixosModules.default
             nur.modules.nixos.default

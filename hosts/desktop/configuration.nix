@@ -3,6 +3,7 @@
   config,
   pkgs,
   inputs,
+  self,
   ...
 }: {
   imports =
@@ -11,7 +12,7 @@
       inputs.catppuccin.nixosModules.catppuccin
       ./hardware-configuration.nix
     ]
-    ++ map (x: ./../../modules/nixos/${x}.nix) [
+    ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
       "cache"
       "git"
@@ -103,7 +104,6 @@
 
     extraOptions = ''
       warn-dirty = false
-      allowed-impure-host-deps = /home/trev/.secrets
     '';
   };
 
@@ -149,7 +149,7 @@
     useGlobalPkgs = true;
     extraSpecialArgs = {inherit inputs;};
     users = {
-      trev.imports = [./../../users/trev.nix];
+      trev.imports = [(self + /users/trev.nix)];
     };
   };
 

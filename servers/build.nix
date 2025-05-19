@@ -1,11 +1,19 @@
-{config, ...}: {
+{
+  config,
+  self,
+  ...
+}: {
   imports =
     [
-      ../hosts/lxc/configuration.nix
+      (self + /hosts/lxc/configuration.nix)
     ]
-    ++ map (x: ./../modules/nixos/${x}.nix) [
+    ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
       "update"
+    ]
+    ++ map (x: self + /modules/docker/${x}.nix) [
+      # Docker containers to import
+      "gitea-act-runner"
     ];
 
   networking.hostName = "build";
@@ -15,22 +23,5 @@
     enable = true;
     hostname = "build";
     user = "trev";
-  };
-
-  # Gitea runner
-  age.secrets."gitea-runner".file = ./../secrets/gitea-runner.age;
-  virtualisation.oci-containers.containers = {
-    gitea-act-runner = {
-      image = "gitea/act_runner:nightly";
-      volumes = [
-        "/var/run/docker.sock:/var/run/docker.sock"
-      ];
-      environment = {
-        GITEA_INSTANCE_URL = "https://git.quantadev.cc";
-      };
-      environmentFiles = [
-        config.age.secrets."gitea-runner".path
-      ];
-    };
   };
 }

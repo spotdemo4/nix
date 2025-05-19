@@ -9,7 +9,7 @@
     [
       inputs.catppuccin.homeModules.catppuccin
     ]
-    ++ map (x: ./../modules/home-manager/${x}.nix) [
+    ++ map (x: inputs.self + /modules/home-manager/${x}.nix) [
       # Home Manager modules to import
       "chromium"
       "continue"

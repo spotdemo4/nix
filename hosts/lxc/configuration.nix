@@ -4,6 +4,7 @@
   pkgs,
   inputs,
   modulesPath,
+  self,
   ...
 }: {
   imports =
@@ -12,7 +13,7 @@
       inputs.catppuccin.nixosModules.catppuccin
       ./hardware-configuration.nix
     ]
-    ++ map (x: ./../../modules/nixos/${x}.nix) [
+    ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
       "git"
       "openssh"
@@ -74,7 +75,7 @@
     useGlobalPkgs = true;
     extraSpecialArgs = {inherit inputs;};
     users = {
-      trev.imports = [./../../users/trev-server.nix];
+      trev.imports = [(self + /users/trev-server.nix)];
     };
   };
 
@@ -101,7 +102,7 @@
         packages = with pkgs; [];
         shell = pkgs.zsh;
         openssh.authorizedKeys = let
-          inherit (import ./../../secrets/keys.nix) local_keys;
+          inherit (import (self + /secrets/keys.nix)) local_keys;
         in {
           keys = local_keys;
         };
