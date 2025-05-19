@@ -17,12 +17,12 @@
       "portainer"
     ];
 
-  networking.hostName = "build";
+  networking.hostName = "gateway";
 
   # Update script
   update = {
     enable = true;
-    hostname = "build";
+    hostname = "gateway";
     user = "trev";
   };
 }
