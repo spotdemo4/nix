@@ -15,10 +15,10 @@ in {
       ];
       labels = {
         "traefik.enable" = "true";
-        "traefik.http.routers.radarr.rule" = "Host(`grafana.trev.zip`)";
-        "traefik.http.routers.radarr.entryPoints" = "https";
-        "traefik.http.routers.radarr.tls" = "true";
-        "traefik.http.routers.radarr.tls.certresolver" = "letsencrypt";
+        "traefik.http.routers.grafana.rule" = "Host(`grafana.trev.zip`)";
+        "traefik.http.routers.grafana.entryPoints" = "https";
+        "traefik.http.routers.grafana.tls" = "true";
+        "traefik.http.routers.grafana.tls.certresolver" = "letsencrypt";
       };
     };
   };
