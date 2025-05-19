@@ -46,6 +46,14 @@ in {
       networks = [
         "traefik"
       ];
+      labels = {
+        "traefik.enable" = "true";
+        "traefik.http.routers.api.rule" = "Host(`traefik.trev.zip`)";
+        "traefik.http.routers.api.entryPoints" = "https";
+        "traefik.http.routers.api.tls" = "true";
+        "traefik.http.routers.api.tls.certresolver" = "letsencrypt";
+        "traefik.http.routers.api.service" = "api@internal";
+      };
     };
 
     traefik-redis = {

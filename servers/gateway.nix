@@ -15,6 +15,7 @@
       # Containers to import
       "traefik"
       "portainer"
+      "authelia"
     ];
 
   networking.hostName = "gateway";
