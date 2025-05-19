@@ -27,8 +27,8 @@
         static_configs = [
           {
             targets = [
-              "intel-gpu-exporter-card0"
-              "intel-gpu-exporter-card1"
+              "intel-gpu-exporter-card0:8080"
+              "intel-gpu-exporter-card1:8080"
             ];
           }
         ];
