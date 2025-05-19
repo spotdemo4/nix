@@ -7,6 +7,7 @@
   configFile = (pkgs.formats.yaml {}).generate "configuration.yml" {
     server.address = "tcp://:9091";
     log.level = "debug";
+
     authentication_backend = {
       password_change.disable = true;
       password_reset.disable = true;

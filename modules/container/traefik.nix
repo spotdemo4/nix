@@ -14,14 +14,14 @@
     };
 
     entryPoints = {
-      web.address = ":80";
-      websecure.address = ":443";
+      http.address = ":80";
+      https.address = ":443";
     };
 
     certificatesResolvers.letsencrypt.acme = {
       email = "me@trev.xyz";
       storage = "/etc/traefik/acme/acme.json";
-      httpChallenge.entrypoint = "web";
+      httpChallenge.entrypoint = "http";
     };
   };
 in {
