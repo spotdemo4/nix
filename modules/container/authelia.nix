@@ -91,11 +91,11 @@
       };
     };
   };
+
+  utils = import ./utils.nix;
 in {
   # Create volume for authelia
-  system.activationScripts.mkAuthelia = ''
-    ${pkgs.podman}/bin/podman volume inspect authelia_data || ${pkgs.podman}/bin/podman volume create authelia_data
-  '';
+  inherit (utils.mkVolume "authelia_data");
 
   # Get session secret
   age.secrets."authelia-session".file = self + /secrets/authelia-session.age;

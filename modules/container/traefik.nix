@@ -25,12 +25,11 @@
       httpChallenge.entrypoint = "http";
     };
   };
+
+  utils = import ./utils.nix;
 in {
-  # Create network for traefik
-  system.activationScripts.mkTraefik = ''
-    ${pkgs.podman}/bin/podman network inspect traefik || ${pkgs.podman}/bin/podman network create traefik
-    ${pkgs.podman}/bin/podman volume inspect traefik_acme || ${pkgs.podman}/bin/podman volume create traefik_acme
-  '';
+  inherit (utils.mkNetwork "traefik");
+  inherit (utils.mkVolume "traefik_acme");
 
   virtualisation.oci-containers.containers = {
     traefik = {

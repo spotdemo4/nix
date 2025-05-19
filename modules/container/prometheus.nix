@@ -16,11 +16,10 @@
       }
     ];
   };
+
+  utils = import ./utils.nix;
 in {
-  # Create volume for prometheus
-  system.activationScripts.mkPrometheus = ''
-    ${pkgs.podman}/bin/podman volume inspect prometheus_data || ${pkgs.podman}/bin/podman volume create prometheus_data
-  '';
+  inherit (utils.mkVolume "prometheus_data");
 
   virtualisation.oci-containers.containers = {
     prometheus = {

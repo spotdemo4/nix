@@ -1,8 +1,7 @@
-{pkgs, ...}: {
-  # Create volume for radarr
-  system.activationScripts.mkRadarr = ''
-    ${pkgs.podman}/bin/podman volume inspect grafana_data || ${pkgs.podman}/bin/podman volume create grafana_data
-  '';
+{pkgs, ...}: let
+  utils = import ./utils.nix;
+in {
+  inherit (utils.mkVolume "grafana_data");
 
   virtualisation.oci-containers.containers = {
     grafana = {

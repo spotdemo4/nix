@@ -1,8 +1,7 @@
-{pkgs, ...}: {
-  # Create volume for radarr
-  system.activationScripts.mkRadarr = ''
-    ${pkgs.podman}/bin/podman volume inspect radarr_data || ${pkgs.podman}/bin/podman volume create radarr_data
-  '';
+{pkgs, ...}: let
+  utils = import ./utils.nix;
+in {
+  inherit (utils.mkVolume "radarr_data");
 
   virtualisation.oci-containers.containers = {
     radarr = {
