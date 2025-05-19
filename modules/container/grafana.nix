@@ -14,6 +14,7 @@ in {
     grafana = {
       image = "grafana/grafana-enterprise:latest";
       pull = "newer";
+      user = "root";
       environment = {
         GF_SERVER_ROOT_URL = "https://grafana.trev.zip";
         GF_AUTH_GENERIC_OAUTH_ENABLED = "true";
