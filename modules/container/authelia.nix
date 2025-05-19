@@ -18,11 +18,14 @@
 
     # Second factor
     totp.disable = true;
-    webauthn = {
-      disable = false;
-      enable_passkey_login = true;
-      display_name = "Authelia";
-    };
+    webauthn.disable = true;
+
+    # Will get this working once email is fixed
+    # webauthn = {
+    #   disable = true;
+    #   enable_passkey_login = true;
+    #   display_name = "Authelia";
+    # };
 
     identity_validation = {
       elevated_session = {
@@ -38,7 +41,7 @@
           client_name = "Portainer";
           client_secret = "$pbkdf2-sha512$310000$b8BYivPoYH.pDy2MSv2yIQ$crkn3J9RY5.zFJ.ie28S403vzxqIcVk5AL6rV59tbtJ4HVz7.6R5yOCbgcRKcaowUD3/SpiOxatLrc1fnKcmeg";
           public = false;
-          authorization_policy = "two_factor";
+          authorization_policy = "one_factor";
           redirect_uris = [
             "https://port.trev.zip"
           ];
