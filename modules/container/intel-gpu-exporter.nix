@@ -14,6 +14,9 @@
         networks = [
           "prometheus"
         ];
+        capabilities = {
+          "CAP_PERFMON" = true;
+        };
       };
     };
   };
