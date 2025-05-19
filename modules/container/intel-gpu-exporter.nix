@@ -4,6 +4,7 @@
       "intel-gpu-exporter-${name}" = {
         image = "ghcr.io/spotdemo4/intel-gpu-exporter:latest";
         pull = "newer";
+        privileged = true;
         devices = [
           "/dev/dri/${name}:/dev/dri/${name}"
         ];
