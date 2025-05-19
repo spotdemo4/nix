@@ -35,6 +35,24 @@
           userinfo_signed_response_alg = "none";
           token_endpoint_auth_method = "client_secret_post";
         }
+        {
+          client_id = "pmdxrEV_TTNxQe3FwL9yfybbuFNLdbUjfBpOU5kSczmEfMkQPlAvpormWW~xIQNsf17JeJ5x";
+          client_name = "Grafana";
+          client_secret = "$pbkdf2-sha512$310000$450SHQMQDNEtUf0Itt625g$oIkAoLa0vpFNNW8u1iVISuMwDzbvGaQuj0mrx7VkxUfZb.RT6z9DzYZ3ChZmk9GDrOAM7fnFooKXmn7IyKFjqw";
+          public = false;
+          authorization_policy = "one_factor";
+          redirect_uris = [
+            "https://grafana.trev.zip/login/generic_oauth"
+          ];
+          scopes = [
+            "openid"
+            "profile"
+            "groups"
+            "email"
+          ];
+          userinfo_signed_response_alg = "none";
+          token_endpoint_auth_method = "client_secret_post";
+        }
       ];
     };
 
