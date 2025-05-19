@@ -8,6 +8,7 @@
   virtualisation.oci-containers.containers = {
     gitea-act-runner = {
       image = "gitea/act_runner:nightly";
+      pull = "newer";
       volumes = [
         "/var/run/docker.sock:/var/run/docker.sock"
       ];

@@ -11,7 +11,7 @@
       # Programs to import
       "update"
     ]
-    ++ map (x: self + /modules/docker/${x}.nix) [
+    ++ map (x: self + /modules/container/${x}.nix) [
       # Docker containers to import
       "gitea-act-runner"
     ];
