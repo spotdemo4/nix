@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
   configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
     log.level = "DEBUG";
     api.insecure = true;
@@ -24,7 +24,7 @@
       httpChallenge.entrypoint = "web";
     };
   };
-
+in {
   virtualisation.oci-containers.containers = {
     traefik = {
       image = "traefik:latest";
