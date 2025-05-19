@@ -9,10 +9,18 @@
     server.address = "tcp://:9091";
     log.level = "debug";
 
+    # First factor
     authentication_backend = {
       password_change.disable = true;
       password_reset.disable = true;
       file.path = "/config/users.yml";
+    };
+
+    # Second factor
+    webauthn = {
+      disable = false;
+      enable_passkey_login = true;
+      display_name = "Authelia";
     };
 
     identity_providers.oidc = {
@@ -102,6 +110,7 @@
         displayname = "Trev";
         password = "$argon2id$v=19$m=65536,t=3,p=4$fv/ncqO40/0Hbo8ehy+IVQ$IhzvTfxfYKrd+ToJvZ+CezHaimlfyxFHNJccfdIqFsg";
         email = "me@trev.xyz";
+        picture = "https://avatars.githubusercontent.com/spotdemo4";
         groups = [
           "admins"
           "dev"

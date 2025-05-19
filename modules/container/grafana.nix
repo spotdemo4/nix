@@ -34,8 +34,8 @@ in {
         GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH = "";
       };
       volumes = [
-        "${config.age.secrets."grafana".path}:/etc/secrets/client"
         "grafana_data:/var/lib/grafana"
+        "${config.age.secrets."grafana".path}:/etc/secrets/client"
       ];
       ports = [
         "3000:3000"
