@@ -103,6 +103,8 @@
           "wheel"
           "docker"
           "podman"
+          "video"
+          "render"
         ];
         packages = with pkgs; [];
         shell = pkgs.zsh;
@@ -118,6 +120,7 @@
   # Podman
   virtualisation.podman = {
     enable = true;
+    dockerCompat = true;
     autoPrune = {
       enable = true;
       flags = [
