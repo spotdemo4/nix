@@ -42,6 +42,7 @@
           public = false;
           authorization_policy = "one_factor";
           redirect_uris = [
+            "https://grafana.trev.zip"
             "https://grafana.trev.zip/login/generic_oauth"
           ];
           scopes = [
