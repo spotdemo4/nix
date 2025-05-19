@@ -5,7 +5,7 @@
         image = "ghcr.io/spotdemo4/intel-gpu-exporter:latest";
         pull = "newer";
         devices = [
-          "/dev/dri:/dev/dri"
+          "/dev/dri/${name}:/dev/dri/${name}"
         ];
         environment = {
           DEVICE = "drm:/dev/dri/${name}";
