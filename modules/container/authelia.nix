@@ -5,6 +5,7 @@
   ...
 }: let
   configFile = (pkgs.formats.yaml {}).generate "configuration.yml" {
+    theme = "dark";
     server.address = "tcp://:9091";
     log.level = "debug";
 
