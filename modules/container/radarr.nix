@@ -22,11 +22,11 @@
       ];
       labels = {
         "traefik.enable" = "true";
-        "traefik.http.routers.portainer.rule" = "Host(`radarr.trev.zip`)";
-        "traefik.http.routers.portainer.tls" = "true";
-        "traefik.http.routers.portainer.tls.certresolver" = "letsencrypt";
-        "traefik.http.services.portainer.loadbalancer.server.scheme" = "http";
-        "traefik.http.services.portainer.loadbalancer.server.port" = "7878";
+        "traefik.http.routers.radarr.rule" = "Host(`radarr.trev.zip`)";
+        "traefik.http.routers.authelia.entryPoints" = "https";
+        "traefik.http.routers.radarr.tls" = "true";
+        "traefik.http.routers.radarr.tls.certresolver" = "letsencrypt";
+        "traefik.http.routers.radarr.middlewares" = "authelia@docker";
       };
     };
   };
