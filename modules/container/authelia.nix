@@ -24,6 +24,13 @@
       display_name = "Authelia";
     };
 
+    identity_validation = {
+      elevated_session = {
+        require_second_factor = false;
+        skip_second_factor = true;
+      };
+    };
+
     identity_providers.oidc = {
       clients = [
         {
