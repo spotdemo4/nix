@@ -33,6 +33,16 @@
           }
         ];
       }
+      {
+        job_name = "traefik";
+        static_configs = [
+          {
+            targets = [
+              "10.10.10.105:8080"
+            ];
+          }
+        ];
+      }
     ];
   };
 
