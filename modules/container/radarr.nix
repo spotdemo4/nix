@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  configFile = builtins.toXML {
+  configFile = builtins.toFile "config.xml" (builtins.toXML {
     Config = {
       BindAddress = "*";
       Port = 7878;
@@ -17,7 +17,7 @@
       InstanceName = "Radarr";
       UpdateMechanism = "Docker";
     };
-  };
+  });
 
   utils = import ./utils.nix;
 in {
