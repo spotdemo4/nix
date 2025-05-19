@@ -54,4 +54,4 @@ in
       };
     };
   }
-  // network // volume
+  // lib.recursiveUpdate network volume

@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   config,
   ...
@@ -76,4 +77,4 @@ in
       };
     };
   }
-  // network // volume
+  // lib.recursiveUpdate network volume

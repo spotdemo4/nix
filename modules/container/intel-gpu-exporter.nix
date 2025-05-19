@@ -1,4 +1,4 @@
-{...}: let
+{lib, ...}: let
   mkGpuExporter = name: {
     virtualisation.oci-containers.containers = {
       "intel-gpu-exporter-${name}" = {
@@ -24,4 +24,4 @@
   card0 = mkGpuExporter "card0";
   card1 = mkGpuExporter "card1";
 in
-  card0 // card1
+  lib.recursiveUpdate card0 card1
