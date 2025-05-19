@@ -1,4 +1,11 @@
-{pkgs, ...}: let
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}: let
+  utils = import ./utils.nix {inherit pkgs config;};
+
   configFile = (pkgs.formats.yaml {}).generate "prometheus.yml" {
     scrape_configs = [
       {
@@ -29,22 +36,22 @@
     ];
   };
 
-  utils = import ./utils.nix;
-in {
-  inherit (utils.mkNetwork "prometheus");
-  inherit (utils.mkVolume "prometheus_data");
-
-  virtualisation.oci-containers.containers = {
-    prometheus = {
-      image = "prom/prometheus";
-      pull = "newer";
-      volumes = [
-        "${configFile}:/etc/prometheus/prometheus.yml"
-        "prometheus_data:/prometheus"
-      ];
-      networks = [
-        "prometheus"
-      ];
+  network = utils.mkNetwork "prometheus";
+  volume = utils.mkVolume "prometheus_data";
+in
+  {
+    virtualisation.oci-containers.containers = {
+      prometheus = {
+        image = "prom/prometheus";
+        pull = "newer";
+        volumes = [
+          "${configFile}:/etc/prometheus/prometheus.yml"
+          "prometheus_data:/prometheus"
+        ];
+        networks = [
+          "prometheus"
+        ];
+      };
     };
-  };
-}
+  }
+  // network // volume

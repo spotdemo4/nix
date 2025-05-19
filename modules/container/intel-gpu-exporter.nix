@@ -16,7 +16,8 @@
       };
     };
   };
-in {
-  inherit (mkGpuExporter "card0");
-  inherit (mkGpuExporter "card1");
-}
+
+  card0 = mkGpuExporter "card0";
+  card1 = mkGpuExporter "card1";
+in
+  card0 // card1
