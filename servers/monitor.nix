@@ -18,6 +18,7 @@
       "prometheus"
       "grafana"
       "intel-gpu-exporter"
+      "pve-exporter"
     ];
 
   networking.hostName = "monitor";
