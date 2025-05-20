@@ -15,10 +15,9 @@
       # Containers to import
       "portainer-agent"
       "traefik-kop"
-      "prometheus"
       "grafana"
       "intel-gpu-exporter"
-      "pve-exporter"
+      "victoria-metrics"
     ];
 
   networking.hostName = "monitor";

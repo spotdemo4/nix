@@ -12,7 +12,7 @@
           DEVICE = "drm:/dev/dri/${name}";
         };
         networks = [
-          "prometheus"
+          "victoria-metrics"
         ];
         capabilities = {
           "CAP_PERFMON" = true;
