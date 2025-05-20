@@ -51,7 +51,7 @@
 in
   {
     virtualisation.oci-containers.containers = {
-      prometheus = {
+      victoria-metrics = {
         image = "victoriametrics/victoria-metrics:v1.117.1";
         pull = "newer";
         volumes = [
@@ -64,7 +64,11 @@ in
         networks = [
           "victoria-metrics"
         ];
-        cmd = "--selfScrapeInterval=5s -storageDataPath=victoria-metrics-data -promscrape.config prometheus.yml";
+        cmd = [
+          "--selfScrapeInterval=5s"
+          "-storageDataPath=victoria-metrics-data"
+          "-promscrape.config=prometheus.yml"
+        ];
         labels = {
           "traefik.enable" = "true";
           "traefik.http.routers.radarr.rule" = "Host(`victoria-metrics.trev.zip`)";
