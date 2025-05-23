@@ -43,7 +43,7 @@ in
           "3000:3000"
         ];
         networks = [
-          "prometheus"
+          "victoria-metrics"
         ];
         labels = {
           "traefik.enable" = "true";
