@@ -33,6 +33,8 @@
         git
         openssh
         libnotify
+        nix
+        nixos-rebuild
       ];
 
       text = builtins.readFile (pkgs.replaceVars (self + /scripts/update.sh) {
