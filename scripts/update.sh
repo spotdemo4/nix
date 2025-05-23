@@ -24,11 +24,13 @@ function bprint() {
 DELETE=false
 FLAKE=false
 WATCH=false
-while getopts 'dfw' flag; do
+REBUILD=false
+while getopts 'dfwr' flag; do
     case "$flag" in
         d) DELETE=true ;;
         f) FLAKE=true ;;
         w) WATCH=true ;;
+        r) REBUILD=true ;;
         *) echo "Invalid flag: $flag" ;;
     esac
 done
@@ -36,6 +38,8 @@ done
 FIRST_RUN=true
 while true; do
     if [ "$FIRST_RUN" = false ]; then
+        REBUILD=false
+
         if [ "$WATCH" = false ]; then
             break
         else
@@ -48,9 +52,8 @@ while true; do
     cd /etc/nixos
     git fetch
 
-    REMOTE_CHANGES=false
     if ! git diff --quiet HEAD origin/main; then
-        REMOTE_CHANGES=true
+        REBUILD=true
         echo "Remote changes found, pulling"
         git pull origin main
     fi
@@ -58,6 +61,7 @@ while true; do
     LOCAL_CHANGES=false
     if [ -n "$(git status --porcelain)" ]; then
         LOCAL_CHANGES=true
+        REBUILD=true
         echo "Local changes found, checking"
         git add .
         nix fmt .
@@ -65,12 +69,12 @@ while true; do
     fi
 
     if [ "$FLAKE" = true ]; then
+        REBUILD=true
         echo "Updating flake"
         nix flake update
     fi
 
-    if [ "$FLAKE" = false ] && [ "$LOCAL_CHANGES" = false ] && [ "$REMOTE_CHANGES" = false ]; then
-        echo "No changes found, skipping"
+    if [ "$REBUILD" = false ]; then
         continue
     fi
 

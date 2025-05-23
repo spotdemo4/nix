@@ -25,34 +25,37 @@
     };
   };
 
-  config = lib.mkIf config.update.enable {
-    environment.systemPackages = with pkgs; [
-      (writeShellApplication {
-        name = "update";
+  config = let
+    updater = pkgs.writeShellApplication {
+      name = "update";
 
-        runtimeInputs = with pkgs; [
-          git
-          libnotify
-        ];
+      runtimeInputs = with pkgs; [
+        git
+        openssh
+        libnotify
+      ];
 
-        text = builtins.readFile (pkgs.replaceVars (self + /scripts/update.sh) {
-          hostname = "${config.update.hostname}";
-          user = "${config.update.user}";
-        });
-      })
-    ];
+      text = builtins.readFile (pkgs.replaceVars (self + /scripts/update.sh) {
+        hostname = "${config.update.hostname}";
+        user = "${config.update.user}";
+      });
+    };
+  in
+    lib.mkIf config.update.enable {
+      environment.systemPackages = [
+        updater
+      ];
 
-    systemd.services.update = {
-      description = "Update nixos in the background";
-      path = ["/run/current-system/sw"];
-      wantedBy = ["multi-user.target"];
-      serviceConfig = {
-        Type = "exec";
-        Environment = "PATH=/run/current-system/sw/bin:$PATH";
-        ExecStart = [
-          "/run/current-system/sw/bin/update -w -d"
-        ];
+      systemd.services.update = {
+        description = "Update nixos in the background";
+        wantedBy = ["multi-user.target"];
+        serviceConfig = {
+          Type = "exec";
+          Restart = "on-failure";
+          ExecStart = [
+            "${updater}/bin/update -w -d"
+          ];
+        };
       };
     };
-  };
 }
