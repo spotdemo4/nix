@@ -71,11 +71,11 @@ in
         ];
         labels = {
           "traefik.enable" = "true";
-          "traefik.http.routers.radarr.rule" = "Host(`victoria-metrics.trev.zip`)";
-          "traefik.http.routers.radarr.entryPoints" = "https";
-          "traefik.http.routers.radarr.tls" = "true";
-          "traefik.http.routers.radarr.tls.certresolver" = "letsencrypt";
-          "traefik.http.routers.radarr.middlewares" = "authelia@docker";
+          "traefik.http.routers.victoriametrics.rule" = "Host(`victoria-metrics.trev.zip`)";
+          "traefik.http.routers.victoriametrics.entryPoints" = "https";
+          "traefik.http.routers.victoriametrics.tls" = "true";
+          "traefik.http.routers.victoriametrics.tls.certresolver" = "letsencrypt";
+          "traefik.http.routers.victoriametrics.middlewares" = "authelia@docker";
         };
       };
     };

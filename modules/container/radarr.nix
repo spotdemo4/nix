@@ -31,8 +31,6 @@ in
           "traefik.http.routers.radarr.tls" = "true";
           "traefik.http.routers.radarr.tls.certresolver" = "letsencrypt";
           "traefik.http.routers.radarr.middlewares" = "authelia@docker";
-          "traefik.http.services.radarr.loadbalancer.server.scheme" = "http";
-          "traefik.http.services.radarr.loadbalancer.server.port" = "7878";
         };
       };
     };
