@@ -47,3 +47,8 @@
     };
   };
 }
+# This was a pain in the ass figuring out. Here are some crumbs for my future self
+# https://github.com/blakeblackshear/frigate/discussions/5773#discussioncomment-12330162
+# --privileged shouldn't be necessary here, and yet it is. Don't know what capabilities the container is missing,
+# it works fine in the unprivileged LXC, but it being elevated here isn't really that big of a deal because it still can't hurt the host
+
