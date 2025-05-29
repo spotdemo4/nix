@@ -2,33 +2,46 @@
   pkgs,
   config,
   ...
-}: let
-  utils = import ./utils.nix {inherit pkgs config;};
-
-  volume = utils.mkVolume "portainer_data";
-in
-  {
-    virtualisation.oci-containers.containers = {
-      portainer = {
-        image = "portainer/portainer-ce:latest";
-        pull = "newer";
-        volumes = [
-          "/run/podman/podman.sock:/var/run/docker.sock"
-          "portainer_data:/data"
-        ];
-        networks = [
-          "traefik"
-        ];
-        labels = {
-          "traefik.enable" = "true";
-          "traefik.http.routers.portainer.rule" = "Host(`port.trev.zip`)";
-          "traefik.http.routers.portainer.entryPoints" = "https";
-          "traefik.http.routers.portainer.tls" = "true";
-          "traefik.http.routers.portainer.tls.certresolver" = "letsencrypt";
-          "traefik.http.services.portainer.loadbalancer.server.scheme" = "http";
-          "traefik.http.services.portainer.loadbalancer.server.port" = "9000";
+}: {
+  virtualisation.quadlet = let
+    utils = import ./utils.nix;
+    inherit (config.virtualisation.quadlet) networks volumes;
+  in {
+    containers.portainer.containerConfig = {
+      image = "portainer/portainer-ce:latest";
+      pull = "newer";
+      autoUpdate = "registry";
+      volumes = [
+        "/run/podman/podman.sock:/var/run/docker.sock"
+        "${volumes.portainer_data.ref}:/data"
+      ];
+      networks = [
+        networks.portainer.ref
+      ];
+      labels = utils.toEnvStrings [] {
+        traefik = {
+          enable = true;
+          http = {
+            routers.portainer = {
+              rule = "Host(`port.trev.zip`)";
+              entryPoints = "https";
+              tls.certresolver = "letsencrypt";
+            };
+            services.portainer.loadbalancer.server = {
+              scheme = "http";
+              port = 9000;
+            };
+          };
         };
       };
     };
-  }
-  // volume
+
+    volumes = {
+      portainer_data = {};
+    };
+
+    networks = {
+      portainer = {};
+    };
+  };
+}

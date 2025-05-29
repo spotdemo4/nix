@@ -4,7 +4,7 @@
   ...
 }: {
   virtualisation.quadlet = let
-    utils = import ./utils.nix {inherit pkgs config;};
+    utils = import ./utils.nix;
     inherit (config.virtualisation.quadlet) volumes;
   in {
     containers.radarr.containerConfig = {

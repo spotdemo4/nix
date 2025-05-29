@@ -4,8 +4,6 @@
   config,
   ...
 }: let
-  utils = import ./utils.nix {inherit pkgs config;};
-
   configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
     log.level = "DEBUG";
     api.insecure = true;
@@ -32,49 +30,62 @@
       httpChallenge.entrypoint = "http";
     };
   };
-
-  network = utils.mkNetwork "traefik";
-  volume = utils.mkVolume "traefik_acme";
-in
-  {
-    virtualisation.oci-containers.containers = {
-      traefik = {
+in {
+  virtualisation.quadlet = let
+    utils = import ./utils.nix;
+    inherit (config.virtualisation.quadlet) networks volumes;
+  in {
+    containers = {
+      traefik.containerConfig = {
         image = "traefik:latest";
         pull = "newer";
+        autoUpdate = "registry";
         volumes = [
           "/run/podman/podman.sock:/var/run/docker.sock"
           "${configFile}:/etc/traefik/traefik.yml"
-          "traefik_acme:/etc/traefik/acme"
+          "${volumes.traefik_acme.ref}:/etc/traefik/acme"
         ];
-        ports = [
+        publishPorts = [
           "80:80"
           "443:443"
           "8080:8080"
         ];
         networks = [
-          "traefik"
+          networks.traefik.ref
         ];
-        labels = {
-          "traefik.enable" = "true";
-          "traefik.http.routers.api.rule" = "Host(`traefik.trev.zip`)";
-          "traefik.http.routers.api.entrypoints" = "https";
-          "traefik.http.routers.api.service" = "api@internal";
-          "traefik.http.routers.api.tls" = "true";
-          "traefik.http.routers.api.tls.certresolver" = "letsencrypt";
-          "traefik.http.routers.api.middlewares" = "authelia@docker";
+        labels = utils.toEnvStrings [] {
+          traefik = {
+            enable = true;
+            http.routers.api = {
+              rule = "Host(`traefik.trev.zip`)";
+              entrypoints = "https";
+              service = "api@internal";
+              tls.certresolver = "letsencrypt";
+              middlewares = "authelia@docker";
+            };
+          };
         };
       };
 
-      traefik-redis = {
+      traefik-redis.containerConfig = {
         image = "redis:latest";
         pull = "newer";
-        ports = [
+        autoUpdate = "registry";
+        publishPorts = [
           "6379:6379"
         ];
         networks = [
-          "traefik"
+          networks.traefik.ref
         ];
       };
     };
-  }
-  // lib.recursiveUpdate network volume
+
+    volumes = {
+      traefik_acme = {};
+    };
+
+    networks = {
+      traefik = {};
+    };
+  };
+}

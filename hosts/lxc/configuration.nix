@@ -129,6 +129,9 @@
     };
   };
 
+  # Quadlet
+  virtualisation.quadlet.autoEscape = true;
+
   # Allow unfree packages and add overlays
   nixpkgs = {
     config.allowUnfree = true;

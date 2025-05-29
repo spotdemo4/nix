@@ -4,8 +4,6 @@
   config,
   ...
 }: let
-  utils = import ./utils.nix {inherit pkgs config;};
-
   configFile = (pkgs.formats.yaml {}).generate "prometheus.yml" {
     scrape_configs = [
       {
@@ -45,39 +43,49 @@
       }
     ];
   };
-
-  network = utils.mkNetwork "victoria-metrics";
-  volume = utils.mkVolume "victoria-metrics_data";
-in
-  {
-    virtualisation.oci-containers.containers = {
-      victoria-metrics = {
-        image = "victoriametrics/victoria-metrics:v1.117.1";
-        pull = "newer";
-        volumes = [
-          "${configFile}:/prometheus.yml"
-          "victoria-metrics_data:/victoria-metrics-data"
-        ];
-        ports = [
-          "8428:8428"
-        ];
-        networks = [
-          "victoria-metrics"
-        ];
-        cmd = [
-          "--selfScrapeInterval=5s"
-          "-storageDataPath=victoria-metrics-data"
-          "-promscrape.config=prometheus.yml"
-        ];
-        labels = {
-          "traefik.enable" = "true";
-          "traefik.http.routers.victoriametrics.rule" = "Host(`victoria-metrics.trev.zip`)";
-          "traefik.http.routers.victoriametrics.entryPoints" = "https";
-          "traefik.http.routers.victoriametrics.tls" = "true";
-          "traefik.http.routers.victoriametrics.tls.certresolver" = "letsencrypt";
-          "traefik.http.routers.victoriametrics.middlewares" = "authelia@docker";
+in {
+  virtualisation.quadlet = let
+    utils = import ./utils.nix;
+    inherit (config.virtualisation.quadlet) networks volumes;
+  in {
+    containers.victoria-metrics.containerConfig = {
+      image = "victoriametrics/victoria-metrics:v1.117.1";
+      pull = "newer";
+      autoUpdate = "registry";
+      volumes = [
+        "${configFile}:/prometheus.yml"
+        "${volumes.victoria-metrics_data.ref}:/victoria-metrics-data"
+      ];
+      publishPorts = [
+        "8428:8428"
+      ];
+      networks = [
+        networks.victoria-metrics.ref
+      ];
+      exec = [
+        "--selfScrapeInterval=5s"
+        "-storageDataPath=victoria-metrics-data"
+        "-promscrape.config=prometheus.yml"
+      ];
+      labels = utils.toEnvStrings [] {
+        traefik = {
+          enable = true;
+          http.routers.victoria-metrics = {
+            rule = "Host(`victoria-metrics.trev.zip`)";
+            entryPoints = "https";
+            tls.certresolver = "letsencrypt";
+            middlewares = "authelia@docker";
+          };
         };
       };
     };
-  }
-  // lib.recursiveUpdate network volume
+
+    networks = {
+      victoria-metrics = {};
+    };
+
+    volumes = {
+      victoria-metrics_data = {};
+    };
+  };
+}

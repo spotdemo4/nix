@@ -4,8 +4,6 @@
   config,
   ...
 }: let
-  utils = import ./utils.nix {inherit pkgs config;};
-
   configFile = (pkgs.formats.yaml {}).generate "configuration.yml" {
     theme = "dark";
     server.address = "tcp://:9091";
@@ -131,47 +129,58 @@
       };
     };
   };
+in {
+  # Get secrets
+  age.secrets."authelia-session".file = self + /secrets/authelia-session.age;
+  age.secrets."authelia-hmac".file = self + /secrets/authelia-hmac.age;
+  age.secrets."authelia-private-key".file = self + /secrets/authelia-private-key.age;
 
-  volume = utils.mkVolume "authelia_data";
-in
-  {
-    # Get secrets
-    age.secrets."authelia-session".file = self + /secrets/authelia-session.age;
-    age.secrets."authelia-hmac".file = self + /secrets/authelia-hmac.age;
-    age.secrets."authelia-private-key".file = self + /secrets/authelia-private-key.age;
-
-    virtualisation.oci-containers.containers = {
-      authelia = {
-        image = "authelia/authelia:latest";
-        pull = "newer";
-        volumes = [
-          "authelia_data:/data"
-          "${configFile}:/config/configuration.yml"
-          "${usersFile}:/config/users.yml"
-          "${config.age.secrets."authelia-session".path}:/secret/session"
-          "${config.age.secrets."authelia-hmac".path}:/secret/hmac"
-          "${config.age.secrets."authelia-private-key".path}:/secret/private-key"
-        ];
-        networks = [
-          "traefik"
-        ];
-        environment = {
-          TZ = "America/Detroit";
-          AUTHELIA_SESSION_SECRET_FILE = "/secret/session";
-          AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE = "/secret/hmac";
-          AUTHELIA_IDENTITY_PROVIDERS_OIDC_ISSUER_PRIVATE_KEY_FILE = "/secret/private-key";
-        };
-        labels = {
-          "traefik.enable" = "true";
-          "traefik.http.routers.authelia.rule" = "Host(`auth.trev.zip`)";
-          "traefik.http.routers.authelia.entryPoints" = "https";
-          "traefik.http.routers.authelia.tls" = "true";
-          "traefik.http.routers.authelia.tls.certresolver" = "letsencrypt";
-          "traefik.http.middlewares.authelia.forwardAuth.address" = "http://authelia:9091/api/authz/forward-auth";
-          "traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader" = "true";
-          "traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders" = "Remote-User,Remote-Groups,Remote-Email,Remote-Name";
+  virtualisation.quadlet = let
+    utils = import ./utils.nix;
+    inherit (config.virtualisation.quadlet) volumes networks;
+  in {
+    containers.authelia.containerConfig = {
+      image = "authelia/authelia:latest";
+      pull = "newer";
+      autoUpdate = "registry";
+      environments = {
+        TZ = "America/Detroit";
+        AUTHELIA_SESSION_SECRET_FILE = "/secret/session";
+        AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE = "/secret/hmac";
+        AUTHELIA_IDENTITY_PROVIDERS_OIDC_ISSUER_PRIVATE_KEY_FILE = "/secret/private-key";
+      };
+      volumes = [
+        "${volumes.authelia_data.ref}:/data"
+        "${configFile}:/config/configuration.yml"
+        "${usersFile}:/config/users.yml"
+        "${config.age.secrets."authelia-session".path}:/secret/session"
+        "${config.age.secrets."authelia-hmac".path}:/secret/hmac"
+        "${config.age.secrets."authelia-private-key".path}:/secret/private-key"
+      ];
+      networks = [
+        networks.traefik.ref
+      ];
+      labels = utils.toEnvStrings [] {
+        traefik = {
+          enable = true;
+          http = {
+            routers.authelia = {
+              rule = "Host(`auth.trev.zip`)";
+              entryPoints = "https";
+              tls.certresolver = "letsencrypt";
+            };
+            middlewares.authelia.forwardAuth = {
+              address = "http://authelia:9091/api/authz/forward-auth";
+              trustForwardHeader = true;
+              authResponseHeaders = "Remote-User,Remote-Groups,Remote-Email,Remote-Name";
+            };
+          };
         };
       };
     };
-  }
-  // volume
+
+    volumes = {
+      authelia_data = {};
+    };
+  };
+}

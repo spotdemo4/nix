@@ -1,27 +1,37 @@
-{lib, ...}: let
-  mkGpuExporter = name: {
-    virtualisation.oci-containers.containers = {
-      "intel-gpu-exporter-${name}" = {
-        image = "ghcr.io/spotdemo4/intel-gpu-exporter:latest";
-        pull = "newer";
-        privileged = true;
-        devices = [
-          "/dev/dri/${name}:/dev/dri/${name}"
-        ];
-        environment = {
-          DEVICE = "drm:/dev/dri/${name}";
-        };
-        networks = [
-          "victoria-metrics"
-        ];
-        capabilities = {
-          "CAP_PERFMON" = true;
-        };
-      };
+{
+  lib,
+  config,
+  ...
+}: {
+  options.intel-gpu-exporter = {
+    enable = lib.mkEnableOption "enable intel gpu exporter";
+
+    card = lib.mkOption {
+      type = lib.types.str;
+      default = "card0";
+      description = ''
+        The dev name for the card
+      '';
     };
   };
 
-  card0 = mkGpuExporter "card0";
-  card1 = mkGpuExporter "card1";
-in
-  lib.recursiveUpdate card0 card1
+  config = lib.mkIf config.update.enable {
+    virtualisation.quadlet.containers."intel-gpu-exporter-${config.intel-gpu-exporter.card}".containerConfig = {
+      image = "ghcr.io/spotdemo4/intel-gpu-exporter:latest";
+      pull = "newer";
+      autoUpdate = "registry";
+      environments = {
+        DEVICE = "drm:/dev/dri/${config.intel-gpu-exporter.card}";
+      };
+      publishPorts = [
+        "8080:8080"
+      ];
+      devices = [
+        "/dev/dri/${config.intel-gpu-exporter.card}:/dev/dri/${config.intel-gpu-exporter.card}"
+      ];
+      addCapabilities = [
+        "CAP_PERFMON"
+      ];
+    };
+  };
+}

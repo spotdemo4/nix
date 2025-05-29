@@ -16,7 +16,6 @@
       "portainer-agent"
       "traefik-kop"
       "grafana"
-      "intel-gpu-exporter"
       "victoria-metrics"
     ];
 
