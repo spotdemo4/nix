@@ -1,7 +1,29 @@
-{config, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   virtualisation.quadlet = let
     utils = import ./utils.nix;
     inherit (config.virtualisation.quadlet) volumes networks;
+
+    start =
+      pkgs.writeShellScript "start.sh"
+      ''
+        #!/usr/bin/env bash
+
+        # init ollama
+        source ipex-llm-init --gpu --device $DEVICE
+        mkdir -p /llm/ollama
+        cd /llm/ollama
+        init-ollama
+        export OLLAMA_NUM_GPU=999
+        export ZES_ENABLE_SYSMAN=1
+        export OLLAMA_HOST=0.0.0.0:11434
+
+        # start ollama service
+        /llm/ollama/ollama serve
+      '';
   in {
     containers = {
       ipex-llm-ollama.containerConfig = {
@@ -21,12 +43,13 @@
         ];
         volumes = [
           "${volumes.ipex-llm_data.ref}:/models"
+          "${start}:/start.sh"
         ];
         networks = [
           networks.ipex-llm.ref
         ];
         entrypoint = "/bin/bash";
-        exec = "-c /llm/scripts/start-ollama.sh & wait";
+        exec = "-c /start.sh";
       };
 
       open-webui.containerConfig = {
