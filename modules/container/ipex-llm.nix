@@ -41,7 +41,7 @@
           "${volumes.open-webui.ref}:/app/backend/data"
         ];
         publishPorts = [
-          "8080:8080"
+          "8000:8080"
         ];
         networks = [
           networks.ipex-llm.ref
