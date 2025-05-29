@@ -37,5 +37,6 @@
   intel-gpu-exporter = {
     enable = true;
     card = "card1";
+    render = "renderD129";
   };
 }
