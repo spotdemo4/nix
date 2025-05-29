@@ -7,23 +7,21 @@
     utils = import ./utils.nix;
     inherit (config.virtualisation.quadlet) volumes networks;
 
-    start =
-      pkgs.writeShellScript "start.sh"
-      ''
-        #!/bin/bash
+    start = pkgs.writeScript "start.sh" ''
+      #!/bin/sh
 
-        # init ollama
-        source ipex-llm-init --gpu --device $DEVICE
-        mkdir -p /llm/ollama
-        cd /llm/ollama
-        init-ollama
-        export OLLAMA_NUM_GPU=999
-        export ZES_ENABLE_SYSMAN=1
-        export OLLAMA_HOST=0.0.0.0:11434
+      # init ollama
+      source ipex-llm-init --gpu --device $DEVICE
+      mkdir -p /llm/ollama
+      cd /llm/ollama
+      init-ollama
+      export OLLAMA_NUM_GPU=999
+      export ZES_ENABLE_SYSMAN=1
+      export OLLAMA_HOST=0.0.0.0:11434
 
-        # start ollama service
-        /llm/ollama/ollama serve
-      '';
+      # start ollama service
+      /llm/ollama/ollama serve
+    '';
   in {
     containers = {
       ipex-llm-ollama.containerConfig = {
