@@ -20,7 +20,7 @@
           "/dev/dri/card1:/dev/dri/card1"
         ];
         volumes = [
-          "${volumes.ipex-llm.ref}:/models"
+          "${volumes.ipex-llm_data.ref}:/models"
         ];
         networks = [
           networks.ipex-llm.ref
@@ -41,7 +41,7 @@
           OPENAI_API_BASE_URL = "http://ipex-llm-ollama:11434/v1";
         };
         volumes = [
-          "${volumes.open-webui.ref}:/app/backend/data"
+          "${volumes.open-webui_data.ref}:/app/backend/data"
         ];
         publishPorts = [
           "8000:8080"
@@ -63,8 +63,8 @@
     };
 
     volumes = {
-      ipex-llm = {};
-      open-webui = {};
+      ipex-llm_data = {};
+      open-webui_data = {};
     };
 
     networks = {
