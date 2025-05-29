@@ -41,6 +41,9 @@
       addCapabilities = [
         "CAP_PERFMON"
       ];
+      podmanArgs = [
+        "--privileged"
+      ];
     };
   };
 }
