@@ -1,10 +1,13 @@
 {
   config,
-  lib,
-  pkgs,
+  self,
   ...
 }: {
+  age.secrets."authelia-env".file = self + /secrets/authelia-env.age;
+
   home.file = {
+    ".continue/.env".source = config.lib.file.mkOutOfStoreSymlink config.age.secrets."authelia-env".path;
+
     ".continue/config.json".text = ''
       {
         "models": [
@@ -13,14 +16,24 @@
             "title": "Ollama",
             "provider": "ollama",
             "completionOptions": {},
-            "apiBase": "http://main:11434",
+            "apiBase": "https://ollama.trev.zip",
+            "requestOptions": {
+              "headers": {
+                "Authorization": "Basic ''${{ secrets.token }}"
+              }
+            }
           }
         ],
         "tabAutocompleteModel": {
           "model": "qwen2.5-coder:3b",
           "title": "Qwen2.5-Coder",
           "provider": "ollama",
-          "apiBase": "http://main:11434",
+          "apiBase": "https://ollama.trev.zip",
+          "requestOptions": {
+            "headers": {
+              "Authorization": "Basic xxx"
+            }
+          }
         },
         "contextProviders": [
           {

@@ -33,9 +33,6 @@
         environments = {
           DEVICE = "Arc";
         };
-        # globalArgs = [
-        #   "--log-level=debug"
-        # ];
         devices = [
           "/dev/dri/card1:/dev/dri/card1"
         ];
@@ -43,9 +40,23 @@
           "${volumes.ipex-llm_data.ref}:/models"
           "${start}:/start.sh"
         ];
+        publishPorts = [
+          "11434:11434"
+        ];
         networks = [
           networks.ipex-llm.ref
         ];
+        labels = utils.toEnvStrings [] {
+          traefik = {
+            enable = true;
+            http.routers.ollama = {
+              rule = "Host(`ollama.trev.zip`)";
+              entryPoints = "https";
+              tls.certresolver = "letsencrypt";
+              middlewares = "authelia@docker";
+            };
+          };
+        };
         entrypoint = "/start.sh";
       };
 

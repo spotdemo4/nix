@@ -7,4 +7,5 @@ in {
   "authelia-private-key.age".publicKeys = keys.all;
   "tailscale.age".publicKeys = keys.all;
   "grafana.age".publicKeys = keys.all;
+  "authelia-env.age".publicKeys = keys.all;
 }
