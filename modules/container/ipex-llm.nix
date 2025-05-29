@@ -13,6 +13,9 @@
         environments = {
           DEVICE = "Arc";
         };
+        globalArgs = [
+          "--log-level=debug"
+        ];
         devices = [
           "/dev/dri/card1:/dev/dri/card1"
         ];
