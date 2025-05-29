@@ -30,7 +30,7 @@
           "apiBase": "https://ollama.trev.zip",
           "requestOptions": {
             "headers": {
-              "Authorization": "Basic xxx"
+              "Authorization": "Basic ''${{ secrets.token }}"
             }
           }
         },

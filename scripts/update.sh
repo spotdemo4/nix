@@ -52,18 +52,30 @@ while true; do
     cd /etc/nixos
     git fetch
 
+    REMOTE_CHANGES=false
     if ! git diff --quiet HEAD origin/main; then
+        REMOTE_CHANGES=true
         REBUILD=true
-        echo "Remote changes found, pulling"
-        git stash
-        git pull origin main
-        git stash pop
     fi
 
     LOCAL_CHANGES=false
     if [ -n "$(git status --porcelain)" ]; then
         LOCAL_CHANGES=true
         REBUILD=true
+    fi
+
+    if [ "$REMOTE_CHANGES" = true ] && [ "$LOCAL_CHANGES" = true ]; then
+        echo "Local and remote changes found, pulling and checking"
+        git stash
+        git pull origin main
+        git stash pop
+        git add .
+        nix fmt .
+        nix flake check
+    elif [ "$REMOTE_CHANGES" = true ]; then
+        echo "Remote changes found, pulling"
+        git pull origin main
+    elif [ "$LOCAL_CHANGES" = true ]; then
         echo "Local changes found, checking"
         git add .
         nix fmt .
