@@ -8,14 +8,14 @@
         image = "docker.io/intelanalytics/ipex-llm-inference-cpp-xpu:latest";
         pull = "newer";
         autoUpdate = "registry";
-        memory = "16G";
-        shmSize = "16g";
+        # memory = "16G";
+        # shmSize = "16g";
         environments = {
           DEVICE = "Arc";
         };
-        globalArgs = [
-          "--log-level=debug"
-        ];
+        # globalArgs = [
+        #   "--log-level=debug"
+        # ];
         devices = [
           "/dev/dri/card1:/dev/dri/card1"
         ];
@@ -25,7 +25,7 @@
         networks = [
           networks.ipex-llm.ref
         ];
-        entrypoint = "bash -c /llm/scripts/start-ollama.sh & wait";
+        # entrypoint = "bash -c /llm/scripts/start-ollama.sh & wait";
       };
 
       open-webui.containerConfig = {
