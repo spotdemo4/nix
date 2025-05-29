@@ -25,7 +25,7 @@
         networks = [
           networks.ipex-llm.ref
         ];
-        # entrypoint = "bash -c /llm/scripts/start-ollama.sh & wait";
+        entrypoint = "bash -c /llm/scripts/start-ollama.sh & wait";
       };
 
       open-webui.containerConfig = {
