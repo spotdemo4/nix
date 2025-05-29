@@ -5,10 +5,10 @@ if [[ -z "$1" ]]; then
   exit 1
 fi
 
-if ! [ -f /etc/ssh/ssh_host_rsa_key.pub ]; then
+if ! [ -f /etc/ssh/ssh_host_ed25519_key.pub ]; then
   ssh-keygen -A
   echo "Generated host keys, add this pubkey to secrets and re-run:"
-  cat /etc/ssh/ssh_host_rsa_key.pub
+  cat /etc/ssh/ssh_host_ed25519_key.pub
   exit 1
 fi
 
