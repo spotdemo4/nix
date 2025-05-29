@@ -27,7 +27,7 @@
         "8080:8080"
       ];
       devices = [
-        "/dev/dri/${config.intel-gpu-exporter.card}:/dev/dri/${config.intel-gpu-exporter.card}"
+        "/dev/dri/:/dev/dri/"
       ];
       addCapabilities = [
         "CAP_PERFMON"
