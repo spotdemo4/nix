@@ -25,12 +25,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Quadlet-nix
-    quadlet-nix = {
-      url = "github:SEIAROTg/quadlet-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # Catppuccin
     catppuccin = {
       url = "github:catppuccin/nix";
@@ -73,6 +67,9 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+
+    # Quadlet-nix
+    quadlet-nix.url = "github:SEIAROTg/quadlet-nix";
   };
 
   outputs = {
