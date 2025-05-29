@@ -35,6 +35,7 @@
         };
         devices = [
           "/dev/dri/card1:/dev/dri/card1"
+          "/dev/dri/renderD129:/dev/dri/renderD129"
         ];
         volumes = [
           "${volumes.ipex-llm_data.ref}:/models"
