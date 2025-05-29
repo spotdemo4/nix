@@ -25,6 +25,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Quadlet-nix
+    quadlet-nix = {
+      url = "github:SEIAROTg/quadlet-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Catppuccin
     catppuccin = {
       url = "github:catppuccin/nix";
@@ -74,6 +80,7 @@
     nixpkgs,
     nur,
     agenix,
+    quadlet-nix,
     ...
   } @ inputs: let
     build-systems = [
@@ -100,11 +107,11 @@
           (nixpkgs.lib.removeSuffix ".nix" name)
           (nixpkgs.lib.nixosSystem {
             specialArgs = {
-              inherit inputs;
-              inherit self;
+              inherit inputs self;
             };
             modules = [
               agenix.nixosModules.default
+              quadlet-nix.nixosModules.quadlet
               ./servers/${name}
             ];
           })
@@ -115,8 +122,7 @@
       {
         laptop = nixpkgs.lib.nixosSystem {
           specialArgs = {
-            inherit inputs;
-            inherit self;
+            inherit inputs self;
           };
           modules = [
             agenix.nixosModules.default
@@ -127,8 +133,7 @@
 
         desktop = nixpkgs.lib.nixosSystem {
           specialArgs = {
-            inherit inputs;
-            inherit self;
+            inherit inputs self;
           };
           modules = [
             agenix.nixosModules.default
