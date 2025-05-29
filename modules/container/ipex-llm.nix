@@ -10,7 +10,7 @@
     start =
       pkgs.writeShellScript "start.sh"
       ''
-        #!/usr/bin/env bash
+        #!/bin/bash
 
         # init ollama
         source ipex-llm-init --gpu --device $DEVICE
@@ -48,8 +48,7 @@
         networks = [
           networks.ipex-llm.ref
         ];
-        entrypoint = "/bin/bash";
-        exec = "-c /start.sh";
+        entrypoint = "/start.sh";
       };
 
       open-webui.containerConfig = {
