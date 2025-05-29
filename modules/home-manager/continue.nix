@@ -6,7 +6,7 @@
   age.secrets."authelia-env".file = self + /secrets/authelia-env.age;
 
   home.file = {
-    ".continue/.env".source = config.lib.file.mkOutOfStoreSymlink config.age.secrets."authelia-env".path;
+    ".continue/.env".source = config.lib.file.mkOutOfStoreSymlink "${config.age.secrets."authelia-env".path}";
 
     ".continue/config.json".text = ''
       {
