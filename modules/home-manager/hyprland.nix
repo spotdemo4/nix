@@ -37,7 +37,7 @@
         ",preferred,auto,auto"
       ];
 
-      workspace = "name:vertical, monitor:desc:Dell Inc. S2719DGF 1HSYBY2, default:true, layoutopt:orientation:top";
+      workspace = "m[desc:Dell Inc. S2719DGF 1HSYBY2], layoutopt:orientation:top";
 
       general = {
         "gaps_in" = 5;
