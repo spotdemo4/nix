@@ -16,6 +16,7 @@
       "portainer-agent"
       "traefik-kop"
       "ipex-llm"
+      "intel-gpu-exporter"
     ];
 
   networking.hostName = "ai";
@@ -31,5 +32,10 @@
   traefik-kop = {
     enable = true;
     ip = "10.10.10.110";
+  };
+
+  intel-gpu-exporter = {
+    enable = true;
+    card = "card1";
   };
 }
