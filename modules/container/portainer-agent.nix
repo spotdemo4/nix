@@ -1,6 +1,6 @@
 {...}: {
   virtualisation.quadlet.containers.portainer-agent.containerConfig = {
-    image = "portainer/agent:latest";
+    image = "docker.io/portainer/agent:latest";
     pull = "newer";
     autoUpdate = "registry";
     volumes = [

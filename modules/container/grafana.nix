@@ -11,7 +11,7 @@
     inherit (config.virtualisation.quadlet) volumes networks;
   in {
     containers.grafana.containerConfig = {
-      image = "grafana/grafana-enterprise:latest";
+      image = "docker.io/grafana/grafana-enterprise:latest";
       pull = "newer";
       autoUpdate = "registry";
       user = "root";

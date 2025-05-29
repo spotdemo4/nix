@@ -37,7 +37,7 @@ in {
   in {
     containers = {
       traefik.containerConfig = {
-        image = "traefik:latest";
+        image = "docker.io/traefik:latest";
         pull = "newer";
         autoUpdate = "registry";
         volumes = [
@@ -68,7 +68,7 @@ in {
       };
 
       traefik-redis.containerConfig = {
-        image = "redis:latest";
+        image = "docker.io/redis:latest";
         pull = "newer";
         autoUpdate = "registry";
         publishPorts = [

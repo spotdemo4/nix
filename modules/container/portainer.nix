@@ -8,7 +8,7 @@
     inherit (config.virtualisation.quadlet) networks volumes;
   in {
     containers.portainer.containerConfig = {
-      image = "portainer/portainer-ce:latest";
+      image = "docker.io/portainer/portainer-ce:latest";
       pull = "newer";
       autoUpdate = "registry";
       volumes = [

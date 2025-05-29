@@ -6,7 +6,7 @@
   age.secrets."gitea-runner".file = self + /secrets/gitea-runner.age;
 
   virtualisation.quadlet.containers.gitea-act-runner.containerConfig = {
-    image = "gitea/act_runner:nightly";
+    image = "docker.io/gitea/act_runner:nightly";
     pull = "newer";
     autoUpdate = "registry";
     environments = {

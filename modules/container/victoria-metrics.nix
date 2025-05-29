@@ -49,7 +49,7 @@ in {
     inherit (config.virtualisation.quadlet) networks volumes;
   in {
     containers.victoria-metrics.containerConfig = {
-      image = "victoriametrics/victoria-metrics:v1.117.1";
+      image = "docker.io/victoriametrics/victoria-metrics:v1.117.1";
       pull = "newer";
       autoUpdate = "registry";
       volumes = [

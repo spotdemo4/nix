@@ -140,7 +140,7 @@ in {
     inherit (config.virtualisation.quadlet) volumes networks;
   in {
     containers.authelia.containerConfig = {
-      image = "authelia/authelia:latest";
+      image = "docker.io/authelia/authelia:latest";
       pull = "newer";
       autoUpdate = "registry";
       environments = {
