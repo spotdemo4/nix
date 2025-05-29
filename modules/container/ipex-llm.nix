@@ -4,7 +4,7 @@
     inherit (config.virtualisation.quadlet) volumes networks;
   in {
     containers = {
-      ipex-llm.containerConfig = {
+      ipex-llm-ollama.containerConfig = {
         image = "docker.io/intelanalytics/ipex-llm-inference-cpp-xpu:latest";
         pull = "newer";
         autoUpdate = "registry";
@@ -38,7 +38,7 @@
           ENABLE_OLLAMA_API = "false";
           ENABLE_IMAGE_GENERATION = "false";
           WHISPER_MODEL = "large";
-          OPENAI_API_BASE_URL = "http://ipex-llm:11434/v1";
+          OPENAI_API_BASE_URL = "http://ipex-llm-ollama:11434/v1";
         };
         volumes = [
           "${volumes.open-webui.ref}:/app/backend/data"
