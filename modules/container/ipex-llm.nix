@@ -38,7 +38,7 @@
           "/dev/dri/renderD129:/dev/dri/renderD129"
         ];
         volumes = [
-          "${volumes.ipex-llm_data.ref}:/models"
+          "${volumes.ipex-llm_data.ref}:/root/.ollama/models"
           "${start}:/start.sh"
         ];
         publishPorts = [
