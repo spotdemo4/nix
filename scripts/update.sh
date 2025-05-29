@@ -55,7 +55,9 @@ while true; do
     if ! git diff --quiet HEAD origin/main; then
         REBUILD=true
         echo "Remote changes found, pulling"
+        git stash
         git pull origin main
+        git stash pop
     fi
 
     LOCAL_CHANGES=false
@@ -86,7 +88,7 @@ while true; do
 
     if [ "$LOCAL_CHANGES" = true ]; then
         echo "Waiting for network"
-        until ping -c1 www.google.com >/dev/null 2>&1; do :; done
+        until ping -c1 1.1.1.1 >/dev/null 2>&1; do :; done
 
         echo "Pushing to github"
         git commit -m "$(nixos-rebuild list-generations | grep current)"
