@@ -4,10 +4,9 @@
   ...
 }: {
   age.secrets."authelia-env".file = self + /secrets/authelia-env.age;
+  age.secrets."authelia-env".path = config.home.homeDirectory + "/.continue/.env";
 
   home.file = {
-    ".continue/.env".source = config.lib.file.mkOutOfStoreSymlink "${config.age.secrets."authelia-env".path}";
-
     ".continue/config.json".text = ''
       {
         "models": [
