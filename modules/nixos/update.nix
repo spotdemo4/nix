@@ -30,6 +30,7 @@
       name = "update";
 
       runtimeInputs = with pkgs; [
+        sudo
         git
         openssh
         libnotify
