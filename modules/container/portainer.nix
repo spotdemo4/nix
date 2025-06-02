@@ -14,6 +14,9 @@
       networks = [
         networks.portainer.ref
       ];
+      exposePorts = [
+        "9000"
+      ];
       labels = toLabel [] {
         traefik = {
           enable = true;
@@ -22,10 +25,6 @@
               rule = "Host(`port.trev.zip`)";
               entryPoints = "https";
               tls.certresolver = "letsencrypt";
-            };
-            services.portainer.loadbalancer.server = {
-              scheme = "http";
-              port = 9000;
             };
           };
         };

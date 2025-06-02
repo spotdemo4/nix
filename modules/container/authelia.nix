@@ -43,7 +43,7 @@
           public = false;
           authorization_policy = "one_factor";
           redirect_uris = [
-            "https://port.trev.zip"
+            "https://portainer.trev.zip"
           ];
           scopes = [
             "openid"

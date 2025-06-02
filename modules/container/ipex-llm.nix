@@ -49,7 +49,7 @@ in {
           "${start}:/start.sh"
         ];
         publishPorts = [
-          "11434:11434"
+          "11434"
         ];
         networks = [
           networks.ipex-llm.ref
@@ -102,7 +102,7 @@ in {
           "${volumes.open-webui_data.ref}:/app/backend/data"
         ];
         publishPorts = [
-          "8000:8080"
+          "8000"
         ];
         networks = [
           networks.ipex-llm.ref
