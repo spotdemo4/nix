@@ -127,7 +127,10 @@
   };
 
   # Quadlet
-  virtualisation.quadlet.autoEscape = true;
+  virtualisation.quadlet = {
+    autoEscape = true;
+    autoUpdate.enable = true;
+  };
 
   # Allow unfree packages and add overlays
   nixpkgs = {
