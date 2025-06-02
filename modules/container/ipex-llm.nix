@@ -1,10 +1,17 @@
 {
   pkgs,
+  self,
   config,
   ...
-}: {
+}: let
+  mkSecret = (import ./utils/mkSecret.nix {inherit pkgs config;}).mkSecret;
+  owuiSecret = mkSecret "openwebui" config.age.secrets.openwebui.path;
+in {
+  age.secrets."openwebui".file = self + /secrets/openwebui.age;
+  system.activationScripts = owuiSecret.system.activationScripts;
+
   virtualisation.quadlet = let
-    utils = import ./utils.nix;
+    toLabel = (import ./utils/toLabel.nix).toLabel;
     inherit (config.virtualisation.quadlet) volumes networks;
 
     start = pkgs.writeScript "start.sh" ''
@@ -47,7 +54,7 @@
         networks = [
           networks.ipex-llm.ref
         ];
-        labels = utils.toEnvStrings [] {
+        labels = toLabel [] {
           traefik = {
             enable = true;
             http.routers.ollama = {
@@ -66,13 +73,30 @@
         pull = "newer";
         autoUpdate = "registry";
         environments = {
-          ENABLE_RAG_WEB_SEARCH = "true";
-          RAG_WEB_SEARCH_ENGINE = "duckduckgo";
-          ENABLE_OLLAMA_API = "false";
+          ENABLE_OLLAMA_API = "true";
+          OLLAMA_BASE_URL = "http://ipex-llm-ollama:11434/";
+          ENABLE_OPENAI_API = "false";
+          ENABLE_WEB_SEARCH = "true";
+          WEB_SEARCH_ENGINE = "duckduckgo";
           ENABLE_IMAGE_GENERATION = "false";
           WHISPER_MODEL = "large";
-          OPENAI_API_BASE_URL = "http://ipex-llm-ollama:11434/v1";
+
+          # Auth
+          ENABLE_OAUTH_SIGNUP = "true";
+          ENABLE_LOGIN_FORM = "false";
+          OAUTH_MERGE_ACCOUNTS_BY_EMAIL = "true";
+          OAUTH_CLIENT_ID = "9mW~ikpyry2l25iGOQSmqcytairhq4kxxwbbiJErQjmnoLkm0qsy5cduBJGQ-F_kpPpLJVfe";
+          OPENID_PROVIDER_URL = "https://auth.trev.zip/.well-known/openid-configuration";
+          OAUTH_PROVIDER_NAME = "Authelia";
+          OAUTH_SCOPES = "openid email profile groups";
+          ENABLE_OAUTH_ROLE_MANAGEMENT = "true";
+          OAUTH_ALLOWED_ROLES = "openwebui,openwebui-admin";
+          OAUTH_ADMIN_ROLES = "openwebui-admin";
+          OAUTH_ROLES_CLAIM = "groups";
         };
+        secrets = [
+          "${owuiSecret.ref},type=env,target=OAUTH_CLIENT_SECRET"
+        ];
         volumes = [
           "${volumes.open-webui_data.ref}:/app/backend/data"
         ];
@@ -82,7 +106,7 @@
         networks = [
           networks.ipex-llm.ref
         ];
-        labels = utils.toEnvStrings [] {
+        labels = toLabel [] {
           traefik = {
             enable = true;
             http.routers.open-webui = {

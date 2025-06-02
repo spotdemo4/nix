@@ -6,7 +6,7 @@
   age.secrets."grafana".file = self + /secrets/grafana.age;
 
   virtualisation.quadlet = let
-    utils = import ./utils.nix;
+    toLabel = (import ./utils/toLabel.nix).toLabel;
     inherit (config.virtualisation.quadlet) volumes networks;
   in {
     containers.grafana.containerConfig = {
@@ -43,7 +43,7 @@
       networks = [
         networks.victoria-metrics.ref
       ];
-      labels = utils.toEnvStrings [] {
+      labels = toLabel [] {
         traefik = {
           enable = true;
           http.routers.grafana = {

@@ -1,5 +1,5 @@
 {...}: let
-  utils = import ./utils.nix;
+  toLabel = (import ./utils/toLabel.nix).toLabel;
 in {
   virtualisation.quadlet.containers.context7.containerConfig = {
     image = "docker.io/mcp/context7:latest";
@@ -8,7 +8,7 @@ in {
     publishPorts = [
       "8080"
     ];
-    labels = utils.toEnvStrings [] {
+    labels = toLabel [] {
       traefik = {
         enable = true;
         http = {

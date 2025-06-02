@@ -44,7 +44,7 @@
   };
 in {
   virtualisation.quadlet = let
-    utils = import ./utils.nix;
+    toLabel = (import ./utils/toLabel.nix).toLabel;
     inherit (config.virtualisation.quadlet) networks volumes;
   in {
     containers.victoria-metrics.containerConfig = {
@@ -66,7 +66,7 @@ in {
         "-storageDataPath=victoria-metrics-data"
         "-promscrape.config=prometheus.yml"
       ];
-      labels = utils.toEnvStrings [] {
+      labels = toLabel [] {
         traefik = {
           enable = true;
           http.routers.victoria-metrics = {

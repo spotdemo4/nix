@@ -1,6 +1,6 @@
 {config, ...}: {
   virtualisation.quadlet = let
-    utils = import ./utils.nix;
+    toLabel = (import ./utils/toLabel.nix).toLabel;
     inherit (config.virtualisation.quadlet) networks volumes;
   in {
     containers.portainer.containerConfig = {
@@ -14,7 +14,7 @@
       networks = [
         networks.portainer.ref
       ];
-      labels = utils.toEnvStrings [] {
+      labels = toLabel [] {
         traefik = {
           enable = true;
           http = {

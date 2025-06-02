@@ -31,7 +31,7 @@
   };
 in {
   virtualisation.quadlet = let
-    utils = import ./utils.nix;
+    toLabel = (import ./utils/toLabel.nix).toLabel;
     inherit (config.virtualisation.quadlet) networks volumes;
   in {
     containers = {
@@ -52,7 +52,7 @@ in {
         networks = [
           networks.traefik.ref
         ];
-        labels = utils.toEnvStrings [] {
+        labels = toLabel [] {
           traefik = {
             enable = true;
             http.routers.api = {

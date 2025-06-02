@@ -1,6 +1,6 @@
 {config, ...}: {
   virtualisation.quadlet = let
-    utils = import ./utils.nix;
+    toLabel = (import ./utils/toLabel.nix).toLabel;
     inherit (config.virtualisation.quadlet) volumes;
   in {
     containers.radarr.containerConfig = {
@@ -19,7 +19,7 @@
       publishPorts = [
         "7878"
       ];
-      labels = utils.toEnvStrings [] {
+      labels = toLabel [] {
         traefik = {
           enable = true;
           http = {
