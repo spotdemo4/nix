@@ -17,7 +17,7 @@
         "${volumes.radarr_data.ref}:/config"
       ];
       publishPorts = [
-        "7878:7878"
+        "7878"
       ];
       labels = utils.toEnvStrings [] {
         traefik = {
@@ -28,10 +28,6 @@
               entryPoints = "https";
               tls.certresolver = "letsencrypt";
               middlewares = "authelia@docker";
-            };
-            services.radarr.loadbalancer.server = {
-              scheme = "http";
-              port = 7878;
             };
           };
         };
