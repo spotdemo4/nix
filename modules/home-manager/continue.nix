@@ -23,7 +23,7 @@
       {
         name = "Llama";
         provider = "ollama";
-        model = "llama3.1:8b";
+        model = "gemma3:4b";
         apiBase = "https://ollama.trev.zip";
         roles = [
           "chat"
