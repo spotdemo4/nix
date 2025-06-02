@@ -774,11 +774,11 @@
     },
     "quadlet-nix": {
       "locked": {
-        "lastModified": 1748849867,
-        "narHash": "sha256-u1L4H3yl/0YYEs6H3dXBGrwyWOKcjQ13zj16hvJR7hM=",
+        "lastModified": 1748850632,
+        "narHash": "sha256-RJaHcZwNGtCxdfWMaELbzO/gIQdZSv57UehHulEm4SU=",
         "owner": "spotdemo4",
         "repo": "quadlet-nix",
-        "rev": "23e8eb9d16981042e8952b37ed67e69d6ddd6af6",
+        "rev": "86f33a203ed42a3bce0abb3d374adca4dc049c61",
         "type": "github"
       },
       "original": {
