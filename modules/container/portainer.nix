@@ -22,7 +22,7 @@
           enable = true;
           http = {
             routers.portainer = {
-              rule = "Host(`port.trev.zip`)";
+              rule = "Host(`portainer.trev.zip`)";
               entryPoints = "https";
               tls.certresolver = "letsencrypt";
             };
