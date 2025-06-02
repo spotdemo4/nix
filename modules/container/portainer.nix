@@ -12,10 +12,7 @@
         "${volumes.portainer_data.ref}:/data"
       ];
       networks = [
-        networks.portainer.ref
-      ];
-      exposePorts = [
-        "9000"
+        networks.traefik.ref
       ];
       labels = toLabel [] {
         traefik = {
@@ -26,6 +23,10 @@
               entryPoints = "https";
               tls.certresolver = "letsencrypt";
             };
+            services.portainer.loadbalancer.server = {
+              scheme = "http";
+              port = 9000;
+            };
           };
         };
       };
@@ -33,10 +34,6 @@
 
     volumes = {
       portainer_data = {};
-    };
-
-    networks = {
-      portainer = {};
     };
   };
 }
