@@ -22,13 +22,11 @@ function bprint() {
 }
 
 DELETE=false
-FLAKE=false
 WATCH=false
 REBUILD=false
-while getopts 'dfwr' flag; do
+while getopts 'dwr' flag; do
     case "$flag" in
         d) DELETE=true ;;
-        f) FLAKE=true ;;
         w) WATCH=true ;;
         r) REBUILD=true ;;
         *) echo "Invalid flag: $flag" ;;
@@ -48,7 +46,7 @@ while true; do
     fi
     FIRST_RUN=false
     
-    echo "Checking for updates"
+    echo "checking for updates"
     cd /etc/nixos
     git fetch
 
@@ -65,7 +63,7 @@ while true; do
     fi
 
     if [ "$REMOTE_CHANGES" = true ] && [ "$LOCAL_CHANGES" = true ]; then
-        echo "Local and remote changes found, pulling and checking"
+        echo "local and remote changes found: stashing, pulling and checking"
         git stash
         git pull origin main
         git stash pop
@@ -73,19 +71,13 @@ while true; do
         nix fmt .
         nix flake check --accept-flake-config
     elif [ "$REMOTE_CHANGES" = true ]; then
-        echo "Remote changes found, pulling"
+        echo "remote changes found: pulling"
         git pull origin main
     elif [ "$LOCAL_CHANGES" = true ]; then
-        echo "Local changes found, checking"
+        echo "local changes found: checking"
         git add .
         nix fmt .
         nix flake check --accept-flake-config
-    fi
-
-    if [ "$FLAKE" = true ]; then
-        REBUILD=true
-        echo "Updating flake"
-        nix flake update
     fi
 
     if [ "$REBUILD" = false ]; then
@@ -98,17 +90,8 @@ while true; do
         continue
     fi
 
-    if [ "$LOCAL_CHANGES" = true ]; then
-        echo "Waiting for network"
-        until ping -c1 1.1.1.1 >/dev/null 2>&1; do :; done
-
-        echo "Pushing to github"
-        git commit -m "$(nixos-rebuild list-generations | grep current)"
-        git push -u origin main
-    fi
-
     if [ "$DELETE" = true ]; then
-        echo "Deleting old generations"
+        echo "deleting old generations"
         nix-collect-garbage --delete-older-than 7d
     fi
 
