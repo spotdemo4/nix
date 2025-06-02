@@ -1,6 +1,5 @@
 # Desktop config
 {
-  config,
   pkgs,
   inputs,
   self,
@@ -69,7 +68,6 @@
     libnotify
     alejandra
     protonvpn-cli
-    nixd
 
     # Applets
     networkmanagerapplet

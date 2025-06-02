@@ -1,6 +1,5 @@
 {
   pkgs,
-  inputs,
   ...
 }: {
   programs.zed-editor = {
@@ -9,6 +8,10 @@
       "svelte"
       "nix"
       "sql"
+    ];
+    extraPackages = with pkgs; [
+      nixd
+      nil
     ];
   };
 
