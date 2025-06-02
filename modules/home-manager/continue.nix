@@ -21,9 +21,20 @@
         requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
       }
       {
-        name = "Llama";
+        name = "Gemma3";
         provider = "ollama";
         model = "gemma3:4b";
+        apiBase = "https://ollama.trev.zip";
+        roles = [
+          "chat"
+          "edit"
+        ];
+        requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
+      }
+      {
+        name = "Deepseek R1";
+        provider = "ollama";
+        model = "deepseek-r1:8b";
         apiBase = "https://ollama.trev.zip";
         roles = [
           "chat"
