@@ -8,17 +8,28 @@
     name = "TrevChat";
     version = "0.0.1";
     schema = "v1";
-    requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
 
     models = [
       {
-        name = "Ollama";
+        name = "QwenCoder";
         provider = "ollama";
         model = "qwen2.5-coder:1.5b";
         apiBase = "https://ollama.trev.zip";
         roles = [
           "autocomplete"
         ];
+        requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
+      }
+      {
+        name = "Llama";
+        provider = "ollama";
+        model = "llama3.1:8b";
+        apiBase = "https://ollama.trev.zip";
+        roles = [
+          "chat"
+          "edit"
+        ];
+        requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
       }
     ];
   };
