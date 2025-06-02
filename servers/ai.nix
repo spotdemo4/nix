@@ -13,6 +13,7 @@
       "traefik-kop"
       "ipex-llm"
       "intel-gpu-exporter"
+      "context7"
     ];
 
   networking.hostName = "ai";

@@ -51,5 +51,6 @@
   home.packages = with pkgs; [
     nixd
     alejandra
+    sqlfluff
   ];
 }
