@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{config, ...}: {
   virtualisation.quadlet = let
     utils = import ./utils.nix;
     inherit (config.virtualisation.quadlet) volumes;

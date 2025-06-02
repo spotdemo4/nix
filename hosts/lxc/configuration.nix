@@ -1,9 +1,7 @@
 # Config for every LXC server
 {
-  config,
   pkgs,
   inputs,
-  modulesPath,
   self,
   ...
 }: {
@@ -106,7 +104,6 @@
           "video"
           "render"
         ];
-        packages = with pkgs; [];
         shell = pkgs.zsh;
         openssh.authorizedKeys = let
           nixKeys = import (self + /secrets/keys.nix);

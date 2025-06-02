@@ -1,8 +1,4 @@
-{
-  config,
-  self,
-  ...
-}: {
+{self, ...}: {
   imports =
     [
       (self + /hosts/lxc/configuration.nix)
