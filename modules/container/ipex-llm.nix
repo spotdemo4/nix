@@ -73,6 +73,7 @@ in {
         pull = "newer";
         autoUpdate = "registry";
         environments = {
+          WEBUI_URL = "https://chat.trev.zip";
           ENABLE_OLLAMA_API = "true";
           OLLAMA_BASE_URL = "http://ipex-llm-ollama:11434/";
           ENABLE_OPENAI_API = "false";
