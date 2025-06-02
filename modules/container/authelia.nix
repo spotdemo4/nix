@@ -75,7 +75,7 @@
         {
           client_name = "Open WebUI";
           client_id = "dkuAlG~v.mMUVWIivNJC0L1gVtkqSgpPS8rHutJkXa5JSzple4JRRyj2i6U7hzXM6TLdvqrD";
-          client_secret = "$pbkdf2-sha512$310000$CzEnFrEvn.CxiTzJ97at.A$GgdmCHWMxjI/Vz3ryXEPslsmBtvsDgKJXvX41CW6jZMMgEvKlSdt3mzv1zU9XNmSmLfaYOancfjX0WrAPovu9g";
+          client_secret = "$pbkdf2-sha512$310000$tpnXbCTwfQx8ujgrcrCojw$lfBV87zDxhlJuIkHuhv3RAQNsB5IGWBSuX7pm1n9j4VXTfvYY9FI9OfzireF3hH/td0C3l4s1zf.rUjkq1dLEg";
           public = false;
           authorization_policy = "one_factor";
           redirect_uris = [

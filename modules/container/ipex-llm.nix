@@ -87,7 +87,6 @@ in {
           ENABLE_LOGIN_FORM = "false";
           OAUTH_MERGE_ACCOUNTS_BY_EMAIL = "true";
           OAUTH_CLIENT_ID = "dkuAlG~v.mMUVWIivNJC0L1gVtkqSgpPS8rHutJkXa5JSzple4JRRyj2i6U7hzXM6TLdvqrD";
-          OAUTH_CLIENT_SECRET = "OopZtKbSOMLwx3iUiJSS2Zel-1nJoVDy5pMQUGJr.mJGfy_2jX4KkC7kthnmRtHhgdkDnjH.";
           OPENID_PROVIDER_URL = "https://auth.trev.zip/.well-known/openid-configuration";
           OAUTH_PROVIDER_NAME = "Authelia";
           OAUTH_SCOPES = "openid email profile groups";
@@ -96,9 +95,9 @@ in {
           OAUTH_ADMIN_ROLES = "admin";
           OAUTH_ROLES_CLAIM = "groups";
         };
-        # secrets = [
-        #   "${owuiSecret.ref},type=env,target=OAUTH_CLIENT_SECRET"
-        # ];
+        secrets = [
+          "${owuiSecret.ref},type=env,target=OAUTH_CLIENT_SECRET"
+        ];
         volumes = [
           "${volumes.open-webui_data.ref}:/app/backend/data"
         ];
