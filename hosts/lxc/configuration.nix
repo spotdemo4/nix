@@ -99,7 +99,6 @@
         extraGroups = [
           "networkmanager"
           "wheel"
-          "docker"
           "podman"
           "video"
           "render"
