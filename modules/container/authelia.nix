@@ -141,8 +141,8 @@
         email = "me@trev.xyz";
         picture = "https://avatars.githubusercontent.com/spotdemo4";
         groups = [
-          "admins"
-          "dev"
+          "admin"
+          "user"
         ];
       };
     };
