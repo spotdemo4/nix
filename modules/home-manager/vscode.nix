@@ -33,6 +33,9 @@
         "editor.fontFamily" = "Fira Code";
         "editor.fontLigatures" = true;
         "svelte.enable-ts-plugin" = true;
+        "nix.enableLanguageServer" = true;
+        "nix.serverPath" = "nixd";
+        "nix.formatterPath" = "alejandra";
       };
     };
     mutableExtensionsDir = false;
@@ -43,4 +46,10 @@
     accent = "sky";
     flavor = "mocha";
   };
+
+  # Required packages
+  home.packages = with pkgs; [
+    nixd
+    alejandra
+  ];
 }
