@@ -100,7 +100,8 @@
   # Nix Settings
   nix = {
     settings = {
-      lazy-trees = true;
+      # Not working atm
+      # lazy-trees = true;
       experimental-features = ["nix-command" "flakes"];
     };
 

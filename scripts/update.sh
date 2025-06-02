@@ -71,7 +71,7 @@ while true; do
         git stash pop
         git add .
         nix fmt .
-        nix flake check
+        nix flake check --accept-flake-config
     elif [ "$REMOTE_CHANGES" = true ]; then
         echo "Remote changes found, pulling"
         git pull origin main
@@ -79,7 +79,7 @@ while true; do
         echo "Local changes found, checking"
         git add .
         nix fmt .
-        nix flake check
+        nix flake check --accept-flake-config
     fi
 
     if [ "$FLAKE" = true ]; then
