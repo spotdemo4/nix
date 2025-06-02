@@ -163,7 +163,6 @@
     isNormalUser = true;
     description = "trev";
     extraGroups = ["networkmanager" "wheel" "docker" "scanner" "lp" "libvirtd"];
-    packages = with pkgs; [];
     shell = pkgs.zsh;
   };
   age.identityPaths = ["/home/trev/.ssh/id_ed25519"];
