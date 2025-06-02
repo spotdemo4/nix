@@ -6,7 +6,7 @@ in {
     pull = "newer";
     autoUpdate = "registry";
     publishPorts = [
-      "8080:8080"
+      "8080"
     ];
     labels = utils.toEnvStrings [] {
       traefik = {
@@ -17,10 +17,6 @@ in {
             entryPoints = "https";
             tls.certresolver = "letsencrypt";
             middlewares = "authelia@docker";
-          };
-          services.context7.loadbalancer.server = {
-            scheme = "http";
-            port = 8080;
           };
         };
       };
