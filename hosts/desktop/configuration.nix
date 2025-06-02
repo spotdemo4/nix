@@ -14,7 +14,6 @@
     ]
     ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
-      "cache"
       "git"
       "gnome-auth-agent"
       "hyprland"
@@ -100,7 +99,10 @@
 
   # Nix Settings
   nix = {
-    settings.experimental-features = ["nix-command" "flakes"];
+    settings = {
+      lazy-trees = true;
+      experimental-features = ["nix-command" "flakes"];
+    };
 
     extraOptions = ''
       warn-dirty = false

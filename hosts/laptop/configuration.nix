@@ -14,7 +14,6 @@
     ]
     ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
-      "cache"
       "git"
       "gnome-auth-agent"
       "hyprland"

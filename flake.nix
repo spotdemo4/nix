@@ -4,14 +4,23 @@
   nixConfig = {
     extra-substituters = [
       "https://trix.cachix.org"
+      "https://install.determinate.systems"
+      "https://hyprland.cachix.org"
+      "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
       "trix.cachix.org-1:uZzPf9A0ij1eIlDn9jg7fZyxUGfbZrcRujVMIG6apVA="
+      "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
   };
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    # Determinate nix
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
     # Zen browser
     zen-browser = {
@@ -75,6 +84,7 @@
   outputs = {
     self,
     nixpkgs,
+    determinate,
     nur,
     agenix,
     quadlet-nix,
@@ -107,6 +117,7 @@
               inherit inputs self;
             };
             modules = [
+              determinate.nixosModules.default
               agenix.nixosModules.default
               quadlet-nix.nixosModules.quadlet
               ./servers/${name}
@@ -122,6 +133,7 @@
             inherit inputs self;
           };
           modules = [
+            determinate.nixosModules.default
             agenix.nixosModules.default
             nur.modules.nixos.default
             ./hosts/laptop/configuration.nix
@@ -133,6 +145,7 @@
             inherit inputs self;
           };
           modules = [
+            determinate.nixosModules.default
             agenix.nixosModules.default
             nur.modules.nixos.default
             ./hosts/desktop/configuration.nix
