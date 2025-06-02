@@ -21,6 +21,11 @@
   home.homeDirectory = "/home/trev";
   home.stateVersion = "24.05";
 
+  # Create an alias for podman that selects the root socket
+  home.shellAliases = {
+    docker = "podman --url unix:///run/podman/podman.sock";
+  };
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
