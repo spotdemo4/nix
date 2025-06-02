@@ -20,7 +20,6 @@
         ];
         defaultCompletionOptions = {
           temperature = "0.3";
-          stop = "\n";
         };
         requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
       }
