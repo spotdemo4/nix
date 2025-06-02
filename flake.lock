@@ -774,15 +774,15 @@
     },
     "quadlet-nix": {
       "locked": {
-        "lastModified": 1748295604,
-        "narHash": "sha256-GDqEYNafnb4kpz3OUhfrpS7ys5r8QR/t1t7fPA6XLRQ=",
-        "owner": "SEIAROTg",
+        "lastModified": 1748847916,
+        "narHash": "sha256-O0rZ2QF/rqxnVzDZlHLB8OXw568z8bWWJbmgkT34iLo=",
+        "owner": "spotdemo4",
         "repo": "quadlet-nix",
-        "rev": "5f4bc5934584eb2b6f0b8e3e13041fe76f2947b6",
+        "rev": "c350ad5a73abbf80cc10110fb261608719064360",
         "type": "github"
       },
       "original": {
-        "owner": "SEIAROTg",
+        "owner": "spotdemo4",
         "repo": "quadlet-nix",
         "type": "github"
       }
@@ -955,11 +955,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1748809245,
-        "narHash": "sha256-2e6otgBmkNZdDsump0gIR7Q3efHdHlhi8mOR+J3OUQI=",
+        "lastModified": 1748834461,
+        "narHash": "sha256-1OfK7Ec2EIqwf/EhNikMp8DcdOcQG1CBS5CK4cAPMjs=",
         "owner": "0xc000022070",
         "repo": "zen-browser-flake",
-        "rev": "9bb61a99d7d7d4e4e1bd75b281f91873b38fb7d7",
+        "rev": "2527ce862b0a80c3c4bd87e6717c7ac0fee1c456",
         "type": "github"
       },
       "original": {

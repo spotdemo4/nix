@@ -129,7 +129,7 @@
   # Quadlet
   virtualisation.quadlet = {
     autoEscape = true;
-    autoUpdate.enable = true;
+    autoUpdate = true;
   };
 
   # Allow unfree packages and add overlays

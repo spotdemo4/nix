@@ -73,7 +73,7 @@
     };
 
     # Quadlet-nix
-    quadlet-nix.url = "github:SEIAROTg/quadlet-nix";
+    quadlet-nix.url = "github:spotdemo4/quadlet-nix";
   };
 
   outputs = {

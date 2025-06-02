@@ -33,7 +33,6 @@
 
   home.username = "trev";
   home.homeDirectory = "/home/trev";
-
   home.stateVersion = "24.05";
 
   # Let Home Manager install and manage itself.
