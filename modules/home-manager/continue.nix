@@ -8,6 +8,7 @@
     name = "TrevChat";
     version = "0.0.1";
     schema = "v1";
+    requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
 
     models = [
       {
@@ -18,10 +19,6 @@
         roles = [
           "autocomplete"
         ];
-        defaultCompletionOptions = {
-          temperature = "0.3";
-        };
-        requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
       }
     ];
   };
