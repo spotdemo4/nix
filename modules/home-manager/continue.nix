@@ -32,6 +32,17 @@
         requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
       }
     ];
+
+    context = [
+      {
+        provider = "http";
+        name = "Context7";
+        params = {
+          url = "https://context7.trev.zip/mcp";
+          requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
+        };
+      }
+    ];
   };
 in {
   age.secrets."authelia-env".file = self + /secrets/authelia-env.age;
