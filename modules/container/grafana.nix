@@ -38,7 +38,7 @@
         "${config.age.secrets."grafana".path}:/etc/secrets/client"
       ];
       publishPorts = [
-        "3000:3000"
+        "3000"
       ];
       networks = [
         networks.victoria-metrics.ref
