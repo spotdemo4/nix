@@ -20,7 +20,10 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Determinate nix
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+    determinate = {
+      url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Zen browser
     zen-browser = {

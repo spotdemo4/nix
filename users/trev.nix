@@ -29,6 +29,7 @@
       "vscode"
       "waybar"
       "wofi"
+      "zed"
       "zen"
       "zsh"
     ];
