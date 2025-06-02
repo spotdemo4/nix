@@ -16,7 +16,6 @@ in {
             rule = "Host(`context7.trev.zip`)";
             entryPoints = "https";
             tls.certresolver = "letsencrypt";
-            middlewares = "authelia@docker";
           };
         };
       };

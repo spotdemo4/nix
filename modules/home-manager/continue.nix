@@ -39,7 +39,6 @@
         name = "Context7";
         params = {
           url = "https://context7.trev.zip/mcp";
-          requestOptions.headers.Authorization = "Basic \${{ secrets.token }}";
         };
       }
     ];
