@@ -69,6 +69,7 @@
     libnotify
     alejandra
     protonvpn-cli
+    nixd
 
     # Applets
     networkmanagerapplet
