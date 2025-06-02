@@ -73,9 +73,9 @@
           token_endpoint_auth_method = "client_secret_post";
         }
         {
-          client_name = "OpenWebUI";
-          client_id = "9mW~ikpyry2l25iGOQSmqcytairhq4kxxwbbiJErQjmnoLkm0qsy5cduBJGQ-F_kpPpLJVfe";
-          client_secret = "$pbkdf2-sha512$310000$9.iktk1kvIEBscaAJYwfXg$eC4hZG7QdWr5GyMpwhJsysyigcKu.ZWb1Uw7YEO4bHnjTaw45zYZ1etQINw2z/3auXw5.GAZjEfdnrZZ7JihXg";
+          client_name = "Open WebUI";
+          client_id = "dkuAlG~v.mMUVWIivNJC0L1gVtkqSgpPS8rHutJkXa5JSzple4JRRyj2i6U7hzXM6TLdvqrD";
+          client_secret = "$pbkdf2-sha512$310000$CzEnFrEvn.CxiTzJ97at.A$GgdmCHWMxjI/Vz3ryXEPslsmBtvsDgKJXvX41CW6jZMMgEvKlSdt3mzv1zU9XNmSmLfaYOancfjX0WrAPovu9g";
           public = false;
           authorization_policy = "one_factor";
           redirect_uris = [
@@ -88,7 +88,7 @@
             "email"
           ];
           userinfo_signed_response_alg = "none";
-          token_endpoint_auth_method = "client_secret_post";
+          token_endpoint_auth_method = "client_secret_basic";
         }
       ];
     };

@@ -86,7 +86,7 @@ in {
           ENABLE_OAUTH_SIGNUP = "true";
           ENABLE_LOGIN_FORM = "false";
           OAUTH_MERGE_ACCOUNTS_BY_EMAIL = "true";
-          OAUTH_CLIENT_ID = "9mW~ikpyry2l25iGOQSmqcytairhq4kxxwbbiJErQjmnoLkm0qsy5cduBJGQ-F_kpPpLJVfe";
+          OAUTH_CLIENT_ID = "dkuAlG~v.mMUVWIivNJC0L1gVtkqSgpPS8rHutJkXa5JSzple4JRRyj2i6U7hzXM6TLdvqrD";
           OPENID_PROVIDER_URL = "https://auth.trev.zip/.well-known/openid-configuration";
           OAUTH_PROVIDER_NAME = "Authelia";
           OAUTH_SCOPES = "openid email profile groups";
