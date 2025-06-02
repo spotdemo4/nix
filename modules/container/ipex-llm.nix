@@ -90,7 +90,7 @@ in {
           OAUTH_PROVIDER_NAME = "Authelia";
           OAUTH_SCOPES = "openid email profile groups";
           ENABLE_OAUTH_ROLE_MANAGEMENT = "true";
-          OAUTH_ALLOWED_ROLES = "user admin";
+          OAUTH_ALLOWED_ROLES = "user,admin";
           OAUTH_ADMIN_ROLES = "admin";
           OAUTH_ROLES_CLAIM = "groups";
         };
