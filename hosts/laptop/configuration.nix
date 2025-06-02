@@ -1,6 +1,5 @@
 # Laptop config
 {
-  config,
   pkgs,
   inputs,
   self,
@@ -88,7 +87,13 @@
 
   # Nix settings
   nix = {
-    settings.experimental-features = ["nix-command" "flakes"];
+    settings = {
+      experimental-features = ["nix-command" "flakes"];
+      trusted-users = [
+        "root"
+        "trev"
+      ];
+    };
 
     extraOptions = ''
       warn-dirty = false
@@ -154,7 +159,6 @@
       "docker"
       "video"
     ];
-    packages = with pkgs; [];
     shell = pkgs.zsh;
   };
   age.identityPaths = ["/home/trev/.ssh/id_ed25519"];

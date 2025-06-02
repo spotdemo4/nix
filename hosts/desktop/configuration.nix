@@ -99,9 +99,13 @@
   # Nix Settings
   nix = {
     settings = {
-      # Not working atm
+      # Not working atm, need determinate nix
       # lazy-trees = true;
       experimental-features = ["nix-command" "flakes"];
+      trusted-users = [
+        "root"
+        "trev"
+      ];
     };
 
     extraOptions = ''
