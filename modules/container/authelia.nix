@@ -145,6 +145,17 @@
           "user"
         ];
       };
+
+      ash = {
+        disabled = false;
+        displayname = "Ash";
+        password = "$argon2id$v=19$m=65536,t=3,p=4$vb/1o5CAibus7mPdHLLrgw$yhbTbDV/QHfhJ27jNph4Os2Wr/iOVxZPqPCEBzhKRJk";
+        email = "sp00machine@proton.me";
+        picture = "https://avatars.githubusercontent.com/sp00machine";
+        groups = [
+          "user"
+        ];
+      };
     };
   };
 in {
