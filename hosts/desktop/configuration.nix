@@ -49,6 +49,7 @@
     heroic
     inputs.trevbar.packages."${system}".default
     jetbrains.datagrip
+    tor-browser
 
     # CLI
     wget
