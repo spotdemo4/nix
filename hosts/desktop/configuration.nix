@@ -50,6 +50,7 @@
     inputs.trevbar.packages."${system}".default
     jetbrains.datagrip
     tor-browser
+    monero-gui
 
     # CLI
     wget
