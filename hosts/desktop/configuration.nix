@@ -188,7 +188,12 @@
   # services.ollama.rocmOverrideGfx = "11.0.0";
 
   # PGP
-  programs.gnupg.agent.enable = true;
+  services.gnome-keyring.enable = true;
+  programs.gpg.enable = true;
+  services.gpg-agent = {
+    enable = true;
+    pinentryFlavor = "gnome3";
+  };
 
   # Scanner support
   hardware.sane = {
