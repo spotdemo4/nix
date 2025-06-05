@@ -77,14 +77,16 @@ in {
         labels = toLabel [] {
           traefik = {
             enable = true;
-            http.routers.authentik = {
-              rule = "Host(`authentik.trev.zip`)";
-              entryPoints = "https";
-              tls.certresolver = "letsencrypt";
-            };
-            services.authentik.loadbalancer.server = {
-              scheme = "http";
-              port = 9000;
+            http = {
+              routers.authentik = {
+                rule = "Host(`authentik.trev.zip`)";
+                entryPoints = "https";
+                tls.certresolver = "letsencrypt";
+              };
+              services.authentik.loadbalancer.server = {
+                scheme = "http";
+                port = 9000;
+              };
             };
           };
         };
