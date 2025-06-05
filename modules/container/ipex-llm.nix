@@ -8,7 +8,9 @@
   owuiSecret = mkSecret "openwebui" config.age.secrets.openwebui.path;
 in {
   age.secrets."openwebui".file = self + /secrets/openwebui.age;
-  system.activationScripts = owuiSecret.system.activationScripts;
+  system.activationScripts = {
+    "${owuiSecret.ref}" = owuiSecret.script;
+  };
 
   virtualisation.quadlet = let
     toLabel = (import ./utils/toLabel.nix).toLabel;

@@ -4,7 +4,7 @@
 }: {
   mkSecret = name: path: {
     ref = name;
-    system.activationScripts."${name}" = let
+    script = let
       docker = config.virtualisation.oci-containers.backend;
       dockerBin = "${pkgs.${docker}}/bin/${docker}";
     in ''

@@ -9,9 +9,10 @@
     ]
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
-      "traefik"
-      "portainer"
       "authelia"
+      "authentik"
+      "portainer"
+      "traefik"
     ];
 
   networking.hostName = "gateway";

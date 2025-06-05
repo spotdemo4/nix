@@ -10,4 +10,6 @@ in {
   "grafana.age".publicKeys = keys.all;
   "authelia-env.age".publicKeys = keys.all;
   "openwebui.age".publicKeys = keys.all;
+  "authentik-postgres.age".publicKeys = keys.all;
+  "authentik-server.age".publicKeys = keys.all;
 }
