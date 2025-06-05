@@ -12,4 +12,5 @@ in {
   "openwebui.age".publicKeys = keys.all;
   "authentik-postgres.age".publicKeys = keys.all;
   "authentik-server.age".publicKeys = keys.all;
+  "authentik-token.age".publicKeys = keys.all;
 }

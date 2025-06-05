@@ -10,12 +10,15 @@
 
   serverSecret = mkSecret "authentik-server" config.age.secrets."authentik-server".path;
   postgresSecret = mkSecret "authentik-postgres" config.age.secrets."authentik-postgres".path;
+  tokenSecret = mkSecret "authentik-token" config.age.secrets."authentik-token".path;
 in {
   age.secrets."authentik-server".file = self + /secrets/authentik-server.age;
   age.secrets."authentik-postgres".file = self + /secrets/authentik-postgres.age;
+  age.secrets."authentik-token".file = self + /secrets/authentik-token.age;
   system.activationScripts = {
     "${serverSecret.ref}" = serverSecret.script;
     "${postgresSecret.ref}" = postgresSecret.script;
+    "${tokenSecret.ref}" = tokenSecret.script;
   };
 
   virtualisation.quadlet = {
@@ -87,11 +90,6 @@ in {
                 scheme = "http";
                 port = 9000;
               };
-              middlewares.authentik.forwardauth = {
-                address = "http://authentik-server:9000/outpost.goauthentik.io/auth/traefik";
-                trustForwardHeader = true;
-                authResponseHeaders = "X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version";
-              };
             };
           };
         };
@@ -122,6 +120,80 @@ in {
         networks = [
           networks.authentik.ref
         ];
+      };
+
+      "authentik-outpost-user".containerConfig = {
+        image = "ghcr.io/goauthentik/proxy:2025.6.0";
+        pull = "newer";
+        autoUpdate = "registry";
+        environments = {
+          AUTHENTIK_HOST = "http://authentik-server";
+        };
+        secrets = [
+          "${tokenSecret.ref},type=env,target=AUTHENTIK_TOKEN"
+        ];
+        networks = [
+          networks.authentik.ref
+          networks.traefik.ref
+        ];
+        labels = toLabel [] {
+          traefik = {
+            enable = true;
+            http = {
+              routers.authentik-user = {
+                rule = "Host(`user.auth.trev.zip`)";
+                entryPoints = "https";
+                tls.certresolver = "letsencrypt";
+              };
+              services.authentik-user.loadbalancer.server = {
+                scheme = "http";
+                port = 9000;
+              };
+              middlewares.authentik-user.forwardauth = {
+                address = "http://authentik-outpost-user:9000/outpost.goauthentik.io/auth/traefik";
+                trustForwardHeader = true;
+                authResponseHeaders = "X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version";
+              };
+            };
+          };
+        };
+      };
+
+      "authentik-outpost-admin".containerConfig = {
+        image = "ghcr.io/goauthentik/proxy:2025.6.0";
+        pull = "newer";
+        autoUpdate = "registry";
+        environments = {
+          AUTHENTIK_HOST = "http://authentik-server";
+        };
+        secrets = [
+          "${tokenSecret.ref},type=env,target=AUTHENTIK_TOKEN"
+        ];
+        networks = [
+          networks.authentik.ref
+          networks.traefik.ref
+        ];
+        labels = toLabel [] {
+          traefik = {
+            enable = true;
+            http = {
+              routers.authentik-admin = {
+                rule = "Host(`admin.auth.trev.zip`)";
+                entryPoints = "https";
+                tls.certresolver = "letsencrypt";
+              };
+              services.authentik-admin.loadbalancer.server = {
+                scheme = "http";
+                port = 9000;
+              };
+              middlewares.authentik-admin.forwardauth = {
+                address = "http://authentik-outpost-admin:9000/outpost.goauthentik.io/auth/traefik";
+                trustForwardHeader = true;
+                authResponseHeaders = "X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version";
+              };
+            };
+          };
+        };
       };
     };
 
