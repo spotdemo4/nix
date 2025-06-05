@@ -21,7 +21,7 @@
       "$mod" = "SUPER";
       "$menu" = "wofi --show drun";
       "$terminal" = "konsole";
-      "$screenshot" = "grimblast copy area";
+      "$screenshot" = "grimblast --freeze copy area";
 
       # Display configuration
       monitor = [
