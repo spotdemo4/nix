@@ -1,8 +1,8 @@
-{config, ...}: {
-  virtualisation.quadlet = let
-    toLabel = (import ./utils/toLabel.nix).toLabel;
-    inherit (config.virtualisation.quadlet) volumes;
-  in {
+{config, ...}: let
+  inherit (config.virtualisation.quadlet) volumes;
+  toLabel = (import ./utils/toLabel.nix).toLabel;
+in {
+  virtualisation.quadlet = {
     containers.radarr.containerConfig = {
       image = "lscr.io/linuxserver/radarr:latest";
       pull = "newer";

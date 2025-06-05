@@ -3,6 +3,9 @@
   config,
   ...
 }: let
+  inherit (config.virtualisation.quadlet) networks volumes;
+  toLabel = (import ./utils/toLabel.nix).toLabel;
+
   configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
     log.level = "DEBUG";
     api.insecure = true;
@@ -30,10 +33,7 @@
     };
   };
 in {
-  virtualisation.quadlet = let
-    toLabel = (import ./utils/toLabel.nix).toLabel;
-    inherit (config.virtualisation.quadlet) networks volumes;
-  in {
+  virtualisation.quadlet = {
     containers = {
       traefik.containerConfig = {
         image = "docker.io/traefik:latest";

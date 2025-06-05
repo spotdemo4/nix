@@ -1,8 +1,8 @@
-{config, ...}: {
-  virtualisation.quadlet = let
-    toLabel = (import ./utils/toLabel.nix).toLabel;
-    inherit (config.virtualisation.quadlet) networks volumes;
-  in {
+{config, ...}: let
+  inherit (config.virtualisation.quadlet) networks volumes;
+  toLabel = (import ./utils/toLabel.nix).toLabel;
+in {
+  virtualisation.quadlet = {
     containers.portainer.containerConfig = {
       image = "docker.io/portainer/portainer-ce:latest";
       pull = "newer";

@@ -2,13 +2,13 @@
   self,
   config,
   ...
-}: {
+}: let
+  inherit (config.virtualisation.quadlet) volumes networks;
+  toLabel = (import ./utils/toLabel.nix).toLabel;
+in {
   age.secrets."grafana".file = self + /secrets/grafana.age;
 
-  virtualisation.quadlet = let
-    toLabel = (import ./utils/toLabel.nix).toLabel;
-    inherit (config.virtualisation.quadlet) volumes networks;
-  in {
+  virtualisation.quadlet = {
     containers.grafana.containerConfig = {
       image = "docker.io/grafana/grafana-enterprise:latest";
       pull = "newer";

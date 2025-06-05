@@ -3,6 +3,9 @@
   config,
   ...
 }: let
+  inherit (config.virtualisation.quadlet) networks volumes;
+  toLabel = (import ./utils/toLabel.nix).toLabel;
+
   configFile = (pkgs.formats.yaml {}).generate "prometheus.yml" {
     scrape_configs = [
       {
@@ -43,10 +46,7 @@
     ];
   };
 in {
-  virtualisation.quadlet = let
-    toLabel = (import ./utils/toLabel.nix).toLabel;
-    inherit (config.virtualisation.quadlet) networks volumes;
-  in {
+  virtualisation.quadlet = {
     containers.victoria-metrics.containerConfig = {
       image = "docker.io/victoriametrics/victoria-metrics:v1.117.1";
       pull = "newer";

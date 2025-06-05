@@ -4,34 +4,33 @@
   config,
   ...
 }: let
+  inherit (config.virtualisation.quadlet) volumes networks;
+  toLabel = (import ./utils/toLabel.nix).toLabel;
   mkSecret = (import ./utils/mkSecret.nix {inherit pkgs config;}).mkSecret;
+
   owuiSecret = mkSecret "openwebui" config.age.secrets.openwebui.path;
+  start = pkgs.writeScript "start.sh" ''
+    #!/bin/sh
+
+    # init ollama
+    source ipex-llm-init --gpu --device $DEVICE
+    mkdir -p /llm/ollama
+    cd /llm/ollama
+    init-ollama
+    export OLLAMA_NUM_GPU=999
+    export ZES_ENABLE_SYSMAN=1
+    export OLLAMA_HOST=0.0.0.0:11434
+
+    # start ollama service
+    /llm/ollama/ollama serve
+  '';
 in {
   age.secrets."openwebui".file = self + /secrets/openwebui.age;
   system.activationScripts = {
     "${owuiSecret.ref}" = owuiSecret.script;
   };
 
-  virtualisation.quadlet = let
-    toLabel = (import ./utils/toLabel.nix).toLabel;
-    inherit (config.virtualisation.quadlet) volumes networks;
-
-    start = pkgs.writeScript "start.sh" ''
-      #!/bin/sh
-
-      # init ollama
-      source ipex-llm-init --gpu --device $DEVICE
-      mkdir -p /llm/ollama
-      cd /llm/ollama
-      init-ollama
-      export OLLAMA_NUM_GPU=999
-      export ZES_ENABLE_SYSMAN=1
-      export OLLAMA_HOST=0.0.0.0:11434
-
-      # start ollama service
-      /llm/ollama/ollama serve
-    '';
-  in {
+  virtualisation.quadlet = {
     containers = {
       ipex-llm-ollama.containerConfig = {
         image = "docker.io/intelanalytics/ipex-llm-inference-cpp-xpu:latest";
