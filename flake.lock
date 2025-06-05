@@ -682,11 +682,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1749002682,
-        "narHash": "sha256-v9K6RyPF/+4r/YJhjEH8y07VWE6Vj7Vl88E/K5m/uJ0=",
+        "lastModified": 1749088964,
+        "narHash": "sha256-l0nq/gnL6x+hBPuzNEBLFotPzwGyqUcPiwcmGcRyW0A=",
         "owner": "nix-community",
         "repo": "nix-vscode-extensions",
-        "rev": "46eb9c16d8ccfedf8bc648be03f9b2993fe3c994",
+        "rev": "665c9161807e8885ee41391ac3c8cbf9f2d123cd",
         "type": "github"
       },
       "original": {
@@ -736,11 +736,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1749072165,
-        "narHash": "sha256-RHZzyT1cIYkGvZx2wdNNg5pVeeCGRcySkm8BS3Q/oDQ=",
+        "lastModified": 1749090456,
+        "narHash": "sha256-vXMK9kBmDbeQ5+AFhTaAujGP6kDE5HWyB9CDkPuLluU=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "799184d9678414795b486952576f209f17029281",
+        "rev": "f06b1b5a1d06a912bd23425a9abaea6f83a2324d",
         "type": "github"
       },
       "original": {
@@ -774,11 +774,11 @@
     },
     "quadlet-nix": {
       "locked": {
-        "lastModified": 1748850927,
-        "narHash": "sha256-HwDdpOpZcDw3lbE7Y1gRKYFIP7VMKjcf+BsnqLCEbss=",
+        "lastModified": 1749091723,
+        "narHash": "sha256-8IjVuzuRtL0sEfIUOG7NqpESvIPF4xVux+lb/Et2TLU=",
         "owner": "spotdemo4",
         "repo": "quadlet-nix",
-        "rev": "b5e1a8f48d1446aad2c8f1d2381c54309f13fe43",
+        "rev": "e85a8edb15dcc839bc639cbb6762d6dc79d92fa0",
         "type": "github"
       },
       "original": {
