@@ -82,6 +82,10 @@ in {
               entryPoints = "https";
               tls.certresolver = "letsencrypt";
             };
+            services.authentik.loadbalancer.server = {
+              scheme = "http";
+              port = 9000;
+            };
           };
         };
       };
