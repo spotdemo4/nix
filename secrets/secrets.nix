@@ -1,6 +1,7 @@
 let
   keys = import ./keys.nix;
 in {
+  "gpg.age".publicKeys = keys.local;
   "gitea-runner.age".publicKeys = keys.all;
   "authelia-session.age".publicKeys = keys.all;
   "authelia-hmac.age".publicKeys = keys.all;

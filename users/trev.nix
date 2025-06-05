@@ -16,6 +16,7 @@
       "cursor"
       "direnv"
       "discord"
+      "gpg"
       "gtk"
       "hyprland"
       "hyprpaper"
