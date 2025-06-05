@@ -128,7 +128,7 @@ in {
         pull = "newer";
         autoUpdate = "registry";
         environments = {
-          AUTHENTIK_HOST = "http://authentik-server";
+          AUTHENTIK_HOST = "http://authentik-server:9000";
         };
         secrets = [
           "${userTokenSecret.ref},type=env,target=AUTHENTIK_TOKEN"
@@ -165,7 +165,7 @@ in {
         pull = "newer";
         autoUpdate = "registry";
         environments = {
-          AUTHENTIK_HOST = "http://authentik-server";
+          AUTHENTIK_HOST = "http://authentik-server:9000";
         };
         secrets = [
           "${adminTokenSecret.ref},type=env,target=AUTHENTIK_TOKEN"
