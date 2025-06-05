@@ -67,9 +67,12 @@ in {
       };
 
       traefik-redis.containerConfig = {
-        image = "docker.io/redis:latest";
+        image = "docker.io/redis/redis-stack-server:latest";
         pull = "newer";
         autoUpdate = "registry";
+        environments = {
+          REDIS_ARGS = "--notify-keyspace-events Ksg";
+        };
         publishPorts = [
           "6379:6379"
         ];
