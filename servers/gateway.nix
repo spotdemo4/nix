@@ -10,7 +10,6 @@
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
       "authelia"
-      "authentik"
       "portainer"
       "traefik"
     ];

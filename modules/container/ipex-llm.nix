@@ -62,7 +62,7 @@ in {
               rule = "Host(`ollama.trev.zip`)";
               entryPoints = "https";
               tls.certresolver = "letsencrypt";
-              middlewares = "authentik-admin@docker";
+              middlewares = "authelia@docker";
             };
           };
         };

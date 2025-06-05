@@ -27,7 +27,7 @@ in {
               rule = "Host(`sonarr.trev.zip`)";
               entryPoints = "https";
               tls.certresolver = "letsencrypt";
-              middlewares = "authentik-user@docker";
+              middlewares = "authelia@docker";
             };
           };
         };
