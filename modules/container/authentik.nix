@@ -129,7 +129,7 @@ in {
         autoUpdate = "registry";
         environments = {
           AUTHENTIK_HOST = "http://authentik-server:9000";
-          AUTHENTIK_HOST_BROWSER = "https://authentik.trev.zip";
+          AUTHENTIK_HOST_BROWSER = "https://user.auth.trev.zip";
         };
         secrets = [
           "${userTokenSecret.ref},type=env,target=AUTHENTIK_TOKEN"
@@ -167,7 +167,7 @@ in {
         autoUpdate = "registry";
         environments = {
           AUTHENTIK_HOST = "http://authentik-server:9000";
-          AUTHENTIK_HOST_BROWSER = "https://authentik.trev.zip";
+          AUTHENTIK_HOST_BROWSER = "https://admin.auth.trev.zip";
         };
         secrets = [
           "${adminTokenSecret.ref},type=env,target=AUTHENTIK_TOKEN"
