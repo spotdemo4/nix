@@ -60,7 +60,7 @@ in {
               entrypoints = "https";
               service = "api@internal";
               tls.certresolver = "letsencrypt";
-              middlewares = "authelia@docker";
+              middlewares = "authentik@docker";
             };
           };
         };
