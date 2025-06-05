@@ -10,15 +10,18 @@
 
   serverSecret = mkSecret "authentik-server" config.age.secrets."authentik-server".path;
   postgresSecret = mkSecret "authentik-postgres" config.age.secrets."authentik-postgres".path;
-  tokenSecret = mkSecret "authentik-token" config.age.secrets."authentik-token".path;
+  userTokenSecret = mkSecret "authentik-token-user" config.age.secrets."authentik-token-user".path;
+  adminTokenSecret = mkSecret "authentik-token-admin" config.age.secrets."authentik-token-admin".path;
 in {
   age.secrets."authentik-server".file = self + /secrets/authentik-server.age;
   age.secrets."authentik-postgres".file = self + /secrets/authentik-postgres.age;
-  age.secrets."authentik-token".file = self + /secrets/authentik-token.age;
+  age.secrets."authentik-token-user".file = self + /secrets/authentik-token-user.age;
+  age.secrets."authentik-token-admin".file = self + /secrets/authentik-token-admin.age;
   system.activationScripts = {
     "${serverSecret.ref}" = serverSecret.script;
     "${postgresSecret.ref}" = postgresSecret.script;
-    "${tokenSecret.ref}" = tokenSecret.script;
+    "${userTokenSecret.ref}" = userTokenSecret.script;
+    "${adminTokenSecret.ref}" = adminTokenSecret.script;
   };
 
   virtualisation.quadlet = {
@@ -100,7 +103,6 @@ in {
         pull = "newer";
         autoUpdate = "registry";
         exec = "worker";
-        user = "root";
         environments = {
           AUTHENTIK_REDIS__HOST = "authentik-redis";
           AUTHENTIK_POSTGRESQL__HOST = "authentik-postgres";
@@ -112,7 +114,6 @@ in {
           "${postgresSecret.ref},type=env,target=AUTHENTIK_POSTGRESQL__PASSWORD"
         ];
         volumes = [
-          "/run/podman/podman.sock:/var/run/docker.sock"
           "${volumes.authentik-media.ref}:/media"
           "${volumes.authentik-templates.ref}:/templates"
           "${volumes.authentik-certs.ref}:/certs"
@@ -130,7 +131,7 @@ in {
           AUTHENTIK_HOST = "http://authentik-server";
         };
         secrets = [
-          "${tokenSecret.ref},type=env,target=AUTHENTIK_TOKEN"
+          "${userTokenSecret.ref},type=env,target=AUTHENTIK_TOKEN"
         ];
         networks = [
           networks.authentik.ref
@@ -167,7 +168,7 @@ in {
           AUTHENTIK_HOST = "http://authentik-server";
         };
         secrets = [
-          "${tokenSecret.ref},type=env,target=AUTHENTIK_TOKEN"
+          "${adminTokenSecret.ref},type=env,target=AUTHENTIK_TOKEN"
         ];
         networks = [
           networks.authentik.ref
