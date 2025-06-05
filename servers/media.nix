@@ -12,6 +12,7 @@
       "portainer-agent"
       "traefik-kop"
       "radarr"
+      "sonarr"
     ];
 
   networking.hostName = "media";
