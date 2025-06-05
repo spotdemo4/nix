@@ -102,6 +102,7 @@ in {
         pull = "newer";
         autoUpdate = "registry";
         exec = "worker";
+        user = "root";
         environments = {
           AUTHENTIK_REDIS__HOST = "authentik-redis";
           AUTHENTIK_POSTGRESQL__HOST = "authentik-postgres";
