@@ -132,8 +132,7 @@ in {
 
           # Redirects
           OAUTH2_PROXY_REDIRECT_URL = "https://oauth.trev.zip/oauth2/github/callback";
-          OAUTH2_PROXY_COOKIE_DOMAINS = ".trev.zip";
-          OAUTH2_PROXY_WHITELIST_DOMAINS = ".trev.zip";
+          OAUTH2_PROXY_WHITELIST_DOMAINS = "*.trev.zip,*.trev.kiwi,*.trev.xyz";
 
           # Proxy
           OAUTH2_PROXY_UPSTREAMS = "static://202";
@@ -154,7 +153,7 @@ in {
             enable = true;
             http = {
               routers.oauth-github = {
-                rule = "HostRegexp(`.+\\.trev\\.zip`) && PathPrefix(`/oauth2/github/`)";
+                rule = "HostRegexp(`.+\\.trev\\.(zip|kiwi)`) && PathPrefix(`/oauth2/github/`)";
                 entryPoints = "https";
                 priority = 500;
                 tls.certresolver = "letsencrypt";
