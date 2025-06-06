@@ -45,7 +45,7 @@ in {
   system.activationScripts = {
     "${githubSecret.ref}" = githubSecret.script;
     "${cookieSecret.ref}" = cookieSecret.script;
-    "${basicSecret.ref}" = cookieSecret.script;
+    "${basicSecret.ref}" = basicSecret.script;
   };
 
   virtualisation.quadlet = {
@@ -121,7 +121,6 @@ in {
           # Set & pass headers
           OAUTH2_PROXY_SET_XAUTHREQUEST = "true";
           OAUTH2_PROXY_SET_BASIC_AUTH = "true";
-          OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER = "true";
           OAUTH2_PROXY_PASS_ACCESS_TOKEN = "true";
           OAUTH2_PROXY_PASS_BASIC_AUTH = "true";
 
