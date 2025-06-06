@@ -55,8 +55,8 @@
     ];
   };
 in {
-  age.secrets."authelia-env".file = self + /secrets/authelia-env.age;
-  age.secrets."authelia-env".path = config.home.homeDirectory + "/.continue/.env";
+  age.secrets."auth-basic-env".file = self + /secrets/auth-basic-env.age;
+  age.secrets."auth-basic-env".path = config.home.homeDirectory + "/.continue/.env";
 
   home.file.".continue/assistants/config.yaml".source = configFile;
 }

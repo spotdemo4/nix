@@ -72,7 +72,7 @@ in {
               entrypoints = "https";
               service = "api@internal";
               tls.certresolver = "letsencrypt";
-              middlewares = "authelia@docker";
+              middlewares = "auth-github@docker";
             };
           };
         };
@@ -167,11 +167,14 @@ in {
                 port = 4180;
               };
               middlewares = {
-                oauth-github.forwardauth = {
+                auth-github.forwardauth = {
                   address = "http://oauth-github:4180";
                   trustForwardHeader = true;
                   authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
                 };
+                auth-basic.basicauth.users = [
+                  "trev:$2y$05$4/VjKnrg4vYyAbrmJbnJduLYTagD5NYbBeyG5TbrRjnA4BVfHQrOm"
+                ];
               };
             };
           };

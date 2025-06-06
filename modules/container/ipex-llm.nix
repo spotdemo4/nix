@@ -58,11 +58,13 @@ in {
         labels = toLabel [] {
           traefik = {
             enable = true;
-            http.routers.ollama = {
-              rule = "Host(`ollama.trev.zip`)";
-              entryPoints = "https";
-              tls.certresolver = "letsencrypt";
-              middlewares = "authelia@docker";
+            http = {
+              routers.ollama = {
+                rule = "Host(`ollama.trev.zip`)";
+                entryPoints = "https";
+                tls.certresolver = "letsencrypt";
+                middlewares = "auth-basic@docker";
+              };
             };
           };
         };
@@ -82,19 +84,6 @@ in {
           WEB_SEARCH_ENGINE = "duckduckgo";
           ENABLE_IMAGE_GENERATION = "false";
           WHISPER_MODEL = "large";
-
-          # Auth
-          ENABLE_OAUTH_SIGNUP = "true";
-          ENABLE_LOGIN_FORM = "false";
-          OAUTH_MERGE_ACCOUNTS_BY_EMAIL = "true";
-          OAUTH_CLIENT_ID = "dkuAlG~v.mMUVWIivNJC0L1gVtkqSgpPS8rHutJkXa5JSzple4JRRyj2i6U7hzXM6TLdvqrD";
-          OPENID_PROVIDER_URL = "https://auth.trev.zip/.well-known/openid-configuration";
-          OAUTH_PROVIDER_NAME = "Authelia";
-          OAUTH_SCOPES = "openid email profile groups";
-          ENABLE_OAUTH_ROLE_MANAGEMENT = "true";
-          OAUTH_ALLOWED_ROLES = "user,admin";
-          OAUTH_ADMIN_ROLES = "admin";
-          OAUTH_ROLES_CLAIM = "groups";
         };
         secrets = [
           "${owuiSecret.ref},type=env,target=OAUTH_CLIENT_SECRET"
@@ -115,6 +104,7 @@ in {
               rule = "Host(`chat.trev.zip`)";
               entryPoints = "https";
               tls.certresolver = "letsencrypt";
+              middlewares = "auth-github@docker";
             };
           };
         };

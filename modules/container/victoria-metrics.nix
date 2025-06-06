@@ -73,7 +73,7 @@ in {
             rule = "Host(`victoria-metrics.trev.zip`)";
             entryPoints = "https";
             tls.certresolver = "letsencrypt";
-            middlewares = "authelia@docker";
+            middlewares = "auth-github@docker";
           };
         };
       };
