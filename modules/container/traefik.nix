@@ -151,7 +151,8 @@ in {
           OAUTH2_PROXY_COOKIE_HTTPONLY = "true";
           OAUTH2_PROXY_COOKIE_REFRESH = "1h";
           OAUTH2_PROXY_COOKIE_SECURE = "true";
-          OAUTH2_PROXY_COOKIE_DOMAINS = ".trev.zip,.trev.kiwi,.trev.xyz";
+          OAUTH2_PROXY_COOKIE_SAMESITE = "none";
+          OAUTH2_PROXY_COOKIE_CSRF_PER_REQUEST = "true";
 
           # Set & pass headers
           OAUTH2_PROXY_SET_XAUTHREQUEST = "true";
