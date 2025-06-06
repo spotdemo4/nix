@@ -14,7 +14,7 @@ in {
       };
       volumes = [
         "/mnt/pool/movies:/movies"
-        "${volumes.radarr_data.ref}:/config"
+        "${volumes.radarr.ref}:/config"
       ];
       publishPorts = [
         "7878"
@@ -35,7 +35,7 @@ in {
     };
 
     volumes = {
-      radarr_data = {};
+      radarr = {};
     };
   };
 }

@@ -32,7 +32,7 @@ in {
 
   virtualisation.quadlet = {
     containers = {
-      ipex-llm-ollama.containerConfig = {
+      ollama.containerConfig = {
         image = "docker.io/intelanalytics/ipex-llm-inference-cpp-xpu:latest";
         pull = "newer";
         autoUpdate = "registry";
@@ -46,7 +46,7 @@ in {
           "/dev/dri/renderD129:/dev/dri/renderD129"
         ];
         volumes = [
-          "${volumes.ipex-llm_data.ref}:/root/.ollama/models"
+          "${volumes.ollama.ref}:/root/.ollama/models"
           "${start}:/start.sh"
         ];
         publishPorts = [
@@ -89,7 +89,7 @@ in {
           "${owuiSecret.ref},type=env,target=OAUTH_CLIENT_SECRET"
         ];
         volumes = [
-          "${volumes.open-webui_data.ref}:/app/backend/data"
+          "${volumes.open-webui.ref}:/app/backend/data"
         ];
         publishPorts = [
           "8080"
@@ -112,8 +112,8 @@ in {
     };
 
     volumes = {
-      ipex-llm_data = {};
-      open-webui_data = {};
+      ollama = {};
+      open-webui = {};
     };
 
     networks = {

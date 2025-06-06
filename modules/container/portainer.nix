@@ -9,7 +9,7 @@ in {
       autoUpdate = "registry";
       volumes = [
         "/run/podman/podman.sock:/var/run/docker.sock"
-        "${volumes.portainer_data.ref}:/data"
+        "${volumes.portainer.ref}:/data"
       ];
       networks = [
         networks.traefik.ref
@@ -34,7 +34,7 @@ in {
     };
 
     volumes = {
-      portainer_data = {};
+      portainer = {};
     };
   };
 }

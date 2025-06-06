@@ -11,7 +11,7 @@
       # Containers to import
       "portainer-agent"
       "traefik-kop"
-      "ipex-llm"
+      "ollama"
       "intel-gpu-exporter"
       "context7"
     ];

@@ -53,7 +53,7 @@ in {
       autoUpdate = "registry";
       volumes = [
         "${configFile}:/prometheus.yml"
-        "${volumes.victoria-metrics_data.ref}:/victoria-metrics-data"
+        "${volumes.victoria-metrics.ref}:/victoria-metrics-data"
       ];
       publishPorts = [
         "8428:8428"
@@ -84,7 +84,7 @@ in {
     };
 
     volumes = {
-      victoria-metrics_data = {};
+      victoria-metrics = {};
     };
   };
 }

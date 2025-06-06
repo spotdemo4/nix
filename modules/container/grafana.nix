@@ -15,7 +15,7 @@ in {
       autoUpdate = "registry";
       user = "root";
       volumes = [
-        "${volumes.grafana_data.ref}:/var/lib/grafana"
+        "${volumes.grafana.ref}:/var/lib/grafana"
         "${config.age.secrets."grafana".path}:/etc/secrets/client"
       ];
       publishPorts = [
@@ -38,7 +38,7 @@ in {
     };
 
     volumes = {
-      grafana_data = {};
+      grafana = {};
     };
   };
 }
