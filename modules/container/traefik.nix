@@ -131,7 +131,7 @@ in {
           OAUTH2_PROXY_REDIRECT_URL = "https://oauth.trev.zip/oauth2/callback";
 
           # Don't reverse proxy, respond with 202
-          OAUTH2_PROXY_UPSTREAM = "static://202";
+          OAUTH2_PROXY_UPSTREAMS = "static://202";
           OAUTH2_PROXY_REVERSE_PROXY = "true";
         };
         secrets = [
