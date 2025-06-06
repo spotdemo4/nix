@@ -34,6 +34,19 @@
       https = {
         address = ":443";
         AsDefault = true;
+        tls = {
+          certResolver = "letsencrypt";
+          domains = [
+            {
+              main = "trev.zip";
+              sans = ["*.trev.zip"];
+            }
+            {
+              main = "trev.kiwi";
+              sans = ["*.trev.kiwi"];
+            }
+          ];
+        };
       };
     };
 
@@ -41,20 +54,24 @@
       email = "me@trev.xyz";
       storage = "/etc/traefik/acme/acme.json";
       httpChallenge.entrypoint = "http";
+      dnsChallenge.provider = "cloudflare";
     };
   };
 
   githubSecret = mkSecret "oauth2-github" config.age.secrets."oauth2-github".path;
   cookieSecret = mkSecret "oauth2-cookie" config.age.secrets."oauth2-cookie".path;
   basicSecret = mkSecret "auth-basic" config.age.secrets."auth-basic".path;
+  cloudflareSecret = mkSecret "cloudflare-dns" config.age.secrets."cloudflare-dns".path;
 in {
   age.secrets."oauth2-github".file = self + /secrets/oauth2-github.age;
   age.secrets."oauth2-cookie".file = self + /secrets/oauth2-cookie.age;
   age.secrets."auth-basic".file = self + /secrets/auth-basic.age;
+  age.secrets."cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
   system.activationScripts = {
     "${githubSecret.ref}" = githubSecret.script;
     "${cookieSecret.ref}" = cookieSecret.script;
     "${basicSecret.ref}" = basicSecret.script;
+    "${cloudflareSecret.ref}" = cloudflareSecret.script;
   };
 
   virtualisation.quadlet = {
@@ -63,6 +80,9 @@ in {
         image = "docker.io/traefik:latest";
         pull = "newer";
         autoUpdate = "registry";
+        secrets = [
+          "${cloudflareSecret.ref},type=env,target=CF_DNS_API_TOKEN"
+        ];
         volumes = [
           "/run/podman/podman.sock:/var/run/docker.sock"
           "${configFile}:/etc/traefik/traefik.yml"
