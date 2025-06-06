@@ -37,12 +37,15 @@
 
   githubSecret = mkSecret "oauth2-github" config.age.secrets."oauth2-github".path;
   cookieSecret = mkSecret "oauth2-cookie" config.age.secrets."oauth2-cookie".path;
+  basicSecret = mkSecret "auth-basic" config.age.secrets."auth-basic".path;
 in {
   age.secrets."oauth2-github".file = self + /secrets/oauth2-github.age;
   age.secrets."oauth2-cookie".file = self + /secrets/oauth2-cookie.age;
+  age.secrets."auth-basic".file = self + /secrets/auth-basic.age;
   system.activationScripts = {
     "${githubSecret.ref}" = githubSecret.script;
     "${cookieSecret.ref}" = cookieSecret.script;
+    "${basicSecret.ref}" = cookieSecret.script;
   };
 
   virtualisation.quadlet = {
@@ -115,8 +118,7 @@ in {
           OAUTH2_PROXY_COOKIE_REFRESH = "1h";
           OAUTH2_PROXY_COOKIE_SECURE = "true";
 
-          # Set/pass headers
-          OAUTH2_PROXY_SET_AUTHORIZATION_HEADER = "true";
+          # Set & pass headers
           OAUTH2_PROXY_SET_XAUTHREQUEST = "true";
           OAUTH2_PROXY_SET_BASIC_AUTH = "true";
           OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER = "true";
@@ -143,6 +145,7 @@ in {
         secrets = [
           "${githubSecret.ref},type=env,target=OAUTH2_PROXY_CLIENT_SECRET"
           "${cookieSecret.ref},type=env,target=OAUTH2_PROXY_COOKIE_SECRET"
+          "${basicSecret.ref},type=env,target=OAUTH2_PROXY_BASIC_AUTH_PASSWORD"
         ];
         networks = [
           networks.traefik.ref
