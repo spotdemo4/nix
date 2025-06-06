@@ -157,7 +157,7 @@ in {
               };
               middlewares = {
                 oauth.forwardauth = {
-                  address = "http://oauth2-proxy:4180";
+                  address = "https://oauth.trev.zip";
                   trustForwardHeader = true;
                   authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
                 };
