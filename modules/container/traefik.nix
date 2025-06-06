@@ -115,21 +115,16 @@ in {
           OAUTH2_PROXY_COOKIE_REFRESH = "1h";
           OAUTH2_PROXY_COOKIE_SECURE = "true";
 
-          # Headers
+          # Set/pass headers
           OAUTH2_PROXY_SET_AUTHORIZATION_HEADER = "true";
           OAUTH2_PROXY_SET_XAUTHREQUEST = "true";
+          OAUTH2_PROXY_SET_BASIC_AUTH = "true";
           OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER = "true";
           OAUTH2_PROXY_PASS_ACCESS_TOKEN = "true";
           OAUTH2_PROXY_PASS_BASIC_AUTH = "true";
 
-          # Skip oauth2-proxy if the request has a JWT already
-          OAUTH2_PROXY_SKIP_JWT_BEARER_TOKENS = "true";
-
           # Skip provider button
           OAUTH2_PROXY_SKIP_PROVIDER_BUTTON = "true";
-
-          # Do not strip auth headers
-          OAUTH2_PROXY_SKIP_AUTH_STRIP_HEADERS = "false";
 
           # Use the secure code challenge
           OAUTH2_PROXY_CODE_CHALLENGE_METHOD = "S256";
