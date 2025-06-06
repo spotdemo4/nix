@@ -35,11 +35,11 @@
     };
   };
 
-  githubSecret = mkSecret "github-oauth-secret" config.age.secrets."github-oauth-secret".path;
-  cookieSecret = mkSecret "cookie-secret" config.age.secrets."cookie-secret".path;
+  githubSecret = mkSecret "oauth2-github" config.age.secrets."oauth2-github".path;
+  cookieSecret = mkSecret "oauth2-cookie" config.age.secrets."oauth2-cookie".path;
 in {
-  age.secrets."github-oauth-secret".file = self + /secrets/github-oauth-secret.age;
-  age.secrets."cookie-secret".file = self + /secrets/github-oauth-secret.age;
+  age.secrets."oauth2-github".file = self + /secrets/oauth2-github.age;
+  age.secrets."oauth2-cookie".file = self + /secrets/oauth2-cookie.age;
   system.activationScripts = {
     "${githubSecret.ref}" = githubSecret.script;
     "${cookieSecret.ref}" = cookieSecret.script;
@@ -102,7 +102,7 @@ in {
           OAUTH2_PROXY_PROVIDER = "github";
           OAUTH2_PROXY_GITHUB_USER = "spotdemo4";
           OAUTH2_PROXY_CLIENT_ID = "Ov23liIqL0KHpDH7jnpQ";
-          OAUTH2_PROXY_EMAIL_DOMAIN = "*";
+          OAUTH2_PROXY_EMAIL_DOMAINS = "*";
 
           # Logging
           OUATH2_PROXY_SHOW_DEBUG_ON_ERROR = "true";
@@ -111,6 +111,7 @@ in {
           OAUTH2_PROXY_COOKIE_HTTPONLY = "true";
           OAUTH2_PROXY_COOKIE_REFRESH = "1h";
           OAUTH2_PROXY_COOKIE_SECURE = "true";
+          OAUTH2_PROXY_COOKIE_DOMAINS = "trev.zip";
 
           # Return JWT & XAuth in the Authroization headers
           OAUTH2_PROXY_SET_AUTHORIZATION_HEADER = "true";
@@ -147,6 +148,7 @@ in {
                 rule = "Host(`oauth.trev.zip`)";
                 entryPoints = "https";
                 tls.certresolver = "letsencrypt";
+                middlewares = "auth-headers@docker";
               };
               services.oauth.loadbalancer.server = {
                 scheme = "http";
