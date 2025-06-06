@@ -34,7 +34,7 @@
       https = {
         address = ":443";
         AsDefault = true;
-        tls = {
+        http.tls = {
           certResolver = "letsencrypt";
           domains = [
             {
