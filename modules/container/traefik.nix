@@ -114,9 +114,12 @@ in {
           OAUTH2_PROXY_COOKIE_REFRESH = "1h";
           OAUTH2_PROXY_COOKIE_SECURE = "true";
 
-          # Return JWT & XAuth in the Authroization headers
+          # Headers
           OAUTH2_PROXY_SET_AUTHORIZATION_HEADER = "true";
           OAUTH2_PROXY_SET_XAUTHREQUEST = "true";
+          OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER = "true";
+          OAUTH2_PROXY_PASS_ACCESS_TOKEN = "true";
+          OAUTH2_PROXY_PASS_BASIC_AUTH = "true";
 
           # Skip oauth2-proxy if the request has a JWT already
           OAUTH2_PROXY_SKIP_JWT_BEARER_TOKENS = "true";
@@ -127,12 +130,15 @@ in {
           # Use the secure code challenge
           OAUTH2_PROXY_CODE_CHALLENGE_METHOD = "S256";
 
-          # Redirect URL
+          # Redirects
           OAUTH2_PROXY_REDIRECT_URL = "https://oauth.trev.zip/oauth2/callback";
+          OAUTH2_PROXY_COOKIE_DOMAINS = ".trev.zip";
+          OAUTH2_PROXY_WHITELIST_DOMAINS = ".trev.zip";
 
-          # Don't reverse proxy, respond with 202
+          # Proxy
           OAUTH2_PROXY_UPSTREAMS = "static://202";
           OAUTH2_PROXY_REVERSE_PROXY = "true";
+          OAUTH2_PROXY_REAL_CLIENT_IP_HEADER = "X-Forwarded-For";
         };
         secrets = [
           "${githubSecret.ref},type=env,target=OAUTH2_PROXY_CLIENT_SECRET"
@@ -146,7 +152,7 @@ in {
             enable = true;
             http = {
               routers.oauth = {
-                rule = "Host(`oauth.trev.zip`)";
+                rule = "PathPrefix(`/oauth2`)";
                 entryPoints = "https";
                 tls.certresolver = "letsencrypt";
                 middlewares = "auth-headers@docker";
