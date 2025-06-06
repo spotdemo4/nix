@@ -117,6 +117,7 @@ in {
           OAUTH2_PROXY_COOKIE_HTTPONLY = "true";
           OAUTH2_PROXY_COOKIE_REFRESH = "1h";
           OAUTH2_PROXY_COOKIE_SECURE = "true";
+          OAUTH2_PROXY_COOKIE_DOMAINS = ".trev.zip,.trev.kiwi,.trev.xyz";
 
           # Set & pass headers
           OAUTH2_PROXY_SET_XAUTHREQUEST = "true";
@@ -132,7 +133,7 @@ in {
 
           # Redirects
           OAUTH2_PROXY_REDIRECT_URL = "https://oauth.trev.zip/oauth2/github/callback";
-          OAUTH2_PROXY_WHITELIST_DOMAINS = "*.trev.zip,*.trev.kiwi,*.trev.xyz";
+          OAUTH2_PROXY_WHITELIST_DOMAINS = ".trev.zip,.trev.kiwi,.trev.xyz";
 
           # Proxy
           OAUTH2_PROXY_UPSTREAMS = "static://202";
