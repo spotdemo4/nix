@@ -53,7 +53,6 @@
     certificatesResolvers.letsencrypt.acme = {
       email = "me@trev.xyz";
       storage = "/etc/traefik/acme/acme.json";
-      httpChallenge.entrypoint = "http";
       dnsChallenge.provider = "cloudflare";
     };
   };
