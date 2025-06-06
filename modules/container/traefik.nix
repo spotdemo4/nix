@@ -139,7 +139,7 @@ in {
           OAUTH2_PROXY_UPSTREAMS = "static://202";
           OAUTH2_PROXY_REVERSE_PROXY = "true";
           OAUTH2_PROXY_REAL_CLIENT_IP_HEADER = "X-Forwarded-For";
-          OAUTH2_PROXY_PREFIX = "/oauth2/github";
+          OAUTH2_PROXY_PROXY_PREFIX = "/oauth2/github";
         };
         secrets = [
           "${githubSecret.ref},type=env,target=OAUTH2_PROXY_CLIENT_SECRET"
