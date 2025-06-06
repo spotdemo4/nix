@@ -14,4 +14,6 @@ in {
   "authentik-server.age".publicKeys = keys.all;
   "authentik-token-user.age".publicKeys = keys.all;
   "authentik-token-admin.age".publicKeys = keys.all;
+  "github-oauth-secret.age".publicKeys = keys.all;
+  "cookie-secret.age".publicKeys = keys.all;
 }
