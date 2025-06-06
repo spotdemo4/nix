@@ -24,14 +24,27 @@
     };
 
     entryPoints = {
-      http.address = ":80";
-      https.address = ":443";
+      http = {
+        address = ":80";
+        http.redirections.entryPoint = {
+          to = "https";
+          scheme = "https";
+        };
+      };
+      https = {
+        address = ":443";
+        AsDefault = true;
+      };
     };
 
     certificatesResolvers.letsencrypt.acme = {
       email = "me@trev.xyz";
       storage = "/etc/traefik/acme/acme.json";
       httpChallenge.entrypoint = "http";
+    };
+
+    tls.stores.default.defaultGeneratedCert = {
+      resolver = "letsencrypt";
     };
   };
 
@@ -70,12 +83,18 @@ in {
         labels = toLabel [] {
           traefik = {
             enable = true;
-            http.routers.api = {
-              rule = "Host(`traefik.trev.zip`)";
-              entrypoints = "https";
-              service = "api@internal";
-              tls.certresolver = "letsencrypt";
-              middlewares = "auth-github@docker";
+            http = {
+              routers.api = {
+                rule = "Host(`traefik.trev.zip`)";
+                entrypoints = "https";
+                service = "api@internal";
+                tls.certresolver = "letsencrypt";
+                middlewares = "auth-github@docker";
+              };
+
+              middlewares.auth-basic.basicauth.users = [
+                "trev:$2y$05$4/VjKnrg4vYyAbrmJbnJduLYTagD5NYbBeyG5TbrRjnA4BVfHQrOm"
+              ];
             };
           };
         };
@@ -163,15 +182,10 @@ in {
                 scheme = "http";
                 port = 4180;
               };
-              middlewares = {
-                auth-github.forwardauth = {
-                  address = "http://oauth-github:4180";
-                  trustForwardHeader = true;
-                  authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
-                };
-                auth-basic.basicauth.users = [
-                  "trev:$2y$05$4/VjKnrg4vYyAbrmJbnJduLYTagD5NYbBeyG5TbrRjnA4BVfHQrOm"
-                ];
+              middlewares.auth-github.forwardauth = {
+                address = "http://oauth-github:4180";
+                trustForwardHeader = true;
+                authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
               };
             };
           };
