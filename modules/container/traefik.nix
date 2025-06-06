@@ -71,7 +71,7 @@ in {
           traefik = {
             enable = true;
             http.routers.api = {
-              rule = "Host(`traefik.trev.zip`)";
+              rule = "HostRegexp(`^trev\\.(zip|kiwi)\\$`)";
               entrypoints = "https";
               service = "api@internal";
               tls.certresolver = "letsencrypt";
