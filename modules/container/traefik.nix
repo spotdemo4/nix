@@ -93,6 +93,7 @@ in {
         ];
       };
 
+      # The docs suck, yoinked from https://github.com/oauth2-proxy/oauth2-proxy/issues/46#issuecomment-2459703610
       oauth-github.containerConfig = {
         image = "quay.io/oauth2-proxy/oauth2-proxy:latest";
         pull = "newer";
@@ -123,6 +124,9 @@ in {
 
           # Skip oauth2-proxy if the request has a JWT already
           OAUTH2_PROXY_SKIP_JWT_BEARER_TOKENS = "true";
+
+          # Skip provider button
+          OAUTH2_PROXY_SKIP_PROVIDER_BUTTON = "true";
 
           # Do not strip auth headers
           OAUTH2_PROXY_SKIP_AUTH_STRIP_HEADERS = "false";
