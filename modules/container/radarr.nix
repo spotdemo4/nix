@@ -27,10 +27,7 @@ in {
               rule = "Host(`radarr.trev.zip`)";
               entryPoints = "https";
               tls.certresolver = "letsencrypt";
-              middlewares = [
-                "oauth@docker"
-                "oauth-errors@docker"
-              ];
+              middlewares = "oauth@docker";
             };
           };
         };

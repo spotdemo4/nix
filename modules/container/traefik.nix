@@ -117,9 +117,9 @@ in {
           # Headers
           OAUTH2_PROXY_SET_AUTHORIZATION_HEADER = "true";
           OAUTH2_PROXY_SET_XAUTHREQUEST = "true";
-          # OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER = "true";
-          # OAUTH2_PROXY_PASS_ACCESS_TOKEN = "true";
-          # OAUTH2_PROXY_PASS_BASIC_AUTH = "true";
+          OAUTH2_PROXY_PASS_AUTHORIZATION_HEADER = "true";
+          OAUTH2_PROXY_PASS_ACCESS_TOKEN = "true";
+          OAUTH2_PROXY_PASS_BASIC_AUTH = "true";
 
           # Skip oauth2-proxy if the request has a JWT already
           OAUTH2_PROXY_SKIP_JWT_BEARER_TOKENS = "true";
@@ -136,7 +136,7 @@ in {
           OAUTH2_PROXY_WHITELIST_DOMAINS = ".trev.zip";
 
           # Proxy
-          # OAUTH2_PROXY_UPSTREAMS = "static://202";
+          OAUTH2_PROXY_UPSTREAMS = "static://202";
           OAUTH2_PROXY_REVERSE_PROXY = "true";
           OAUTH2_PROXY_REAL_CLIENT_IP_HEADER = "X-Forwarded-For";
         };
@@ -152,9 +152,9 @@ in {
             enable = true;
             http = {
               routers.oauth = {
-                rule = "Host(`radarr.trev.zip`, `oauth.trev.zip`) && PathPrefix(`/oauth2/`)";
+                rule = "HostRegexp(`.+\\.trev\\.zip`) && PathPrefix(`/oauth2/`)";
                 entryPoints = "https";
-                middlewares = "oauth-headers@docker";
+                middlewares = "auth-headers@docker";
                 tls.certresolver = "letsencrypt";
               };
               services.oauth.loadbalancer.server = {
@@ -163,17 +163,11 @@ in {
               };
               middlewares = {
                 oauth.forwardauth = {
-                  address = "http://oauth2-proxy:4180/oauth2/auth";
+                  address = "http://oauth2-proxy:4180";
                   trustForwardHeader = true;
+                  authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
                 };
-                oauth-errors.errors = {
-                  status = [
-                    "401-403"
-                  ];
-                  service = "oauth";
-                  query = "/oauth2/sign_in?rd={url}";
-                };
-                oauth-headers.headers = {
+                auth-headers.headers = {
                   sslRedirect = true;
                   stsSeconds = 315360000;
                   browserXssFilter = true;
