@@ -93,7 +93,7 @@ in {
         ];
       };
 
-      oauth2-proxy.containerConfig = {
+      oauth-github.containerConfig = {
         image = "quay.io/oauth2-proxy/oauth2-proxy:latest";
         pull = "newer";
         autoUpdate = "registry";
@@ -131,7 +131,7 @@ in {
           OAUTH2_PROXY_CODE_CHALLENGE_METHOD = "S256";
 
           # Redirects
-          OAUTH2_PROXY_REDIRECT_URL = "https://oauth.trev.zip/oauth2/callback";
+          OAUTH2_PROXY_REDIRECT_URL = "https://oauth.trev.zip/oauth2/github/callback";
           OAUTH2_PROXY_COOKIE_DOMAINS = ".trev.zip";
           OAUTH2_PROXY_WHITELIST_DOMAINS = ".trev.zip";
 
@@ -139,6 +139,7 @@ in {
           OAUTH2_PROXY_UPSTREAMS = "static://202";
           OAUTH2_PROXY_REVERSE_PROXY = "true";
           OAUTH2_PROXY_REAL_CLIENT_IP_HEADER = "X-Forwarded-For";
+          OAUTH2_PROXY_PREFIX = "/oauth2/github";
         };
         secrets = [
           "${githubSecret.ref},type=env,target=OAUTH2_PROXY_CLIENT_SECRET"
@@ -151,32 +152,20 @@ in {
           traefik = {
             enable = true;
             http = {
-              routers.oauth = {
-                rule = "HostRegexp(`.+\\.trev\\.zip`) && PathPrefix(`/oauth2/`)";
+              routers.oauth-github = {
+                rule = "HostRegexp(`.+\\.trev\\.zip$`) && PathPrefix(`/oauth2/github/`)";
                 entryPoints = "https";
-                middlewares = "auth-headers@docker";
                 tls.certresolver = "letsencrypt";
               };
-              services.oauth.loadbalancer.server = {
+              services.oauth-github.loadbalancer.server = {
                 scheme = "http";
                 port = 4180;
               };
               middlewares = {
-                oauth.forwardauth = {
-                  address = "http://oauth2-proxy:4180";
+                oauth-github.forwardauth = {
+                  address = "http://oauth-github:4180";
                   trustForwardHeader = true;
                   authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
-                };
-                auth-headers.headers = {
-                  sslRedirect = true;
-                  stsSeconds = 315360000;
-                  browserXssFilter = true;
-                  contentTypeNosniff = true;
-                  forceSTSHeader = true;
-                  sslHost = "trev.zip";
-                  stsIncludeSubdomains = true;
-                  stsPreload = true;
-                  frameDeny = true;
                 };
               };
             };
