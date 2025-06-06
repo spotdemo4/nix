@@ -157,7 +157,7 @@ in {
               };
               middlewares = {
                 oauth.forwardauth = {
-                  address = "https://oauth.trev.zip";
+                  address = "https://oauth.trev.zip/";
                   trustForwardHeader = true;
                   authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
                 };
