@@ -153,8 +153,9 @@ in {
             enable = true;
             http = {
               routers.oauth-github = {
-                rule = "HostRegexp(`.+\\.trev\\.zip$`) && PathPrefix(`/oauth2/github/`)";
+                rule = "HostRegexp(`.+\\.trev\\.zip`) && PathPrefix(`/oauth2/github/`)";
                 entryPoints = "https";
+                priority = 500;
                 tls.certresolver = "letsencrypt";
               };
               services.oauth-github.loadbalancer.server = {
