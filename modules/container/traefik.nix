@@ -127,8 +127,8 @@ in {
           # Use the secure code challenge
           OAUTH2_PROXY_CODE_CHALLENGE_METHOD = "S256";
 
-          # Redirect with a URL relative to the requesting domain
-          OAUTH2_PROXY_REDIRECT_URL = "/oauth2/callback";
+          # Redirect URL
+          OAUTH2_PROXY_REDIRECT_URL = "https://oauth.trev.zip/oauth2/callback";
 
           # Don't reverse proxy, respond with 202
           OAUTH2_PROXY_UPSTREAM = "static://202";
@@ -157,7 +157,7 @@ in {
               };
               middlewares = {
                 oauth.forwardauth = {
-                  address = "https://oauth.trev.zip/";
+                  address = "http://oauth2-proxy:4180";
                   trustForwardHeader = true;
                   authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
                 };
