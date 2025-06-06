@@ -98,6 +98,8 @@ in {
         pull = "newer";
         autoUpdate = "registry";
         environments = {
+          OAUTH2_PROXY_HTTP_ADDRESS = ":4180";
+
           # Github provider
           OAUTH2_PROXY_PROVIDER = "github";
           OAUTH2_PROXY_GITHUB_USER = "spotdemo4";
@@ -111,7 +113,6 @@ in {
           OAUTH2_PROXY_COOKIE_HTTPONLY = "true";
           OAUTH2_PROXY_COOKIE_REFRESH = "1h";
           OAUTH2_PROXY_COOKIE_SECURE = "true";
-          OAUTH2_PROXY_COOKIE_DOMAINS = "trev.zip";
 
           # Return JWT & XAuth in the Authroization headers
           OAUTH2_PROXY_SET_AUTHORIZATION_HEADER = "true";
@@ -129,7 +130,7 @@ in {
           # Redirect with a URL relative to the requesting domain
           OAUTH2_PROXY_REDIRECT_URL = "/oauth2/callback";
 
-          # Reverse proxy
+          # Don't reverse proxy, respond with 202
           OAUTH2_PROXY_UPSTREAM = "static://202";
           OAUTH2_PROXY_REVERSE_PROXY = "true";
         };
