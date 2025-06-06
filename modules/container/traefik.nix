@@ -167,7 +167,7 @@ in {
           OAUTH2_PROXY_CODE_CHALLENGE_METHOD = "S256";
 
           # Redirects
-          OAUTH2_PROXY_REDIRECT_URL = "https://oauth.trev.zip/oauth2/github/callback";
+          OAUTH2_PROXY_REDIRECT_URL = "/oauth2/github/callback";
           OAUTH2_PROXY_WHITELIST_DOMAINS = ".trev.zip,.trev.kiwi,.trev.xyz";
 
           # Proxy
