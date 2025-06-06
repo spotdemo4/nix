@@ -42,10 +42,6 @@
       storage = "/etc/traefik/acme/acme.json";
       httpChallenge.entrypoint = "http";
     };
-
-    tls.stores.default.defaultGeneratedCert = {
-      resolver = "letsencrypt";
-    };
   };
 
   githubSecret = mkSecret "oauth2-github" config.age.secrets."oauth2-github".path;

@@ -25,6 +25,7 @@ in {
           http = {
             routers.radarr = {
               rule = "HostRegexp(`^radarr\.trev\.(zip|kiwi)$`)";
+              tls.certresolver = "letsencrypt";
               middlewares = "auth-github@docker";
             };
           };
