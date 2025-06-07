@@ -140,9 +140,13 @@ in {
           TFA_AUTHPROVIDER = "github";
           TFA_AUTHGITHUB_CLIENTID = "Ov23liIqL0KHpDH7jnpQ";
           TFA_AUTHGITHUB_ALLOWEDUSERS = "spotdemo4";
+          TFA_METRICSSERVERPORT = "2112";
         };
         secrets = [
           "${githubSecret.ref},type=env,target=TFA_AUTHGITHUB_CLIENTSECRET"
+        ];
+        networks = [
+          networks.traefik.ref
         ];
         labels = toLabel [] {
           traefik = {
