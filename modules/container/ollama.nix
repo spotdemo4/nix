@@ -102,8 +102,6 @@ in {
             enable = true;
             http.routers.open-webui = {
               rule = "Host(`chat.trev.zip`)";
-              entryPoints = "https";
-              tls.certresolver = "letsencrypt";
               middlewares = "auth-github@docker";
             };
           };

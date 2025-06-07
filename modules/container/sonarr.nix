@@ -25,8 +25,6 @@ in {
           http = {
             routers.sonarr = {
               rule = "Host(`sonarr.trev.zip`)";
-              entryPoints = "https";
-              tls.certresolver = "letsencrypt";
               middlewares = "auth-github@docker";
             };
           };

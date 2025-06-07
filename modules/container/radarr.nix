@@ -25,7 +25,7 @@ in {
           http = {
             routers.radarr = {
               rule = "HostRegexp(`^radarr\.trev\.(zip|kiwi)$`)";
-              middlewares = "traefik-auth-github@docker";
+              middlewares = "auth-github@docker";
             };
           };
         };

@@ -29,8 +29,6 @@ in {
           enable = true;
           http.routers.grafana = {
             rule = "Host(`grafana.trev.zip`)";
-            entryPoints = "https";
-            tls.certresolver = "letsencrypt";
             middlewares = "auth-github@docker";
           };
         };

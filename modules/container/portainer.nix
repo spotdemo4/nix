@@ -20,8 +20,7 @@ in {
           http = {
             routers.portainer = {
               rule = "Host(`portainer.trev.zip`)";
-              entryPoints = "https";
-              tls.certresolver = "letsencrypt";
+              middlewares = "auth-github@docker";
             };
             services.portainer.loadbalancer.server = {
               scheme = "http";

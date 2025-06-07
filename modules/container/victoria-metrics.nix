@@ -71,8 +71,6 @@ in {
           enable = true;
           http.routers.victoria-metrics = {
             rule = "Host(`victoria-metrics.trev.zip`)";
-            entryPoints = "https";
-            tls.certresolver = "letsencrypt";
             middlewares = "auth-github@docker";
           };
         };
