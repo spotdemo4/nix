@@ -104,7 +104,6 @@ in {
                 entrypoints = "https";
                 service = "api@internal";
                 tls.certresolver = "letsencrypt";
-                middlewares = "auth-github@docker";
               };
 
               middlewares.auth-basic.basicauth.users = [
@@ -130,6 +129,45 @@ in {
         ];
       };
 
+      traefik-forward-auth.containerConfig = {
+        image = "ghcr.io/spotdemo4/traefik-forward-auth:edge";
+        pull = "newer";
+        autoUpdate = "registry";
+        environments = {
+          TFA_HOSTNAME = "auth.trev.*";
+          TFA_COOKIEDOMAIN = "trev.*";
+
+          TFA_AUTHPROVIDER = "github";
+          TFA_AUTHGITHUB_CLIENTID = "Ov23liIqL0KHpDH7jnpQ";
+          TFA_AUTHGITHUB_ALLOWEDUSERS = "spotdemo4";
+        };
+        secrets = [
+          "${githubSecret.ref},type=env,target=TFA_AUTHGITHUB_CLIENTSECRET"
+        ];
+        labels = toLabel [] {
+          traefik = {
+            enable = true;
+            http = {
+              routers.traefik-forward-auth = {
+                rule = "HostRegexp(`auth\\.trev\\.(zip|kiwi)`)";
+                priority = 500;
+              };
+              services.traefik-forward-auth.loadbalancer.server = {
+                scheme = "http";
+                port = 4181;
+              };
+              middlewares = {
+                traefik-auth-github.forwardauth = {
+                  address = "http://traefik-forward-auth:4181";
+                  trustForwardHeader = true;
+                  authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
+                };
+              };
+            };
+          };
+        };
+      };
+
       # The docs suck, yoinked from https://github.com/oauth2-proxy/oauth2-proxy/issues/46#issuecomment-2459703610
       oauth-github.containerConfig = {
         image = "quay.io/oauth2-proxy/oauth2-proxy:latest";
@@ -151,7 +189,7 @@ in {
           OAUTH2_PROXY_COOKIE_HTTPONLY = "true";
           OAUTH2_PROXY_COOKIE_REFRESH = "1h";
           OAUTH2_PROXY_COOKIE_SECURE = "true";
-          OAUTH2_PROXY_COOKIE_DOMAINS = ".trev.zip,.trev.kiwi,.trev.xyz";
+          OAUTH2_PROXY_COOKIE_DOMAINS = "trev.zip,trev.kiwi,trev.xyz";
 
           # Set & pass headers
           OAUTH2_PROXY_SET_XAUTHREQUEST = "true";
@@ -197,10 +235,12 @@ in {
                 scheme = "http";
                 port = 4180;
               };
-              middlewares.auth-github.forwardauth = {
-                address = "http://oauth-github:4180";
-                trustForwardHeader = true;
-                authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
+              middlewares = {
+                auth-github.forwardauth = {
+                  address = "http://oauth-github:4180";
+                  trustForwardHeader = true;
+                  authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
+                };
               };
             };
           };
