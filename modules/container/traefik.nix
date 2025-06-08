@@ -22,7 +22,10 @@
 
       redis.endpoints = "traefik-redis:6379";
 
-      file.directory = "/conf";
+      file = {
+        directory = "/conf";
+        watch = true;
+      };
     };
 
     entryPoints = {
