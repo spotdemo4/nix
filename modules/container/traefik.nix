@@ -44,11 +44,17 @@
           domains = [
             {
               main = "trev.zip";
-              sans = ["*.trev.zip"];
+              sans = [
+                "*.trev.zip"
+                "*.*.trev.zip"
+              ];
             }
             {
               main = "trev.kiwi";
-              sans = ["*.trev.kiwi"];
+              sans = [
+                "*.trev.kiwi"
+                "*.*.trev.kiwi"
+              ];
             }
           ];
         };
@@ -203,7 +209,7 @@ in {
             enable = true;
             http = {
               routers.traefik-forward-auth-plex = {
-                rule = "HostRegexp(`plex\\.auth\\.trev\\.(zip|kiwi)`)";
+                rule = "HostRegexp(`plex.auth.trev.(zip|kiwi)`)";
                 priority = 500;
               };
               services.traefik-forward-auth-plex.loadbalancer.server = {
