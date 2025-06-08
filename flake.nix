@@ -109,6 +109,7 @@
           (nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs self;
+              hostname = name;
             };
             modules = [
               agenix.nixosModules.default
@@ -124,6 +125,7 @@
         laptop = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs self;
+            hostname = "laptop";
           };
           modules = [
             agenix.nixosModules.default
@@ -135,6 +137,7 @@
         desktop = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs self;
+            hostname = "desktop";
           };
           modules = [
             agenix.nixosModules.default

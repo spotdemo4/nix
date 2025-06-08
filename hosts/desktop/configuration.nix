@@ -3,6 +3,7 @@
   pkgs,
   inputs,
   self,
+  hostname,
   ...
 }: {
   imports =
@@ -13,6 +14,7 @@
     ]
     ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
+      "garbage"
       "git"
       "gnome-auth-agent"
       "hyprland"
@@ -115,15 +117,8 @@
     '';
   };
 
-  # Update script
-  update = {
-    enable = true;
-    hostname = "desktop";
-    user = "trev";
-  };
-
   # Networking
-  networking.hostName = "nixos-desktop"; # Define your hostname.
+  networking.hostName = hostname;
   networking.networkmanager.enable = true;
   networking.firewall.enable = false;
 
@@ -172,6 +167,12 @@
     shell = pkgs.zsh;
   };
   age.identityPaths = ["/home/trev/.ssh/id_ed25519"];
+
+  # Update script
+  update = {
+    enable = true;
+    user = "trev";
+  };
 
   # Docker
   virtualisation.docker.enable = true;

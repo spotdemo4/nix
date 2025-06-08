@@ -3,6 +3,7 @@
   pkgs,
   inputs,
   self,
+  hostname,
   ...
 }: {
   imports =
@@ -13,11 +14,13 @@
     ]
     ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
+      "cadvisor"
+      "garbage"
       "git"
       "openssh"
       "tailscale"
+      "update"
       "zsh"
-      "cadvisor"
     ];
 
   # Packages to install
@@ -48,7 +51,7 @@
   };
 
   # Networking
-  networking.hostName = "nixos-server"; # Define your hostname.
+  networking.hostName = hostname;
   networking.networkmanager.enable = true;
   networking.firewall.enable = false;
 
@@ -111,6 +114,12 @@
         };
       };
     };
+  };
+
+  # Update script
+  update = {
+    enable = true;
+    user = "trev";
   };
 
   # Podman

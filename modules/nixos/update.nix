@@ -3,6 +3,7 @@
   config,
   pkgs,
   self,
+  hostname,
   ...
 }: {
   options.update = {
@@ -39,7 +40,7 @@
       ];
 
       text = builtins.readFile (pkgs.replaceVars (self + /scripts/update.sh) {
-        hostname = "${config.update.hostname}";
+        hostname = "${hostname}";
         user = "${config.update.user}";
       });
     };
@@ -56,7 +57,7 @@
           Type = "exec";
           Restart = "on-failure";
           ExecStart = [
-            "${updater}/bin/update -w -d"
+            "${updater}/bin/update -w"
           ];
         };
       };

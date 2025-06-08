@@ -3,10 +3,6 @@
     [
       (self + /hosts/lxc/configuration.nix)
     ]
-    ++ map (x: self + /modules/nixos/${x}.nix) [
-      # Programs to import
-      "update"
-    ]
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
       "portainer-agent"
@@ -14,15 +10,6 @@
       "radarr"
       "sonarr"
     ];
-
-  networking.hostName = "media";
-
-  # Update script
-  update = {
-    enable = true;
-    hostname = "media";
-    user = "trev";
-  };
 
   # Traefik mapping to gateway
   traefik-kop = {
