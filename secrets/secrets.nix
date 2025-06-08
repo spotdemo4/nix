@@ -8,8 +8,8 @@ in {
   "openwebui.age".publicKeys = keys.all;
   "oauth2-github.age".publicKeys = keys.all;
   "oauth2-cookie.age".publicKeys = keys.all;
-  "auth-basic-env.age".publicKeys = keys.all;
   "auth-basic.age".publicKeys = keys.all;
-  "auth-basic-header.age".publicKeys = keys.all;
+  "auth-basic-env.age".publicKeys = keys.all;
+  "auth-basic-traefik.age".publicKeys = keys.all;
   "cloudflare-dns.age".publicKeys = keys.all;
 }

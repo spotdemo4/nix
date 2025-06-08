@@ -29,7 +29,7 @@ in {
           enable = true;
           http.routers.grafana = {
             rule = "Host(`grafana.trev.zip`)";
-            middlewares = "auth-github@docker";
+            middlewares = "auth-github";
           };
         };
       };

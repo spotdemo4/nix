@@ -25,7 +25,7 @@ in {
           http = {
             routers.sonarr = {
               rule = "Host(`sonarr.trev.zip`)";
-              middlewares = "auth-github@docker";
+              middlewares = "auth-github,header-basic";
             };
           };
         };

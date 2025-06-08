@@ -22,11 +22,9 @@ in {
       labels = toLabel [] {
         traefik = {
           enable = true;
-          http = {
-            routers.radarr = {
-              rule = "HostRegexp(`^radarr\.trev\.(zip|kiwi)$`)";
-              middlewares = "auth-github@docker";
-            };
+          http.routers.radarr = {
+            rule = "HostRegexp(`^radarr\.trev\.(zip|kiwi)$`)";
+            middlewares = "auth-github,header-basic";
           };
         };
       };

@@ -21,6 +21,8 @@
       };
 
       redis.endpoints = "traefik-redis:6379";
+
+      file.directory = "/conf";
     };
 
     entryPoints = {
@@ -58,15 +60,13 @@
   };
 
   githubSecret = mkSecret "oauth2-github" config.age.secrets."oauth2-github".path;
-  basicSecret = mkSecret "auth-basic-header" config.age.secrets."auth-basic-header".path;
   cloudflareSecret = mkSecret "cloudflare-dns" config.age.secrets."cloudflare-dns".path;
 in {
+  age.secrets."auth-basic-traefik".file = self + /secrets/auth-basic-traefik.age;
   age.secrets."oauth2-github".file = self + /secrets/oauth2-github.age;
-  age.secrets."auth-basic-header".file = self + /secrets/auth-basic-header.age;
   age.secrets."cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
   system.activationScripts = {
     "${githubSecret.ref}" = githubSecret.script;
-    "${basicSecret.ref}" = basicSecret.script;
     "${cloudflareSecret.ref}" = cloudflareSecret.script;
   };
 
@@ -83,6 +83,7 @@ in {
           "/run/podman/podman.sock:/var/run/docker.sock"
           "${configFile}:/etc/traefik/traefik.yml"
           "${volumes.traefik_acme.ref}:/etc/traefik/acme"
+          "${config.age.secrets."auth-basic-traefik".path}:/conf/auth.yml"
         ];
         publishPorts = [
           "80:80"
@@ -99,12 +100,8 @@ in {
               routers.api = {
                 rule = "Host(`traefik.trev.zip`)";
                 service = "api@internal";
-                middlewares = "auth-github@docker";
+                middlewares = "auth-github";
               };
-
-              middlewares.auth-basic.basicauth.users = [
-                "trev:$2y$05$4/VjKnrg4vYyAbrmJbnJduLYTagD5NYbBeyG5TbrRjnA4BVfHQrOm"
-              ];
             };
           };
         };
@@ -140,7 +137,6 @@ in {
         };
         secrets = [
           "${githubSecret.ref},type=env,target=TFA_AUTHGITHUB_CLIENTSECRET"
-          "${basicSecret.ref},type=env,target=TFA_AUTHHEADER"
         ];
         networks = [
           networks.traefik.ref

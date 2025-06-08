@@ -63,7 +63,7 @@ in {
                 rule = "Host(`ollama.trev.zip`)";
                 entryPoints = "https";
                 tls.certresolver = "letsencrypt";
-                middlewares = "auth-basic@docker";
+                middlewares = "auth-basic";
               };
             };
           };
@@ -102,7 +102,7 @@ in {
             enable = true;
             http.routers.open-webui = {
               rule = "Host(`chat.trev.zip`)";
-              middlewares = "auth-github@docker";
+              middlewares = "auth-github";
             };
           };
         };
