@@ -71,7 +71,7 @@ in {
           enable = true;
           http.routers.victoria-metrics = {
             rule = "Host(`victoria-metrics.trev.zip`)";
-            middlewares = "auth-github";
+            middlewares = "auth-github@docker";
           };
         };
       };

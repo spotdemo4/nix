@@ -23,7 +23,7 @@
       redis.endpoints = "traefik-redis:6379";
 
       file = {
-        directory = "/conf";
+        filename = "/conf/auth.yml";
         watch = true;
       };
     };
@@ -103,7 +103,7 @@ in {
               routers.api = {
                 rule = "Host(`traefik.trev.zip`)";
                 service = "api@internal";
-                middlewares = "auth-github";
+                middlewares = "auth-github@docker";
               };
             };
           };
