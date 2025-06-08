@@ -48,7 +48,10 @@ while true; do
     
     echo "checking for updates"
     cd /etc/nixos
-    git fetch
+    if ! git fetch; then
+        echo "could not fetch updates"
+        continue
+    fi
 
     REMOTE_CHANGES=false
     if ! git diff --quiet HEAD origin/main; then
