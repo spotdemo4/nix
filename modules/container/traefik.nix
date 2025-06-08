@@ -9,7 +9,7 @@
   mkSecret = (import ./utils/mkSecret.nix {inherit pkgs config;}).mkSecret;
 
   configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
-    log.level = "DEBUG";
+    log.level = "WARN";
     api.insecure = true;
     metrics.prometheus = true;
 
@@ -159,7 +159,7 @@ in {
               middlewares.auth-github.forwardauth = {
                 address = "http://traefik-forward-auth:4181";
                 trustForwardHeader = true;
-                authResponseHeaders = "X-Auth-Request-Access-Token,Authorization";
+                authResponseHeaders = "X-Forwarded-User";
               };
             };
           };
