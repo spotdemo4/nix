@@ -168,7 +168,7 @@ in {
               middlewares.auth-github.forwardauth = {
                 address = "http://traefik-forward-auth:4181";
                 trustForwardHeader = true;
-                authResponseHeaders = "X-Forwarded-User";
+                authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
               };
             };
           };
@@ -213,7 +213,7 @@ in {
               middlewares.auth-plex.forwardauth = {
                 address = "http://traefik-forward-auth-plex:4181";
                 trustForwardHeader = true;
-                authResponseHeaders = "X-Forwarded-User";
+                authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
               };
             };
           };
