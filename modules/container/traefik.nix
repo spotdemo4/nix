@@ -64,16 +64,19 @@
 
   cloudflareSecret = mkSecret "cloudflare-dns" config.age.secrets."cloudflare-dns".path;
   githubSecret = mkSecret "auth-github" config.age.secrets."auth-github".path;
+  plexSecret = mkSecret "auth-plex" config.age.secrets."auth-plex".path;
   cookieSecret = mkSecret "auth-cookie" config.age.secrets."auth-cookie".path;
 in {
   age.secrets."auth-basic-traefik".file = self + /secrets/auth-basic-traefik.age;
   age.secrets."${cloudflareSecret.ref}".file = self + /secrets/cloudflare-dns.age;
   age.secrets."${githubSecret.ref}".file = self + /secrets/auth-github.age;
+  age.secrets."${plexSecret.ref}".file = self + /secrets/auth-plex.age;
   age.secrets."${cookieSecret.ref}".file = self + /secrets/auth-cookie.age;
 
   system.activationScripts = {
     "${cloudflareSecret.ref}" = cloudflareSecret.script;
     "${githubSecret.ref}" = githubSecret.script;
+    "${plexSecret.ref}" = plexSecret.script;
     "${cookieSecret.ref}" = cookieSecret.script;
   };
 
@@ -136,11 +139,11 @@ in {
         environments = {
           TFA_HOSTNAME = "auth.trev.*";
           TFA_COOKIEDOMAIN = "trev.*";
+          TFA_METRICSSERVERPORT = "2112";
 
           TFA_AUTHPROVIDER = "github";
           TFA_AUTHGITHUB_CLIENTID = "Iv23liIkJQVqxVXVwKIn";
           TFA_AUTHGITHUB_ALLOWEDUSERS = "spotdemo4";
-          TFA_METRICSSERVERPORT = "2112";
         };
         secrets = [
           "${githubSecret.ref},type=env,target=TFA_AUTHGITHUB_CLIENTSECRET"
@@ -163,6 +166,50 @@ in {
               };
               middlewares.auth-github.forwardauth = {
                 address = "http://traefik-forward-auth:4181";
+                trustForwardHeader = true;
+                authResponseHeaders = "X-Forwarded-User";
+              };
+            };
+          };
+        };
+      };
+
+      traefik-forward-auth-plex.containerConfig = {
+        image = "ghcr.io/spotdemo4/traefik-forward-auth:edge";
+        pull = "newer";
+        autoUpdate = "registry";
+        environments = {
+          TFA_HOSTNAME = "plex.auth.trev.*";
+          TFA_COOKIEDOMAIN = "trev.*";
+          TFA_METRICSSERVERPORT = "2112";
+
+          TFA_AUTHPROVIDER = "plex";
+          TFA_AUTHPLEX_CLIENTID = "Iv23liIkJQVqxVXVwKIn";
+          TFA_AUTHPLEX_CLIENTNAME = "trev llc inc";
+          TFA_AUTHPLEX_ALLOWFRIENDS = "true";
+          TFA_AUTHPLEX_ALLOWEDUSERS = "spotdemo4";
+        };
+        secrets = [
+          "${plexSecret.ref},type=env,target=TFA_AUTHPLEX_TOKEN"
+          "${cookieSecret.ref},type=env,target=TFA_TOKENSIGNINGKEY"
+        ];
+        networks = [
+          networks.traefik.ref
+        ];
+        labels = toLabel [] {
+          traefik = {
+            enable = true;
+            http = {
+              routers.traefik-forward-auth-plex = {
+                rule = "HostRegexp(`plex\\.auth\\.trev\\.(zip|kiwi)`)";
+                priority = 500;
+              };
+              services.traefik-forward-auth-plex.loadbalancer.server = {
+                scheme = "http";
+                port = 4181;
+              };
+              middlewares.auth-plex.forwardauth = {
+                address = "http://traefik-forward-auth-plex:4181";
                 trustForwardHeader = true;
                 authResponseHeaders = "X-Forwarded-User";
               };

@@ -102,7 +102,7 @@ in {
             enable = true;
             http.routers.open-webui = {
               rule = "Host(`chat.trev.zip`)";
-              middlewares = "auth-github@docker";
+              middlewares = "auth-plex@docker";
             };
           };
         };
