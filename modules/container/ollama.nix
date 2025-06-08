@@ -79,8 +79,9 @@ in {
           WEBUI_URL = "https://chat.trev.zip";
           WEBUI_AUTH_TRUSTED_EMAIL_HEADER = "X-Forwarded-Email";
           WEBUI_AUTH_TRUSTED_NAME_HEADER = "X-Forwarded-User";
+          DEFAULT_USER_ROLE = "user";
           ENABLE_OLLAMA_API = "true";
-          OLLAMA_BASE_URL = "http://ipex-llm-ollama:11434/";
+          OLLAMA_BASE_URL = "http://ollama:11434/";
           ENABLE_OPENAI_API = "false";
           ENABLE_WEB_SEARCH = "true";
           WEB_SEARCH_ENGINE = "duckduckgo";
