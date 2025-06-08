@@ -109,7 +109,7 @@
           (nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs self;
-              hostname = name;
+              hostname = nixpkgs.lib.removeSuffix ".nix" name;
             };
             modules = [
               agenix.nixosModules.default
