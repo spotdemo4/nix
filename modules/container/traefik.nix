@@ -44,17 +44,11 @@
           domains = [
             {
               main = "trev.zip";
-              sans = [
-                "*.trev.zip"
-                "*.*.trev.zip"
-              ];
+              sans = ["*.trev.zip"];
             }
             {
               main = "trev.kiwi";
-              sans = [
-                "*.trev.kiwi"
-                "*.*.trev.kiwi"
-              ];
+              sans = ["*.trev.kiwi"];
             }
           ];
         };
@@ -143,7 +137,7 @@ in {
         pull = "newer";
         autoUpdate = "registry";
         environments = {
-          TFA_HOSTNAME = "auth.trev.*";
+          TFA_HOSTNAME = "auth-github.trev.*";
           TFA_COOKIEDOMAIN = "trev.*";
           TFA_COOKIENAME = "auth_github";
           TFA_METRICSSERVERPORT = "2112";
@@ -164,7 +158,7 @@ in {
             enable = true;
             http = {
               routers.traefik-forward-auth = {
-                rule = "HostRegexp(`auth\\.trev\\.(zip|kiwi)`)";
+                rule = "HostRegexp(`auth-github.trev.(zip|kiwi)`)";
                 priority = 500;
               };
               services.traefik-forward-auth.loadbalancer.server = {
@@ -186,7 +180,7 @@ in {
         pull = "newer";
         autoUpdate = "registry";
         environments = {
-          TFA_HOSTNAME = "plex.auth.trev.*";
+          TFA_HOSTNAME = "auth-plex.trev.*";
           TFA_COOKIEDOMAIN = "trev.*";
           TFA_COOKIENAME = "auth_plex";
           TFA_METRICSSERVERPORT = "2112";
@@ -209,7 +203,7 @@ in {
             enable = true;
             http = {
               routers.traefik-forward-auth-plex = {
-                rule = "HostRegexp(`plex.auth.trev.(zip|kiwi)`)";
+                rule = "HostRegexp(`auth-plex.trev.(zip|kiwi)`)";
                 priority = 500;
               };
               services.traefik-forward-auth-plex.loadbalancer.server = {
