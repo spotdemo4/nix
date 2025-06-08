@@ -62,15 +62,19 @@
     };
   };
 
-  githubSecret = mkSecret "oauth2-github" config.age.secrets."oauth2-github".path;
   cloudflareSecret = mkSecret "cloudflare-dns" config.age.secrets."cloudflare-dns".path;
+  githubSecret = mkSecret "auth-github" config.age.secrets."auth-github".path;
+  cookieSecret = mkSecret "auth-cookie" config.age.secrets."auth-cookie".path;
 in {
   age.secrets."auth-basic-traefik".file = self + /secrets/auth-basic-traefik.age;
-  age.secrets."oauth2-github".file = self + /secrets/oauth2-github.age;
-  age.secrets."cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
+  age.secrets."${cloudflareSecret.ref}".file = self + /secrets/cloudflare-dns.age;
+  age.secrets."${githubSecret.ref}".file = self + /secrets/auth-github.age;
+  age.secrets."${cookieSecret.ref}".file = self + /secrets/auth-cookie.age;
+
   system.activationScripts = {
-    "${githubSecret.ref}" = githubSecret.script;
     "${cloudflareSecret.ref}" = cloudflareSecret.script;
+    "${githubSecret.ref}" = githubSecret.script;
+    "${cookieSecret.ref}" = cookieSecret.script;
   };
 
   virtualisation.quadlet = {
@@ -134,12 +138,13 @@ in {
           TFA_COOKIEDOMAIN = "trev.*";
 
           TFA_AUTHPROVIDER = "github";
-          TFA_AUTHGITHUB_CLIENTID = "Ov23liIqL0KHpDH7jnpQ";
+          TFA_AUTHGITHUB_CLIENTID = "Iv23liIkJQVqxVXVwKIn";
           TFA_AUTHGITHUB_ALLOWEDUSERS = "spotdemo4";
           TFA_METRICSSERVERPORT = "2112";
         };
         secrets = [
           "${githubSecret.ref},type=env,target=TFA_AUTHGITHUB_CLIENTSECRET"
+          "${cookieSecret.ref},type=env,target=TFA_TOKENSIGNINGKEY"
         ];
         networks = [
           networks.traefik.ref

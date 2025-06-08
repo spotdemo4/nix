@@ -11,5 +11,7 @@ in {
   "auth-basic.age".publicKeys = keys.all;
   "auth-basic-env.age".publicKeys = keys.all;
   "auth-basic-traefik.age".publicKeys = keys.all;
+  "auth-github.age".publicKeys = keys.all;
+  "auth-cookie.age".publicKeys = keys.all;
   "cloudflare-dns.age".publicKeys = keys.all;
 }
