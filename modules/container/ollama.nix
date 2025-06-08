@@ -77,6 +77,8 @@ in {
         autoUpdate = "registry";
         environments = {
           WEBUI_URL = "https://chat.trev.zip";
+          WEBUI_AUTH_TRUSTED_EMAIL_HEADER = "X-Forwarded-Email";
+          WEBUI_AUTH_TRUSTED_NAME_HEADER = "X-Forwarded-User";
           ENABLE_OLLAMA_API = "true";
           OLLAMA_BASE_URL = "http://ipex-llm-ollama:11434/";
           ENABLE_OPENAI_API = "false";
