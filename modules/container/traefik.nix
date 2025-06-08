@@ -139,6 +139,7 @@ in {
         environments = {
           TFA_HOSTNAME = "auth.trev.*";
           TFA_COOKIEDOMAIN = "trev.*";
+          TFA_COOKIENAME = "auth_github";
           TFA_METRICSSERVERPORT = "2112";
 
           TFA_AUTHPROVIDER = "github";
@@ -181,6 +182,7 @@ in {
         environments = {
           TFA_HOSTNAME = "plex.auth.trev.*";
           TFA_COOKIEDOMAIN = "trev.*";
+          TFA_COOKIENAME = "auth_plex";
           TFA_METRICSSERVERPORT = "2112";
 
           TFA_AUTHPROVIDER = "plex";
