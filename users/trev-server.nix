@@ -12,8 +12,8 @@
     ++ map (x: self + /modules/home-manager/${x}.nix) [
       # Home Manager modules to import
       "direnv"
-      "fish"
       "starship"
+      "zsh"
     ];
 
   home.username = "trev";

@@ -1,7 +1,7 @@
 {...}: {
   programs.kitty = {
     enable = true;
-    shellIntegration.enableFishIntegration = true;
+    shellIntegration.enableZshIntegration = true;
   };
 
   catppuccin.kitty = {

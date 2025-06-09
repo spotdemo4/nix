@@ -14,7 +14,6 @@
     ]
     ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
-      "fish"
       "garbage"
       "git"
       "gnome-auth-agent"
@@ -26,6 +25,7 @@
       "syncthing"
       "tailscale"
       "update"
+      "zsh"
     ];
 
   # Packages to install
@@ -146,8 +146,6 @@
 
   # User accounts
   users = {
-    defaultUserShell = pkgs.fish;
-
     users.trev = {
       isNormalUser = true;
       description = "trev";
@@ -157,7 +155,7 @@
         "docker"
         "video"
       ];
-      shell = pkgs.fish;
+      shell = pkgs.zsh;
     };
   };
   age.identityPaths = ["/home/trev/.ssh/id_ed25519"];
