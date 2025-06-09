@@ -19,7 +19,7 @@ in {
           enable = true;
           http = {
             routers.portainer = {
-              rule = "Host(`portainer.trev.zip`)";
+              rule = "HostRegexp(`portainer.trev.(zip|kiwi)`)";
               middlewares = "auth-github@docker";
             };
             services.portainer.loadbalancer.server = {

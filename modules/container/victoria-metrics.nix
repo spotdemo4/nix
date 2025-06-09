@@ -70,7 +70,7 @@ in {
         traefik = {
           enable = true;
           http.routers.victoria-metrics = {
-            rule = "Host(`victoria-metrics.trev.zip`)";
+            rule = "HostRegexp(`victoria-metrics.trev.(zip|kiwi)`)";
             middlewares = "auth-github@docker";
           };
         };

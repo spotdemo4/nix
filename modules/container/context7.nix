@@ -11,10 +11,8 @@ in {
     labels = toLabel [] {
       traefik = {
         enable = true;
-        http = {
-          routers.context7 = {
-            rule = "Host(`context7.trev.zip`)";
-          };
+        http.routers.context7 = {
+          rule = "HostRegexp(`context7.trev.(zip|kiwi)`)";
         };
       };
     };

@@ -28,7 +28,7 @@ in {
         traefik = {
           enable = true;
           http.routers.grafana = {
-            rule = "Host(`grafana.trev.zip`)";
+            rule = "HostRegexp(`grafana.trev.(zip|kiwi)`)";
             middlewares = "auth-github@docker";
           };
         };

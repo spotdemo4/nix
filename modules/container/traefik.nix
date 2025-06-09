@@ -106,12 +106,10 @@ in {
         labels = toLabel [] {
           traefik = {
             enable = true;
-            http = {
-              routers.api = {
-                rule = "Host(`traefik.trev.zip`)";
-                service = "api@internal";
-                middlewares = "auth-github@docker";
-              };
+            http.routers.api = {
+              rule = "HostRegexp(`traefik.trev.(zip|kiwi)`)";
+              service = "api@internal";
+              middlewares = "auth-github@docker";
             };
           };
         };
@@ -132,7 +130,7 @@ in {
         ];
       };
 
-      traefik-forward-auth.containerConfig = {
+      traefik-auth-github.containerConfig = {
         image = "ghcr.io/spotdemo4/traefik-forward-auth:edge";
         pull = "newer";
         autoUpdate = "registry";
@@ -157,16 +155,16 @@ in {
           traefik = {
             enable = true;
             http = {
-              routers.traefik-forward-auth = {
+              routers.traefik-auth-github = {
                 rule = "HostRegexp(`auth-github.trev.(zip|kiwi)`)";
                 priority = 500;
               };
-              services.traefik-forward-auth.loadbalancer.server = {
+              services.traefik-auth-github.loadbalancer.server = {
                 scheme = "http";
                 port = 4181;
               };
               middlewares.auth-github.forwardauth = {
-                address = "http://traefik-forward-auth:4181";
+                address = "http://traefik-auth-github:4181";
                 trustForwardHeader = true;
                 authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
               };
@@ -175,7 +173,7 @@ in {
         };
       };
 
-      traefik-forward-auth-plex.containerConfig = {
+      traefik-auth-plex.containerConfig = {
         image = "ghcr.io/spotdemo4/traefik-forward-auth:edge";
         pull = "newer";
         autoUpdate = "registry";
@@ -202,16 +200,16 @@ in {
           traefik = {
             enable = true;
             http = {
-              routers.traefik-forward-auth-plex = {
+              routers.traefik-auth-plex = {
                 rule = "HostRegexp(`auth-plex.trev.(zip|kiwi)`)";
                 priority = 500;
               };
-              services.traefik-forward-auth-plex.loadbalancer.server = {
+              services.traefik-auth-plex.loadbalancer.server = {
                 scheme = "http";
                 port = 4181;
               };
               middlewares.auth-plex.forwardauth = {
-                address = "http://traefik-forward-auth-plex:4181";
+                address = "http://traefik-auth-plex:4181";
                 trustForwardHeader = true;
                 authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
               };

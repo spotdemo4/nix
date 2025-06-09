@@ -58,13 +58,9 @@ in {
         labels = toLabel [] {
           traefik = {
             enable = true;
-            http = {
-              routers.ollama = {
-                rule = "Host(`ollama.trev.zip`)";
-                entryPoints = "https";
-                tls.certresolver = "letsencrypt";
-                middlewares = "auth-basic@file";
-              };
+            http.routers.ollama = {
+              rule = "HostRegexp(`ollama.trev.(zip|kiwi)`)";
+              middlewares = "auth-basic@file";
             };
           };
         };
@@ -104,7 +100,7 @@ in {
           traefik = {
             enable = true;
             http.routers.open-webui = {
-              rule = "Host(`chat.trev.zip`)";
+              rule = "HostRegexp(`chat.trev.(zip|kiwi)`)";
               middlewares = "auth-plex@docker";
             };
           };
