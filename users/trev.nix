@@ -17,6 +17,7 @@
       "direnv"
       "discord"
       "fish"
+      "ghostty"
       "gpg"
       "gtk"
       "hyprland"
