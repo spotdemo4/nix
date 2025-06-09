@@ -13,7 +13,6 @@
       # Home Manager modules to import
       "direnv"
       "fish"
-      "kitty"
       "starship"
     ];
 

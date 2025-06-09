@@ -34,6 +34,9 @@
     nmap
     btop
     ffmpeg
+
+    # GUI technically but needed for ssh
+    kitty
   ];
 
   # Nix Settings
