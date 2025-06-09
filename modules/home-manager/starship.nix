@@ -1,7 +1,9 @@
 {...}: {
   programs.starship = {
     enable = true;
-    enableZshIntegration = true;
+    enableFishIntegration = true;
+    enableTransience = true;
+
     settings = {
       container = {
         disabled = true;

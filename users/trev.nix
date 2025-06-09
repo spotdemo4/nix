@@ -16,6 +16,7 @@
       "cursor"
       "direnv"
       "discord"
+      "fish"
       "gpg"
       "gtk"
       "hyprland"
@@ -30,7 +31,6 @@
       "waybar"
       "wofi"
       "zen"
-      "zsh"
     ];
 
   home.username = "trev";

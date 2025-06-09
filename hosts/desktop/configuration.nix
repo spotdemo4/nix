@@ -14,6 +14,7 @@
     ]
     ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
+      "fish"
       "garbage"
       "git"
       "gnome-auth-agent"
@@ -26,7 +27,6 @@
       "tailscale"
       "update"
       "virt-manager"
-      "zsh"
     ];
 
   # Packages to install
@@ -160,11 +160,15 @@
   };
 
   # User accounts
-  users.users.trev = {
-    isNormalUser = true;
-    description = "trev";
-    extraGroups = ["networkmanager" "wheel" "docker" "scanner" "lp" "libvirtd"];
-    shell = pkgs.zsh;
+  users = {
+    defaultUserShell = pkgs.fish;
+
+    users.trev = {
+      isNormalUser = true;
+      description = "trev";
+      extraGroups = ["networkmanager" "wheel" "docker" "scanner" "lp" "libvirtd"];
+      shell = pkgs.fish;
+    };
   };
   age.identityPaths = ["/home/trev/.ssh/id_ed25519"];
 

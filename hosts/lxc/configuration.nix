@@ -14,13 +14,13 @@
     ]
     ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
+      "fish"
       "cadvisor"
       "garbage"
       "git"
       "openssh"
       "tailscale"
       "update"
-      "zsh"
     ];
 
   # Packages to install
@@ -92,6 +92,7 @@
       };
     };
 
+    defaultUserShell = pkgs.fish;
     users = {
       trev = {
         isNormalUser = true;
@@ -106,7 +107,7 @@
           "video"
           "render"
         ];
-        shell = pkgs.zsh;
+        shell = pkgs.fish;
         openssh.authorizedKeys = let
           nixKeys = import (self + /secrets/keys.nix);
         in {
