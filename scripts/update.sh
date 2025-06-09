@@ -54,7 +54,7 @@ while true; do
     fi
 
     REMOTE_CHANGES=false
-    if ! git diff --quiet HEAD origin/main; then
+    if ! git diff --quiet HEAD origin/production; then
         REMOTE_CHANGES=true
         REBUILD=true
     fi
@@ -68,14 +68,14 @@ while true; do
     if [ "$REMOTE_CHANGES" = true ] && [ "$LOCAL_CHANGES" = true ]; then
         echo "local and remote changes found: stashing, pulling and checking"
         git stash
-        git pull origin main
+        git pull origin production
         git stash pop
         git add .
         nix fmt .
         nix flake check --accept-flake-config
     elif [ "$REMOTE_CHANGES" = true ]; then
         echo "remote changes found: pulling"
-        git pull origin main
+        git pull origin production
     elif [ "$LOCAL_CHANGES" = true ]; then
         echo "local changes found: checking"
         git add .

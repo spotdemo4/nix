@@ -27,12 +27,12 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Check
-        run: nix flake check
+        run: nix flake check --accept-flake-config
 
       # https://github.com/actions/checkout/issues/13
       - name: Push to Production
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin production
+          git fetch
           git push origin main:production
