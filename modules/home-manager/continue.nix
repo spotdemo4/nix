@@ -44,8 +44,8 @@
     ];
   };
 in {
-  age.secrets."auth-basic-env".file = self + /secrets/auth-basic-env.age;
-  age.secrets."auth-basic-env".path = config.home.homeDirectory + "/.continue/.env";
+  age.secrets."continue".file = self + /secrets/continue.age;
+  age.secrets."continue".path = config.home.homeDirectory + "/.continue/.env";
 
   home.file.".continue/assistants/config.yaml".source = configFile;
 }

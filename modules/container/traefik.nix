@@ -23,7 +23,7 @@
       redis.endpoints = "traefik-redis:6379";
 
       file = {
-        filename = "/conf/auth.yml";
+        filename = "/conf/secret.yml";
         watch = true;
       };
     };
@@ -67,7 +67,7 @@
   plexSecret = mkSecret "auth-plex" config.age.secrets."auth-plex".path;
   cookieSecret = mkSecret "auth-cookie" config.age.secrets."auth-cookie".path;
 in {
-  age.secrets."auth-basic-traefik".file = self + /secrets/auth-basic-traefik.age;
+  age.secrets."traefik".file = self + /secrets/traefik.age;
   age.secrets."${cloudflareSecret.ref}".file = self + /secrets/cloudflare-dns.age;
   age.secrets."${githubSecret.ref}".file = self + /secrets/auth-github.age;
   age.secrets."${plexSecret.ref}".file = self + /secrets/auth-plex.age;
@@ -93,7 +93,7 @@ in {
           "/run/podman/podman.sock:/var/run/docker.sock"
           "${configFile}:/etc/traefik/traefik.yml"
           "${volumes.traefik_acme.ref}:/etc/traefik/acme"
-          "${config.age.secrets."auth-basic-traefik".path}:/conf/auth.yml"
+          "${config.age.secrets."traefik".path}:/conf/secret.yml"
         ];
         publishPorts = [
           "80:80"
