@@ -2,7 +2,6 @@ let
   keys = import ./keys.nix;
 in {
   "gpg.age".publicKeys = keys.local;
-  "opencommit.age".publicKeys = keys.local;
   "continue.age".publicKeys = keys.local;
   "gitea-runner.age".publicKeys = keys.all;
   "tailscale.age".publicKeys = keys.all;

@@ -27,7 +27,6 @@
       "kitty"
       "mako"
       "mpv"
-      "opencommit"
       "qt"
       "starship"
       "vscode"
