@@ -7,6 +7,7 @@
       container = {
         disabled = true;
       };
+      command_timeout = 3600000;
     };
   };
 
