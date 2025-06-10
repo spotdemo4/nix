@@ -787,6 +787,26 @@
         "type": "github"
       }
     },
+    "quick-commit": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1749555273,
+        "narHash": "sha256-W9EdgjgaFm6Yao1OT48stFysCkMCR3CO8UlvhQGfsSE=",
+        "owner": "spotdemo4",
+        "repo": "quick-commit",
+        "rev": "046ef47b47c6d7c800570b8c9cf0b003614db418",
+        "type": "github"
+      },
+      "original": {
+        "owner": "spotdemo4",
+        "repo": "quick-commit",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -799,6 +819,7 @@
         "nixpkgs": "nixpkgs_2",
         "nur": "nur",
         "quadlet-nix": "quadlet-nix",
+        "quick-commit": "quick-commit",
         "trevbar": "trevbar",
         "zen-browser": "zen-browser"
       }

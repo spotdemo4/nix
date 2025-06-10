@@ -65,6 +65,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Quick Commit
+    quick-commit = {
+      url = "github:spotdemo4/quick-commit";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Hyprland
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland-plugins = {

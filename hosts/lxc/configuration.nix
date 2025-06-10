@@ -78,8 +78,7 @@
   home-manager = {
     useGlobalPkgs = true;
     extraSpecialArgs = {
-      inherit inputs;
-      inherit self;
+      inherit inputs self;
     };
     users = {
       trev.imports = [(self + /users/trev-server.nix)];

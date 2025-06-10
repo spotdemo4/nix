@@ -3,6 +3,7 @@ let
 in {
   "gpg.age".publicKeys = keys.local;
   "continue.age".publicKeys = keys.local;
+  "quick-commit.age".publicKeys = keys.local;
   "gitea-runner.age".publicKeys = keys.all;
   "tailscale.age".publicKeys = keys.all;
   "grafana.age".publicKeys = keys.all;
