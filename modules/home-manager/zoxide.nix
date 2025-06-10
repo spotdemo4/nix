@@ -5,6 +5,6 @@
   };
 
   home.shellAliases = {
-    cd = "zoxide";
+    cd = "z";
   };
 }
