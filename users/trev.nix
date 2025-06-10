@@ -19,6 +19,7 @@
       "direnv"
       "discord"
       "eza"
+      "fzf"
       "gpg"
       "gtk"
       "hyprland"

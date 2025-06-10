@@ -14,6 +14,7 @@
       "bat"
       "btop"
       "eza"
+      "fzf"
       "direnv"
       "starship"
       "zoxide"
@@ -24,9 +25,10 @@
   home.homeDirectory = "/home/trev";
   home.stateVersion = "24.05";
 
-  # Create an alias for podman that selects the root socket
   home.shellAliases = {
+    # Create an alias for podman that selects the root socket
     docker = "podman --url unix:///run/podman/podman.sock";
+    logs = "journalctl -b -e -u";
   };
 
   # Let Home Manager install and manage itself.
