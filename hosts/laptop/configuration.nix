@@ -60,7 +60,6 @@
     openconnect
     ncdu
     nmap
-    btop
     brightnessctl
 
     # Applets

@@ -11,8 +11,12 @@
     ]
     ++ map (x: self + /modules/home-manager/${x}.nix) [
       # Home Manager modules to import
+      "bat"
+      "btop"
+      "eza"
       "direnv"
       "starship"
+      "zoxide"
       "zsh"
     ];
 

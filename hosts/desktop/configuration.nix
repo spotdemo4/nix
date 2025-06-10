@@ -65,13 +65,13 @@
     openconnect
     ncdu
     nmap
-    btop
     ffmpeg
     inputs.filebrowser-upload.packages."${system}".default
     inputs.agenix.packages."${system}".default
     libnotify
     alejandra
     protonvpn-cli
+    mprocs
 
     # Applets
     networkmanagerapplet

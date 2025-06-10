@@ -12,8 +12,6 @@
 
       # Env vars
       env = [
-        #"HYPRCURSOR_THEME,catppuccin-mocha-dark-cursors"
-        #"HYPRCURSOR_SIZE,22"
         "QT_QPA_PLATFORMTHEME,qt5ct"
       ];
 

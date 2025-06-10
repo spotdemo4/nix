@@ -32,7 +32,6 @@
     yt-dlp
     ncdu
     nmap
-    btop
     ffmpeg
 
     # GUI technically but needed for ssh
