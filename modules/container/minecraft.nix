@@ -39,7 +39,7 @@ in {
         traefik = {
           enable = true;
           tcp.routers.minecraft = {
-            rule = "HostSNIRegexp(`mc.trev.(zip|kiwi)`)";
+            rule = "HostSNI(`*`)";
             entryPoints = "minecraft";
           };
         };
