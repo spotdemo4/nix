@@ -53,6 +53,9 @@
           ];
         };
       };
+      minecraft = {
+        address = ":25565";
+      };
     };
 
     certificatesResolvers.letsencrypt.acme = {
