@@ -32,46 +32,46 @@
   # Packages to install
   environment.systemPackages = with pkgs; [
     # GUI
-    nemo
-    nemo-fileroller
-    file-roller
-    vesktop
-    feh
-    obsidian
-    jetbrains.idea-community-bin
     android-studio
-    plexamp
-    thunderbird
-    kdePackages.kdenlive
     bruno
-    onlyoffice-bin_latest
-    prismlauncher
-    moonlight-qt
-    obs-studio
+    feh
+    file-roller
     heroic
     inputs.trevbar.packages."${system}".default
     jetbrains.datagrip
-    tor-browser
+    jetbrains.idea-community-bin
+    kdePackages.kdenlive
     monero-gui
+    moonlight-qt
+    nemo
+    nemo-fileroller
+    obs-studio
+    obsidian
+    onlyoffice-bin_latest
+    plexamp
+    prismlauncher
+    thunderbird
+    tor-browser
+    vesktop
 
     # CLI
-    wget
-    unzip
-    zip
-    fastfetch
-    grimblast
+    alejandra
     android-tools
-    yt-dlp
-    openconnect
+    fastfetch
+    ffmpeg
+    grimblast
+    inputs.agenix.packages."${system}".default
+    inputs.filebrowser-upload.packages."${system}".default
+    libnotify
+    mprocs
     ncdu
     nmap
-    ffmpeg
-    inputs.filebrowser-upload.packages."${system}".default
-    inputs.agenix.packages."${system}".default
-    libnotify
-    alejandra
+    openconnect
     protonvpn-cli
-    mprocs
+    unzip
+    wget
+    yt-dlp
+    zip
 
     # Applets
     networkmanagerapplet
