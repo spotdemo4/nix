@@ -163,7 +163,14 @@
     users.trev = {
       isNormalUser = true;
       description = "trev";
-      extraGroups = ["networkmanager" "wheel" "docker" "scanner" "lp" "libvirtd"];
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+        "docker"
+        "scanner"
+        "lp"
+        "libvirtd"
+      ];
       shell = pkgs.zsh;
     };
   };
