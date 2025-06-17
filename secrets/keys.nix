@@ -9,6 +9,7 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGQeBo8YspGiTDH3xhIg0vTWzwIOJtk3VeE6PQ97lyu4 root@gateway"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBF162KlIQ0KM4MPHmSi9UEsDrVsdgiTyAdWSAOE87WE root@monitor"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIipGzt2u19Aon2qZaw8aVG1+ZRevX5t2LrpQBwt/WCG root@ai"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHU2UCuSMdo2GYPU4R0pkPse5efZEAjOSuuf+nJYpeVd root@game"
   ];
 in {
   local = local_keys;
