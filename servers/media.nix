@@ -9,7 +9,6 @@
       "traefik-kop"
       "radarr"
       "sonarr"
-      "minecraft"
     ];
 
   # Traefik mapping to gateway
