@@ -43,6 +43,8 @@ jobs:
         with:
           name: trix
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+        env:
+          USER: root
 
       # https://github.com/actions/checkout/issues/13
       - name: Set Git Config
