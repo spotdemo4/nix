@@ -45,7 +45,7 @@
                 CONFIGURED_ACTIONS_RUNNER_FILES_DIR = "/runner/data";
                 DISABLE_AUTOMATIC_DEREGISTRATION = "true";
                 RUN_AS_ROOT = "false";
-                # USER = "root";
+                USER = "runner";
               };
               secrets = [
                 "${githubSecret.ref},type=env,target=ACCESS_TOKEN"
