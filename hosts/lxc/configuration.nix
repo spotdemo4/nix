@@ -15,7 +15,6 @@
     ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
       "cadvisor"
-      "garbage"
       "git"
       "openssh"
       "tailscale"
@@ -45,8 +44,19 @@
         "nix-command"
         "flakes"
       ];
-      sandbox = false;
     };
+
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+
+    optimise = {
+      automatic = true;
+      dates = "05:00";
+    };
+
     extraOptions = ''
       warn-dirty = false
     '';

@@ -14,7 +14,6 @@
     ]
     ++ map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
-      "garbage"
       "git"
       "gnome-auth-agent"
       "hyprland"
@@ -103,13 +102,25 @@
   # Nix Settings
   nix = {
     settings = {
-      # Not working atm, need determinate nix
-      # lazy-trees = true;
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       trusted-users = [
         "root"
         "trev"
       ];
+    };
+
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+
+    optimise = {
+      automatic = true;
+      dates = "05:00";
     };
 
     extraOptions = ''

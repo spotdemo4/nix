@@ -34,7 +34,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         
       - name: Update
-        run: nix flake update
+        run: nix flake update --accept-flake-config
 
       - name: Create Pull Request
         id: cpr
