@@ -8,25 +8,25 @@ on:
     types: [opened, reopened, edited, auto_merge_enabled, synchronize]
 
 jobs:
-  get-runner:
+  runner:
     runs-on: ubuntu-latest
     outputs:
-      runner-label: ${{ steps.get-runner.outputs.runner-label }}
+      label: ${{ steps.runner.outputs.label }}
     steps:
       - name: Get runner
-        id: get-runner
+        id: runner
         run: |
           runners=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/actions/runners")
           available=$(echo "$runners" | jq '.runners[] | select(.status == "online" and .labels[] .name == "self-hosted")')
           if [ -n "$available" ]; then
-            echo "runner-label=self-hosted" >> $GITHUB_OUTPUT
+            echo "label=self-hosted" >> $GITHUB_OUTPUT
           else
-            echo "runner-label=ubuntu-latest" >> $GITHUB_OUTPUT
+            echo "label=ubuntu-latest" >> $GITHUB_OUTPUT
           fi
 
   check:
-    needs: get-runner
-    runs-on: ${{ needs.get-runner.outputs.runner-label }}
+    needs: runner
+    runs-on: ${{ needs.runner.outputs.label }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,4 +61,5 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git push origin production
+          branch=$(git rev-parse --abbrev-ref HEAD)
+          git push origin "$branch:production"

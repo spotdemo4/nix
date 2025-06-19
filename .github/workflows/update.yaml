@@ -10,25 +10,25 @@ permissions:
   pull-requests: write
 
 jobs:
-  get-runner:
+  runner:
     runs-on: ubuntu-latest
     outputs:
-      runner-label: ${{ steps.get-runner.outputs.runner-label }}
+      label: ${{ steps.runner.outputs.label }}
     steps:
       - name: Get runner
-        id: get-runner
+        id: runner
         run: |
           runners=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/actions/runners")
           available=$(echo "$runners" | jq '.runners[] | select(.status == "online" and .labels[] .name == "self-hosted")')
           if [ -n "$available" ]; then
-            echo "runner-label=self-hosted" >> $GITHUB_OUTPUT
+            echo "label=self-hosted" >> $GITHUB_OUTPUT
           else
-            echo "runner-label=ubuntu-latest" >> $GITHUB_OUTPUT
+            echo "label=ubuntu-latest" >> $GITHUB_OUTPUT
           fi
 
   update:
-    needs: get-runner
-    runs-on: ${{ needs.get-runner.outputs.runner-label }}
+    needs: runner
+    runs-on: ${{ needs.runner.outputs.label }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -65,6 +65,12 @@ jobs:
           commit-message: "chore: update"
 
       - name: Enable Automerge
-        run: gh pr merge --squash --auto --subject "chore: update" --body "[skip ci]" "${{ steps.cpr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.PAT }}
+        run: >
+          gh pr merge
+          --squash
+          --auto
+          --subject "chore: update"
+          --body "[skip ci]"
+          "${{ steps.cpr.outputs.pull-request-number }}"
