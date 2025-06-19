@@ -15,4 +15,5 @@ in {
   "tailscale.age".publicKeys = keys.all;
   "traefik.age".publicKeys = keys.all;
   "curseforge.age".publicKeys = keys.all;
+  "github-runner.age".publicKeys = keys.all;
 }

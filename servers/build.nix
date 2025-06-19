@@ -7,5 +7,14 @@
       # Containers to import
       "portainer-agent"
       "gitea-act-runner"
+      "github-runner"
     ];
+
+  # Github runners
+  github-runner = {
+    enable = true;
+    repos = [
+      "spotdemo4/nix"
+    ];
+  };
 }
