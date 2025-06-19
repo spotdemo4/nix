@@ -26,27 +26,38 @@
   in
     lib.mkIf config.github-runner.enable {
       age.secrets."${githubSecret.ref}".file = self + /secrets/github-runner.age;
+      system.activationScripts = {
+        "${githubSecret.ref}" = githubSecret.script;
+      };
 
-      virtualisation.quadlet.containers = lib.listToAttrs (map (repo:
-        lib.nameValuePair "github-runner-${lib.strings.replaceChars ["/" "."] ["-" ""] repo}" {
-          containerConfig = {
-            image = "ghcr.io/myoung34/docker-github-actions-runner:latest";
-            pull = "newer";
-            autoUpdate = "registry";
-            environments = {
-              REPO_URL = "https://github.com/${repo}";
-              RUNNER_NAME = "${lib.strings.replaceChars ["/"] ["-"] repo}";
-              RUNNER_SCOPE = "repo";
-              LABELS = "linux,x64";
+      virtualisation.quadlet = {
+        containers = lib.listToAttrs (map (repo:
+          lib.nameValuePair "github-runner-${builtins.replaceStrings ["/" "."] ["-" ""] repo}" {
+            containerConfig = {
+              image = "ghcr.io/myoung34/docker-github-actions-runner:latest";
+              pull = "newer";
+              autoUpdate = "registry";
+              environments = {
+                REPO_URL = "https://github.com/${repo}";
+                RUNNER_NAME = "${builtins.replaceStrings ["/"] ["-"] repo}";
+                RUNNER_SCOPE = "repo";
+                LABELS = "linux,x64";
+                CONFIGURED_ACTIONS_RUNNER_FILES_DIR = "/runner/data";
+              };
+              secrets = [
+                "${githubSecret.ref},type=env,target=ACCESS_TOKEN"
+              ];
+              volumes = [
+                "/run/podman/podman.sock:/var/run/docker.sock"
+                "github-runner-${builtins.replaceStrings ["/" "."] ["-" ""] repo}:/runner/data"
+              ];
             };
-            secrets = [
-              "${githubSecret.ref},type=env,target=ACCESS_TOKEN"
-            ];
-            volumes = [
-              "/run/podman/podman.sock:/var/run/docker.sock"
-            ];
-          };
-        })
-      config.github-runner.repos);
+          })
+        config.github-runner.repos);
+
+        volumes = lib.listToAttrs (map (repo:
+          lib.nameValuePair "github-runner-${builtins.replaceStrings ["/" "."] ["-" ""] repo}" {})
+        config.github-runner.repos);
+      };
     };
 }
