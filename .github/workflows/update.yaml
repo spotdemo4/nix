@@ -19,7 +19,7 @@ jobs:
         id: get-runner
         run: |
           runners=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/actions/runners")
-          available=$(echo "$runners" | jq '.runners[] | select(.status == "online" and .busy == false and .labels[] .name == "self-hosted")')
+          available=$(echo "$runners" | jq '.runners[] | select(.status == "online" and .labels[] .name == "self-hosted")')
           if [ -n "$available" ]; then
             echo "runner-label=self-hosted" >> $GITHUB_OUTPUT
           else
@@ -62,9 +62,9 @@ jobs:
           branch: update
           title: update
           body: automatic update
-          commit-message: "build(deps): update nix"
+          commit-message: "chore: update"
 
       - name: Enable Automerge
-        run: gh pr merge --merge --auto "${{ steps.cpr.outputs.pull-request-number }}"
+        run: gh pr merge --squash --auto --subject "chore: update" --body "[skip ci]" "${{ steps.cpr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.PAT }}

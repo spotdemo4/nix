@@ -34,7 +34,7 @@
         containers = lib.listToAttrs (map (repo:
           lib.nameValuePair "github-runner-${builtins.replaceStrings ["/" "."] ["-" ""] repo}" {
             containerConfig = {
-              image = "ghcr.io/myoung34/docker-github-actions-runner:latest";
+              image = "ghcr.io/myoung34/docker-github-actions-runner:ubuntu-noble";
               pull = "newer";
               autoUpdate = "registry";
               environments = {
@@ -44,6 +44,7 @@
                 LABELS = "linux,x64";
                 CONFIGURED_ACTIONS_RUNNER_FILES_DIR = "/runner/data";
                 DISABLE_AUTOMATIC_DEREGISTRATION = "true";
+                UNSET_CONFIG_VARS = "true";
               };
               secrets = [
                 "${githubSecret.ref},type=env,target=ACCESS_TOKEN"
