@@ -10,8 +10,25 @@ permissions:
   pull-requests: write
 
 jobs:
-  update:
+  get-runner:
     runs-on: ubuntu-latest
+    outputs:
+      runner-label: ${{ steps.get-runner.outputs.runner-label }}
+    steps:
+      - name: Get runner
+        id: get-runner
+        run: |
+          runners=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/actions/runners")
+          available=$(echo "$runners" | jq '.runners[] | select(.status == "online" and .busy == false and .labels[] .name == "self-hosted")')
+          if [ -n "$available" ]; then
+            echo "runner-label=self-hosted" >> $GITHUB_OUTPUT
+          else
+            echo "runner-label=ubuntu-latest" >> $GITHUB_OUTPUT
+          fi
+
+  update:
+    needs: get-runner
+    runs-on: ${{ needs.get-runner.outputs.runner-label }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,14 +42,14 @@ jobs:
         uses: cachix/cachix-action@v16
         with:
           name: trix
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       # https://github.com/actions/checkout/issues/13
       - name: Set Git Config
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        
+
       - name: Update
         run: nix flake update --accept-flake-config
 
@@ -49,5 +66,3 @@ jobs:
         run: gh pr merge --merge --auto "${{ steps.cpr.outputs.pull-request-number }}"
         env:
           GH_TOKEN: ${{ secrets.PAT }}
-
-
