@@ -43,6 +43,7 @@
                 RUNNER_SCOPE = "repo";
                 LABELS = "linux,x64";
                 CONFIGURED_ACTIONS_RUNNER_FILES_DIR = "/runner/data";
+                DISABLE_AUTOMATIC_DEREGISTRATION = "true";
               };
               secrets = [
                 "${githubSecret.ref},type=env,target=ACCESS_TOKEN"
