@@ -58,6 +58,7 @@ jobs:
           token: ${{ secrets.PAT }}
 
       - name: Enable Automerge
+        if: ${{ steps.cpr.outputs.pull-request-number }}
         env:
           GH_TOKEN: ${{ secrets.PAT }}
         run: >
