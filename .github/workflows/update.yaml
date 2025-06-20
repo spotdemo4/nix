@@ -61,6 +61,7 @@ jobs:
           title: update
           body: automatic update
           commit-message: "chore: update"
+          token: ${{ secrets.PAT }}
 
       - name: Enable Automerge
         env:
