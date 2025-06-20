@@ -33,6 +33,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check flake
+        uses: DeterminateSystems/flake-checker-action@main
+        with:
+          send-statistics: false
+
       - name: Install Nix
         uses: cachix/install-nix-action@v31
         with:
