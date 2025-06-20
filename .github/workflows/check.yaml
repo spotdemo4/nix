@@ -24,7 +24,7 @@ jobs:
 
   runner:
     needs: skip
-    if: ${{ needs.skip.outputs.should_skip != "true" }}
+    if: ${{ needs.skip.outputs.should_skip != 'true' }}
     runs-on: ubuntu-latest
     outputs:
       label: ${{ steps.runner.outputs.label }}
@@ -63,7 +63,7 @@ jobs:
 
   push:
     needs: check
-    if: ${{ always() && github.event_name != "pull_request" && needs.check.result != "failure" }}
+    if: ${{ always() && github.event_name != 'pull_request' && needs.check.result != 'failure' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
