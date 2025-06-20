@@ -21,12 +21,10 @@ function bprint() {
     notify --urgency=critical "Updater" "$1"
 }
 
-DELETE=false
 WATCH=false
 REBUILD=false
 while getopts 'dwr' flag; do
     case "$flag" in
-        d) DELETE=true ;;
         w) WATCH=true ;;
         r) REBUILD=true ;;
         *) echo "Invalid flag: $flag" ;;
@@ -48,7 +46,7 @@ while true; do
     
     echo "checking for updates"
     cd /etc/nixos
-    if ! git fetch; then
+    if ! git fetch --all; then
         echo "could not fetch updates"
         continue
     fi
@@ -68,19 +66,28 @@ while true; do
     if [ "$REMOTE_CHANGES" = true ] && [ "$LOCAL_CHANGES" = true ]; then
         echo "local and remote changes found: stashing, pulling and checking"
         git stash
-        git pull origin production
-        git stash pop
+        git reset --hard origin/production
+        if ! git stash pop; then
+            echo "could not apply local changes"
+            continue
+        fi
         git add .
         nix fmt .
-        nix flake check --accept-flake-config
+        if ! nix flake check --accept-flake-config; then
+            echo "nix flake check failed"
+            continue
+        fi
     elif [ "$REMOTE_CHANGES" = true ]; then
         echo "remote changes found: pulling"
-        git pull origin production
+        git reset --hard origin/production
     elif [ "$LOCAL_CHANGES" = true ]; then
         echo "local changes found: checking"
         git add .
         nix fmt .
-        nix flake check --accept-flake-config
+        if ! nix flake check --accept-flake-config; then
+            echo "nix flake check failed"
+            continue
+        fi
     fi
 
     if [ "$REBUILD" = false ]; then
@@ -91,11 +98,6 @@ while true; do
     if ! nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
         bprint "Update failed"
         continue
-    fi
-
-    if [ "$DELETE" = true ]; then
-        echo "deleting old generations"
-        nix-collect-garbage --delete-older-than 7d
     fi
 
     gprint "Update finished"
