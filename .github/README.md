@@ -5,10 +5,10 @@
 
 ## Install on NixOS
 
-```sh
-source /etc/set-environment
+```bash
+source /etc/set-environment &&
 curl -s https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/scripts/init.sh |
-    bash -s ( host | server )
+bash -s (host | server)
 ```
 [hosts](/hosts)
 [servers](/servers)
