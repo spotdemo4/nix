@@ -44,12 +44,6 @@ jobs:
           name: trix
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
-      # https://github.com/actions/checkout/issues/13
-      - name: Set Git Config
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
       - name: Update
         run: nix flake update --accept-flake-config
 
@@ -71,5 +65,4 @@ jobs:
           --squash
           --auto
           --subject "chore: update"
-          --body "[skip ci]"
           "${{ steps.cpr.outputs.pull-request-number }}"
