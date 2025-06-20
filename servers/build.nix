@@ -15,6 +15,7 @@
     enable = true;
     repos = [
       "spotdemo4/nix"
+      "spotdemo4/ts-web"
     ];
   };
 }
