@@ -7,7 +7,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
   actions: write
 
 jobs:
@@ -72,7 +72,4 @@ jobs:
           fetch-depth: "0"
 
       - name: Push to Production
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git push origin main:production
+        run: git push origin main:production
