@@ -16,6 +16,7 @@
     repos = [
       "spotdemo4/nix"
       "spotdemo4/ts-web"
+      "spotdemo4/ts-server"
     ];
   };
 }
