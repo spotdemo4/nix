@@ -37,12 +37,12 @@
           BIND_IP = "${config.traefik-kop.ip}";
         };
       };
-    };
 
-    unitConfig = {
-      After = "podman.socket";
-      BindsTo = "podman.socket";
-      ReloadPropagatedFrom = "podman.socket";
+      unitConfig = {
+        After = "podman.socket";
+        BindsTo = "podman.socket";
+        ReloadPropagatedFrom = "podman.socket";
+      };
     };
   };
 }
