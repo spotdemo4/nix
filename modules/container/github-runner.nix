@@ -55,6 +55,12 @@
                 "github-runner-${builtins.replaceStrings ["/" "."] ["-" ""] repo}:/runner/data"
               ];
             };
+
+            unitConfig = {
+              After = "podman.socket";
+              BindsTo = "podman.socket";
+              ReloadPropagatedFrom = "podman.socket";
+            };
           })
         config.github-runner.repos);
 
