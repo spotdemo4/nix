@@ -85,37 +85,45 @@ in {
 
   virtualisation.quadlet = {
     containers = {
-      traefik.containerConfig = {
-        image = "docker.io/traefik:latest";
-        pull = "newer";
-        autoUpdate = "registry";
-        secrets = [
-          "${cloudflareSecret.ref},type=env,target=CF_DNS_API_TOKEN"
-        ];
-        volumes = [
-          "/run/podman/podman.sock:/var/run/docker.sock"
-          "${configFile}:/etc/traefik/traefik.yml"
-          "${volumes.traefik_acme.ref}:/etc/traefik/acme"
-          "${config.age.secrets."traefik".path}:/conf/secret.yml"
-        ];
-        publishPorts = [
-          "80:80"
-          "443:443"
-          "25565:25565"
-          "8080:8080"
-        ];
-        networks = [
-          networks.traefik.ref
-        ];
-        labels = toLabel [] {
-          traefik = {
-            enable = true;
-            http.routers.api = {
-              rule = "HostRegexp(`traefik.trev.(zip|kiwi)`)";
-              service = "api@internal";
-              middlewares = "auth-github@docker";
+      traefik = {
+        containerConfig = {
+          image = "docker.io/traefik:latest";
+          pull = "newer";
+          autoUpdate = "registry";
+          secrets = [
+            "${cloudflareSecret.ref},type=env,target=CF_DNS_API_TOKEN"
+          ];
+          volumes = [
+            "/run/podman/podman.sock:/var/run/docker.sock"
+            "${configFile}:/etc/traefik/traefik.yml"
+            "${volumes.traefik_acme.ref}:/etc/traefik/acme"
+            "${config.age.secrets."traefik".path}:/conf/secret.yml"
+          ];
+          publishPorts = [
+            "80:80"
+            "443:443"
+            "25565:25565"
+            "8080:8080"
+          ];
+          networks = [
+            networks.traefik.ref
+          ];
+          labels = toLabel [] {
+            traefik = {
+              enable = true;
+              http.routers.api = {
+                rule = "HostRegexp(`traefik.trev.(zip|kiwi)`)";
+                service = "api@internal";
+                middlewares = "auth-github@docker";
+              };
             };
           };
+        };
+
+        unitConfig = {
+          After = "podman.socket";
+          BindsTo = "podman.socket";
+          ReloadPropagatedFrom = "podman.socket";
         };
       };
 

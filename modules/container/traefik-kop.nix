@@ -24,17 +24,25 @@
   };
 
   config = lib.mkIf config.update.enable {
-    virtualisation.quadlet.containers.traefik-kop.containerConfig = {
-      image = "ghcr.io/jittering/traefik-kop:latest";
-      pull = "newer";
-      autoUpdate = "registry";
-      volumes = [
-        "/run/podman/podman.sock:/var/run/docker.sock"
-      ];
-      environments = {
-        REDIS_ADDR = "${config.traefik-kop.server_ip}";
-        BIND_IP = "${config.traefik-kop.ip}";
+    virtualisation.quadlet.containers.traefik-kop = {
+      containerConfig = {
+        image = "ghcr.io/jittering/traefik-kop:latest";
+        pull = "newer";
+        autoUpdate = "registry";
+        volumes = [
+          "/run/podman/podman.sock:/var/run/docker.sock"
+        ];
+        environments = {
+          REDIS_ADDR = "${config.traefik-kop.server_ip}";
+          BIND_IP = "${config.traefik-kop.ip}";
+        };
       };
+    };
+
+    unitConfig = {
+      After = "podman.socket";
+      BindsTo = "podman.socket";
+      ReloadPropagatedFrom = "podman.socket";
     };
   };
 }

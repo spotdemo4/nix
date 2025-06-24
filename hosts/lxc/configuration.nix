@@ -142,7 +142,6 @@
         "--all"
       ];
     };
-    dockerSocket.enable = true;
   };
 
   # Quadlet
