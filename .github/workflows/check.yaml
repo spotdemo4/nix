@@ -2,72 +2,70 @@ name: check
 
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
   pull_request:
+    branches: ["main"]
 
 permissions:
-  contents: write
-  actions: write
+  contents: read
 
 jobs:
   skip:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        with:
+          egress-policy: audit
+
       - name: Check for duplicate runs
         id: skip_check
-        uses: fkirc/skip-duplicate-actions@v5
-        with:
-          cancel_others: "true"
+        uses: fkirc/skip-duplicate-actions@f75f66ce1886f00957d99748a42c724f4330bdcf # v5.3.1
 
-  runner:
+  check:
     needs: skip
     if: ${{ needs.skip.outputs.should_skip != 'true' }}
     runs-on: ubuntu-latest
-    outputs:
-      label: ${{ steps.runner.outputs.label }}
     steps:
-      - name: Get runner
-        id: runner
-        run: |
-          runners=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/actions/runners")
-          available=$(echo "$runners" | jq '.runners[] | select(.status == "online" and .labels[] .name == "self-hosted")')
-          if [ -n "$available" ]; then
-            echo "label=self-hosted" >> $GITHUB_OUTPUT
-          else
-            echo "label=ubuntu-latest" >> $GITHUB_OUTPUT
-          fi
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        with:
+          egress-policy: audit
 
-  check:
-    needs: runner
-    runs-on: ${{ needs.runner.outputs.label }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
+      - uses: cachix/install-nix-action@f0fe604f8a612776892427721526b4c7cfb23aba # v31.4.1
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      - name: Use Cachix
-        uses: cachix/cachix-action@v16
+      - uses: cachix/cachix-action@0fc020193b5a1fa3ac4575aa3a7d3aa6a35435ad # v16
         with:
           name: trix
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
-      - name: Check
-        run: nix flake check --accept-flake-config
+      - uses: DeterminateSystems/flake-checker-action@0af51e37404acfb298f7e2eec77470be27eb57c5 # v10
+        with:
+          send-statistics: false
+
+      - run: nix flake check --accept-flake-config
 
   push:
     needs: check
-    if: ${{ always() && github.event_name != 'pull_request' && needs.check.result != 'failure' }}
+    if: ${{ always() && !failure() && !cancelled() && github.event_name != 'pull_request' }}
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: "0"
 
