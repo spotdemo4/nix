@@ -16,6 +16,11 @@
 		{
 			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
 			"automerge": true
-		}
+		},
+        {
+            "matchFileNames": ["flake.nix"],
+			"versioning": "semver-coerced",
+            "enabled": false
+        }
 	]
 }
