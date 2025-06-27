@@ -17,4 +17,5 @@ in {
   "curseforge.age".publicKeys = keys.all;
   "github-runner.age".publicKeys = keys.all;
   "codeberg.age".publicKeys = keys.all;
+  "gitea.age".publicKeys = keys.all;
 }
