@@ -67,6 +67,7 @@
     protonvpn-cli
     unzip
     wget
+    wl-clipboard
     yt-dlp
     zip
 
