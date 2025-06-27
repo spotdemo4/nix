@@ -26,10 +26,38 @@ jobs:
         id: skip_check
         uses: fkirc/skip-duplicate-actions@f75f66ce1886f00957d99748a42c724f4330bdcf # v5.3.1
 
-  check:
+  runner:
     needs: skip
     if: ${{ needs.skip.outputs.should_skip != 'true' }}
     runs-on: ubuntu-latest
+    outputs:
+      label: ${{ steps.runner.outputs.label }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
+        id: token
+        with:
+          app-id: ${{ vars.CLIENT_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+
+      - name: Get runner
+        id: runner
+        run: |
+          runners=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ steps.token.outputs.token }}" "https://api.github.com/repos/${{ github.repository }}/actions/runners")
+          available=$(echo "$runners" | jq '.runners[] | select(.status == "online" and .labels[] .name == "self-hosted")')
+          if [ -n "$available" ]; then
+            echo "label=self-hosted" >> $GITHUB_OUTPUT
+          else
+            echo "label=ubuntu-latest" >> $GITHUB_OUTPUT
+          fi
+
+  check:
+    needs: runner
+    runs-on: ${{ needs.runner.outputs.label }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@002fdce3c6a235733a90a27c80493a3241e56863 # v2.12.1
