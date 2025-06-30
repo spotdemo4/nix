@@ -12,6 +12,21 @@
 	"nix": {
 		"enabled": true
 	},
+	"pinDigests": true,
+	"customManagers": [
+		{
+			"customType": "regex",
+			"description": "Update docker image references for quadlet-nix containers",
+			"managerFilePatterns": [
+				"^modules\/container\/.+.nix$"
+			],
+			"matchStrings": [
+				"image = \"?(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\"?"
+			],
+			"autoReplaceStringTemplate": "image = \"{{{depName}}}:{{{newValue}}}@{{{newDigest}}}\"",
+			"datasourceTemplate": "docker"
+		}
+	],
 	"packageRules": [
 		{
 			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
