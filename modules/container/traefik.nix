@@ -87,9 +87,8 @@ in {
     containers = {
       traefik = {
         containerConfig = {
-          image = "docker.io/traefik:latest";
-          pull = "newer";
-          autoUpdate = "registry";
+          image = "docker.io/traefik:v3.4.3@sha256:f3de2b96ec6b1cc987619c4d1d65d7e8140862eb0bbfc5f0e2e563691e8787d8";
+          pull = "missing";
           secrets = [
             "${cloudflareSecret.ref},type=env,target=CF_DNS_API_TOKEN"
           ];
@@ -128,9 +127,8 @@ in {
       };
 
       traefik-redis.containerConfig = {
-        image = "docker.io/redis/redis-stack-server:latest";
-        pull = "newer";
-        autoUpdate = "registry";
+        image = "docker.io/redis/redis-stack-server:7.4.0-v5@sha256:bf3ee511b24c952341d357039e2d706617fa9f34f633696d0b1fef42df02f375";
+        pull = "missing";
         environments = {
           REDIS_ARGS = "--notify-keyspace-events Ksg";
         };
@@ -143,9 +141,8 @@ in {
       };
 
       traefik-auth-github.containerConfig = {
-        image = "ghcr.io/spotdemo4/traefik-forward-auth:edge";
-        pull = "newer";
-        autoUpdate = "registry";
+        image = "ghcr.io/spotdemo4/traefik-forward-auth:edge@sha256:f7c41686cc4a84feb7f32ef4fa20ead85f58a423752ea81fdd107f8b33db2328";
+        pull = "missing";
         environments = {
           TFA_HOSTNAME = "auth-github.trev.*";
           TFA_COOKIEDOMAIN = "trev.*";
@@ -186,9 +183,8 @@ in {
       };
 
       traefik-auth-plex.containerConfig = {
-        image = "ghcr.io/spotdemo4/traefik-forward-auth:edge";
-        pull = "newer";
-        autoUpdate = "registry";
+        image = "ghcr.io/spotdemo4/traefik-forward-auth:edge@sha256:f7c41686cc4a84feb7f32ef4fa20ead85f58a423752ea81fdd107f8b33db2328";
+        pull = "missing";
         environments = {
           TFA_HOSTNAME = "auth-plex.trev.*";
           TFA_COOKIEDOMAIN = "trev.*";

@@ -25,9 +25,8 @@
 
   config = lib.mkIf config.update.enable {
     virtualisation.quadlet.containers."intel-gpu-exporter-${config.intel-gpu-exporter.card}".containerConfig = {
-      image = "ghcr.io/spotdemo4/intel-gpu-exporter:latest";
-      pull = "newer";
-      autoUpdate = "registry";
+      image = "ghcr.io/spotdemo4/intel-gpu-exporter:latest@sha256:79b14da50f7db1e4143c10298fb234e55989f643180ee4a0d6b330f8f48b27f6";
+      pull = "missing";
       environments = {
         DEVICE = "drm:/dev/dri/${config.intel-gpu-exporter.card}";
       };

@@ -37,11 +37,8 @@ in {
   virtualisation.quadlet = {
     containers = {
       ollama.containerConfig = {
-        image = "docker.io/intelanalytics/ipex-llm-inference-cpp-xpu:latest";
-        pull = "newer";
-        autoUpdate = "registry";
-        # memory = "16G";
-        # shmSize = "16g";
+        image = "docker.io/intelanalytics/ipex-llm-inference-cpp-xpu:latest@sha256:bb6d65bb7568042b908184dcad0a2537e993899e1d3faea2a5cd0e417094705d";
+        pull = "missing";
         environments = {
           DEVICE = "Arc";
         };
@@ -72,9 +69,8 @@ in {
       };
 
       open-webui.containerConfig = {
-        image = "ghcr.io/open-webui/open-webui:main";
-        pull = "newer";
-        autoUpdate = "registry";
+        image = "ghcr.io/open-webui/open-webui:main@sha256:e18a03441385208828d527975e0247590640a72c39f5c1321ff203eec43a924b";
+        pull = "missing";
         environments = {
           WEBUI_URL = "https://chat.trev.zip";
           WEBUI_AUTH_TRUSTED_EMAIL_HEADER = "X-Forwarded-Email";

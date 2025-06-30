@@ -21,9 +21,8 @@
     virtualisation.quadlet.containers = lib.mapAttrs' (name: value:
       lib.nameValuePair "runner-${name}" {
         containerConfig = {
-          image = "docker.io/gitea/act_runner:nightly";
-          pull = "newer";
-          autoUpdate = "registry";
+          image = "docker.io/gitea/act_runner:0.2.12@sha256:62a561c82dd67ec77ea600db7eac78ac5fed8e2244950fbf1829c54da12e8e54";
+          pull = "missing";
           environments = {
             GITEA_INSTANCE_URL = value.url;
           };

@@ -10,9 +10,8 @@ in {
 
   virtualisation.quadlet = {
     containers.grafana.containerConfig = {
-      image = "docker.io/grafana/grafana-enterprise:latest";
-      pull = "newer";
-      autoUpdate = "registry";
+      image = "docker.io/grafana/grafana-enterprise:12.0.2@sha256:539b0137768994d8a333e11c510e2da66942a6bdb0ae61216acdd688824fbd46";
+      pull = "missing";
       user = "root";
       volumes = [
         "${volumes.grafana.ref}:/var/lib/grafana"

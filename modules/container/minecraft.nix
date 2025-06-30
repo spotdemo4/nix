@@ -17,9 +17,8 @@ in {
 
   virtualisation.quadlet = {
     containers.minecraft.containerConfig = {
-      image = "docker.io/itzg/minecraft-server:latest";
-      pull = "newer";
-      autoUpdate = "registry";
+      image = "docker.io/itzg/minecraft-server:latest@sha256:9b1aba080f48d40aefb75638566b956061f42008d6793826ab120ae9e742c654";
+      pull = "missing";
       environments = {
         EULA = "TRUE";
         TYPE = "AUTO_CURSEFORGE";
