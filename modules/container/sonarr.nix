@@ -4,9 +4,8 @@
 in {
   virtualisation.quadlet = {
     containers.sonarr.containerConfig = {
-      image = "lscr.io/linuxserver/sonarr:latest";
-      pull = "newer";
-      autoUpdate = "registry";
+      image = "lscr.io/linuxserver/sonarr:latest@sha256:4454c8cc644aeceb1f7c15237196cd415e5f8166922b893ee33e06c283533814";
+      pull = "missing";
       environments = {
         PUID = "1000";
         GUID = "1000";

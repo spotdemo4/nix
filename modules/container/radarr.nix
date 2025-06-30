@@ -4,9 +4,8 @@
 in {
   virtualisation.quadlet = {
     containers.radarr.containerConfig = {
-      image = "lscr.io/linuxserver/radarr:latest";
-      pull = "newer";
-      autoUpdate = "registry";
+      image = "lscr.io/linuxserver/radarr:latest@sha256:07a474b61394553e047ad43a1a78c1047fc99be0144c509dd91e3877f402ebcb";
+      pull = "missing";
       environments = {
         PUID = "1000";
         GUID = "1000";
