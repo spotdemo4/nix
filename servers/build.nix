@@ -1,7 +1,6 @@
 {
   config,
   self,
-  pkgs,
   ...
 }: {
   imports =
@@ -13,6 +12,7 @@
       "portainer-agent"
       "gitea-runner"
       "github-runner"
+      "forgejo-runner"
     ];
 
   # Github runners
@@ -28,6 +28,7 @@
   # Gitea runners
   age.secrets."gitea".file = self + /secrets/gitea.age;
   age.secrets."gitea-quanta".file = self + /secrets/gitea-quanta.age;
+  age.secrets."codeberg".file = self + /secrets/codeberg.age;
   gitea-runner = {
     enable = true;
     instances = {
@@ -39,22 +40,9 @@
         url = "https://git.quantadev.cc";
         tokenFile = config.age.secrets."gitea-quanta".path;
       };
-    };
-  };
-
-  # Forgejo runners
-  age.secrets."codeberg".file = self + /secrets/codeberg.age;
-  services.gitea-actions-runner = {
-    package = pkgs.forgejo-runner;
-    instances = {
       forgejo-ts = {
-        enable = true;
-        name = "forgejo-ts";
-        tokenFile = config.age.secrets."codeberg".path;
         url = "https://codeberg.org";
-        labels = [
-          "ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-latest"
-        ];
+        tokenFile = config.age.secrets."codeberg".path;
       };
     };
   };

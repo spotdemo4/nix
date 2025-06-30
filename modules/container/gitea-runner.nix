@@ -11,7 +11,7 @@
       example = {
         instance1 = {
           tokenFile = "/run/secrets/token1";
-          url = "https://git.quantadev.cc";
+          url = "https://gitea.com";
         };
       };
     };
