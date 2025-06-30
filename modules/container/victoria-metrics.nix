@@ -48,7 +48,7 @@
 in {
   virtualisation.quadlet = {
     containers.victoria-metrics.containerConfig = {
-      image = "docker.io/victoriametrics/victoria-metrics:v1.117.1";
+      image = "docker.io/victoriametrics/victoria-metrics:v1.120.0";
       pull = "newer";
       autoUpdate = "registry";
       volumes = [
