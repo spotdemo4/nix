@@ -12,7 +12,6 @@
       "portainer-agent"
       "gitea-runner"
       "github-runner"
-      "forgejo-runner"
     ];
 
   # Github runners
