@@ -18,12 +18,12 @@
 			"customType": "regex",
 			"description": "Update docker image references for quadlet-nix containers",
 			"managerFilePatterns": [
-				"^modules\/container\/.+.nix$"
+				".*\/container\/.+.nix$"
 			],
 			"matchStrings": [
 				"image = \"?(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\"?"
 			],
-			"autoReplaceStringTemplate": "image = \"{{{depName}}}:{{{newValue}}}@{{{newDigest}}}\"",
+			"autoReplaceStringTemplate": "image = \"{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
 			"datasourceTemplate": "docker"
 		}
 	],
