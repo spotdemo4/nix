@@ -18,7 +18,7 @@
 			"customType": "regex",
 			"description": "Update docker image references for quadlet-nix containers",
 			"managerFilePatterns": [
-				".*\/container\/.+.nix$"
+				"/.*.nix$/"
 			],
 			"matchStrings": [
 				"image = \"?(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\"?"
