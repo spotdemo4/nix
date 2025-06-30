@@ -53,7 +53,7 @@
         tokenFile = config.age.secrets."codeberg".path;
         url = "https://codeberg.org";
         labels = [
-          "ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-latest"
+          "ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:runner-latest"
         ];
       };
     };
