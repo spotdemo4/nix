@@ -79,8 +79,10 @@
   outputs = {
     self,
     nixpkgs,
-    nur,
     agenix,
+    catppuccin,
+    home-manager,
+    nur,
     quadlet-nix,
     ...
   } @ inputs: let
@@ -113,6 +115,8 @@
             };
             modules = [
               agenix.nixosModules.default
+              catppuccin.nixosModules.catppuccin
+              home-manager.nixosModules.home-manager
               quadlet-nix.nixosModules.quadlet
               ./servers/${name}
             ];
@@ -129,6 +133,8 @@
           };
           modules = [
             agenix.nixosModules.default
+            catppuccin.nixosModules.catppuccin
+            home-manager.nixosModules.home-manager
             nur.modules.nixos.default
             ./hosts/laptop/configuration.nix
           ];
@@ -141,6 +147,8 @@
           };
           modules = [
             agenix.nixosModules.default
+            catppuccin.nixosModules.catppuccin
+            home-manager.nixosModules.home-manager
             nur.modules.nixos.default
             ./hosts/desktop/configuration.nix
           ];
