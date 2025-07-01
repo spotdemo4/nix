@@ -1,8 +1,9 @@
 # Trev's Nix Flake
 
+[![check status](https://img.shields.io/github/actions/workflow/status/spotdemo4/nix/check.yaml?logo=GitHub&logoColor=%23cdd6f4&label=check&labelColor=%2311111b)](https://github.com/spotdemo4/nix/actions/workflows/check.yaml)
+[![flake status](https://img.shields.io/github/actions/workflow/status/spotdemo4/nix/flake.yaml?logo=nixos&logoColor=%2389dceb&label=flake&labelColor=%2311111b)](https://github.com/spotdemo4/nix/actions/workflows/flake.yaml)
 [![nixos-unstable](https://img.shields.io/badge/nixos-unstable-%23313244?logo=nixos&logoColor=%2389dceb&labelColor=%2311111b)](https://nixos.org/)
-[![check](https://img.shields.io/github/actions/workflow/status/spotdemo4/nix/check.yaml?logo=GitHub&logoColor=%23cdd6f4&label=check&labelColor=%2311111b)](https://github.com/spotdemo4/nix/actions/workflows/check.yaml)
-[![last-update](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2Fspotdemo4%2Fnix%2Factions%2Fworkflows%2F157576189%2Fruns%3Fstatus%3Dcompleted%26conclusion%3Dsuccess%26per_page%3D1&query=%24.workflow_runs%5B0%5D.run_started_at&style=flat&logo=nixos&logoColor=%2389dceb&label=last%20updated&labelColor=%2311111b&color=%23313244)](https://github.com/spotdemo4/nix/actions/workflows/update.yaml)
+[![cachix](https://img.shields.io/badge/cachix-trix-%23313244?logo=nixos&logoColor=%2389dceb&labelColor=%2311111b)](https://trix.cachix.org)
 
 ## Install on NixOS
 
