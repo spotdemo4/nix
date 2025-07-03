@@ -153,6 +153,20 @@
             ./hosts/desktop/configuration.nix
           ];
         };
+
+        htpc = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs self;
+            hostname = "htpc";
+          };
+          modules = [
+            agenix.nixosModules.default
+            catppuccin.nixosModules.catppuccin
+            home-manager.nixosModules.home-manager
+            nur.modules.nixos.default
+            ./hosts/htpc/configuration.nix
+          ];
+        };
       }
       // servers;
 
