@@ -37,7 +37,7 @@ in {
   virtualisation.quadlet = {
     containers = {
       ollama.containerConfig = {
-        image = "docker.io/intelanalytics/ipex-llm-inference-cpp-xpu:latest@sha256:a6fc7832d8f14ffab6fe1f0ad8175176feaa26e845503dd70936d167613d341d";
+        image = "docker.io/intelanalytics/ipex-llm-inference-cpp-xpu:latest@sha256:162f8aea645bcb5589a5a8da93ef61e44623f9d48306bb44160ab14077c98903";
         pull = "missing";
         environments = {
           DEVICE = "Arc";
