@@ -41,7 +41,7 @@
     mutableExtensionsDir = false;
   };
 
-  catppuccin.vscode = {
+  catppuccin.vscode.profiles.default = {
     enable = true;
     accent = "sky";
     flavor = "mocha";

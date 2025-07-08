@@ -181,20 +181,14 @@
           git
           nix-update
           alejandra
-        ];
-      };
-
-      ci = pkgs.mkShell {
-        packages = with pkgs; [
-          git
           renovate
         ];
       };
     });
 
     checks = forSystem ({pkgs, ...}: {
-      nix = with pkgs;
-        runCommandLocal "check-nix" {
+      lint = with pkgs;
+        runCommandLocal "check-lint" {
           nativeBuildInputs = with pkgs; [
             alejandra
           ];
