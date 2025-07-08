@@ -4,7 +4,7 @@
 in {
   virtualisation.quadlet = {
     containers.sonarr.containerConfig = {
-      image = "lscr.io/linuxserver/sonarr:latest@sha256:1156329d544b38bd1483add75c9b72c559f20e1ca043fd2d6376c2589d38951f";
+      image = "lscr.io/linuxserver/sonarr:latest@sha256:4afcb099e40ef263a7327f1ee9a870a510a516f872ae79b863c11b94d0b9ebb7";
       pull = "missing";
       environments = {
         PUID = "1000";
