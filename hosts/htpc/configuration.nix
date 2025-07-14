@@ -34,8 +34,6 @@
       trev = {
         imports = [(self + /users/trev.nix)];
         wayland.windowManager.hyprland.settings.exec-once = [
-          "nm-applet --indicator"
-          "blueman-applet"
           "steam"
         ];
       };
