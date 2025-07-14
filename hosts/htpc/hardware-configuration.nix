@@ -15,7 +15,7 @@
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-intel"];
   boot.extraModulePackages = [];
-  boot.kernelParams = ["pci=realloc"];
+  boot.kernelParams = ["pci=realloc" "fbcon=map:0"];
 
   # Enable OpenGL
   hardware.graphics = {
