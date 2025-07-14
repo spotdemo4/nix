@@ -13,7 +13,6 @@
     "hyprland"
     "pipewire"
     "postgres"
-    "sddm"
     "steam"
     "syncthing"
     "tailscale"

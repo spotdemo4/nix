@@ -4,4 +4,6 @@
     (self + /hosts/client.nix)
     ./hardware-configuration.nix
   ];
+
+  services.getty.autologinUser = "trev";
 }
