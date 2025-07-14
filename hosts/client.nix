@@ -152,17 +152,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Home manager
-  home-manager = {
-    useGlobalPkgs = true;
-    extraSpecialArgs = {
-      inherit inputs self;
-    };
-    users = {
-      trev.imports = [(self + /users/trev.nix)];
-    };
-  };
-
   # User accounts
   users = {
     users.trev = {
