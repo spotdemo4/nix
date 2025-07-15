@@ -13,12 +13,10 @@
   ];
 
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod"];
-  boot.initrd.kernelModules = ["i915" "xe"];
+  boot.initrd.kernelModules = ["i915"];
   boot.kernelModules = ["kvm-intel"];
   boot.extraModulePackages = [];
-  boot.kernelParams = ["pci=realloc" "i915.force_probe=!56a0" "xe.force_probe=56a0"];
-
-  environment.sessionVariables = {DRI_PRIME = "1";}; # Force dGPU
+  boot.kernelParams = ["pci=realloc"];
 
   # Enable OpenGL
   hardware.graphics = {
