@@ -16,7 +16,7 @@
   boot.initrd.kernelModules = ["xe"];
   boot.kernelModules = ["kvm-intel"];
   boot.extraModulePackages = [];
-  boot.kernelParams = ["pci=realloc" "module_blacklist=i915" "i915.force_probe=!56a0" "xe.force_probe=56a0"];
+  boot.kernelParams = ["pci=realloc"];
 
   # Enable OpenGL
   hardware.graphics = {
