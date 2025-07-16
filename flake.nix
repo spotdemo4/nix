@@ -91,7 +91,6 @@
     build-systems = [
       "x86_64-linux"
       "aarch64-linux"
-      "x86_64-darwin"
       "aarch64-darwin"
     ];
     forSystem = f:
@@ -101,9 +100,7 @@
             inherit system;
             pkgs = import nixpkgs {
               inherit system;
-              overlays = [
-                nur.legacyPackages."${system}".repos.trev.overlays.renovate
-              ];
+              overlays = [nur.overlays.default];
             };
           }
       );
@@ -186,18 +183,18 @@
       };
     });
 
-    checks = forSystem ({pkgs, ...}: {
-      lint = with pkgs;
-        runCommandLocal "check-lint" {
+    checks = forSystem ({pkgs, ...}:
+      pkgs.nur.repos.trev.lib.mkChecks {
+        lint = {
+          src = ./.;
           nativeBuildInputs = with pkgs; [
             alejandra
           ];
-        } ''
-          cd ${./.}
-          alejandra -c .
-          touch $out
-        '';
-    });
+          checkPhase = ''
+            alejandra -c .
+          '';
+        };
+      });
 
     formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
   };
