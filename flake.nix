@@ -125,7 +125,7 @@
           })
       )
       (builtins.readDir ./servers);
-  in {
+  in rec {
     nixosConfigurations =
       {
         laptop = nixpkgs.lib.nixosSystem {
@@ -184,7 +184,11 @@
       };
     });
 
-    checks = forSystem ({pkgs, ...}:
+    checks = forSystem ({
+      pkgs,
+      system,
+      ...
+    }:
       pkgs.nur.repos.trev.lib.mkChecks {
         lint = {
           src = ./.;
@@ -197,6 +201,9 @@
             prettier --check .
           '';
         };
+      }
+      // {
+        shell = devShells."${system}".default;
       });
 
     formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
