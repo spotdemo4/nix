@@ -17,6 +17,9 @@
   boot.kernelModules = ["kvm-intel"];
   boot.extraModulePackages = [];
   boot.kernelParams = ["pci=realloc" "intel_iommu=on" "iommu=pt" "vfio-pci.ids=8086:1912"];
+  boot.extraModprobeConfig = ''
+    softdep drm pre: vfio-pci
+  '';
 
   # Enable OpenGL
   hardware.graphics = {
