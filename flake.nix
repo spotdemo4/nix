@@ -178,6 +178,7 @@
           git
           nix-update
           alejandra
+          prettier
           renovate
         ];
       };
@@ -189,9 +190,11 @@
           src = ./.;
           nativeBuildInputs = with pkgs; [
             alejandra
+            prettier
           ];
           checkPhase = ''
             alejandra -c .
+            prettier --check .
           '';
         };
       });

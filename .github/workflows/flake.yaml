@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: read
-  
+
 jobs:
   flake:
     runs-on: ubuntu-latest
@@ -18,4 +18,3 @@ jobs:
         with:
           send-statistics: false
           fail-mode: true
-
