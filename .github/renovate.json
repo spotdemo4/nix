@@ -27,13 +27,18 @@
   ],
   "packageRules": [
     {
+      "matchFileNames": ["flake.nix"],
+      "versioning": "semver-coerced",
+      "enabled": false
+    },
+    {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
     },
     {
-      "matchFileNames": ["flake.nix"],
-      "versioning": "semver-coerced",
-      "enabled": false
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["*"]
     }
   ]
 }
