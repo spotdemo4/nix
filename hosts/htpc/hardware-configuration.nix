@@ -13,10 +13,10 @@
   ];
 
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod"];
-  boot.initrd.kernelModules = ["i915" "xe"];
+  boot.initrd.kernelModules = ["vfio_pci" "vfio" "vfio_iommu_type1" "i915"];
   boot.kernelModules = ["kvm-intel"];
   boot.extraModulePackages = [];
-  boot.kernelParams = ["pci=realloc" "i915.force_probe=!56a0" "xe.force_probe=56a0"];
+  boot.kernelParams = ["pci=realloc" "intel_iommu=on" "iommu=pt" "vfio-pci.ids=8086:1912"];
 
   # Enable OpenGL
   hardware.graphics = {
