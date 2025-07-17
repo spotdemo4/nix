@@ -181,6 +181,10 @@
           prettier
           renovate
         ];
+        shellHook = ''
+          echo "nix flake check --accept-flake-config" > .git/hooks/pre-commit
+          chmod +x .git/hooks/pre-commit
+        '';
       };
     });
 
@@ -195,10 +199,14 @@
           nativeBuildInputs = with pkgs; [
             alejandra
             prettier
+            renovate
+            action-validator
           ];
           checkPhase = ''
             alejandra -c .
             prettier --check .
+            renovate-config-validator
+            action-validator .github/workflows/*
           '';
         };
       }

@@ -52,7 +52,7 @@ while true; do
     fi
 
     REMOTE_CHANGES=false
-    if ! git diff --quiet HEAD origin/production; then
+    if ! git diff --quiet HEAD origin/main; then
         REMOTE_CHANGES=true
         REBUILD=true
     fi
@@ -66,7 +66,7 @@ while true; do
     if [ "$REMOTE_CHANGES" = true ] && [ "$LOCAL_CHANGES" = true ]; then
         echo "local and remote changes found: stashing, pulling and checking"
         git stash
-        git reset --hard origin/production
+        git reset --hard origin/main
         if ! git stash pop; then
             echo "could not apply local changes"
             continue
@@ -79,7 +79,7 @@ while true; do
         fi
     elif [ "$REMOTE_CHANGES" = true ]; then
         echo "remote changes found: pulling"
-        git reset --hard origin/production
+        git reset --hard origin/main
     elif [ "$LOCAL_CHANGES" = true ]; then
         echo "local changes found: checking"
         git add .
