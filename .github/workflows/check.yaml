@@ -75,7 +75,7 @@ jobs:
           name: trix
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
-      - run: nix flake check --accept-flake-config
+      - run: nix flake check -L --accept-flake-config
 
   push:
     needs: check
