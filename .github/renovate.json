@@ -1,48 +1,48 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "group:allDigest"],
-  "lockFileMaintenance": {
-    "enabled": true,
-    "automerge": true,
-    "schedule": ["at any time"]
-  },
-  "git-submodules": {
-    "enabled": true
-  },
-  "nix": {
-    "enabled": true
-  },
-  "pinDigests": true,
-  "customManagers": [
-    {
-      "customType": "regex",
-      "description": "Update docker image references for quadlet-nix containers",
-      "managerFilePatterns": ["/.*.nix$/"],
-      "matchStrings": [
-        "image = \"?(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\"?"
-      ],
-      "autoReplaceStringTemplate": "image = \"{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
-      "datasourceTemplate": "docker"
-    }
-  ],
-  "packageRules": [
-    {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
-    },
-    {
-      "matchManagers": ["nix"],
-      "enabled": false
-    },
-    {
-      "matchManagers": ["nix"],
-      "matchUpdateTypes": ["lockFileMaintenance"],
-      "enabled": true
-    },
-    {
-      "groupName": "GitHub Actions",
-      "matchManagers": ["github-actions"],
-      "matchPackageNames": ["*"]
-    }
-  ]
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:recommended", "group:allDigest"],
+	"lockFileMaintenance": {
+		"enabled": true,
+		"automerge": true,
+		"schedule": ["at any time"]
+	},
+	"git-submodules": {
+		"enabled": true
+	},
+	"nix": {
+		"enabled": true
+	},
+	"pinDigests": true,
+	"customManagers": [
+		{
+			"customType": "regex",
+			"description": "Update docker image references for quadlet-nix containers",
+			"managerFilePatterns": ["/.*.nix$/"],
+			"matchStrings": [
+				"image = \"?(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\"?"
+			],
+			"autoReplaceStringTemplate": "image = \"{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
+			"datasourceTemplate": "docker"
+		}
+	],
+	"packageRules": [
+		{
+			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+			"automerge": true
+		},
+		{
+			"matchManagers": ["nix"],
+			"enabled": false
+		},
+		{
+			"matchManagers": ["nix"],
+			"matchUpdateTypes": ["lockFileMaintenance"],
+			"enabled": true
+		},
+		{
+			"groupName": "GitHub Actions",
+			"matchManagers": ["github-actions"],
+			"matchPackageNames": ["*"]
+		}
+	]
 }
