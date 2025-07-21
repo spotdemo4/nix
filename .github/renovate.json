@@ -1,6 +1,6 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:recommended", "group:allDigest"],
+	"extends": ["config:recommended"],
 	"lockFileMaintenance": {
 		"enabled": true,
 		"automerge": true,
@@ -16,12 +16,13 @@
 	"customManagers": [
 		{
 			"customType": "regex",
-			"description": "Update docker image references for quadlet-nix containers",
+			"description": "docker images",
 			"managerFilePatterns": ["/.*.nix$/"],
 			"matchStrings": [
 				"image = \"?(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\"?"
 			],
 			"autoReplaceStringTemplate": "image = \"{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
+			"depTypeTemplate": "image",
 			"datasourceTemplate": "docker"
 		}
 	],
@@ -38,6 +39,11 @@
 			"matchManagers": ["nix"],
 			"matchUpdateTypes": ["lockFileMaintenance"],
 			"enabled": true
+		},
+		{
+			"groupName": "Docker Images",
+			"matchManagers": ["custom.regex"],
+			"matchDepTypes": ["image"]
 		},
 		{
 			"groupName": "GitHub Actions",
