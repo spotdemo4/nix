@@ -67,8 +67,8 @@
         })
       config.gitea-runner.instances;
 
-      networks = lib.mapAttrs' (name: value: lib.nameValuePair "runner-${name}" {});
-      volumes = lib.mapAttrs' (name: value: lib.nameValuePair "runner-${name}" {});
+      networks = lib.mapAttrs' (name: value: lib.nameValuePair "runner-${name}" {}) config.gitea-runner.instances;
+      volumes = lib.mapAttrs' (name: value: lib.nameValuePair "runner-${name}" {}) config.gitea-runner.instances;
     };
   };
 }
