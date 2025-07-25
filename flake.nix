@@ -182,10 +182,7 @@
           prettier
           renovate
         ];
-        shellHook = ''
-          echo "nix flake check --accept-flake-config" > .git/hooks/pre-push
-          chmod +x .git/hooks/pre-push
-        '';
+        shellHook = pkgs.nur.repos.trev.shellhook.ref;
       };
     });
 
@@ -197,13 +194,13 @@
       pkgs.nur.repos.trev.lib.mkChecks {
         lint = {
           src = ./.;
-          nativeBuildInputs = with pkgs; [
+          deps = with pkgs; [
             alejandra
             prettier
             renovate
             action-validator
           ];
-          checkPhase = ''
+          script = ''
             alejandra -c .
             prettier --check .
             renovate-config-validator
