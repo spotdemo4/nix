@@ -32,6 +32,7 @@ in {
           dorzey.vscode-sqlfluff
           esbenp.prettier-vscode
           (resetLicense github.copilot)
+          (resetLicense github.copilot-chat)
           kamadorueda.alejandra
           svelte.svelte-vscode
         ]);
