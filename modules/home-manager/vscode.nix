@@ -27,7 +27,7 @@ in {
         ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux.vscode-marketplace; [
           bradlc.vscode-tailwindcss
           bufbuild.vscode-buf
-          continue.continue
+          # continue.continue
           dbaeumer.vscode-eslint
           dorzey.vscode-sqlfluff
           esbenp.prettier-vscode
