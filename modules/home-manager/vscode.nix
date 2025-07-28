@@ -16,13 +16,13 @@
           usernamehw.errorlens
         ])
         ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux; [
-          vscode-marketplace.anthropic.claude-code
           vscode-marketplace.bradlc.vscode-tailwindcss
           vscode-marketplace.bufbuild.vscode-buf
           vscode-marketplace.continue.continue
           vscode-marketplace.dbaeumer.vscode-eslint
           vscode-marketplace.dorzey.vscode-sqlfluff
           vscode-marketplace.esbenp.prettier-vscode
+          vscode-marketplace.github.copilot
           vscode-marketplace.kamadorueda.alejandra
           vscode-marketplace.svelte.svelte-vscode
         ]);
