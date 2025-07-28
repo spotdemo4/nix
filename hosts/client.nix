@@ -49,6 +49,7 @@
     # CLI
     alejandra
     android-tools
+    claude-code
     fastfetch
     ffmpeg
     grimblast
