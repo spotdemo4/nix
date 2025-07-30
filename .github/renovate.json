@@ -32,15 +32,6 @@
 			"automerge": true
 		},
 		{
-			"matchManagers": ["nix"],
-			"enabled": false
-		},
-		{
-			"matchManagers": ["nix"],
-			"matchUpdateTypes": ["lockFileMaintenance"],
-			"enabled": true
-		},
-		{
 			"groupName": "Docker Images",
 			"matchManagers": ["custom.regex"],
 			"matchDepTypes": ["image"]
