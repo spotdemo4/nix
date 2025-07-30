@@ -181,7 +181,7 @@
           nix-update
           alejandra
           prettier
-          renovate
+          pkgs.nur.repos.trev.renovate
         ];
         shellHook = pkgs.nur.repos.trev.shellhook.ref;
       };
@@ -198,8 +198,8 @@
           deps = with pkgs; [
             alejandra
             prettier
-            renovate
             action-validator
+            pkgs.nur.repos.trev.renovate
           ];
           script = ''
             alejandra -c .
