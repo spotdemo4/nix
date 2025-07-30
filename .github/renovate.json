@@ -12,7 +12,6 @@
 	"nix": {
 		"enabled": true
 	},
-	"pinDigests": true,
 	"customManagers": [
 		{
 			"customType": "regex",
@@ -34,7 +33,8 @@
 		{
 			"groupName": "Docker Images",
 			"matchManagers": ["custom.regex"],
-			"matchDepTypes": ["image"]
+			"matchDepTypes": ["image"],
+			"pinDigests": true
 		},
 		{
 			"groupName": "GitHub Actions",
