@@ -56,10 +56,10 @@
     };
 
     # Filebrowser-upload
-    filebrowser-upload = {
-      url = "github:spotdemo4/filebrowser-upload";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # filebrowser-upload = {
+    #   url = "github:spotdemo4/filebrowser-upload";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     # Trevbar
     trevbar = {

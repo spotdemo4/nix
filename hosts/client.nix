@@ -54,7 +54,6 @@
     ffmpeg
     grimblast
     inputs.agenix.packages."${system}".default
-    inputs.filebrowser-upload.packages."${system}".default
     libnotify
     mprocs
     ncdu
