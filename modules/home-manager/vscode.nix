@@ -2,16 +2,7 @@
   pkgs,
   inputs,
   ...
-}: let
-  resetLicense = drv:
-    drv.overrideAttrs (prev: {
-      meta =
-        prev.meta
-        // {
-          license = [];
-        };
-    });
-in {
+}: {
   programs.vscode = {
     enable = true;
     package = pkgs.vscodium;
@@ -24,17 +15,17 @@ in {
           ms-python.python
           usernamehw.errorlens
         ])
-        ++ (with inputs.nix-vscode-extensions.extensions.x86_64-linux.vscode-marketplace; [
-          bradlc.vscode-tailwindcss
-          bufbuild.vscode-buf
+        ++ (inputs.nix4vscode.lib."${pkgs.system}".forVscodeVersion pkgs.vscodium.version [
+          "bradlc.vscode-tailwindcss"
+          "bufbuild.vscode-buf"
           # continue.continue
-          dbaeumer.vscode-eslint
-          dorzey.vscode-sqlfluff
-          esbenp.prettier-vscode
-          (resetLicense github.copilot)
-          (resetLicense github.copilot-chat)
-          kamadorueda.alejandra
-          svelte.svelte-vscode
+          "dbaeumer.vscode-eslint"
+          "dorzey.vscode-sqlfluff"
+          "esbenp.prettier-vscode"
+          "github.copilot"
+          "github.copilot-chat"
+          "kamadorueda.alejandra"
+          "svelte.svelte-vscode"
         ]);
       userSettings = {
         "workbench.editor.labelFormat" = "short";

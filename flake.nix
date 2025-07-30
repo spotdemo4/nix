@@ -44,8 +44,8 @@
     };
 
     # Nix vscode extensions
-    nix-vscode-extensions = {
-      url = "github:nix-community/nix-vscode-extensions";
+    nix4vscode = {
+      url = "github:nix-community/nix4vscode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -54,12 +54,6 @@
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Filebrowser-upload
-    # filebrowser-upload = {
-    #   url = "github:spotdemo4/filebrowser-upload";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
 
     # Trevbar
     trevbar = {
