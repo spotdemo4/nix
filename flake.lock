@@ -861,6 +861,20 @@
         "type": "github"
       }
     },
+    "systems_5": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "id": "systems",
+        "type": "indirect"
+      }
+    },
     "trevbar": {
       "inputs": {
         "ags": "ags",
@@ -870,19 +884,42 @@
         ],
         "nur": [
           "nur"
-        ]
+        ],
+        "systems": "systems_5",
+        "utils": "utils"
       },
       "locked": {
-        "lastModified": 1753101182,
-        "narHash": "sha256-VXbTJbC3OOM+9nTLOpuUgaxB+7WZtRiMav+q8ncNiPo=",
+        "lastModified": 1753713397,
+        "narHash": "sha256-BSkcE+px1XASA1q2mpcOWrC7AXyAc41fSyOVTv4++ds=",
         "owner": "spotdemo4",
         "repo": "trevbar",
-        "rev": "0fdc7dd13ebea9014b7fd025ec71844a27d592ae",
+        "rev": "10be08b204bc4e3ff1a6bbbd904777b5df586b06",
         "type": "github"
       },
       "original": {
         "owner": "spotdemo4",
         "repo": "trevbar",
+        "type": "github"
+      }
+    },
+    "utils": {
+      "inputs": {
+        "systems": [
+          "trevbar",
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
         "type": "github"
       }
     },
