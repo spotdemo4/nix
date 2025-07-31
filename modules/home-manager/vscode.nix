@@ -16,14 +16,14 @@
           usernamehw.errorlens
         ])
         ++ (inputs.nix4vscode.lib."${pkgs.system}".forVscodeVersion pkgs.vscodium.version [
+          "anthropic.claude-code"
           "bradlc.vscode-tailwindcss"
           "bufbuild.vscode-buf"
-          # continue.continue
           "dbaeumer.vscode-eslint"
           "dorzey.vscode-sqlfluff"
           "esbenp.prettier-vscode"
-          "github.copilot"
           "github.copilot-chat"
+          "github.copilot"
           "kamadorueda.alejandra"
           "svelte.svelte-vscode"
         ]);

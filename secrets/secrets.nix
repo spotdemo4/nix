@@ -5,6 +5,7 @@ in {
   "auth-cookie.age".publicKeys = keys.all;
   "auth-github.age".publicKeys = keys.all;
   "auth-plex.age".publicKeys = keys.all;
+  "claude.age".publicKeys = keys.all;
   "cloudflare-dns.age".publicKeys = keys.all;
   "codeberg.age".publicKeys = keys.all;
   "continue.age".publicKeys = keys.local;
