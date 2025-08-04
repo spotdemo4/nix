@@ -17,6 +17,7 @@
         ])
         ++ (inputs.nix4vscode.lib."${pkgs.system}".forVscodeVersion pkgs.vscodium.version [
           "anthropic.claude-code"
+          "biomejs.biome"
           "bradlc.vscode-tailwindcss"
           "bufbuild.vscode-buf"
           "dbaeumer.vscode-eslint"
