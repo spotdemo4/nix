@@ -19,7 +19,7 @@ in {
 
   virtualisation.quadlet = {
     containers.discord-openrouter.containerConfig = {
-      image = "ghcr.io/spotdemo4/discord-openrouter:0.0.6@sha256:473fcca0c2c41a95f91c0abe17adb69b2a46a0cc32f2bb8ab09bd64944e844b0";
+      image = "ghcr.io/spotdemo4/discord-openrouter:0.0.7@sha256:846494605283fae01edb19ddecaea63654573b173f6b23005d55d8221308a80f";
       pull = "missing";
       environments = {
         DEFAULT_PROMPT = "don't worry about formalities. don't use emojis. don't be cringe. be as terse as possible while still conveying substantially all information relevant to any question. critique freely and avoid sycophancy. don't be afraid to use profanity, especially to convey frustration or intensity. don't be afraid to take a side in any discussion, especially if one side is clearly correct. cite sources for your claims if possible. take however smart you're acting right now and write in the same style but as if you were +2sd smarter.";
