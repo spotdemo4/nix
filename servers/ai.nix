@@ -5,11 +5,12 @@
     ]
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
+      "context7"
+      "discord-openrouter"
+      "intel-gpu-exporter"
+      "ollama"
       "portainer-agent"
       "traefik-kop"
-      "ollama"
-      "intel-gpu-exporter"
-      "context7"
     ];
 
   # Traefik mapping to gateway
