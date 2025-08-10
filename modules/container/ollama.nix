@@ -69,7 +69,7 @@ in {
       };
 
       open-webui.containerConfig = {
-        image = "ghcr.io/open-webui/open-webui:main@sha256:24669393b06bc05b5193b26ae59483b6d53e8b47a5a74217053373cef5e1ae7d";
+        image = "ghcr.io/open-webui/open-webui:main@sha256:fc0419167d8fde32ea71848006ed437fda2d906888cad1c4efba38c3de6f2c9b";
         pull = "missing";
         environments = {
           WEBUI_URL = "https://chat.trev.zip";
