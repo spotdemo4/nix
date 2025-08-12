@@ -54,6 +54,7 @@
     ffmpeg
     grimblast
     inputs.agenix.packages."${system}".default
+    jq
     libnotify
     mprocs
     ncdu
