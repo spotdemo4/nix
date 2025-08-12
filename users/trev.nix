@@ -20,6 +20,7 @@
       "discord"
       "eza"
       "fzf"
+      "ghostty"
       "gpg"
       "gtk"
       "hyprland"
