@@ -16,7 +16,6 @@
           usernamehw.errorlens
         ])
         ++ (inputs.nix4vscode.lib."${pkgs.system}".forVscodeVersion pkgs.vscodium.version [
-          "anthropic.claude-code"
           "biomejs.biome"
           "bradlc.vscode-tailwindcss"
           "bufbuild.vscode-buf"
@@ -26,6 +25,7 @@
           "github.copilot-chat"
           "github.copilot"
           "kamadorueda.alejandra"
+          "mkhl.direnv"
           "svelte.svelte-vscode"
         ]);
       userSettings = {
