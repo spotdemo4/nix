@@ -27,6 +27,7 @@
           "kamadorueda.alejandra"
           "mkhl.direnv"
           "svelte.svelte-vscode"
+          "tamasfe.even-better-toml"
         ]);
       userSettings = {
         "workbench.editor.labelFormat" = "short";
