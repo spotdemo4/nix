@@ -21,4 +21,5 @@ in {
   "openwebui.age".publicKeys = keys.all;
   "tailscale.age".publicKeys = keys.all;
   "traefik.age".publicKeys = keys.all;
+  "whiteout.age".publicKeys = keys.all;
 }
