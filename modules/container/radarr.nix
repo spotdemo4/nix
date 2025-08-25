@@ -8,17 +8,18 @@
 in {
   virtualisation.quadlet = {
     containers.radarr.containerConfig = {
-      image = "lscr.io/linuxserver/radarr:latest@sha256:7eb64f5af8bbe48e79bc55c0c37ca8db89b2f073a9ff0094f603916ae1df9de8";
+      image = "lscr.io/linuxserver/radarr:5.26.2@sha256:7eb64f5af8bbe48e79bc55c0c37ca8db89b2f073a9ff0094f603916ae1df9de8";
       pull = "missing";
       environments = {
         PUID = "1000";
-        GUID = "1000";
+        PGID = "1000";
         TZ = "America/Detroit";
       };
       volumes = [
         "${volumes.radarr.ref}:/config"
         "/mnt/pool/movies:/movies"
         "/mnt/pool/qbittorrent-data/downloads:/qbittorrent/downloads"
+        "/mnt/pool/sabnzbd-data/downloads:/sabnzbd/downloads"
       ];
       publishPorts = [
         "7878"

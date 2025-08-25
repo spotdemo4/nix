@@ -8,6 +8,7 @@
       "portainer-agent"
       "qbittorrent"
       "radarr"
+      "sabnzbd"
       "sonarr"
       "traefik-kop"
     ];

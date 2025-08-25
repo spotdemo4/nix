@@ -94,7 +94,7 @@ in {
           cat = {
             Uncategorized = "/qbittorrent/downloads";
           };
-          recyclebin.enabled = "false";
+          recyclebin.enabled = false;
           tracker = {
             other.tag = "other";
           };
