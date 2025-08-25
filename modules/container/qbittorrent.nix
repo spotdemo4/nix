@@ -87,7 +87,7 @@ in {
       qbittorrent-manager.containerConfig = let
         configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
           qbt = {
-            host = "qbittorrent:8185";
+            host = "gluetun-qbittorrent:8185";
             user = "!ENV QBIT_USER";
             pass = "!ENV QBIT_PASS";
           };
