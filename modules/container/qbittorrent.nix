@@ -24,6 +24,10 @@ in {
       PORT_FORWARD_ONLY = "on";
       VPN_PORT_FORWARDING = "on";
     };
+    networks = [
+      networks."sonarr".ref
+      networks."radarr".ref
+    ];
   };
 
   virtualisation.quadlet = {
@@ -45,8 +49,6 @@ in {
         ];
         networks = [
           "container:gluetun-qbittorrent"
-          networks."sonarr".ref
-          networks."radarr".ref
         ];
         labels = toLabel {
           attrs = {

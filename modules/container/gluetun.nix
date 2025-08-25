@@ -32,6 +32,14 @@ in {
           };
         };
 
+        networks = mkOption {
+          type = types.listOf types.str;
+          default = [];
+          description = ''
+            Additional networks to connect the container to
+          '';
+        };
+
         secret = mkOption {
           type = types.submodule (import (self + /modules/util/secrets/secret.nix));
           description = ''
@@ -61,6 +69,7 @@ in {
             secrets = [
               "${opts.secret.env},target=WIREGUARD_PRIVATE_KEY"
             ];
+            networks = opts.networks;
             environments = opts.environments;
             publishPorts = opts.ports;
           };
