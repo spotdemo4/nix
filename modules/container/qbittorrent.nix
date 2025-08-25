@@ -122,6 +122,10 @@ in {
           "/mnt/pool/qbittorrent-data/downloads:/qbittorrent/downloads"
           "/mnt/pool/qbittorrent-data/torrents:/qbittorrent/torrents"
         ];
+        networks = [
+          networks."sonarr".ref
+          networks."radarr".ref
+        ];
         labels = toLabel {
           attrs = {
             traefik = {
