@@ -67,7 +67,7 @@ in {
           attrs = {
             traefik = {
               enable = true;
-              http.routers.qbittorrent = {
+              http.routers.qbitmanage = {
                 rule = "HostRegexp(`qbitmanage.trev.(zip|kiwi)`)";
                 middlewares = "auth-github@docker";
               };
