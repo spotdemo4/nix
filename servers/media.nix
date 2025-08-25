@@ -5,6 +5,8 @@
     ]
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
+      "bazarr"
+      "overseerr"
       "portainer-agent"
       "prowlarr"
       "qbittorrent"
