@@ -16,8 +16,9 @@ in {
         TZ = "America/Detroit";
       };
       volumes = [
-        "/mnt/pool/movies:/movies"
         "${volumes.radarr.ref}:/config"
+        "/mnt/pool/movies:/movies"
+        "/mnt/pool/qbittorrent-data/downloads:/qbittorrent/downloads"
       ];
       publishPorts = [
         "7878"

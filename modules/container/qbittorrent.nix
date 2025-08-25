@@ -40,8 +40,8 @@ in {
         };
         volumes = [
           "${volumes.qbittorrent.ref}:/config"
-          "/mnt/pool/qbittorrent-data/downloads:/qbittorrent-downloads"
-          "/mnt/pool/qbittorrent-data/torrents:/torrents"
+          "/mnt/pool/qbittorrent-data/downloads:/qbittorrent/downloads"
+          "/mnt/pool/qbittorrent-data/torrents:/qbittorrent/torrents"
         ];
         networks = [
           "container:gluetun-qbittorrent"
@@ -59,7 +59,7 @@ in {
         };
       };
 
-      qbitportmanager.containerConfig = {
+      qbittorrent-ports.containerConfig = {
         image = "docker.io/snoringdragon/gluetun-qbittorrent-port-manager:1.3@sha256:679b7a92c494f93b78ad37ef24f3a261e73d0a1a52505ad4f1e39580eedfa14f";
         pull = "missing";
         environments = {
@@ -80,7 +80,7 @@ in {
         ];
       };
 
-      qbitmanage.containerConfig = let
+      qbittorrent-manager.containerConfig = let
         configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
           qbt = {
             host = "qbittorrent:8185";
@@ -88,11 +88,11 @@ in {
             pass = "!ENV QBIT_PASS";
           };
           directory = {
-            root_dir = "/qbittorrent-downloads";
-            torrents_dir = "/torrents";
+            root_dir = "/qbittorrent/downloads";
+            torrents_dir = "/qbittorrent/torrents";
           };
           cat = {
-            Uncategorized = "/qbittorrent-downloads";
+            Uncategorized = "/qbittorrent/downloads";
           };
           recyclebin.enabled = "false";
           tracker = {
@@ -115,10 +115,10 @@ in {
           "8080"
         ];
         volumes = [
-          "${volumes.qbitmanage.ref}:/config"
+          "${volumes.qbittorrent-manager.ref}:/config"
           "${configFile}:/config/config.yaml"
-          "/mnt/pool/qbittorrent-data/downloads:/qbittorrent-downloads"
-          "/mnt/pool/qbittorrent-data/torrents:/torrents"
+          "/mnt/pool/qbittorrent-data/downloads:/qbittorrent/downloads"
+          "/mnt/pool/qbittorrent-data/torrents:/qbittorrent/torrents"
         ];
         labels = toLabel {
           attrs = {
@@ -136,7 +136,7 @@ in {
 
     volumes = {
       qbittorrent = {};
-      qbitmanage = {};
+      qbittorrent-manager = {};
     };
   };
 }

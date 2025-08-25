@@ -16,8 +16,9 @@ in {
         TZ = "America/Detroit";
       };
       volumes = [
-        "/mnt/pool/shows:/shows"
         "${volumes.sonarr.ref}:/config"
+        "/mnt/pool/shows:/shows"
+        "/mnt/pool/qbittorrent-data/downloads:/qbittorrent/downloads"
       ];
       publishPorts = [
         "8989"

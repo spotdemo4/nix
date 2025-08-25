@@ -58,11 +58,11 @@ in {
             volumes = [
               "${volumes."gluetun-${name}".ref}:/tmp/gluetun"
             ];
-            environments = opts.environments;
-            publishPorts = opts.ports;
             secrets = [
               "${opts.secret.env},target=WIREGUARD_PRIVATE_KEY"
             ];
+            environments = opts.environments;
+            publishPorts = opts.ports;
           };
         })
       config.gluetun;
