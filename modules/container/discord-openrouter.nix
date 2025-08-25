@@ -21,7 +21,7 @@ in {
       };
       secrets = [
         "${config.secrets."openrouter".env},target=OPENROUTER_API_KEY"
-        "${config.secrets."discord-openrouter".env},type=env,target=DISCORD_TOKEN"
+        "${config.secrets."discord-openrouter".env},target=DISCORD_TOKEN"
       ];
       volumes = [
         "${volumes.discord-openrouter.ref}:/data"
