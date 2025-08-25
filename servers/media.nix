@@ -6,9 +6,10 @@
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
       "portainer-agent"
-      "traefik-kop"
+      "qbittorrent"
       "radarr"
       "sonarr"
+      "traefik-kop"
     ];
 
   # Traefik mapping to gateway
