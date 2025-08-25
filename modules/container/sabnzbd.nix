@@ -3,7 +3,7 @@
   self,
   ...
 }: let
-  inherit (config.virtualisation.quadlet) volumes;
+  inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
 in {
   virtualisation.quadlet = {
@@ -22,6 +22,10 @@ in {
       ];
       publishPorts = [
         "8080"
+      ];
+      networks = [
+        networks."sonarr".ref
+        networks."radarr".ref
       ];
       labels = toLabel {
         attrs = {

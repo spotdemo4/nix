@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  inherit (config.virtualisation.quadlet) volumes;
+  inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
 in {
   imports = [./gluetun.nix];
@@ -45,6 +45,8 @@ in {
         ];
         networks = [
           "container:gluetun-qbittorrent"
+          networks."sonarr".ref
+          networks."radarr".ref
         ];
         labels = toLabel {
           attrs = {
