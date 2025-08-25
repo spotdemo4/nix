@@ -6,15 +6,20 @@
   self,
   ...
 }: {
-  imports = map (x: self + /modules/nixos/${x}.nix) [
-    # Programs to import
-    "cadvisor"
-    "git"
-    "openssh"
-    "tailscale"
-    "update"
-    "zsh"
-  ];
+  imports =
+    map (x: self + /modules/nixos/${x}.nix) [
+      # Programs to import
+      "cadvisor"
+      "git"
+      "openssh"
+      "tailscale"
+      "update"
+      "zsh"
+    ]
+    ++ map (x: self + /modules/util/${x}) [
+      # Utility modules
+      "secrets"
+    ];
 
   # Packages to install
   environment.systemPackages = with pkgs; [
