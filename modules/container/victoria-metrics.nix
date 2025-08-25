@@ -1,10 +1,11 @@
 {
   pkgs,
   config,
+  self,
   ...
 }: let
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = (import ./utils/toLabel.nix).toLabel;
+  toLabel = import (self + /modules/util/label);
 
   configFile = (pkgs.formats.yaml {}).generate "prometheus.yml" {
     scrape_configs = [
@@ -65,12 +66,14 @@ in {
         "-storageDataPath=victoria-metrics-data"
         "-promscrape.config=prometheus.yml"
       ];
-      labels = toLabel [] {
-        traefik = {
-          enable = true;
-          http.routers.victoria-metrics = {
-            rule = "HostRegexp(`victoria-metrics.trev.(zip|kiwi)`)";
-            middlewares = "auth-github@docker";
+      labels = toLabel {
+        attrs = {
+          traefik = {
+            enable = true;
+            http.routers.victoria-metrics = {
+              rule = "HostRegexp(`victoria-metrics.trev.(zip|kiwi)`)";
+              middlewares = "auth-github@docker";
+            };
           };
         };
       };

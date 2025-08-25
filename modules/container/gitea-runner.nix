@@ -3,7 +3,9 @@
   config,
   lib,
   ...
-}: {
+}: let
+  inherit (config.virtualisation.quadlet) networks volumes;
+in {
   options.gitea-runner = {
     enable = lib.mkEnableOption "enable gitea runner";
 
@@ -19,9 +21,7 @@
   };
 
   config = lib.mkIf config.gitea-runner.enable {
-    virtualisation.quadlet = let
-      inherit (config.virtualisation.quadlet) networks volumes;
-    in {
+    virtualisation.quadlet = {
       containers = lib.mapAttrs' (name: value:
         lib.nameValuePair "runner-${name}" {
           containerConfig = let

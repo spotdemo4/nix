@@ -1,20 +1,13 @@
 {
-  pkgs,
   self,
   config,
   ...
 }: let
   inherit (config.virtualisation.quadlet) volumes;
-  mkSecret = (import ./utils/mkSecret.nix {inherit pkgs config;}).mkSecret;
-
-  orSecret = mkSecret "openrouter" config.age.secrets."openrouter".path;
-  discordSecret = mkSecret "discord-openrouter" config.age.secrets."discord-openrouter".path;
 in {
-  age.secrets."openrouter".file = self + /secrets/openrouter.age;
-  age.secrets."discord-openrouter".file = self + /secrets/discord-openrouter.age;
-  system.activationScripts = {
-    "${orSecret.ref}" = orSecret.script;
-    "${discordSecret.ref}" = discordSecret.script;
+  secrets = {
+    "openrouter".file = self + /secrets/openrouter.age;
+    "discord-openrouter".file = self + /secrets/discord-openrouter.age;
   };
 
   virtualisation.quadlet = {
@@ -27,8 +20,8 @@ in {
         DEFAULT_MODEL = "google/gemini-2.5-flash";
       };
       secrets = [
-        "${orSecret.ref},type=env,target=OPENROUTER_API_KEY"
-        "${discordSecret.ref},type=env,target=DISCORD_TOKEN"
+        "${config.secrets."openrouter".env},target=OPENROUTER_API_KEY"
+        "${config.secrets."discord-openrouter".env},type=env,target=DISCORD_TOKEN"
       ];
       volumes = [
         "${volumes.discord-openrouter.ref}:/data"

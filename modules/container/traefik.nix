@@ -5,8 +5,7 @@
   ...
 }: let
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = (import ./utils/toLabel.nix).toLabel;
-  mkSecret = (import ./utils/mkSecret.nix {inherit pkgs config;}).mkSecret;
+  toLabel = import (self + /modules/util/label);
 
   configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
     log.level = "WARN";
@@ -64,23 +63,13 @@
       dnsChallenge.provider = "cloudflare";
     };
   };
-
-  cloudflareSecret = mkSecret "cloudflare-dns" config.age.secrets."cloudflare-dns".path;
-  githubSecret = mkSecret "auth-github" config.age.secrets."auth-github".path;
-  plexSecret = mkSecret "auth-plex" config.age.secrets."auth-plex".path;
-  cookieSecret = mkSecret "auth-cookie" config.age.secrets."auth-cookie".path;
 in {
-  age.secrets."traefik".file = self + /secrets/traefik.age;
-  age.secrets."${cloudflareSecret.ref}".file = self + /secrets/cloudflare-dns.age;
-  age.secrets."${githubSecret.ref}".file = self + /secrets/auth-github.age;
-  age.secrets."${plexSecret.ref}".file = self + /secrets/auth-plex.age;
-  age.secrets."${cookieSecret.ref}".file = self + /secrets/auth-cookie.age;
-
-  system.activationScripts = {
-    "${cloudflareSecret.ref}" = cloudflareSecret.script;
-    "${githubSecret.ref}" = githubSecret.script;
-    "${plexSecret.ref}" = plexSecret.script;
-    "${cookieSecret.ref}" = cookieSecret.script;
+  secrets = {
+    "traefik".file = self + /secrets/traefik.age;
+    "cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
+    "auth-github".file = self + /secrets/auth-github.age;
+    "auth-plex".file = self + /secrets/auth-plex.age;
+    "auth-cookie".file = self + /secrets/auth-cookie.age;
   };
 
   virtualisation.quadlet = {
@@ -90,13 +79,13 @@ in {
           image = "docker.io/traefik:v3.5.0@sha256:4e7175cfe19be83c6b928cae49dde2f2788fb307189a4dc9550b67acf30c11a5";
           pull = "missing";
           secrets = [
-            "${cloudflareSecret.ref},type=env,target=CF_DNS_API_TOKEN"
+            "${config.secrets."traefik".mount},target=/conf/secret.yml"
+            "${config.secrets."cloudflare-dns".env},target=CF_DNS_API_TOKEN"
           ];
           volumes = [
             "/run/podman/podman.sock:/var/run/docker.sock"
             "${configFile}:/etc/traefik/traefik.yml"
             "${volumes.traefik_acme.ref}:/etc/traefik/acme"
-            "${config.age.secrets."traefik".path}:/conf/secret.yml"
           ];
           publishPorts = [
             "80:80"
@@ -107,13 +96,15 @@ in {
           networks = [
             networks.traefik.ref
           ];
-          labels = toLabel [] {
-            traefik = {
-              enable = true;
-              http.routers.api = {
-                rule = "HostRegexp(`traefik.trev.(zip|kiwi)`)";
-                service = "api@internal";
-                middlewares = "auth-github@docker";
+          labels = toLabel {
+            attrs = {
+              traefik = {
+                enable = true;
+                http.routers.api = {
+                  rule = "HostRegexp(`traefik.trev.(zip|kiwi)`)";
+                  service = "api@internal";
+                  middlewares = "auth-github@docker";
+                };
               };
             };
           };
@@ -154,28 +145,30 @@ in {
           TFA_AUTHGITHUB_ALLOWEDUSERS = "spotdemo4";
         };
         secrets = [
-          "${githubSecret.ref},type=env,target=TFA_AUTHGITHUB_CLIENTSECRET"
-          "${cookieSecret.ref},type=env,target=TFA_TOKENSIGNINGKEY"
+          "${config.secrets."auth-github".env},target=TFA_AUTHGITHUB_CLIENTSECRET"
+          "${config.secrets."auth-cookie".env},target=TFA_TOKENSIGNINGKEY"
         ];
         networks = [
           networks.traefik.ref
         ];
-        labels = toLabel [] {
-          traefik = {
-            enable = true;
-            http = {
-              routers.traefik-auth-github = {
-                rule = "HostRegexp(`auth-github.trev.(zip|kiwi)`)";
-                priority = 500;
-              };
-              services.traefik-auth-github.loadbalancer.server = {
-                scheme = "http";
-                port = 4181;
-              };
-              middlewares.auth-github.forwardauth = {
-                address = "http://traefik-auth-github:4181";
-                trustForwardHeader = true;
-                authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
+        labels = toLabel {
+          attrs = {
+            traefik = {
+              enable = true;
+              http = {
+                routers.traefik-auth-github = {
+                  rule = "HostRegexp(`auth-github.trev.(zip|kiwi)`)";
+                  priority = 500;
+                };
+                services.traefik-auth-github.loadbalancer.server = {
+                  scheme = "http";
+                  port = 4181;
+                };
+                middlewares.auth-github.forwardauth = {
+                  address = "http://traefik-auth-github:4181";
+                  trustForwardHeader = true;
+                  authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
+                };
               };
             };
           };
@@ -198,28 +191,30 @@ in {
           TFA_AUTHPLEX_ALLOWEDUSERS = "spotdemo4";
         };
         secrets = [
-          "${plexSecret.ref},type=env,target=TFA_AUTHPLEX_TOKEN"
-          "${cookieSecret.ref},type=env,target=TFA_TOKENSIGNINGKEY"
+          "${config.secrets."auth-plex".env},target=TFA_AUTHPLEX_TOKEN"
+          "${config.secrets."auth-cookie".env},target=TFA_TOKENSIGNINGKEY"
         ];
         networks = [
           networks.traefik.ref
         ];
-        labels = toLabel [] {
-          traefik = {
-            enable = true;
-            http = {
-              routers.traefik-auth-plex = {
-                rule = "HostRegexp(`auth-plex.trev.(zip|kiwi)`)";
-                priority = 500;
-              };
-              services.traefik-auth-plex.loadbalancer.server = {
-                scheme = "http";
-                port = 4181;
-              };
-              middlewares.auth-plex.forwardauth = {
-                address = "http://traefik-auth-plex:4181";
-                trustForwardHeader = true;
-                authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
+        labels = toLabel {
+          attrs = {
+            traefik = {
+              enable = true;
+              http = {
+                routers.traefik-auth-plex = {
+                  rule = "HostRegexp(`auth-plex.trev.(zip|kiwi)`)";
+                  priority = 500;
+                };
+                services.traefik-auth-plex.loadbalancer.server = {
+                  scheme = "http";
+                  port = 4181;
+                };
+                middlewares.auth-plex.forwardauth = {
+                  address = "http://traefik-auth-plex:4181";
+                  trustForwardHeader = true;
+                  authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
+                };
               };
             };
           };

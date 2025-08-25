@@ -5,10 +5,8 @@
   ...
 }: let
   inherit (config.virtualisation.quadlet) volumes networks;
-  toLabel = (import ./utils/toLabel.nix).toLabel;
-  mkSecret = (import ./utils/mkSecret.nix {inherit pkgs config;}).mkSecret;
+  toLabel = import (self + /modules/util/label);
 
-  owuiSecret = mkSecret "openwebui" config.age.secrets.openwebui.path;
   start = pkgs.writeScript "start.sh" ''
     #!/bin/sh
 
@@ -29,10 +27,7 @@
     /llm/ollama/ollama serve
   '';
 in {
-  age.secrets."openwebui".file = self + /secrets/openwebui.age;
-  system.activationScripts = {
-    "${owuiSecret.ref}" = owuiSecret.script;
-  };
+  secrets."openwebui".file = self + /secrets/openwebui.age;
 
   virtualisation.quadlet = {
     containers = {
@@ -56,12 +51,14 @@ in {
         networks = [
           networks.ipex-llm.ref
         ];
-        labels = toLabel [] {
-          traefik = {
-            enable = true;
-            http.routers.ollama = {
-              rule = "HostRegexp(`ollama.trev.(zip|kiwi)`)";
-              middlewares = "auth-basic@file";
+        labels = toLabel {
+          attrs = {
+            traefik = {
+              enable = true;
+              http.routers.ollama = {
+                rule = "HostRegexp(`ollama.trev.(zip|kiwi)`)";
+                middlewares = "auth-basic@file";
+              };
             };
           };
         };
@@ -85,7 +82,7 @@ in {
           WHISPER_MODEL = "large";
         };
         secrets = [
-          "${owuiSecret.ref},type=env,target=OAUTH_CLIENT_SECRET"
+          "${config.secrets."openwebui".env},target=OAUTH_CLIENT_SECRET"
         ];
         volumes = [
           "${volumes.open-webui.ref}:/app/backend/data"
@@ -96,12 +93,14 @@ in {
         networks = [
           networks.ipex-llm.ref
         ];
-        labels = toLabel [] {
-          traefik = {
-            enable = true;
-            http.routers.open-webui = {
-              rule = "HostRegexp(`chat.trev.(zip|kiwi)`)";
-              middlewares = "auth-plex@docker";
+        labels = toLabel {
+          attrs = {
+            traefik = {
+              enable = true;
+              http.routers.open-webui = {
+                rule = "HostRegexp(`chat.trev.(zip|kiwi)`)";
+                middlewares = "auth-plex@docker";
+              };
             };
           };
         };

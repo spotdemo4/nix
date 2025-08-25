@@ -1,4 +1,7 @@
-rec {
+{
+  prefix ? [],
+  attrs,
+}: let
   toLabel = prefix: attrs:
     builtins.concatLists (
       builtins.attrValues (
@@ -11,4 +14,5 @@ rec {
         attrs
       )
     );
-}
+in
+  toLabel prefix attrs

@@ -5,13 +5,13 @@
   ...
 }:
 with lib; let
-  cfg = config.gluetun;
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = (import ./utils/toLabel.nix).toLabel;
+  toLabel = import (self + /modules/util/label);
 in {
   options.gluetun = mkOption {
     default = {};
     description = "Gluetun container configurations";
+
     type = types.attrsOf (types.submodule {
       options = {
         ports = mkOption {
@@ -45,7 +45,7 @@ in {
     });
   };
 
-  config = mkIf (cfg != {}) {
+  config = mkIf (config.gluetun != {}) {
     virtualisation.quadlet = {
       containers = mapAttrs' (name: opts:
         nameValuePair "gluetun-${name}" {
@@ -69,15 +69,15 @@ in {
               VPN_PORT_FORWARDING = "on";
             };
             publishPorts = opts.ports;
-            labels = toLabel [] opts.labels;
+            labels = toLabel {attrs = opts.labels;};
             secrets = [
               "${opts.secret.env},target=WIREGUARD_PRIVATE_KEY"
             ];
           };
         })
-      cfg;
+      config.gluetun;
 
-      volumes = mapAttrs' (name: _: nameValuePair "gluetun-${name}" {}) cfg;
+      volumes = mapAttrs' (name: _: nameValuePair "gluetun-${name}" {}) config.gluetun;
     };
   };
 }

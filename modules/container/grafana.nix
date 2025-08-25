@@ -4,9 +4,9 @@
   ...
 }: let
   inherit (config.virtualisation.quadlet) volumes networks;
-  toLabel = (import ./utils/toLabel.nix).toLabel;
+  toLabel = import (self + /modules/util/label);
 in {
-  age.secrets."grafana".file = self + /secrets/grafana.age;
+  secrets."grafana".file = self + /secrets/grafana.age;
 
   virtualisation.quadlet = {
     containers.grafana.containerConfig = {
@@ -15,7 +15,6 @@ in {
       user = "root";
       volumes = [
         "${volumes.grafana.ref}:/var/lib/grafana"
-        "${config.age.secrets."grafana".path}:/etc/secrets/client"
       ];
       publishPorts = [
         "3000"
@@ -23,12 +22,17 @@ in {
       networks = [
         networks.victoria-metrics.ref
       ];
-      labels = toLabel [] {
-        traefik = {
-          enable = true;
-          http.routers.grafana = {
-            rule = "HostRegexp(`grafana.trev.(zip|kiwi)`)";
-            middlewares = "auth-github@docker";
+      secrets = [
+        "${config.secrets."grafana".mount},target=/etc/secrets/client"
+      ];
+      labels = toLabel {
+        attrs = {
+          traefik = {
+            enable = true;
+            http.routers.grafana = {
+              rule = "HostRegexp(`grafana.trev.(zip|kiwi)`)";
+              middlewares = "auth-github@docker";
+            };
           };
         };
       };

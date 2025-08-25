@@ -1,6 +1,10 @@
-{config, ...}: let
+{
+  config,
+  self,
+  ...
+}: let
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = (import ./utils/toLabel.nix).toLabel;
+  toLabel = import (self + /modules/util/label);
 in {
   virtualisation.quadlet = {
     containers.portainer = {
@@ -14,17 +18,19 @@ in {
         networks = [
           networks.traefik.ref
         ];
-        labels = toLabel [] {
-          traefik = {
-            enable = true;
-            http = {
-              routers.portainer = {
-                rule = "HostRegexp(`portainer.trev.(zip|kiwi)`)";
-                middlewares = "auth-github@docker";
-              };
-              services.portainer.loadbalancer.server = {
-                scheme = "http";
-                port = 9000;
+        labels = toLabel {
+          attrs = {
+            traefik = {
+              enable = true;
+              http = {
+                routers.portainer = {
+                  rule = "HostRegexp(`portainer.trev.(zip|kiwi)`)";
+                  middlewares = "auth-github@docker";
+                };
+                services.portainer.loadbalancer.server = {
+                  scheme = "http";
+                  port = 9000;
+                };
               };
             };
           };

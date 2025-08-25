@@ -1,6 +1,10 @@
-{config, ...}: let
+{
+  config,
+  self,
+  ...
+}: let
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = (import ./utils/toLabel.nix).toLabel;
+  toLabel = import (self + /modules/util/label);
 in {
   virtualisation.quadlet = {
     containers.radarr.containerConfig = {
@@ -18,12 +22,14 @@ in {
       publishPorts = [
         "7878"
       ];
-      labels = toLabel [] {
-        traefik = {
-          enable = true;
-          http.routers.radarr = {
-            rule = "HostRegexp(`radarr.trev.(zip|kiwi)`)";
-            middlewares = "auth-github@docker,header-basic@file";
+      labels = toLabel {
+        attrs = {
+          traefik = {
+            enable = true;
+            http.routers.radarr = {
+              rule = "HostRegexp(`radarr.trev.(zip|kiwi)`)";
+              middlewares = "auth-github@docker,header-basic@file";
+            };
           };
         };
       };

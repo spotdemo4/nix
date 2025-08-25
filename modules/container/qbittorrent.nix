@@ -4,6 +4,7 @@
   ...
 }: let
   inherit (config.virtualisation.quadlet) volumes;
+  toLabel = import (self + /modules/util/label);
 in {
   imports = [./gluetun.nix];
 
@@ -11,37 +12,13 @@ in {
 
   gluetun."qbittorrent" = {
     secret = config.secrets."qbittorrent-wg";
-    ports = [
-      "8185:8185" # qbittorrent
-      "8186:8186" # qbitmanage
-    ];
+    ports = ["8185"];
     labels = {
       traefik = {
         enable = true;
-        http = {
-          routers = {
-            qbittorrent = {
-              rule = "HostRegexp(`qbittorrent.trev.(zip|kiwi)`)";
-              middlewares = "auth-github@docker";
-            };
-
-            qbitmanage = {
-              rule = "HostRegexp(`qbitmanage.trev.(zip|kiwi)`)";
-              middlewares = "auth-github@docker";
-            };
-          };
-
-          services = {
-            qbittorrent.loadbalancer.server = {
-              scheme = "http";
-              port = 8185;
-            };
-
-            qbitmanage.loadbalancer.server = {
-              scheme = "http";
-              port = 8186;
-            };
-          };
+        http.routers.qbittorrent = {
+          rule = "HostRegexp(`qbittorrent.trev.(zip|kiwi)`)";
+          middlewares = "auth-github@docker";
         };
       };
     };
@@ -74,16 +51,27 @@ in {
         pull = "missing";
         environments = {
           QBT_WEB_SERVER = "true";
-          QBT_PORT = "8186";
+          QBT_PORT = "8080";
         };
+        publishPorts = [
+          "8080"
+        ];
         volumes = [
           "${volumes.qbitmanage.ref}:/config"
           "/mnt/pool/qbittorrent-data/downloads:/qbittorrent-downloads"
           "/mnt/pool/qbittorrent-data/torrents:/torrents"
         ];
-        networks = [
-          "container:gluetun-qbittorrent"
-        ];
+        labels = toLabel {
+          attrs = {
+            traefik = {
+              enable = true;
+              http.routers.qbittorrent = {
+                rule = "HostRegexp(`qbitmanage.trev.(zip|kiwi)`)";
+                middlewares = "auth-github@docker";
+              };
+            };
+          };
+        };
       };
     };
 

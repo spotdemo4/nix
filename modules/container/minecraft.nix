@@ -1,19 +1,12 @@
 {
-  pkgs,
   self,
   config,
   ...
 }: let
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = (import ./utils/toLabel.nix).toLabel;
-  mkSecret = (import ./utils/mkSecret.nix {inherit pkgs config;}).mkSecret;
-
-  cfSecret = mkSecret "curseforge" config.age.secrets."curseforge".path;
+  toLabel = import (self + /modules/util/label);
 in {
-  age.secrets."curseforge".file = self + /secrets/curseforge.age;
-  system.activationScripts = {
-    "${cfSecret.ref}" = cfSecret.script;
-  };
+  secrets."curseforge".file = self + /secrets/curseforge.age;
 
   virtualisation.quadlet = {
     containers.minecraft.containerConfig = {
@@ -28,7 +21,7 @@ in {
         MOTD = "chicken jockey";
       };
       secrets = [
-        "${cfSecret.ref},type=env,target=CF_API_KEY"
+        "${config.secrets."curseforge".env},target=CF_API_KEY"
       ];
       volumes = [
         "${volumes.allthemods10.ref}:/data"
@@ -36,12 +29,14 @@ in {
       publishPorts = [
         "25565"
       ];
-      labels = toLabel [] {
-        traefik = {
-          enable = true;
-          tcp.routers.minecraft = {
-            rule = "HostSNI(`*`)";
-            entryPoints = "minecraft";
+      labels = toLabel {
+        attrs = {
+          traefik = {
+            enable = true;
+            tcp.routers.minecraft = {
+              rule = "HostSNI(`*`)";
+              entryPoints = "minecraft";
+            };
           };
         };
       };
