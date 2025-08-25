@@ -17,9 +17,7 @@ in {
       };
       volumes = [
         "${volumes.radarr.ref}:/config"
-        "/mnt/pool/movies:/movies"
-        "/mnt/pool/qbittorrent-data/downloads:/qbittorrent/downloads"
-        "/mnt/pool/sabnzbd-data/downloads:/sabnzbd/downloads"
+        "/mnt/pool:/pool"
       ];
       publishPorts = [
         "7878"

@@ -17,8 +17,7 @@ in {
       };
       volumes = [
         "${volumes.sabnzbd.ref}:/config"
-        "/mnt/pool/sabnzbd-data/downloads:/sabnzbd/downloads"
-        "/mnt/pool/sabnzbd-data/incomplete-downloads:/sabnzbd/incomplete-downloads"
+        "/mnt/pool/download/sabnzbd:/pool/download/sabnzbd"
       ];
       publishPorts = [
         "8080"

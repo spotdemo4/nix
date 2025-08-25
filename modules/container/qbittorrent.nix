@@ -44,8 +44,7 @@ in {
         };
         volumes = [
           "${volumes.qbittorrent.ref}:/config"
-          "/mnt/pool/qbittorrent-data/downloads:/qbittorrent/downloads"
-          "/mnt/pool/qbittorrent-data/torrents:/qbittorrent/torrents"
+          "/mnt/pool/download/qbittorrent:/pool/download/qbittorrent"
         ];
         networks = [
           "container:gluetun-qbittorrent"
@@ -92,8 +91,8 @@ in {
             pass = "!ENV QBIT_PASS";
           };
           directory = {
-            root_dir = "/qbittorrent/downloads";
-            torrents_dir = "/qbittorrent/torrents";
+            root_dir = "/pool/download/qbittorrent/complete";
+            torrents_dir = "/pool/download/qbittorrent/torrents";
           };
           cat = {
             Uncategorized = "/qbittorrent/downloads";
@@ -121,8 +120,7 @@ in {
         volumes = [
           "${volumes.qbittorrent-manager.ref}:/config"
           "${configFile}:/config/config.yaml"
-          "/mnt/pool/qbittorrent-data/downloads:/qbittorrent/downloads"
-          "/mnt/pool/qbittorrent-data/torrents:/qbittorrent/torrents"
+          "/mnt/pool/download/qbittorrent:/pool/download/qbittorrent"
         ];
         networks = [
           networks."sonarr".ref

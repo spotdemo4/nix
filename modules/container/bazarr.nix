@@ -17,8 +17,7 @@ in {
       };
       volumes = [
         "${volumes.bazarr.ref}:/config"
-        "/mnt/pool/movies:/movies"
-        "/mnt/pool/shows:/shows"
+        "/mnt/pool:/pool"
       ];
       publishPorts = [
         "6767"
