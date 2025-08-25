@@ -95,6 +95,9 @@ in {
             Uncategorized = "/qbittorrent-downloads";
           };
           recyclebin.enabled = "false";
+          tracker = {
+            other.tag = "other";
+          };
         };
       in {
         image = "ghcr.io/stuffanthings/qbit_manage:v4.5.5@sha256:2e582501805b159b0378f259d9de9dca5155a3e444d080c8b00e00ac8c670541";
