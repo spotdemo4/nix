@@ -13,15 +13,6 @@ in {
   gluetun."qbittorrent" = {
     secret = config.secrets."qbittorrent-wg";
     ports = ["8185"];
-    labels = {
-      traefik = {
-        enable = true;
-        http.routers.qbittorrent = {
-          rule = "HostRegexp(`qbittorrent.trev.(zip|kiwi)`)";
-          middlewares = "auth-github@docker";
-        };
-      };
-    };
   };
 
   virtualisation.quadlet = {
@@ -44,6 +35,17 @@ in {
         networks = [
           "container:gluetun-qbittorrent"
         ];
+        labels = toLabel {
+          attrs = {
+            traefik = {
+              enable = true;
+              http.routers.qbittorrent = {
+                rule = "HostRegexp(`qbittorrent.trev.(zip|kiwi)`)";
+                middlewares = "auth-github@docker";
+              };
+            };
+          };
+        };
       };
 
       qbitmanage.containerConfig = {

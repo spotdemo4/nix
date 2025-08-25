@@ -6,7 +6,6 @@
 }:
 with lib; let
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = import (self + /modules/util/label);
 in {
   options.gluetun = mkOption {
     default = {};
@@ -20,19 +19,6 @@ in {
           description = ''
             The ports to publish from the container
           '';
-        };
-
-        labels = mkOption {
-          type = types.attrs;
-          example = {
-            traefik = {
-              enable = true;
-              http.routers.gluetun = {
-                rule = "HostRegexp(`example.trev.(zip|kiwi)`)";
-                middlewares = "auth-github@docker";
-              };
-            };
-          };
         };
 
         secret = mkOption {
@@ -69,7 +55,6 @@ in {
               VPN_PORT_FORWARDING = "on";
             };
             publishPorts = opts.ports;
-            labels = toLabel {attrs = opts.labels;};
             secrets = [
               "${opts.secret.env},target=WIREGUARD_PRIVATE_KEY"
             ];
