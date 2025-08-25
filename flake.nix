@@ -176,6 +176,13 @@
           alejandra
           prettier
           pkgs.nur.repos.trev.renovate
+          (pkgs.writeShellApplication {
+            name = "secret";
+            runtimeInputs = [agenix];
+            text = ''
+              EDITOR="nano -L" agenix -e "$@"
+            '';
+          })
         ];
         shellHook = pkgs.nur.repos.trev.shellhook.ref;
       };

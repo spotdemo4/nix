@@ -19,6 +19,7 @@ in {
   "mods.age".publicKeys = keys.local;
   "openrouter.age".publicKeys = keys.all;
   "openwebui.age".publicKeys = keys.all;
+  "password.age".publicKeys = keys.all;
   "qbittorrent-wg.age".publicKeys = keys.all;
   "tailscale.age".publicKeys = keys.all;
   "traefik.age".publicKeys = keys.all;

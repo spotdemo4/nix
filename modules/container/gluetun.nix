@@ -21,6 +21,17 @@ in {
           '';
         };
 
+        environments = mkOption {
+          type = types.attrs;
+          example = {
+            VPN_SERVICE_PROVIDER = "protonvpn";
+            VPN_TYPE = "wireguard";
+            SERVER_CITIES = "Chicago,Toronto";
+            PORT_FORWARD_ONLY = "on";
+            VPN_PORT_FORWARDING = "on";
+          };
+        };
+
         secret = mkOption {
           type = types.submodule (import (self + /modules/util/secrets/secret.nix));
           description = ''
@@ -47,13 +58,7 @@ in {
             volumes = [
               "${volumes."gluetun-${name}".ref}:/tmp/gluetun"
             ];
-            environments = {
-              VPN_SERVICE_PROVIDER = "protonvpn";
-              VPN_TYPE = "wireguard";
-              SERVER_CITIES = "Chicago,Toronto";
-              PORT_FORWARD_ONLY = "on";
-              VPN_PORT_FORWARDING = "on";
-            };
+            environments = opts.environments;
             publishPorts = opts.ports;
             secrets = [
               "${opts.secret.env},target=WIREGUARD_PRIVATE_KEY"
