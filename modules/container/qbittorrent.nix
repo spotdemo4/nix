@@ -87,6 +87,14 @@ in {
             user = "!ENV QBIT_USER";
             pass = "!ENV QBIT_PASS";
           };
+          directory = {
+            root_dir = "/qbittorrent-downloads";
+            torrents_dir = "/torrents";
+          };
+          cat = {
+            Uncategorized = "/qbittorrent-downloads";
+          };
+          recyclebin.enabled = "false";
         };
       in {
         image = "ghcr.io/stuffanthings/qbit_manage:v4.5.5@sha256:2e582501805b159b0378f259d9de9dca5155a3e444d080c8b00e00ac8c670541";
