@@ -10,42 +10,86 @@ in {
   secrets."qbittorrent-wg".file = self + /secrets/qbittorrent-wg.age;
 
   gluetun."qbittorrent" = {
-    ports = ["8185"];
+    secret = config.secrets."qbittorrent-wg";
+    ports = [
+      "8185:8185" # qbittorrent
+      "8186:8186" # qbitmanage
+    ];
     labels = {
       traefik = {
         enable = true;
-        http.routers.gluetun-qbittorrent = {
-          rule = "HostRegexp(`qbittorrent.trev.(zip|kiwi)`)";
-          middlewares = "auth-github@docker";
+        http = {
+          routers = {
+            qbittorrent = {
+              rule = "HostRegexp(`qbittorrent.trev.(zip|kiwi)`)";
+              middlewares = "auth-github@docker";
+            };
+
+            qbitmanage = {
+              rule = "HostRegexp(`qbitmanage.trev.(zip|kiwi)`)";
+              middlewares = "auth-github@docker";
+            };
+          };
+
+          services = {
+            qbittorrent.loadbalancer.server = {
+              scheme = "http";
+              port = 8185;
+            };
+
+            qbitmanage.loadbalancer.server = {
+              scheme = "http";
+              port = 8186;
+            };
+          };
         };
       };
     };
-    secret = config.secrets."qbittorrent-wg";
   };
 
   virtualisation.quadlet = {
-    containers.qbittorrent.containerConfig = {
-      image = "lscr.io/linuxserver/qbittorrent:5.1.2@sha256:ebfd00848045b30298bcb43627e24bd98ff2bbf584d9b3e62257586de85bcb15";
-      pull = "missing";
-      environments = {
-        PUID = "1000";
-        PGID = "1000";
-        TZ = "America/Detroit";
-        WEBUI_PORT = "8185";
-        DOCKER_MODS = "ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest";
+    containers = {
+      qbittorrent.containerConfig = {
+        image = "lscr.io/linuxserver/qbittorrent:5.1.2@sha256:ebfd00848045b30298bcb43627e24bd98ff2bbf584d9b3e62257586de85bcb15";
+        pull = "missing";
+        environments = {
+          PUID = "1000";
+          PGID = "1000";
+          TZ = "America/Detroit";
+          WEBUI_PORT = "8185";
+          DOCKER_MODS = "ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest";
+        };
+        volumes = [
+          "${volumes.qbittorrent.ref}:/config"
+          "/mnt/pool/qbittorrent-data/downloads:/qbittorrent-downloads"
+          "/mnt/pool/qbittorrent-data/torrents:/torrents"
+        ];
+        networks = [
+          "container:gluetun-qbittorrent"
+        ];
       };
-      volumes = [
-        "${volumes.qbittorrent.ref}:/config"
-        "/mnt/pool/qbittorrent-data/downloads:/qbittorrent-downloads"
-        "/mnt/pool/qbittorrent-data/torrents:/torrents"
-      ];
-      networks = [
-        "container:gluetun-qbittorrent"
-      ];
+
+      qbitmanage.containerConfig = {
+        image = "ghcr.io/stuffanthings/qbit_manage:v4.5.5@sha256:2e582501805b159b0378f259d9de9dca5155a3e444d080c8b00e00ac8c670541";
+        pull = "missing";
+        environments = {
+          QBT_WEB_SERVER = "true";
+          QBT_PORT = "8186";
+        };
+        volumes = [
+          "${volumes.qbitmanage.ref}:/config"
+          "/mnt/pool/qbittorrent-data/downloads:/qbittorrent-downloads"
+          "/mnt/pool/qbittorrent-data/torrents:/torrents"
+        ];
+        networks = [
+          "container:gluetun-qbittorrent"
+        ];
+      };
     };
 
     volumes = {
       qbittorrent = {};
+      qbitmanage = {};
     };
   };
 }

@@ -3,6 +3,7 @@
   name,
   ...
 }:
+# https://docs.podman.io/en/stable/markdown/podman-run.1.html#secret-secret-opt-opt
 with lib; {
   options = {
     file = mkOption {
@@ -27,6 +28,15 @@ with lib; {
         name,type=env
       '';
       default = "${name},type=env";
+    };
+
+    mount = mkOption {
+      type = types.str;
+      description = ''
+        Mount mapping for the secret in the format:
+        name,type=mount
+      '';
+      default = "${name},type=mount";
     };
   };
 }
