@@ -31,6 +31,7 @@
     unzip
     wget
     yt-dlp
+    zip
 
     # GUI technically but needed for ssh
     kitty

@@ -13,6 +13,7 @@
       "radarr"
       "sabnzbd"
       "sonarr"
+      "tautulli"
       "traefik-kop"
     ];
 
