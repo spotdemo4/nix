@@ -9,7 +9,7 @@ in {
 
   secrets = {
     enable = true;
-    secret."qbittorrent-wg" = self + /secrets/qbittorrent-wg;
+    secret."qbittorrent-wg" = self + /secrets/qbittorrent-wg.age;
   };
 
   virtualisation.quadlet = {
