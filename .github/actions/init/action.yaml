@@ -1,23 +1,19 @@
 name: 'init'
 description: 'initialize nix'
 inputs:
-  github_token:
-    description: 'github token'
-    required: true
   cachix_token:
     description: 'cachix token'
     required: true
 runs:
   using: 'composite'
   steps:
-    - name: Harden the runner (Audit all outbound calls)
-      uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
+    - uses: step-security/harden-runner@ec9f2d5744a09debf3a187a3f4f675c53b671911 # v2.13.0
       with:
         egress-policy: audit
 
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
     - uses: cachix/install-nix-action@fc6e360bedc9ee72d75e701397f0bb30dce77568 # v31.5.2
-      with:
-        github_access_token: ${{ inputs.github_token }}
 
     - uses: cachix/cachix-action@0fc020193b5a1fa3ac4575aa3a7d3aa6a35435ad # v16
       with:
