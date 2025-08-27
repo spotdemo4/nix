@@ -174,8 +174,7 @@
           git
           nix-update
           alejandra
-          prettier
-          pkgs.nur.repos.trev.renovate
+
           (pkgs.writeShellApplication {
             name = "secret";
             runtimeInputs = [agenix];
@@ -183,6 +182,11 @@
               EDITOR="nano -L" agenix -e "$@"
             '';
           })
+
+          # Actions
+          flake-checker
+          prettier
+          pkgs.nur.repos.trev.renovate
         ];
         shellHook = pkgs.nur.repos.trev.shellhook.ref;
       };
@@ -206,6 +210,7 @@
             alejandra -c .
             prettier --check .
             renovate-config-validator
+            renovate-config-validator .github/renovate-global.json
             action-validator .github/workflows/*
           '';
         };
