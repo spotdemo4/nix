@@ -17,9 +17,11 @@ in {
       volumes = [
         "${volumes.whiteout.ref}:/app/db"
       ];
-      entrypoint = ''
-        sh -c "/bootstrap.sh || true && tail -f /dev/null"
-      '';
+      entrypoint = [
+        "sh"
+        "-c"
+        "/bootstrap.sh || true && tail -f /dev/null"
+      ];
     };
 
     volumes = {
