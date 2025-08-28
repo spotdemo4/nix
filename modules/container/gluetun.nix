@@ -66,7 +66,7 @@ in {
             volumes = [
               "${volumes."gluetun-${name}".ref}:/tmp/gluetun"
             ];
-            healthCmd = "healthcheck";
+            healthCmd = "/gluetun-entrypoint healthcheck";
             notify = "healthy";
             secrets = [
               "${opts.secret.env},target=WIREGUARD_PRIVATE_KEY"
