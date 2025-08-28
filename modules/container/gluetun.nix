@@ -2,7 +2,6 @@
   lib,
   config,
   self,
-  pkgs,
   ...
 }:
 with lib; let
@@ -67,11 +66,7 @@ in {
             volumes = [
               "${volumes."gluetun-${name}".ref}:/tmp/gluetun"
             ];
-            healthCmd = "${pkgs.writeShellApplication {
-              name = "gluetun-healthcheck";
-              runtimeInputs = [pkgs.curl];
-              text = "curl --fail https://ip.me || exit 1";
-            }}";
+            healthCmd = "healthcheck";
             notify = "healthy";
             secrets = [
               "${opts.secret.env},target=WIREGUARD_PRIVATE_KEY"
