@@ -31,8 +31,7 @@ in {
           traefik = {
             enable = true;
             http.routers.overseerr = {
-              rule = "HostRegexp(`overseerr.trev.(zip|kiwi)`)";
-              middlewares = "auth-github@docker";
+              rule = "HostRegexp(`overseerr.trev.(xyz|zip|kiwi)`)";
             };
           };
         };
