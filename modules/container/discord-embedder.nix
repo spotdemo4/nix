@@ -22,6 +22,7 @@ in {
         DISCORD_CHANNEL_IDS = "150459222637805570";
         FILES_DIR = "/files";
         HOST = "https://embed.trev.xyz";
+        PORT = "8080";
         QUICKSYNC = "true";
 
         INSTAGRAM_USERNAME = "spam@trev.xyz";
@@ -38,6 +39,13 @@ in {
       ];
       volumes = [
         "/mnt/pool/memes:/files"
+      ];
+      publishPorts = [
+        "8080"
+      ];
+      devices = [
+        "/dev/dri/card0:/dev/dri/card0"
+        "/dev/dri/renderD128:/dev/dri/renderD128"
       ];
       labels = toLabel {
         attrs = {
