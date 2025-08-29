@@ -10,12 +10,12 @@ in {
   imports = [./gluetun.nix];
 
   secrets = {
-    "qbittorrent-wg".file = self + /secrets/qbittorrent-wg.age;
+    "protonvpn-qbittorrent".file = self + /secrets/protonvpn-qbittorrent.age;
     "password".file = self + /secrets/password.age;
   };
 
   gluetun."qbittorrent" = {
-    secret = config.secrets."qbittorrent-wg";
+    secret = config.secrets."protonvpn-qbittorrent";
     ports = ["8185"];
     environments = {
       VPN_SERVICE_PROVIDER = "protonvpn";

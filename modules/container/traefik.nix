@@ -49,6 +49,10 @@
               main = "trev.kiwi";
               sans = ["*.trev.kiwi"];
             }
+            {
+              main = "trev.xyz";
+              sans = ["*.trev.xyz"];
+            }
           ];
         };
       };
@@ -65,11 +69,11 @@
   };
 in {
   secrets = {
-    "traefik".file = self + /secrets/traefik.age;
-    "cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
+    "auth-cookie".file = self + /secrets/auth-cookie.age;
     "auth-github".file = self + /secrets/auth-github.age;
     "auth-plex".file = self + /secrets/auth-plex.age;
-    "auth-cookie".file = self + /secrets/auth-cookie.age;
+    "cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
+    "traefik".file = self + /secrets/traefik.age;
   };
 
   virtualisation.quadlet = {
