@@ -3,6 +3,7 @@
   config,
   ...
 }: let
+  inherit (config.virtualisation.quadlet) volumes;
   toLabel = import (self + /modules/util/label);
 in {
   secrets = {
@@ -22,6 +23,7 @@ in {
         DISCORD_APPLICATION_ID = "1279604203001610260";
         DISCORD_CHANNEL_IDS = "150459222637805570";
         FILES_DIR = "/files";
+        TMP_DIR = "/tmp";
         HOST = "https://embed.trev.xyz";
         PORT = "8080";
         QUICKSYNC = "true";
@@ -40,6 +42,7 @@ in {
       ];
       volumes = [
         "/mnt/pool/memes:/files"
+        "${volumes.discord-embedder.ref}:/tmp"
       ];
       publishPorts = [
         "8080"
@@ -58,6 +61,10 @@ in {
           };
         };
       };
+    };
+
+    volumes = {
+      discord-embedder = {};
     };
   };
 }
