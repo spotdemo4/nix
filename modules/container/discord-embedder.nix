@@ -17,6 +17,7 @@ in {
     containers.discord-embedder.containerConfig = {
       image = "ghcr.io/spotdemo4/discord-embedder:0.1.5@sha256:83e2d5a23f6c2ef2d272468f4712fcee286e36b219fcc98c838e2c7a04349646";
       pull = "missing";
+      user = "1000:1000";
       environments = {
         DISCORD_APPLICATION_ID = "1279604203001610260";
         DISCORD_CHANNEL_IDS = "150459222637805570";
