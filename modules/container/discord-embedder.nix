@@ -16,7 +16,7 @@ in {
 
   virtualisation.quadlet = {
     containers.discord-embedder.containerConfig = {
-      image = "ghcr.io/spotdemo4/discord-embedder:0.1.6@sha256:f9d07aa0340c6237c8d96f377bf551cac671787dc872d4ab3f8384f0c0bf2353";
+      image = "ghcr.io/spotdemo4/discord-embedder:0.1.7@sha256:a5085cfe86204727321233a3acbbd01d0e81371732a9344084f689586c61daf4";
       pull = "missing";
       user = "1000:1000";
       environments = {
