@@ -34,7 +34,7 @@ in {
     containers = {
       qbittorrent = {
         containerConfig = {
-          image = "lscr.io/linuxserver/qbittorrent:latest@sha256:ebfd00848045b30298bcb43627e24bd98ff2bbf584d9b3e62257586de85bcb15";
+          image = "lscr.io/linuxserver/qbittorrent:latest@sha256:d464a92d5656f1fa66baafe610a06a6cafd4bdf900a245e6f20b220f281b456d";
           pull = "missing";
           environments = {
             PUID = "1000";
@@ -119,7 +119,7 @@ in {
           };
         };
       in {
-        image = "ghcr.io/stuffanthings/qbit_manage:v4.5.5@sha256:2e582501805b159b0378f259d9de9dca5155a3e444d080c8b00e00ac8c670541";
+        image = "ghcr.io/stuffanthings/qbit_manage:v4.6.0@sha256:ffb0d2b53a6fad9ad19046a11eae78b0fa0d22f90c1c7ad50b2cb866aece2a2b";
         pull = "missing";
         environments = {
           QBT_WEB_SERVER = "true";
