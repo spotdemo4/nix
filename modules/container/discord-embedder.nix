@@ -18,6 +18,7 @@ in {
     containers.discord-embedder.containerConfig = {
       image = "ghcr.io/spotdemo4/discord-embedder:0.1.9@sha256:97c1f3d96b15329dbf3653830a2d5b880d3e9cd407a9e70429472a5b520ec062";
       pull = "missing";
+      user = "1000:1000";
       environments = {
         DISCORD_APPLICATION_ID = "1279604203001610260";
         DISCORD_CHANNEL_IDS = "150459222637805570";
@@ -40,8 +41,7 @@ in {
         "${config.secrets."embedder-x".env},target=X_PASSWORD"
       ];
       volumes = [
-        # "/mnt/pool/memes:/files"
-        "${volumes.discord-embedder-test.ref}:/files"
+        "/mnt/pool/memes:/files"
         "${volumes.discord-embedder.ref}:/tmp"
       ];
       publishPorts = [
@@ -65,7 +65,6 @@ in {
 
     volumes = {
       discord-embedder = {};
-      discord-embedder-test = {};
     };
   };
 }
