@@ -22,7 +22,7 @@ in {
         "8181"
       ];
       networks = [
-        networks."tautulli".ref
+        networks."plex".ref
       ];
       labels = toLabel {
         attrs = {
@@ -38,10 +38,6 @@ in {
     };
 
     volumes = {
-      tautulli = {};
-    };
-
-    networks = {
       tautulli = {};
     };
   };

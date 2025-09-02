@@ -24,7 +24,7 @@ in {
       networks = [
         networks."sonarr".ref
         networks."radarr".ref
-        networks."tautulli".ref
+        networks."plex".ref
       ];
       labels = toLabel {
         attrs = {

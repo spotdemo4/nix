@@ -59,6 +59,9 @@
       minecraft = {
         address = ":25565";
       };
+      plex = {
+        address = ":32400";
+      };
     };
 
     certificatesResolvers.letsencrypt.acme = {
@@ -94,8 +97,9 @@ in {
           publishPorts = [
             "80:80"
             "443:443"
-            "25565:25565"
-            "8080:8080"
+            "8080:8080" # dashboard
+            "25565:25565" # minecraft
+            "32400:32400" # plex
           ];
           networks = [
             networks.traefik.ref

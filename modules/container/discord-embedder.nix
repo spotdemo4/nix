@@ -19,6 +19,10 @@ in {
       image = "ghcr.io/spotdemo4/discord-embedder:0.1.9@sha256:97c1f3d96b15329dbf3653830a2d5b880d3e9cd407a9e70429472a5b520ec062";
       pull = "missing";
       user = "1000:1000";
+      devices = [
+        "/dev/dri/card0:/dev/dri/card0"
+        "/dev/dri/renderD128:/dev/dri/renderD128"
+      ];
       environments = {
         DISCORD_APPLICATION_ID = "1279604203001610260";
         DISCORD_CHANNEL_IDS = "150459222637805570";
@@ -46,10 +50,6 @@ in {
       ];
       publishPorts = [
         "8080"
-      ];
-      devices = [
-        "/dev/dri/card0:/dev/dri/card0"
-        "/dev/dri/renderD128:/dev/dri/renderD128"
       ];
       labels = toLabel {
         attrs = {

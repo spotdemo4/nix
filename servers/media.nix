@@ -8,6 +8,7 @@
       "bazarr"
       "discord-embedder"
       "overseerr"
+      "plex"
       "portainer-agent"
       "prowlarr"
       "qbittorrent"
