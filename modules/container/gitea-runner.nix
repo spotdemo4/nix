@@ -28,6 +28,12 @@ in {
             configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
               runner = {
                 capacity = 2;
+                labels = [
+                  "ubuntu-latest:docker://docker.gitea.com/runner-images:ubuntu-latest"
+                  "ubuntu-22.04:docker://docker.gitea.com/runner-images:ubuntu-22.04"
+                  "ubuntu-20.04:docker://docker.gitea.com/runner-images:ubuntu-20.04"
+                  "node-24:docker://node:24-bookworm"
+                ];
               };
               cache = {
                 enabled = true;
