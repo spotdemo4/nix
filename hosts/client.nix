@@ -11,6 +11,7 @@
     "git"
     "gnome-auth-agent"
     "hyprland"
+    "openssh"
     "pipewire"
     "postgres"
     "steam"
@@ -167,6 +168,11 @@
         "libvirtd"
       ];
       shell = pkgs.zsh;
+      openssh.authorizedKeys = let
+        nixKeys = import (self + /secrets/keys.nix);
+      in {
+        keys = nixKeys.local;
+      };
     };
   };
   age.identityPaths = ["/home/trev/.ssh/id_ed25519"];
