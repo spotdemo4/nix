@@ -1,8 +1,8 @@
-name: flake
+name: vulnerable
 
 on:
   schedule:
-    - cron: "0 0 * * 0"
+    - cron: "9 9 * * *"
   workflow_dispatch:
 
 permissions:

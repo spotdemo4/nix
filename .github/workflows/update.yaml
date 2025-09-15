@@ -2,7 +2,7 @@ name: update
 
 on:
   schedule:
-    - cron: "0 10 * * *"
+    - cron: "9 9 * * *"
   workflow_dispatch:
 
 permissions:
@@ -24,6 +24,6 @@ jobs:
 
       - name: Renovate
         env:
-          RENOVATE_CONFIG_FILE: .github/renovate-global.json
+          RENOVATE_CONFIG_FILE: .github/renovate.json
           RENOVATE_TOKEN: ${{ steps.token.outputs.token }}
         run: renovate
