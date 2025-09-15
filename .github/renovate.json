@@ -1,45 +1,45 @@
 {
-	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:recommended"],
-	"lockFileMaintenance": {
-		"enabled": true,
-		"automerge": true,
-		"schedule": ["at any time"]
-	},
-	"git-submodules": {
-		"enabled": true
-	},
-	"nix": {
-		"enabled": true
-	},
-	"customManagers": [
-		{
-			"customType": "regex",
-			"description": "docker images",
-			"managerFilePatterns": ["/.*.nix$/"],
-			"matchStrings": [
-				"image = \"?(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\"?"
-			],
-			"autoReplaceStringTemplate": "image = \"{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
-			"depTypeTemplate": "image",
-			"datasourceTemplate": "docker"
-		}
-	],
-	"packageRules": [
-		{
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"automerge": true
-		},
-		{
-			"groupName": "Docker Images",
-			"matchManagers": ["custom.regex"],
-			"matchDepTypes": ["image"],
-			"pinDigests": true
-		},
-		{
-			"groupName": "GitHub Actions",
-			"matchManagers": ["github-actions"],
-			"matchPackageNames": ["*"]
-		}
-	]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true,
+    "schedule": ["at any time"]
+  },
+  "git-submodules": {
+    "enabled": true
+  },
+  "nix": {
+    "enabled": true
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "docker images",
+      "managerFilePatterns": ["/.*.nix$/"],
+      "matchStrings": [
+        "image = \"?(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\"?"
+      ],
+      "autoReplaceStringTemplate": "image = \"{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
+      "depTypeTemplate": "image",
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    },
+    {
+      "groupName": "Docker Images",
+      "matchManagers": ["custom.regex"],
+      "matchDepTypes": ["image"],
+      "pinDigests": true
+    },
+    {
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["*"]
+    }
+  ]
 }

@@ -1,11 +1,11 @@
-name: 'init'
-description: 'initialize nix'
+name: "init"
+description: "initialize nix"
 inputs:
   cachix_token:
-    description: 'cachix token'
+    description: "cachix token"
     required: true
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
       with:
@@ -18,8 +18,8 @@ runs:
     - uses: cachix/cachix-action@0fc020193b5a1fa3ac4575aa3a7d3aa6a35435ad # v16
       with:
         name: trix
-        authToken: '${{ inputs.cachix_token }}'
+        authToken: "${{ inputs.cachix_token }}"
 
     - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
       with:
-        arguments: '--accept-flake-config'
+        arguments: "--accept-flake-config"
