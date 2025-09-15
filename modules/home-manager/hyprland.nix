@@ -49,10 +49,6 @@
 
       decoration = {
         "rounding" = 10;
-        #"drop_shadow" = "yes";
-        #"shadow_range" = 4;
-        #"shadow_render_power" = 3;
-        #"col.shadow" = "rgba(1a1a1aee)";
 
         blur = {
           "enabled" = true;
@@ -84,10 +80,6 @@
         "mfact" = "0.5";
       };
 
-      gestures = {
-        "workspace_swipe" = "off";
-      };
-
       misc = {
         "force_default_wallpaper" = 0;
       };
@@ -108,7 +100,6 @@
           "font_size" = 14;
           "col.active" = "rgba(1e1e2eee)";
           "col.inactive" = "rgba(11111bee)";
-          # "rounding" = 10;
         };
       };
 
