@@ -209,9 +209,8 @@
           script = ''
             alejandra -c .
             prettier --check .
-            renovate-config-validator
-            renovate-config-validator .github/renovate-global.json
-            action-validator .github/workflows/*
+            action-validator .github/**/*.yaml
+            renovate-config-validator .github/renovate.json
           '';
         };
       }
