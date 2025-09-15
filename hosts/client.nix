@@ -8,6 +8,7 @@
 }: {
   imports = map (x: self + /modules/nixos/${x}.nix) [
     # Programs to import
+    "clickhouse"
     "git"
     "gnome-auth-agent"
     "hyprland"
