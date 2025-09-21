@@ -34,7 +34,7 @@ in {
     containers = {
       qbittorrent = {
         containerConfig = {
-          image = "lscr.io/linuxserver/qbittorrent:latest@sha256:ffa4e82aa55e3bd3d2d99151f235fcd41b976303c4d4029940363452a59a3833";
+          image = "lscr.io/linuxserver/qbittorrent:latest@sha256:344512822c3325e2238cb46639e77759448ff556e0568fbedf168814690eea4d";
           pull = "missing";
           environments = {
             PUID = "1000";
