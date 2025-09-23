@@ -20,13 +20,15 @@
           "bradlc.vscode-tailwindcss"
           "bufbuild.vscode-buf"
           "dbaeumer.vscode-eslint"
-          "dorzey.vscode-sqlfluff"
           "esbenp.prettier-vscode"
           "github.copilot-chat"
           "github.copilot"
           "mkhl.direnv"
           "svelte.svelte-vscode"
           "tamasfe.even-better-toml"
+        ])
+        ++ (inputs.nix4vscode.lib."${pkgs.system}".forOpenVsxVersion pkgs.vscodium.version [
+          "sqlfluff.vscode-sqlfluff"
         ]);
       userSettings = {
         "workbench.editor.labelFormat" = "short";
