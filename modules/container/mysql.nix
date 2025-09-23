@@ -11,7 +11,7 @@ in {
     default = {};
     description = "mysql container configuration";
 
-    type = types.attrsOf (types.submodule (name: {
+    type = types.attrsOf (types.submodule ({name, ...}: {
       options = {
         database = mkOption {
           type = types.str;
