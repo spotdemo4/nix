@@ -31,14 +31,17 @@ in {
                 smtp = {
                   rule = "HostSNI(`*`)";
                   service = "smtp";
+                  entryPoints = "smtp";
                 };
                 smtps = {
                   rule = "HostSNI(`*`)";
                   service = "smtps";
+                  entryPoints = "smtps";
                 };
                 imaps = {
                   rule = "HostSNI(`*`)";
                   service = "imaps";
+                  entryPoints = "imaps";
                 };
               };
               services = {
