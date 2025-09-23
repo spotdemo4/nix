@@ -38,19 +38,16 @@ in {
                   rule = "HostSNI(`*`)";
                   service = "jmap";
                   entryPoints = "https";
-                  tls.passthrough = true;
                 };
                 smtps = {
                   rule = "HostSNI(`*`)";
                   service = "smtps";
                   entryPoints = "smtps";
-                  tls.passthrough = true;
                 };
                 imaps = {
                   rule = "HostSNI(`*`)";
                   service = "imaps";
                   entryPoints = "imaps";
-                  tls.passthrough = true;
                 };
               };
               services = {
