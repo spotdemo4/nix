@@ -25,6 +25,9 @@ in {
   "cloudflare-dns.age".publicKeys = keys.local ++ [keys.gateway];
   "traefik.age".publicKeys = keys.local ++ [keys.gateway];
 
+  # mail server
+  "mysql-roundcube.age".publicKeys = keys.local ++ [keys.mail];
+
   # media server
   "embedder-discord.age".publicKeys = keys.local ++ [keys.media];
   "embedder-instagram.age".publicKeys = keys.local ++ [keys.media];

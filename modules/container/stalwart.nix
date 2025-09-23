@@ -3,7 +3,7 @@
   self,
   ...
 }: let
-  inherit (config.virtualisation.quadlet) volumes;
+  inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
 in {
   virtualisation.quadlet = {
@@ -14,10 +14,13 @@ in {
         "${volumes.stalwart.ref}:/opt/stalwart"
       ];
       publishPorts = [
-        "25:25" # SMTP
-        "465:465" # SMTPS
-        "993:993" # IMAPS
-        "8080:8080" # HTTP
+        "25:25" # smtp
+        "465:465" # smtps
+        "993:993" # imaps
+        "8080:8080" # http
+      ];
+      networks = [
+        networks.stalwart.ref
       ];
       labels = toLabel {
         attrs = {
@@ -43,6 +46,10 @@ in {
     };
 
     volumes = {
+      stalwart = {};
+    };
+
+    networks = {
       stalwart = {};
     };
   };

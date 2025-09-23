@@ -6,6 +6,7 @@
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
       "portainer-agent"
+      "roundcube"
       "stalwart"
       "traefik-kop"
     ];

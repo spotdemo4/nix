@@ -104,16 +104,13 @@ in {
             "${volumes.traefik_acme.ref}:/etc/traefik/acme"
           ];
           publishPorts = [
-            "80:80"
-            "443:443"
-            "8080:8080" # dashboard
-            "25565:25565" # minecraft
+            "25:25" # smtp
+            "80:80" # http
+            "443:443" # https
+            "465:465" # smtps
+            "993:993" # imaps
             "32400:32400" # plex
-
-            # stalwart
-            "25:25" # SMTP
-            "465:465" # SMTPS
-            "993:993" # IMAPS
+            "25565:25565" # minecraft
           ];
           networks = [
             networks.traefik.ref
