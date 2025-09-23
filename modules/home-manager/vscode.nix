@@ -24,7 +24,6 @@
           "esbenp.prettier-vscode"
           "github.copilot-chat"
           "github.copilot"
-          "kamadorueda.alejandra"
           "mkhl.direnv"
           "svelte.svelte-vscode"
           "tamasfe.even-better-toml"
@@ -39,7 +38,6 @@
         "svelte.enable-ts-plugin" = true;
         "nix.enableLanguageServer" = true;
         "nix.serverPath" = "nixd";
-        "nix.formatterPath" = "alejandra";
 
         # https://github.com/nix-community/vscode-nix-ide/issues/482
         "nix.hiddenLanguageServerErrors" = [
