@@ -64,12 +64,21 @@
       };
       smtp = {
         address = ":25";
+        proxyProtocol.trustedIPs = [
+          "10.10.10.0/24"
+        ];
       };
       smtps = {
         address = ":465";
+        proxyProtocol.trustedIPs = [
+          "10.10.10.0/24"
+        ];
       };
       imaps = {
         address = ":993";
+        proxyProtocol.trustedIPs = [
+          "10.10.10.0/24"
+        ];
       };
     };
 
