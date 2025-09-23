@@ -11,7 +11,7 @@ in {
     default = {};
     description = "mysql container configuration";
 
-    type = types.attrsOf (types.submodule {
+    type = types.attrsOf (types.submodule (name: {
       options = {
         database = mkOption {
           type = types.str;
@@ -43,7 +43,7 @@ in {
           default = "mysql-${name}";
         };
       };
-    });
+    }));
   };
 
   config = mkIf (config.mysql != {}) {
