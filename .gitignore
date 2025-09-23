@@ -1,1 +1,6 @@
-.direnv
+/.env
+/.envrc
+
+# nix
+/result*
+/.direnv/
