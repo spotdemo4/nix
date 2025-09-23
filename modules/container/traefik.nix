@@ -62,6 +62,15 @@
       plex = {
         address = ":32400";
       };
+      smtp = {
+        address = ":25";
+      };
+      smtps = {
+        address = ":465";
+      };
+      imaps = {
+        address = ":993";
+      };
     };
 
     certificatesResolvers.letsencrypt.acme = {
@@ -100,6 +109,11 @@ in {
             "8080:8080" # dashboard
             "25565:25565" # minecraft
             "32400:32400" # plex
+
+            # stalwart
+            "25:25" # SMTP
+            "465:465" # SMTPS
+            "993:993" # IMAPS
           ];
           networks = [
             networks.traefik.ref

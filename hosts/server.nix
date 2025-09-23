@@ -152,7 +152,7 @@
     };
   };
 
-  # Allow unfree packages and add overlays
+  # Allow unfree packages
   nixpkgs = {
     config.allowUnfree = true;
   };

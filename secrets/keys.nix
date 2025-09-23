@@ -14,6 +14,7 @@ rec {
   build = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAxD3eccbwfEkahm6zLR+JIVnshwSBFO3dX3roFHndgp root@build";
   game = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHU2UCuSMdo2GYPU4R0pkPse5efZEAjOSuuf+nJYpeVd root@game";
   gateway = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGQeBo8YspGiTDH3xhIg0vTWzwIOJtk3VeE6PQ97lyu4 root@gateway";
+  mail = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEFj+we8ZcIXLF9T6aTjUa7islKnIwt7PFFDAq/Lw5eM root@mail";
   media = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIInThVD92YRSlKIxCdhqLwsGkmvRUvRQFHwOuCQEOQlh root@media";
   monitor = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBF162KlIQ0KM4MPHmSi9UEsDrVsdgiTyAdWSAOE87WE root@monitor";
   remote = [
@@ -21,6 +22,7 @@ rec {
     build
     game
     gateway
+    mail
     media
     monitor
   ];
