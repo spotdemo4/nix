@@ -30,15 +30,15 @@ in {
               routers = {
                 smtp = {
                   rule = "HostSNI(`*`)";
-                  entryPoints = "smtp";
+                  service = "smtp";
                 };
                 smtps = {
                   rule = "HostSNI(`*`)";
-                  entryPoints = "smtps";
+                  service = "smtps";
                 };
                 imaps = {
                   rule = "HostSNI(`*`)";
-                  entryPoints = "imaps";
+                  service = "imaps";
                 };
               };
               services = {
