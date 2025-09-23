@@ -11,7 +11,7 @@ in {
     default = {};
     description = "Gluetun container configurations";
 
-    type = types.attrsOf (types.submodule {
+    type = types.attrsOf (types.submodule ({name, ...}: {
       options = {
         ports = mkOption {
           type = types.listOf types.str;
@@ -46,8 +46,14 @@ in {
             Wireguard private key secret
           '';
         };
+
+        ref = mkOption {
+          type = types.str;
+          description = "Reference name for the mysql container";
+          default = "gluetun-${name}";
+        };
       };
-    });
+    }));
   };
 
   config = mkIf (config.gluetun != {}) {

@@ -4,7 +4,8 @@
   pkgs,
   ...
 }: let
-  inherit (config.virtualisation.quadlet) networks volumes;
+  inherit (config.virtualisation.quadlet) containers networks volumes;
+  inherit (config) gluetun;
   toLabel = import (self + /modules/util/label);
 in {
   imports = [./gluetun.nix];
@@ -44,11 +45,11 @@ in {
             DOCKER_MODS = "ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest";
           };
           volumes = [
-            "${volumes.qbittorrent.ref}:/config"
+            "${volumes."qbittorrent".ref}:/config"
             "/mnt/pool/download/qbittorrent:/pool/download/qbittorrent"
           ];
           networks = [
-            "container:gluetun-qbittorrent"
+            "container:${gluetun."qbittorrent".ref}"
           ];
           labels = toLabel {
             attrs = {
@@ -64,9 +65,9 @@ in {
         };
 
         unitConfig = {
-          After = "gluetun-qbittorrent.service";
-          BindsTo = "gluetun-qbittorrent.service";
-          ReloadPropagatedFrom = "gluetun-qbittorrent.service";
+          After = containers."gluetun-qbittorrent".ref;
+          BindsTo = containers."gluetun-qbittorrent".ref;
+          ReloadPropagatedFrom = containers."gluetun-qbittorrent".ref;
         };
       };
 
@@ -88,14 +89,14 @@ in {
             "${volumes."gluetun-qbittorrent".ref}:/tmp/gluetun"
           ];
           networks = [
-            "container:gluetun-qbittorrent"
+            "container:${gluetun."qbittorrent".ref}"
           ];
         };
 
         unitConfig = {
-          After = "gluetun-qbittorrent.service";
-          BindsTo = "gluetun-qbittorrent.service";
-          ReloadPropagatedFrom = "gluetun-qbittorrent.service";
+          After = containers."gluetun-qbittorrent".ref;
+          BindsTo = containers."gluetun-qbittorrent".ref;
+          ReloadPropagatedFrom = containers."gluetun-qbittorrent".ref;
         };
       };
 

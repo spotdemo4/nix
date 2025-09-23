@@ -47,7 +47,7 @@ in {
             "${volumes."roundcube".ref}:/var/www/html"
           ];
           publishPorts = [
-            "8080"
+            "80"
           ];
           networks = [
             networks."stalwart".ref

@@ -26,9 +26,26 @@ in {
         attrs = {
           traefik = {
             enable = true;
-            tcp.routers.stalwart = {
-              rule = "HostSNI(`*`)";
-              entryPoints = "smtp,smtps,imaps";
+            tcp = {
+              routers = {
+                smtp = {
+                  rule = "HostSNI(`*`)";
+                  entryPoints = "smtp";
+                };
+                smtps = {
+                  rule = "HostSNI(`*`)";
+                  entryPoints = "smtps";
+                };
+                imaps = {
+                  rule = "HostSNI(`*`)";
+                  entryPoints = "imaps";
+                };
+              };
+              services = {
+                smtp.loadbalancer.server.port = 25;
+                smtps.loadbalancer.server.port = 465;
+                imaps.loadbalancer.server.port = 993;
+              };
             };
             http = {
               routers.stalwart = {
