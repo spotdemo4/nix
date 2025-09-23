@@ -35,7 +35,7 @@ in {
             ROUNDCUBEMAIL_SMTP_PORT = "25";
 
             ROUNDCUBEMAIL_DB_TYPE = "mysql";
-            ROUNDCUBEMAIL_DB_HOST = containers."mysql-roundcube".name;
+            ROUNDCUBEMAIL_DB_HOST = mysql."roundcube".ref;
             ROUNDCUBEMAIL_DB_PORT = "3306";
             ROUNDCUBEMAIL_DB_NAME = mysql."roundcube".database;
             ROUNDCUBEMAIL_DB_USER = mysql."roundcube".username;
