@@ -15,6 +15,7 @@ in {
       ];
       publishPorts = [
         "25:25" # smtp
+        "443:443" # https
         "465:465" # smtps
         "993:993" # imaps
         "8080:8080" # http
@@ -33,21 +34,42 @@ in {
                   service = "smtp";
                   entryPoints = "smtp";
                 };
+                jmap = {
+                  rule = "HostSNI(`*`)";
+                  service = "jmap";
+                  entryPoints = "https";
+                  tls.passthrough = true;
+                };
                 smtps = {
                   rule = "HostSNI(`*`)";
                   service = "smtps";
                   entryPoints = "smtps";
+                  tls.passthrough = true;
                 };
                 imaps = {
                   rule = "HostSNI(`*`)";
                   service = "imaps";
                   entryPoints = "imaps";
+                  tls.passthrough = true;
                 };
               };
               services = {
-                smtp.loadbalancer.server.port = 25;
-                smtps.loadbalancer.server.port = 465;
-                imaps.loadbalancer.server.port = 993;
+                smtp.loadbalancer.server = {
+                  port = 25;
+                  proxyProtocol.version = 2;
+                };
+                jmap.loadbalancer.server = {
+                  port = 443;
+                  proxyProtocol.version = 2;
+                };
+                smtps.loadbalancer.server = {
+                  port = 465;
+                  proxyProtocol.version = 2;
+                };
+                imaps.loadbalancer.server = {
+                  port = 993;
+                  proxyProtocol.version = 2;
+                };
               };
             };
             http = {
