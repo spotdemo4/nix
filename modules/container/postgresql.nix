@@ -23,12 +23,12 @@ in {
         };
 
         password = mkOption {
-          type = types.str;
+          type = types.nullOr types.str;
           default = null;
         };
 
         passwordSecret = mkOption {
-          type = types.submodule (import (self + /modules/util/secrets/secret.nix));
+          type = types.nullOr types.submodule (import (self + /modules/util/secrets/secret.nix));
           default = null;
         };
 
