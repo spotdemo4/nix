@@ -31,6 +31,7 @@
     entryPoints = {
       http = {
         address = ":80";
+        http3 = {};
         http.redirections.entryPoint = {
           to = "https";
           scheme = "https";
@@ -39,6 +40,7 @@
       https = {
         address = ":443";
         AsDefault = true;
+        http3 = {};
         http.tls = {
           certResolver = "letsencrypt";
           domains = [
@@ -58,6 +60,7 @@
         };
         forwardedHeaders.trustedIPs = [
           "10.10.10.0/24"
+          "10.99.99.99"
         ];
       };
       minecraft = {
@@ -70,18 +73,21 @@
         address = ":25";
         proxyProtocol.trustedIPs = [
           "10.10.10.0/24"
+          "10.99.99.99"
         ];
       };
       smtps = {
         address = ":465";
         proxyProtocol.trustedIPs = [
           "10.10.10.0/24"
+          "10.99.99.99"
         ];
       };
       imaps = {
         address = ":993";
         proxyProtocol.trustedIPs = [
           "10.10.10.0/24"
+          "10.99.99.99"
         ];
       };
     };
@@ -128,6 +134,7 @@ in {
           networks = [
             networks."traefik".ref
           ];
+          ip = "10.99.99.99";
           labels = toLabel {
             attrs.traefik = {
               enable = true;
@@ -267,7 +274,11 @@ in {
     };
 
     networks = {
-      traefik = {};
+      traefik = {
+        networkConfig.subnets = [
+          "10.99.99.0/24"
+        ];
+      };
     };
   };
 }
