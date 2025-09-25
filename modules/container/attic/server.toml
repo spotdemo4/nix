@@ -45,7 +45,7 @@ api-endpoint = "https://cache.trev.zip/"
 # Connection URL
 #
 # For production use it's recommended to use PostgreSQL.
-url = "postgresql://@pgUser@@pgPass@@@pgHost@/@pgDb@?sslmode=disable"
+url = "postgresql://@pgUser@:@pgPass@@@pgHost@/@pgDb@?sslmode=disable"
 
 # Whether to enable sending on periodic heartbeat queries
 #
