@@ -4,13 +4,13 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.trev.zip/nixos"
-      "https://trevnur.cachix.org"
+      "https://cache.trev.zip/nur"
       "https://hyprland.cachix.org"
       "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
       "nixos:R56gtFH8Cr5LvWXXP9x9Lcc0F7RJ3bChGoJV0jqZDL0="
-      "trevnur.cachix.org-1:hBd15IdszwT52aOxdKs5vNTbq36emvEeGqpb25Bkq6o="
+      "nur:DoXGy0SJ+5udhvZgtzwEXhQMuOCFN7FSXRmtiZhF1Vw="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];

@@ -2,7 +2,7 @@ name: "init"
 description: "initialize nix"
 inputs:
   attic_token:
-    description: "cachix token"
+    description: "attic token"
     required: true
 runs:
   using: "composite"
