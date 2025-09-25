@@ -264,7 +264,10 @@ in {
     };
 
     volumes = {
-      traefik_acme = {};
+      traefik_acme.volumeConfig = {
+        user = "1000";
+        group = "1000";
+      };
     };
 
     networks = {
