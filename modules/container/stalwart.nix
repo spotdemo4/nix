@@ -75,8 +75,7 @@ in {
             };
             http = {
               routers.stalwart = {
-                rule = "HostRegexp(`mail.trev.(zip|kiwi)`)";
-                middlewares = "auth-github@docker";
+                rule = "HostRegexp(`mail.trev.(zip|kiwi)`) || Host(`autodiscover.trev.(zip|kiwi)`) || Host(`autoconfig.trev.(zip|kiwi)`) || Host(`mta-sts.trev.(zip|kiwi)`)";
               };
               services.stalwart.loadbalancer.server = {
                 scheme = "http";
