@@ -153,7 +153,7 @@ interval = "12 hours"
 # contains at least one of these values.
 #token-bound-audiences = ["some-audience1", "some-audience2"]
 
-[jwt.signing]
+#[jwt.signing]
 # JWT RS256 secret key
 #
 # Set this to the base64-encoded private half of an RSA PEM PKCS1 key.
