@@ -52,7 +52,7 @@ in {
           containerConfig = {
             image = "docker.io/postgres:17.6-alpine@sha256:855021a5b10954343902a8c22a15f8464233126c1d12d9ad84d4a14c5af07a80";
             pull = "missing";
-            healthCmd = "pg_isready";
+            healthCmd = "pg_isready -U ${opts.username} -d ${opts.database}";
             notify = "healthy";
             volumes = [
               "${volumes."postgresql-${name}".ref}:/var/lib/postgresql"
