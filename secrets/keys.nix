@@ -21,6 +21,7 @@ rec {
   remote = [
     ai
     build
+    files
     game
     gateway
     mail
