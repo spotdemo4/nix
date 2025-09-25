@@ -56,19 +56,19 @@ in {
             services = {
               smtp.loadbalancer = {
                 server.port = 25;
-                serverstransport = "smtp@file";
+                serverstransports = "smtp@file";
               };
               jmap.loadbalancer = {
                 server.port = 443;
-                serverstransport = "jmap@file";
+                serverstransports = "jmap@file";
               };
               smtps.loadbalancer = {
                 server.port = 465;
-                serverstransport = "smtps@file";
+                serverstransports = "smtps@file";
               };
               imaps.loadbalancer = {
                 server.port = 993;
-                serverstransport = "imaps@file";
+                serverstransports = "imaps@file";
               };
             };
           };
