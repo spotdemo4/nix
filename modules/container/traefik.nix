@@ -255,7 +255,7 @@ in {
         user = "1000";
         group = "1000";
         volumes = [
-          "${volumes.traefik_acme.ref}:/traefik:ro"
+          "${volumes.traefik_acme.ref}:/traefik"
           "/mnt/certs:/output"
         ];
       };
