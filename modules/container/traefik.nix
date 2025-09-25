@@ -92,13 +92,6 @@
       };
     };
 
-    tcp.serversTransports = {
-      smtp.proxyProtocol.version = 2;
-      jmap.proxyProtocol.version = 2;
-      smtps.proxyProtocol.version = 2;
-      imaps.proxyProtocol.version = 2;
-    };
-
     certificatesResolvers.letsencrypt.acme = {
       email = "me@trev.xyz";
       storage = "/etc/traefik/acme/acme.json";
