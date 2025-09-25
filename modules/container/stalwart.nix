@@ -25,68 +25,60 @@ in {
         networks.stalwart.ref
       ];
       labels = toLabel {
-        attrs = {
-          traefik = {
-            enable = true;
-            tcp = {
-              routers = {
-                smtp = {
-                  rule = "HostSNI(`*`)";
-                  service = "smtp";
-                  entryPoints = "smtp";
-                };
-                jmap = {
-                  rule = "HostSNI(`*`)";
-                  service = "jmap";
-                  entryPoints = "https";
-                  tls.passthrough = true;
-                };
-                smtps = {
-                  rule = "HostSNI(`*`)";
-                  service = "smtps";
-                  entryPoints = "smtps";
-                  tls.passthrough = true;
-                };
-                imaps = {
-                  rule = "HostSNI(`*`)";
-                  service = "imaps";
-                  entryPoints = "imaps";
-                  tls.passthrough = true;
-                };
+        attrs.traefik = {
+          enable = true;
+          tcp = {
+            routers = {
+              smtp = {
+                rule = "HostSNI(`*`)";
+                service = "smtp";
+                entryPoints = "smtp";
               };
-              services = {
-                smtp.loadbalancer = {
-                  server.port = 25;
-                  serversTransport = "smtp";
-                };
-                jmap.loadbalancer = {
-                  server.port = 443;
-                  serversTransport = "jmap";
-                };
-                smtps.loadbalancer = {
-                  server.port = 465;
-                  serversTransport = "smtps";
-                };
-                imaps.loadbalancer = {
-                  server.port = 993;
-                  serversTransport = "imaps";
-                };
+              jmap = {
+                rule = "HostSNI(`*`)";
+                service = "jmap";
+                entryPoints = "https";
+                tls.passthrough = true;
               };
-              serversTransport = {
-                smtp.proxyProtocol.version = 2;
-                jmap.proxyProtocol.version = 2;
-                smtps.proxyProtocol.version = 2;
-                imaps.proxyProtocol.version = 2;
+              smtps = {
+                rule = "HostSNI(`*`)";
+                service = "smtps";
+                entryPoints = "smtps";
+                tls.passthrough = true;
+              };
+              imaps = {
+                rule = "HostSNI(`*`)";
+                service = "imaps";
+                entryPoints = "imaps";
+                tls.passthrough = true;
               };
             };
-            http = {
-              routers.stalwart = {
-                rule = "HostRegexp(`mail.trev.(zip|kiwi)`) || HostRegexp(`autodiscover.trev.(zip|kiwi)`) || HostRegexp(`autoconfig.trev.(zip|kiwi)`) || HostRegexp(`mta-sts.trev.(zip|kiwi)`)";
+            services = {
+              smtp.loadbalancer = {
+                server.port = 25;
+                serverstransport = "smtp";
               };
-              services.stalwart.loadbalancer.server = {
-                scheme = "http";
-                port = 8080;
+              jmap.loadbalancer = {
+                server.port = 443;
+                serverstransport = "jmap";
               };
+              smtps.loadbalancer = {
+                server.port = 465;
+                serverstransport = "smtps";
+              };
+              imaps.loadbalancer = {
+                server.port = 993;
+                serverstransport = "imaps";
+              };
+            };
+          };
+          http = {
+            routers.stalwart = {
+              rule = "HostRegexp(`mail.trev.(zip|kiwi)`) || HostRegexp(`autodiscover.trev.(zip|kiwi)`) || HostRegexp(`autoconfig.trev.(zip|kiwi)`) || HostRegexp(`mta-sts.trev.(zip|kiwi)`)";
+            };
+            services.stalwart.loadbalancer.server = {
+              scheme = "http";
+              port = 8080;
             };
           };
         };
