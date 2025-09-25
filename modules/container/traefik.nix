@@ -263,7 +263,6 @@ in {
 
     volumes = {
       traefik_acme = {};
-      traefik_certs = {};
     };
 
     networks = {

@@ -14,6 +14,9 @@ in {
   "gitea.age".publicKeys = keys.local ++ [keys.build];
   "github-runner.age".publicKeys = keys.local ++ [keys.build];
 
+  # file server
+  "attic.age".publicKeys = keys.local ++ [keys.files];
+
   # game server
   "curseforge.age".publicKeys = keys.local ++ [keys.game];
   "whiteout.age".publicKeys = keys.local ++ [keys.game];

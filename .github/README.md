@@ -5,6 +5,8 @@
 [![nixos-unstable](https://img.shields.io/badge/nixos-unstable-%23313244?logo=nixos&logoColor=%2389dceb&labelColor=%2311111b)](https://nixos.org/)
 [![cachix](https://img.shields.io/badge/cachix-trix-%23313244?logo=nixos&logoColor=%2389dceb&labelColor=%2311111b)](https://trix.cachix.org)
 
+not really meant for public use except as a reference
+
 ## Install on NixOS
 
 ```bash
@@ -15,3 +17,10 @@ bash -s (host | server)
 
 [hosts](/hosts)
 [servers](/servers)
+
+## Bookmarks
+
+- [nixos manual](https://nixos.org/manual/nixos/unstable/)
+- [quadlet-nix](https://seiarotg.github.io/quadlet-nix/)
+- [systemd.unit](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html)
+- [podman-systemd.unit](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html)

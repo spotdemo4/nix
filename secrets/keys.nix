@@ -12,6 +12,7 @@ rec {
   # Keys for servers
   ai = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIipGzt2u19Aon2qZaw8aVG1+ZRevX5t2LrpQBwt/WCG root@ai";
   build = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAxD3eccbwfEkahm6zLR+JIVnshwSBFO3dX3roFHndgp root@build";
+  files = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE+Y5auXXHIgssGrfbUWRhtseilFnhHxsC8/s8AI+Uw7 root@files";
   game = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHU2UCuSMdo2GYPU4R0pkPse5efZEAjOSuuf+nJYpeVd root@game";
   gateway = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGQeBo8YspGiTDH3xhIg0vTWzwIOJtk3VeE6PQ97lyu4 root@gateway";
   mail = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDmShUk0TcJB2JYDTYCDDFWOoSNfvPd2Ulxq083iFNqy root@mail";
