@@ -43,6 +43,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Hyprland
+    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
+
     # Nix vscode extensions
     nix4vscode = {
       url = "github:nix-community/nix4vscode";
@@ -55,22 +62,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Quadlet-nix
+    quadlet-nix.url = "github:SEIAROTg/quadlet-nix";
+
     # Trevbar
     trevbar = {
       url = "github:spotdemo4/trevbar";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.nur.follows = "nur";
     };
-
-    # Hyprland
-    hyprland.url = "github:hyprwm/Hyprland";
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-      inputs.hyprland.follows = "hyprland";
-    };
-
-    # Quadlet-nix
-    quadlet-nix.url = "github:SEIAROTg/quadlet-nix";
   };
 
   outputs = {

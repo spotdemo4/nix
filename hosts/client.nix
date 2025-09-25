@@ -51,6 +51,7 @@
     # CLI
     alejandra
     android-tools
+    attic-client
     claude-code
     fastfetch
     ffmpeg
