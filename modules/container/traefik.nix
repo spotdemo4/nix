@@ -247,7 +247,9 @@ in {
       traefik-certs-dumper.containerConfig = {
         image = "ghcr.io/kereis/traefik-certs-dumper:1.8.10@sha256:c5bbc45fb631c70ff15f3dd2fde8486902d28e933c40cbbdd7988a4c9d4b84eb";
         pull = "missing";
-        userns = "keep-id:uid=1000,gid=1000";
+        addCapabilities = [
+          "CAP_DAC_OVERRIDE"
+        ];
         volumes = [
           "${volumes."traefik_acme".ref}:/traefik"
           "/mnt/certs:/output"
@@ -256,7 +258,7 @@ in {
     };
 
     volumes = {
-      traefik_acme = {}; # need to chmod o+rw acme.json
+      traefik_acme = {};
     };
 
     networks = {
