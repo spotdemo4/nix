@@ -61,6 +61,8 @@
         forwardedHeaders.trustedIPs = [
           "10.10.10.0/24"
           "10.99.99.99"
+          "10.99.99.99"
+          "10.99.99.98"
         ];
       };
       minecraft = {
@@ -74,6 +76,7 @@
         proxyProtocol.trustedIPs = [
           "10.10.10.0/24"
           "10.99.99.99"
+          "10.99.99.98"
         ];
       };
       smtps = {
@@ -81,6 +84,7 @@
         proxyProtocol.trustedIPs = [
           "10.10.10.0/24"
           "10.99.99.99"
+          "10.99.99.98"
         ];
       };
       imaps = {
@@ -88,6 +92,7 @@
         proxyProtocol.trustedIPs = [
           "10.10.10.0/24"
           "10.99.99.99"
+          "10.99.99.98"
         ];
       };
     };
@@ -97,6 +102,8 @@
       storage = "/etc/traefik/acme/acme.json";
       dnsChallenge.provider = "cloudflare";
     };
+
+    tls.options.default.minVersion = "VersionTLS12";
   };
 in {
   secrets = {

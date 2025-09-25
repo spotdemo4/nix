@@ -24,6 +24,7 @@ in {
       networks = [
         networks.stalwart.ref
       ];
+      ip = "10.99.98.98";
       labels = toLabel {
         attrs.traefik = {
           enable = true;
@@ -74,10 +75,11 @@ in {
           };
           http = {
             routers.stalwart = {
-              rule = "HostRegexp(`mail.trev.(zip|kiwi)`) || HostRegexp(`autodiscover.trev.(zip|kiwi)`) || HostRegexp(`autoconfig.trev.(zip|kiwi)`) || HostRegexp(`mta-sts.trev.(zip|kiwi)`)";
+              rule = "Host(`mail.trev.kiwi`) || Host(`mail.trev.zip`) || HostRegexp(`autodiscover.trev.(zip|kiwi)`) || HostRegexp(`autoconfig.trev.(zip|kiwi)`) || HostRegexp(`mta-sts.trev.(zip|kiwi)`)";
+              entrypoints = "https";
+              service = "stalwart";
             };
             services.stalwart.loadbalancer.server = {
-              scheme = "http";
               port = 8080;
             };
           };
@@ -90,7 +92,11 @@ in {
     };
 
     networks = {
-      stalwart = {};
+      stalwart = {
+        networkConfig.subnets = [
+          "10.98.98.0/24"
+        ];
+      };
     };
   };
 }
