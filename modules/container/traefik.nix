@@ -103,6 +103,8 @@ in {
         containerConfig = {
           image = "docker.io/traefik:v3.5.2@sha256:f0abbbd11ced29754d4d188c29e9320b613481ec162b6ea5d3a8b6bdd8e5fa54";
           pull = "missing";
+          user = "1000";
+          group = "1000";
           secrets = [
             "${config.secrets."traefik".mount},target=/conf/secret.yml"
             "${config.secrets."cloudflare-dns".env},target=CF_DNS_API_TOKEN"
@@ -252,9 +254,8 @@ in {
       traefik-certs-dumper.containerConfig = {
         image = "ghcr.io/kereis/traefik-certs-dumper:1.8.10@sha256:c5bbc45fb631c70ff15f3dd2fde8486902d28e933c40cbbdd7988a4c9d4b84eb";
         pull = "missing";
-        addGroups = [
-          "1000"
-        ];
+        user = "1000";
+        group = "1000";
         volumes = [
           "${volumes.traefik_acme.ref}:/traefik"
           "/mnt/certs:/output"
