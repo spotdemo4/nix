@@ -56,6 +56,9 @@
             }
           ];
         };
+        forwardedHeaders.trustedIPs = [
+          "10.10.10.0/24"
+        ];
       };
       minecraft = {
         address = ":25565";
