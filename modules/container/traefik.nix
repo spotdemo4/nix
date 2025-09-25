@@ -249,7 +249,7 @@ in {
         pull = "missing";
         volumes = [
           "${volumes."traefik_acme".ref}:/traefik"
-          "/mnt/certs:/output:idmap"
+          "/mnt/certs:/output:idmap=uids=1-1000-1;gids=1-1000-1"
         ];
       };
     };
