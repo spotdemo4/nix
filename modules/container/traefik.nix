@@ -123,17 +123,15 @@ in {
             "25565:25565" # minecraft
           ];
           networks = [
-            networks.traefik.ref
+            networks."traefik".ref
           ];
           labels = toLabel {
-            attrs = {
-              traefik = {
-                enable = true;
-                http.routers.api = {
-                  rule = "HostRegexp(`traefik.trev.(zip|kiwi)`)";
-                  service = "api@internal";
-                  middlewares = "auth-github@docker";
-                };
+            attrs.traefik = {
+              enable = true;
+              http.routers.api = {
+                rule = "HostRegexp(`traefik.trev.(zip|kiwi)`)";
+                service = "api@internal";
+                middlewares = "auth-github@docker";
               };
             };
           };
@@ -156,7 +154,7 @@ in {
           "6379:6379"
         ];
         networks = [
-          networks.traefik.ref
+          networks."traefik".ref
         ];
       };
 
@@ -178,26 +176,24 @@ in {
           "${secrets."auth-cookie".env},target=TFA_TOKENSIGNINGKEY"
         ];
         networks = [
-          networks.traefik.ref
+          networks."traefik".ref
         ];
         labels = toLabel {
-          attrs = {
-            traefik = {
-              enable = true;
-              http = {
-                routers.traefik-auth-github = {
-                  rule = "HostRegexp(`auth-github.trev.(zip|kiwi)`)";
-                  priority = 500;
-                };
-                services.traefik-auth-github.loadbalancer.server = {
-                  scheme = "http";
-                  port = 4181;
-                };
-                middlewares.auth-github.forwardauth = {
-                  address = "http://traefik-auth-github:4181";
-                  trustForwardHeader = true;
-                  authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
-                };
+          attrs.traefik = {
+            enable = true;
+            http = {
+              routers.traefik-auth-github = {
+                rule = "HostRegexp(`auth-github.trev.(zip|kiwi)`)";
+                priority = 500;
+              };
+              services.traefik-auth-github.loadbalancer.server = {
+                scheme = "http";
+                port = 4181;
+              };
+              middlewares.auth-github.forwardauth = {
+                address = "http://traefik-auth-github:4181";
+                trustForwardHeader = true;
+                authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
               };
             };
           };
@@ -224,26 +220,24 @@ in {
           "${secrets."auth-cookie".env},target=TFA_TOKENSIGNINGKEY"
         ];
         networks = [
-          networks.traefik.ref
+          networks."traefik".ref
         ];
         labels = toLabel {
-          attrs = {
-            traefik = {
-              enable = true;
-              http = {
-                routers.traefik-auth-plex = {
-                  rule = "HostRegexp(`auth-plex.trev.(zip|kiwi)`)";
-                  priority = 500;
-                };
-                services.traefik-auth-plex.loadbalancer.server = {
-                  scheme = "http";
-                  port = 4181;
-                };
-                middlewares.auth-plex.forwardauth = {
-                  address = "http://traefik-auth-plex:4181";
-                  trustForwardHeader = true;
-                  authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
-                };
+          attrs.traefik = {
+            enable = true;
+            http = {
+              routers.traefik-auth-plex = {
+                rule = "HostRegexp(`auth-plex.trev.(zip|kiwi)`)";
+                priority = 500;
+              };
+              services.traefik-auth-plex.loadbalancer.server = {
+                scheme = "http";
+                port = 4181;
+              };
+              middlewares.auth-plex.forwardauth = {
+                address = "http://traefik-auth-plex:4181";
+                trustForwardHeader = true;
+                authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
               };
             };
           };
@@ -253,12 +247,9 @@ in {
       traefik-certs-dumper.containerConfig = {
         image = "ghcr.io/kereis/traefik-certs-dumper:1.8.10@sha256:c5bbc45fb631c70ff15f3dd2fde8486902d28e933c40cbbdd7988a4c9d4b84eb";
         pull = "missing";
-        addGroups = [
-          "keep-groups"
-        ];
         volumes = [
           "${volumes."traefik_acme".ref}:/traefik"
-          "/mnt/certs:/output"
+          "/mnt/certs:/output:idmap"
         ];
       };
     };
