@@ -75,7 +75,7 @@ in {
             };
             http = {
               routers.stalwart = {
-                rule = "HostRegexp(`mail.trev.(zip|kiwi)`) || Host(`autodiscover.trev.(zip|kiwi)`) || Host(`autoconfig.trev.(zip|kiwi)`) || Host(`mta-sts.trev.(zip|kiwi)`)";
+                rule = "HostRegexp(`mail.trev.(zip|kiwi)`) || HostRegexp(`autodiscover.trev.(zip|kiwi)`) || HostRegexp(`autoconfig.trev.(zip|kiwi)`) || HostRegexp(`mta-sts.trev.(zip|kiwi)`)";
               };
               services.stalwart.loadbalancer.server = {
                 scheme = "http";
