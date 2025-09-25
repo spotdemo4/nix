@@ -32,6 +32,7 @@ while getopts 'dwr' flag; do
 done
 
 FIRST_RUN=true
+RETRY_COUNT=0
 while true; do
     if [ "$FIRST_RUN" = false ]; then
         REBUILD=false
@@ -60,6 +61,10 @@ while true; do
     LOCAL_CHANGES=false
     if [ -n "$(git status --porcelain)" ]; then
         LOCAL_CHANGES=true
+        REBUILD=true
+    fi
+
+    if [ "$RETRY_COUNT" -ge 1 ]; then
         REBUILD=true
     fi
 
@@ -97,8 +102,17 @@ while true; do
     gprint "Updating"
     if ! nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
         bprint "Update failed"
+
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+        if [ "$RETRY_COUNT" -ge 3 ]; then
+            bprint "Update failed 3 times, not retrying again"
+            RETRY_COUNT=0
+        fi
+
         continue
     fi
+    
+    RETRY_COUNT=0
 
     gprint "Update finished"
 done
