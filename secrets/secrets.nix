@@ -48,4 +48,5 @@ in {
   "continue.age".publicKeys = keys.local;
   "gpg.age".publicKeys = keys.local;
   "mods.age".publicKeys = keys.local;
+  "attic-trev.age".publicKeys = keys.local;
 }

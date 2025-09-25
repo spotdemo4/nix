@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: spotdemo4/nix/.github/actions/init@main
         with:
-          cachix_token: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          attic_token: ${{ secrets.ATTIC_TOKEN }}
 
       - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
         with:

@@ -14,6 +14,6 @@ jobs:
     steps:
       - uses: spotdemo4/nix/.github/actions/init@main
         with:
-          cachix_token: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          attic_token: ${{ secrets.ATTIC_TOKEN }}
 
-      - run: nix flake check -L --accept-flake-config
+      - run: nix flake check --accept-flake-config
