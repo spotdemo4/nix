@@ -126,6 +126,9 @@ in {
           networks = [
             networks.traefik.ref
           ];
+          addCapabilities = [
+            "CAP_NET_BIND_SERVICE"
+          ];
           labels = toLabel {
             attrs = {
               traefik = {
