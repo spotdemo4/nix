@@ -124,6 +124,12 @@
           keys = nixKeys.local;
         };
       };
+
+      root = {
+        extraGroups = [
+          "trev"
+        ];
+      };
     };
   };
 

@@ -5,6 +5,7 @@
   ...
 }: let
   inherit (config.virtualisation.quadlet) networks volumes;
+  inherit (config) secrets;
   toLabel = import (self + /modules/util/label);
 
   configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
@@ -103,16 +104,14 @@ in {
         containerConfig = {
           image = "docker.io/traefik:v3.5.2@sha256:f0abbbd11ced29754d4d188c29e9320b613481ec162b6ea5d3a8b6bdd8e5fa54";
           pull = "missing";
-          user = "1000";
-          group = "1000";
           secrets = [
-            "${config.secrets."traefik".mount},target=/conf/secret.yml"
-            "${config.secrets."cloudflare-dns".env},target=CF_DNS_API_TOKEN"
+            "${secrets."traefik".mount},target=/conf/secret.yml"
+            "${secrets."cloudflare-dns".env},target=CF_DNS_API_TOKEN"
           ];
           volumes = [
             "/run/podman/podman.sock:/var/run/docker.sock"
             "${configFile}:/etc/traefik/traefik.yml"
-            "${volumes.traefik_acme.ref}:/etc/traefik/acme"
+            "${volumes."traefik_acme".ref}:/etc/traefik/acme"
           ];
           publishPorts = [
             "25:25" # smtp
@@ -125,9 +124,6 @@ in {
           ];
           networks = [
             networks.traefik.ref
-          ];
-          addCapabilities = [
-            "CAP_NET_BIND_SERVICE"
           ];
           labels = toLabel {
             attrs = {
@@ -178,8 +174,8 @@ in {
           TFA_AUTHGITHUB_ALLOWEDUSERS = "spotdemo4";
         };
         secrets = [
-          "${config.secrets."auth-github".env},target=TFA_AUTHGITHUB_CLIENTSECRET"
-          "${config.secrets."auth-cookie".env},target=TFA_TOKENSIGNINGKEY"
+          "${secrets."auth-github".env},target=TFA_AUTHGITHUB_CLIENTSECRET"
+          "${secrets."auth-cookie".env},target=TFA_TOKENSIGNINGKEY"
         ];
         networks = [
           networks.traefik.ref
@@ -224,8 +220,8 @@ in {
           TFA_AUTHPLEX_ALLOWEDUSERS = "spotdemo4";
         };
         secrets = [
-          "${config.secrets."auth-plex".env},target=TFA_AUTHPLEX_TOKEN"
-          "${config.secrets."auth-cookie".env},target=TFA_TOKENSIGNINGKEY"
+          "${secrets."auth-plex".env},target=TFA_AUTHPLEX_TOKEN"
+          "${secrets."auth-cookie".env},target=TFA_TOKENSIGNINGKEY"
         ];
         networks = [
           networks.traefik.ref
@@ -257,20 +253,18 @@ in {
       traefik-certs-dumper.containerConfig = {
         image = "ghcr.io/kereis/traefik-certs-dumper:1.8.10@sha256:c5bbc45fb631c70ff15f3dd2fde8486902d28e933c40cbbdd7988a4c9d4b84eb";
         pull = "missing";
-        user = "1000";
-        group = "1000";
+        addGroups = [
+          "keep-groups"
+        ];
         volumes = [
-          "${volumes.traefik_acme.ref}:/traefik"
+          "${volumes."traefik_acme".ref}:/traefik"
           "/mnt/certs:/output"
         ];
       };
     };
 
     volumes = {
-      traefik_acme.volumeConfig = {
-        user = "1000";
-        group = "1000";
-      };
+      traefik_acme = {};
     };
 
     networks = {
