@@ -24,7 +24,7 @@ in {
       networks = [
         networks.stalwart.ref
       ];
-      ip = "10.99.98.98";
+      ip = "10.98.98.98";
       labels = toLabel {
         attrs.traefik = {
           enable = true;
