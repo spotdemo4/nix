@@ -58,41 +58,12 @@
             }
           ];
         };
-        forwardedHeaders.trustedIPs = [
-          "10.10.10.0/24"
-          "10.99.99.99"
-          "10.98.98.98"
-        ];
       };
       minecraft = {
         address = ":25565";
       };
       plex = {
         address = ":32400";
-      };
-      smtp = {
-        address = ":25";
-        proxyProtocol.trustedIPs = [
-          "10.10.10.0/24"
-          "10.99.99.99"
-          "10.98.98.98"
-        ];
-      };
-      smtps = {
-        address = ":465";
-        proxyProtocol.trustedIPs = [
-          "10.10.10.0/24"
-          "10.99.99.99"
-          "10.98.98.98"
-        ];
-      };
-      imaps = {
-        address = ":993";
-        proxyProtocol.trustedIPs = [
-          "10.10.10.0/24"
-          "10.99.99.99"
-          "10.98.98.98"
-        ];
       };
     };
 
@@ -129,18 +100,14 @@ in {
             "${volumes."traefik_acme".ref}:/etc/traefik/acme"
           ];
           publishPorts = [
-            "25:25" # smtp
             "80:80" # http
             "443:443" # https
-            "465:465" # smtps
-            "993:993" # imaps
             "32400:32400" # plex
             "25565:25565" # minecraft
           ];
           networks = [
             networks."traefik".ref
           ];
-          ip = "10.99.99.99";
           labels = toLabel {
             attrs.traefik = {
               enable = true;
@@ -259,20 +226,6 @@ in {
           };
         };
       };
-
-      traefik-certs-dumper.containerConfig = {
-        image = "ghcr.io/kereis/traefik-certs-dumper:1.8.10@sha256:c5bbc45fb631c70ff15f3dd2fde8486902d28e933c40cbbdd7988a4c9d4b84eb";
-        pull = "missing";
-        user = "1000";
-        group = "1000";
-        addCapabilities = [
-          "CAP_DAC_OVERRIDE"
-        ];
-        volumes = [
-          "${volumes."traefik_acme".ref}:/traefik"
-          "/mnt/certs:/output"
-        ];
-      };
     };
 
     volumes = {
@@ -280,11 +233,7 @@ in {
     };
 
     networks = {
-      traefik = {
-        networkConfig.subnets = [
-          "10.99.99.0/24"
-        ];
-      };
+      traefik = {};
     };
   };
 }

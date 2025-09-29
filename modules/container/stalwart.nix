@@ -12,7 +12,6 @@ in {
       pull = "missing";
       volumes = [
         "${volumes.stalwart.ref}:/opt/stalwart"
-        "/mnt/certs:/data/certs:ro"
       ];
       publishPorts = [
         "25:25" # smtp
@@ -22,61 +21,14 @@ in {
         "8080:8080" # http
       ];
       networks = [
-        networks.stalwart.ref
+        networks."stalwart".ref
       ];
-      ip = "10.98.98.98";
       labels = toLabel {
         attrs.traefik = {
           enable = true;
-          tcp = {
-            routers = {
-              smtp = {
-                rule = "HostSNI(`*`)";
-                service = "smtp";
-                entryPoints = "smtp";
-              };
-              jmap = {
-                rule = "HostSNI(`*`)";
-                service = "jmap";
-                entryPoints = "https";
-                tls.passthrough = true;
-              };
-              smtps = {
-                rule = "HostSNI(`*`)";
-                service = "smtps";
-                entryPoints = "smtps";
-                tls.passthrough = true;
-              };
-              imaps = {
-                rule = "HostSNI(`*`)";
-                service = "imaps";
-                entryPoints = "imaps";
-                tls.passthrough = true;
-              };
-            };
-            services = {
-              smtp.loadbalancer = {
-                server.port = 25;
-                serverstransport = "proxy@file";
-              };
-              jmap.loadbalancer = {
-                server.port = 443;
-                serverstransport = "proxy@file";
-              };
-              smtps.loadbalancer = {
-                server.port = 465;
-                serverstransport = "proxy@file";
-              };
-              imaps.loadbalancer = {
-                server.port = 993;
-                serverstransport = "proxy@file";
-              };
-            };
-          };
           http = {
             routers.stalwart = {
-              rule = "Host(`mail.trev.kiwi`) || Host(`mail.trev.zip`) || HostRegexp(`autodiscover.trev.(zip|kiwi)`) || HostRegexp(`autoconfig.trev.(zip|kiwi)`) || HostRegexp(`mta-sts.trev.(zip|kiwi)`)";
-              entrypoints = "https";
+              rule = "HostRegexp(`mail.trev.(zip|kiwi)`)";
               service = "stalwart";
             };
             services.stalwart.loadbalancer.server = {
@@ -92,11 +44,7 @@ in {
     };
 
     networks = {
-      stalwart = {
-        networkConfig.subnets = [
-          "10.98.98.0/24"
-        ];
-      };
+      stalwart = {};
     };
   };
 }
