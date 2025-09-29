@@ -12,6 +12,7 @@ in {
       pull = "missing";
       volumes = [
         "${volumes.stalwart.ref}:/opt/stalwart"
+        "/mnt/certs:/data/certs:ro"
       ];
       publishPorts = [
         "25:25" # smtp
