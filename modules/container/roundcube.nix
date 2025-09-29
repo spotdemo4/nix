@@ -57,7 +57,7 @@ in {
             attrs = {
               traefik = {
                 enable = true;
-                http.routers.grafana = {
+                http.routers.roundcube = {
                   rule = "HostRegexp(`roundcube.trev.(zip|kiwi)`)";
                   middlewares = "auth-github@docker";
                 };
