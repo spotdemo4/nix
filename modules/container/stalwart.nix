@@ -28,7 +28,7 @@ in {
           enable = true;
           http = {
             routers.stalwart = {
-              rule = "HostRegexp(`mail.trev.(zip|kiwi)`)";
+              rule = "HostRegexp(`stalwart.trev.(zip|kiwi)`)";
               service = "stalwart";
             };
             services.stalwart.loadbalancer.server = {
