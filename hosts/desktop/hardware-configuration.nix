@@ -4,6 +4,7 @@
 {
   config,
   lib,
+  pkgs,
   modulesPath,
   ...
 }: {
@@ -11,15 +12,23 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  hardware.graphics = {
-    enable = true;
-    # enable32Bit = true;
-  };
-
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod"];
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-intel"];
+  boot.kernelParams = [
+    # Use xe driver for Intel Arc GPU
+    "i915.force_probe=!56a0"
+    "xe.force_probe=56a0"
+  ];
   boot.extraModulePackages = [];
+
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver # Enable Hardware Acceleration
+      vpl-gpu-rt # Enable QSV
+    ];
+  };
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/34c3d73a-b07b-4715-acca-e1f0235cd7f6";

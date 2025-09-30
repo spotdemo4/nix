@@ -21,11 +21,10 @@
     softdep drm pre: vfio-pci
   '';
 
-  # Enable OpenGL
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-      vpl-gpu-rt
+      vpl-gpu-rt # quicksync
     ];
   };
 
