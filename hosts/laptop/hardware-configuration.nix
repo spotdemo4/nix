@@ -20,22 +20,19 @@
     options root=/dev/nvme0n1p4 rw add_efi_memmap
   '';
 
-  # Add accelerated video playback
-  hardware.graphics = {
-    # hardware.graphics on unstable
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      #intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      #libvdpau-va-gl
-    ];
-  };
-  environment.sessionVariables = {LIBVA_DRIVER_NAME = "iHD";}; # Force intel-media-driver
-
   boot.initrd.availableKernelModules = ["xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod"];
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-intel"];
   boot.extraModulePackages = [];
+
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver # Enable Hardware Acceleration
+      vpl-gpu-rt # Enable QSV
+    ];
+  };
+  environment.sessionVariables = {LIBVA_DRIVER_NAME = "iHD";}; # Force intel-media-driver
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/b626872d-bf85-45b6-ab70-b5a7de35e5bc";
