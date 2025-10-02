@@ -168,6 +168,8 @@
         "scanner"
         "lp"
         "libvirtd"
+        "video"
+        "render"
       ];
       shell = pkgs.zsh;
       openssh.authorizedKeys = let
