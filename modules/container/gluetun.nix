@@ -61,7 +61,7 @@ in {
       containers = mapAttrs' (name: opts:
         nameValuePair "gluetun-${name}" {
           containerConfig = {
-            image = "docker.io/qmcgaw/gluetun:latest@sha256:5099f4ec7d5a3ea87bbe217ee4755c8442070fdcd5f3d76bc826c9bda3843013";
+            image = "docker.io/qmcgaw/gluetun:latest@sha256:14cc0004058f148c4b97a7f0afdfa9b2bf76bd3fd18633db94864e2c7834efad";
             pull = "missing";
             devices = [
               "/dev/net/tun:/dev/net/tun"
