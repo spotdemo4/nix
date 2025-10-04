@@ -49,7 +49,7 @@
 in {
   virtualisation.quadlet = {
     containers.victoria-metrics.containerConfig = {
-      image = "docker.io/victoriametrics/victoria-metrics:v1.126.0@sha256:26dfc4ab90cf6fedc8115269adc22d300bcd5eab82ea1ebed3c8e22b49886ce1";
+      image = "docker.io/victoriametrics/victoria-metrics:v1.127.0@sha256:d6b6fed9b6d69741d0ac59baaafa5bb7f4ce0ee76f8cd78181f44c72b452d240";
       pull = "missing";
       volumes = [
         "${configFile}:/prometheus.yml"
