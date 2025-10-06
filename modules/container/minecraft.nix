@@ -10,7 +10,7 @@ in {
 
   virtualisation.quadlet = {
     containers.minecraft.containerConfig = {
-      image = "docker.io/itzg/minecraft-server:latest@sha256:ad8e50e4dc309b871c5f7986a1a9f6cffd63baeee3f111a3a80fe399f01a7db0";
+      image = "docker.io/itzg/minecraft-server:latest@sha256:94314561e5c644d6a9663289d3cfa629d64c5160326e6935136d267a9d49d2d4";
       pull = "missing";
       environments = {
         EULA = "TRUE";
