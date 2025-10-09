@@ -19,7 +19,6 @@
     # Use xe driver for Intel Arc GPU
     # "i915.force_probe=!56a0"
     # "xe.force_probe=56a0"
-    "iommu=soft"
   ];
   boot.extraModulePackages = [];
 
