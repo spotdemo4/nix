@@ -14,7 +14,7 @@
 
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod"];
   boot.initrd.kernelModules = [];
-  boot.kernelModules = ["kvm-intel"];
+  boot.kernelModules = ["kvm-amd"];
   boot.kernelParams = [
     # Use xe driver for Intel Arc GPU
     # "i915.force_probe=!56a0"
