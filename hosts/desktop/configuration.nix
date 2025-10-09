@@ -36,4 +36,7 @@
     enable = true;
     brscan5.enable = true;
   };
+
+  # Latest kernel
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 }
