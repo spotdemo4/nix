@@ -50,7 +50,7 @@ in {
       containers = mapAttrs' (name: opts:
         nameValuePair "postgresql-${name}" {
           containerConfig = {
-            image = "docker.io/postgres:17.6-alpine@sha256:5d14c08a257610d8e27c52ce0f10de5d9cce4c232e1277d44d7d6fb628b3d1a7";
+            image = "docker.io/postgres:17.6-alpine@sha256:dac32bfa7ef9626a4f8b909c3b79578c6f2c09846626d41b14ee669baa7bbb67";
             pull = "missing";
             healthCmd = "pg_isready -U ${opts.username} -d ${opts.database}";
             notify = "healthy";
