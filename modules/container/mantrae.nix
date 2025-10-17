@@ -17,8 +17,8 @@ in {
       image = "ghcr.io/mizuchilabs/mantrae:v0.7.5@sha256:fdb596f634c79805f40ea7c2f9a247a4d492be48f13824df5b3cce4df401bc49";
       pull = "missing";
       secrets = [
-        "${secrets."mantrae-secret".env},target=SECRET"
         "${secrets."mantrae-password".env},target=ADMIN_PASSWORD"
+        "${secrets."mantrae-secret".env},target=SECRET"
       ];
       volumes = [
         "${volumes."mantrae".ref}:/data"
@@ -29,9 +29,15 @@ in {
       labels = toLabel {
         attrs.traefik = {
           enable = true;
-          http.routers.mantrae = {
-            rule = "HostRegexp(`mantrae.trev.(zip|kiwi)`)";
-            middlewares = "auth-github@docker";
+          http = {
+            routers.mantrae = {
+              rule = "HostRegexp(`mantrae.trev.(zip|kiwi)`)";
+              middlewares = "auth-github@docker";
+            };
+            services.mantrae.loadbalancer.server = {
+              scheme = "http";
+              port = 3000;
+            };
           };
         };
       };
