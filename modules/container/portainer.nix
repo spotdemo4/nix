@@ -16,7 +16,7 @@ in {
           "${volumes.portainer.ref}:/data"
         ];
         networks = [
-          networks.traefik.ref
+          networks."traefik".ref
         ];
         labels = toLabel {
           attrs = {

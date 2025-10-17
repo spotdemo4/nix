@@ -26,6 +26,8 @@ in {
   "auth-github.age".publicKeys = keys.local ++ [keys.gateway];
   "auth-plex.age".publicKeys = keys.local ++ [keys.gateway];
   "cloudflare-dns.age".publicKeys = keys.local ++ [keys.gateway];
+  "mantrae-password.age".publicKeys = keys.local ++ [keys.gateway];
+  "mantrae-secret.age".publicKeys = keys.local ++ [keys.gateway];
   "traefik.age".publicKeys = keys.local ++ [keys.gateway];
 
   # mail server
