@@ -5,8 +5,8 @@
     ]
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
+      "mantrae"
       "portainer"
-      "rustdesk"
       "traefik"
     ];
 }
