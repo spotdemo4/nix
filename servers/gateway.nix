@@ -6,7 +6,6 @@
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
       "portainer"
-      "rustdesk"
       "traefik"
     ];
 }
