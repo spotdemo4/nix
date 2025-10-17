@@ -26,6 +26,11 @@
         filename = "/conf/secret.yml";
         watch = true;
       };
+
+      http = {
+        endpoint = "http://mantrae:3000/api/gateway?token=3cjohutm4i";
+        pollInterval = "10s";
+      };
     };
 
     entryPoints = {
