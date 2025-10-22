@@ -17,6 +17,7 @@
       "sonarr"
       "tautulli"
       "traefik-kop"
+      "unpackerr"
     ];
 
   # Traefik mapping to gateway
