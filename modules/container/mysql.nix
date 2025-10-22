@@ -51,7 +51,7 @@ in {
       containers = mapAttrs' (name: opts:
         nameValuePair "mysql-${name}" {
           containerConfig = {
-            image = "docker.io/mysql:9.4.0@sha256:135bc87cce147c3d28cecb9ad270b814cb52805af7ddeea83bfcaf157d05a6b2";
+            image = "docker.io/mysql:9.5.0@sha256:2b12787d18c595d7c7b71806462a3f398b2502a491acfed255d46d81d537fb79";
             pull = "missing";
             healthCmd = "mysqladmin ping -h localhost";
             notify = "healthy";
