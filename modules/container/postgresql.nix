@@ -61,7 +61,7 @@ in {
               POSTGRES_DB = opts.database;
               POSTGRES_USER = opts.username;
               POSTGRES_PASSWORD = mkIf (opts.password != null) opts.password;
-              PGDATA = "/var/lib/postgresql/17/docker";
+              PGDATA = "/var/lib/postgresql/18/docker";
             };
             secrets = mkIf (opts.passwordSecret != null) [
               "${opts.password.env},target=POSTGRES_PASSWORD"
