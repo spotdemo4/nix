@@ -64,7 +64,7 @@ in {
               PGDATA = "/var/lib/postgresql/18/docker";
             };
             secrets = mkIf (opts.passwordSecret != null) [
-              "${opts.password.env},target=POSTGRES_PASSWORD"
+              "${opts.passwordSecret.env},target=POSTGRES_PASSWORD"
             ];
             networks = opts.networks;
           };
