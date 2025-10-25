@@ -8,7 +8,7 @@
 in {
   virtualisation.quadlet = {
     containers.sabnzbd.containerConfig = {
-      image = "lscr.io/linuxserver/sabnzbd:4.5.3@sha256:9011bb04b95417fe6345e48c98f9880188f5825402623a0201d29d1c300eea67";
+      image = "lscr.io/linuxserver/sabnzbd:4.5.5@sha256:37fc318dc632106eac00f096661f43ca513793bf51913bcbd989ba921b3409c8";
       pull = "missing";
       environments = {
         PUID = "1000";
