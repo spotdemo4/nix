@@ -16,9 +16,6 @@
     "automerge": true,
     "schedule": ["at any time"]
   },
-  "git-submodules": {
-    "enabled": true
-  },
   "nix": {
     "enabled": true
   },
@@ -39,6 +36,11 @@
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
+    },
+    {
+      "groupName": "Nix Inputs",
+      "matchManagers": ["nix"],
+      "matchPackageNames": ["*"]
     },
     {
       "groupName": "Docker Images",
