@@ -9,8 +9,8 @@
       "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
-      "nixos:R56gtFH8Cr5LvWXXP9x9Lcc0F7RJ3bChGoJV0jqZDL0="
-      "nur:DoXGy0SJ+5udhvZgtzwEXhQMuOCFN7FSXRmtiZhF1Vw="
+      "nixos:jjDrT2JC8pbKe14eKmsSKgnNHdGtSk3yqbqxFVRx0MY="
+      "nur:70xGHUW1+1b8FqBchldaunN//pZNVo6FKuPL4U/n844="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
