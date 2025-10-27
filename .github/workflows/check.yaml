@@ -34,7 +34,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: derivations
-          path: ${{ steps.packages.outputs.derivations }}
+          path: |
+            ${{ steps.packages.outputs.derivations }}
 
   build:
     needs: check
