@@ -28,6 +28,10 @@ jobs:
           PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" --option accept-flake-config true | jq -c ".neededBuilds")
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: derivations
+          path: ${{ fromJSON(steps.packages.outputs.packages) }}
   build:
     needs: check
     runs-on: ubuntu-latest
@@ -35,10 +39,19 @@ jobs:
       matrix:
         package: ${{ fromJSON(needs.check.outputs.packages) }}
     steps:
-      - name: Initialize
-        uses: spotdemo4/nix/.github/actions/init@main
+      - name: Install nix
+        uses: cachix/install-nix-action@fd24c48048070c1be9acd18c9d369a83f0fe94d7 # v31.8.1
+
+      - uses: actions/download-artifact@v5
         with:
-          attic_token: ${{ secrets.ATTIC_TOKEN }}
+          name: derivations
+
+      - name: Setup attic cache
+        uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
+        with:
+          endpoint: https://cache.trev.zip/
+          cache: nixos
+          token: ${{ secrets.ATTIC_TOKEN }}
 
       - name: Build ${{ matrix.package }}
         run: nix-store --realise "${{ matrix.package }}"
