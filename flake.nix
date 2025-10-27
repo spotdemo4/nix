@@ -215,10 +215,7 @@
       }
       // {
         shell = devShells."${system}".default;
-      }
-      // pkgs.lib.mapAttrs' (
-        name: config: pkgs.lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
-      ) ((pkgs.lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations));
+      });
 
     formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
   };

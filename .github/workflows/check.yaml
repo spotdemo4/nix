@@ -17,5 +17,15 @@ jobs:
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
 
-      - name: Run flake checks
-        run: nix-fast-build --no-nom --skip-cached --attic-cache nixos --option accept-flake-config true
+      - name: Run checks
+        run: nix flake check --accept-flake-config
+
+      - name: Build desktop
+        run: nix-fast-build \
+          --no-nom \
+          --skip-cached \
+          --attic-cache nixos \
+          --max-jobs 1 \
+          --eval-workers 1 \
+          --flake '.#nixosConfigurations.desktop.config.system.build.toplevel' \
+          --option accept-flake-config true
