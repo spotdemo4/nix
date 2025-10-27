@@ -29,11 +29,7 @@ jobs:
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
           readarray -t DERIVATIONS < <(echo $PACKAGES | jq -r ".[]")
-          for derivation in "${DERIVATIONS[@]}"; do
-            echo "Derivation to cache: $derivation"
-            ls -lah "$derivation"
-            nix copy --to file:///tmp/cache "$derivation"
-          done
+          nix copy --to file:///tmp/cache "${DERIVATIONS[@]}"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -46,6 +42,7 @@ jobs:
     strategy:
       matrix:
         package: ${{ fromJSON(needs.check.outputs.packages) }}
+      fail-fast: false
     steps:
       - uses: wimpysworld/nothing-but-nix@main
 
