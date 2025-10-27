@@ -28,15 +28,13 @@ jobs:
           PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" --option accept-flake-config true | jq -c ".neededBuilds")
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
-          DERIVATIONS=$(echo $PACKAGES | jq -r ".[]")
-          echo "derivations<<EOF" >> $GITHUB_ENV
-          echo "$DERIVATIONS" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          readarray -t DERIVATIONS < <(echo $PACKAGES | jq -c ".[]")
+          nix copy --to file:///tmp/cache "${DERIVATIONS[@]}"
 
       - uses: actions/upload-artifact@v4
         with:
           name: derivations
-          path: ${{ env.derivations }}
+          path: /tmp/cache
 
   build:
     needs: check
@@ -45,12 +43,18 @@ jobs:
       matrix:
         package: ${{ fromJSON(needs.check.outputs.packages) }}
     steps:
+      - uses: wimpysworld/nothing-but-nix@main
+
       - name: Install nix
         uses: cachix/install-nix-action@fd24c48048070c1be9acd18c9d369a83f0fe94d7 # v31.8.1
 
       - uses: actions/download-artifact@v5
         with:
           name: derivations
+          path: /tmp/cache
+
+      - name: Populate nix store
+        run: nix copy --from file:///tmp/cache "${{ matrix.package }}"
 
       - name: Setup attic cache
         uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
