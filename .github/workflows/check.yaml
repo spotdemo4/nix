@@ -20,12 +20,24 @@ jobs:
       - name: Run checks
         run: nix flake check --accept-flake-config
 
-      - name: Build desktop
+  build:
+    needs: check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        host: ["desktop", "gateway"]
+    steps:
+      - name: Initialize
+        uses: spotdemo4/nix/.github/actions/init@main
+        with:
+          attic_token: ${{ secrets.ATTIC_TOKEN }}
+
+      - name: Build ${{ matrix.host }}
         run: nix-fast-build \
           --no-nom \
           --skip-cached \
           --attic-cache nixos \
           --max-jobs 1 \
           --eval-workers 1 \
-          --flake '.#nixosConfigurations.desktop.config.system.build.toplevel' \
+          --flake ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel" \
           --option accept-flake-config true
