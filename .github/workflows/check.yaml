@@ -33,11 +33,11 @@ jobs:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
 
       - name: Build ${{ matrix.host }}
-        run: nix-fast-build \
-          --no-nom \
-          --skip-cached \
-          --attic-cache nixos \
-          --max-jobs 1 \
-          --eval-workers 1 \
-          --flake ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel" \
+        run: nix-fast-build
+          --no-nom
+          --skip-cached
+          --attic-cache nixos
+          --max-jobs 1
+          --eval-workers 1
+          --flake ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel"
           --option accept-flake-config true
