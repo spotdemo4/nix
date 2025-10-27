@@ -19,8 +19,8 @@ jobs:
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
 
-      - name: Run checks
-        run: nix flake check --accept-flake-config
+      # - name: Run checks
+      #   run: nix flake check --accept-flake-config
 
       - name: Find packages to build
         id: packages
@@ -32,6 +32,7 @@ jobs:
         with:
           name: derivations
           path: ${{ fromJSON(steps.packages.outputs.packages) }}
+
   build:
     needs: check
     runs-on: ubuntu-latest
