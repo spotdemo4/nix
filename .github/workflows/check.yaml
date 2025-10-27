@@ -29,13 +29,14 @@ jobs:
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
           DERIVATIONS=$(echo $PACKAGES | jq -r ".[]")
-          echo "derivations=$DERIVATIONS" >> $GITHUB_OUTPUT
+          echo "derivations<<EOF" >> $GITHUB_ENV
+          echo "$DERIVATIONS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - uses: actions/upload-artifact@v4
         with:
           name: derivations
-          path: |
-            ${{ steps.packages.outputs.derivations }}
+          path: ${{ env.derivations }}
 
   build:
     needs: check
