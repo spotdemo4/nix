@@ -25,7 +25,7 @@ jobs:
       - name: Find packages to build
         id: packages
         run: |
-          PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" | jq ".neededBuilds")
+          PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" --option accept-flake-config true | jq -c ".neededBuilds")
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
   build:
