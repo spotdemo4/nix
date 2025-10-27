@@ -12,10 +12,10 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - name: Initialize nix
+      - name: Initialize
         uses: spotdemo4/nix/.github/actions/init@main
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
 
       - name: Run flake checks
-        run: nix flake check --accept-flake-config
+        run: nix-fast-build --no-nom --skip-cached

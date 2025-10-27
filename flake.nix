@@ -184,6 +184,7 @@
           })
 
           # Actions
+          nix-fast-build
           flake-checker
           prettier
           pkgs.nur.repos.trev.renovate
