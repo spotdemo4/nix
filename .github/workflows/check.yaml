@@ -19,10 +19,10 @@ jobs:
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
 
-      # - name: Run checks
-      #   run: nix flake check --accept-flake-config
+      - name: Run checks
+        run: nix flake check --accept-flake-config
 
-      - name: Find packages to build
+      - name: Find uncached packages
         id: packages
         run: |
           PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" --option accept-flake-config true | jq -c ".neededBuilds")
@@ -31,7 +31,8 @@ jobs:
           readarray -t DERIVATIONS < <(echo $PACKAGES | jq -r ".[]")
           nix copy --to file:///tmp/cache "${DERIVATIONS[@]}"
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload derivations
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: derivations
           path: /tmp/cache
@@ -44,20 +45,22 @@ jobs:
         package: ${{ fromJSON(needs.check.outputs.packages) }}
       fail-fast: false
     steps:
-      - uses: wimpysworld/nothing-but-nix@main
+      - name: Clean environment
+        uses: wimpysworld/nothing-but-nix@6af122a9403f936ef689e44cc013ae3f3e2f1c3b # v6
 
       - name: Install nix
         uses: cachix/install-nix-action@fd24c48048070c1be9acd18c9d369a83f0fe94d7 # v31.8.1
 
-      - uses: actions/download-artifact@v5
+      - name: Download derivations
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: derivations
           path: /tmp/cache
 
-      - name: Populate nix store
+      - name: Populate store
         run: nix copy --from file:///tmp/cache "${{ matrix.package }}"
 
-      - name: Setup attic cache
+      - name: Setup cache
         uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
         with:
           endpoint: https://cache.trev.zip/
