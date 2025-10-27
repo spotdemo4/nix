@@ -28,10 +28,13 @@ jobs:
           PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" --option accept-flake-config true | jq -c ".neededBuilds")
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
+          DERIVATIONS=$(echo $PACKAGES | jq -r ".[]")
+          echo "derivations=$DERIVATIONS" >> $GITHUB_OUTPUT
+
       - uses: actions/upload-artifact@v4
         with:
           name: derivations
-          path: ${{ fromJSON(steps.packages.outputs.packages) }}
+          path: ${{ steps.packages.outputs.derivations }}
 
   build:
     needs: check
