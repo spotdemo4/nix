@@ -21,7 +21,6 @@ runs:
         cache: nixos
         token: ${{ inputs.attic_token }}
 
-    - name: Setup environment
-      uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
+    - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
       with:
         arguments: "--accept-flake-config"

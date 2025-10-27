@@ -172,9 +172,7 @@
       default = pkgs.mkShell {
         packages = with pkgs; [
           git
-          nix-update
           alejandra
-
           (pkgs.writeShellApplication {
             name = "secret";
             runtimeInputs = [agenix];
@@ -218,7 +216,9 @@
       // {
         shell = devShells."${system}".default;
       }
-      // builtins.mapAttrs (name: config: config.config.system.build.toplevel) self.nixosConfigurations);
+      // pkgs.lib.mapAttrs' (
+        name: config: pkgs.lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
+      ) ((pkgs.lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations));
 
     formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
   };

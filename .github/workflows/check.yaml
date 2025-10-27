@@ -18,4 +18,4 @@ jobs:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
 
       - name: Run flake checks
-        run: nix-fast-build --no-nom --skip-cached
+        run: nix-fast-build --no-nom --skip-cached --attic-cache nixos --option accept-flake-config true
