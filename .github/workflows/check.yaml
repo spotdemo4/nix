@@ -28,7 +28,7 @@ jobs:
           PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" --option accept-flake-config true | jq -c ".neededBuilds")
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
-          readarray -t DERIVATIONS < <(echo $PACKAGES | jq -c ".[]")
+          readarray -t DERIVATIONS < <(echo $PACKAGES | jq -r ".[]")
           for derivation in "${DERIVATIONS[@]}"; do
             echo "Derivation to cache: $derivation"
             ls -lah "$derivation"
