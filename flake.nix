@@ -216,7 +216,8 @@
       }
       // {
         shell = devShells."${system}".default;
-      });
+      }
+      // builtins.mapAttrs (name: config: config.config.system.build.toplevel) self.nixosConfigurations);
 
     formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
   };
