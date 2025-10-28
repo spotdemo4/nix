@@ -24,6 +24,9 @@ runs:
       continue-on-error: true
 
     - uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
+      with:
+        extra-conf: |
+          accept-flake-config = true
 
     - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       id: init-cache
@@ -36,13 +39,13 @@ runs:
       shell: bash
       run: |
         for x in `grep StorePath /tmp/init-cache/*.narinfo | awk '{print $2}'`; do
-          nix copy $x --from file:///tmp/init-cache/ --offline
+          nix copy $x --from file:///tmp/init-cache/ --offline --no-check-sigs
         done
       continue-on-error: true
 
     - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
       with:
-        arguments: "--accept-flake-config .#${{ inputs.devshell }}"
+        arguments: ".#${{ inputs.devshell }}"
 
     - uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
       if: ${{ inputs.attic_token != '' }}

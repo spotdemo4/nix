@@ -22,12 +22,12 @@ jobs:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
 
       - name: Run checks
-        run: nix flake check --accept-flake-config
+        run: nix flake check
 
       - name: Find uncached packages
         id: packages
         run: |
-          PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" --option accept-flake-config true | jq -c ".neededBuilds")
+          PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" | jq -c ".neededBuilds")
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
       - name: Cache derivations
