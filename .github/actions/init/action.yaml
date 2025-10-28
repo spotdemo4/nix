@@ -34,7 +34,8 @@ runs:
     - name: Restore nix store from cache
       if: ${{ steps.init-cache.outputs.cache-hit == 'true' }}
       shell: bash
-      run: nix copy --all --from file:///tmp/init-cache
+      run: nix copy --all --from file:///tmp/init-cache --option keep-going true
+      continue-on-error: true
 
     - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
       with:
