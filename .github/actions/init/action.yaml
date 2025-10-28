@@ -29,10 +29,10 @@ runs:
       id: init-cache
       with:
         path: /tmp/init-cache
-        key: ${{ runner.os }}-${{ hashFiles("**/flake.lock") }}
+        key: ${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
 
     - name: Restore nix store from cache
-      if: ${{ steps.init-cache.outputs.cache-hit == "true" }}
+      if: ${{ steps.init-cache.outputs.cache-hit == 'true' }}
       shell: bash
       run: nix copy --all --from file:///tmp/init-cache
 
@@ -41,22 +41,22 @@ runs:
         arguments: "--accept-flake-config .#${{ inputs.devshell }}"
 
     - uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
-      if: ${{ inputs.attic_token != "" }}
+      if: ${{ inputs.attic_token != '' }}
       with:
         endpoint: https://cache.trev.zip/
         cache: nixos
         token: ${{ inputs.attic_token }}
 
     - name: Save nix store to cache
-      if: ${{ steps.init-cache.outputs.cache-hit != "true" }}
+      if: ${{ steps.init-cache.outputs.cache-hit != 'true' }}
       shell: bash
       run: nix copy --all --to file:///tmp/init-cache
 
     - uses: actions/cache/save@v4
-      if: ${{ steps.init-cache.outputs.cache-hit != "true" }}
+      if: ${{ steps.init-cache.outputs.cache-hit != 'true' }}
       with:
         path: /tmp/init-cache
-        key: ${{ runner.os }}-${{ hashFiles("**/flake.lock") }}
+        key: ${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
 
     - name: Delete temp cache
       shell: bash
