@@ -67,3 +67,16 @@ jobs:
 
       - name: Build ${{ matrix.package }}
         run: nix-store --realise "${{ matrix.package }}"
+
+  build-status:
+    needs: [check, build]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Successful deploy
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: exit 0
+
+      - name: Failing deploy
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1
