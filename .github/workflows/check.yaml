@@ -47,6 +47,8 @@ jobs:
     steps:
       - name: Clean environment
         uses: wimpysworld/nothing-but-nix@6af122a9403f936ef689e44cc013ae3f3e2f1c3b # v6
+        with:
+          nix-permission-edict: true
 
       - name: Install nix
         uses: cachix/install-nix-action@fd24c48048070c1be9acd18c9d369a83f0fe94d7 # v31.8.1
