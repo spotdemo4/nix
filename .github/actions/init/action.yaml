@@ -25,7 +25,7 @@ runs:
 
     - uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
 
-    - uses: actions/cache/restore@v4
+    - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       id: init-cache
       with:
         path: /tmp/init-cache
@@ -50,9 +50,9 @@ runs:
     - name: Save nix store to cache
       if: ${{ steps.init-cache.outputs.cache-hit != 'true' }}
       shell: bash
-      run: nix copy --all --to file:///tmp/init-cache
+      run: nix copy --all --to "file:///tmp/init-cache/?compression=none"
 
-    - uses: actions/cache/save@v4
+    - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       if: ${{ steps.init-cache.outputs.cache-hit != 'true' }}
       with:
         path: /tmp/init-cache

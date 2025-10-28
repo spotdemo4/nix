@@ -30,8 +30,10 @@ jobs:
           PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" --option accept-flake-config true | jq -c ".neededBuilds")
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
-          readarray -t DERIVATIONS < <(echo $PACKAGES | jq -r ".[]")
-          nix copy --to file:///tmp/cache "${DERIVATIONS[@]}"
+      - name: Cache derivations
+        run: |
+          readarray -t DERIVATIONS < <(echo ${{ steps.packages.outputs.packages }} | jq -r ".[]")
+          nix copy --to "file:///tmp/cache/?compression=none" "${DERIVATIONS[@]}"
 
       - name: Upload derivations
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
@@ -47,12 +49,12 @@ jobs:
         package: ${{ fromJSON(needs.check.outputs.packages) }}
       fail-fast: false
     steps:
-      - name: Clean environment
-        uses: wimpysworld/nothing-but-nix@6af122a9403f936ef689e44cc013ae3f3e2f1c3b # v6
-        continue-on-error: true
-
-      - name: Install nix
-        uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
+      - name: Initialize
+        uses: spotdemo4/nix/.github/actions/init@main
+        with:
+          attic_endpoint: https://cache.trev.zip/
+          attic_cache: nixos
+          attic_token: ${{ secrets.ATTIC_TOKEN }}
 
       - name: Download derivations
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
@@ -62,13 +64,6 @@ jobs:
 
       - name: Populate store
         run: nix copy --from file:///tmp/cache "${{ matrix.package }}"
-
-      - name: Setup cache
-        uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
-        with:
-          endpoint: https://cache.trev.zip/
-          cache: nixos
-          token: ${{ secrets.ATTIC_TOKEN }}
 
       - name: Build ${{ matrix.package }}
         run: nix-store --realise "${{ matrix.package }}"
