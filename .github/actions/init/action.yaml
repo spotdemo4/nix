@@ -3,6 +3,7 @@ description: "initialize nix"
 inputs:
   shell:
     description: "dev shell to use"
+    default: "default"
   attic_endpoint:
     description: "attic endpoint"
   attic_cache:
