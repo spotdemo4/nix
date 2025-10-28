@@ -21,29 +21,38 @@ runs:
     - uses: wimpysworld/nothing-but-nix@6af122a9403f936ef689e44cc013ae3f3e2f1c3b # v6
       with:
         hatchet-protocol: holster
+        nix-permission-edict: true
       continue-on-error: true
 
-    - uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
-      with:
-        extra-conf: |
-          accept-flake-config = true
+    - uses: nixbuild/nix-quick-install-action@2c9db80fb984ceb1bcaa77cdda3fdf8cfba92035 # v34
 
-    - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+    # - uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
+    #   with:
+    #     extra-conf: |
+    #       accept-flake-config = true
+
+    - uses: nix-community/cache-nix-action/restore@135667ec418502fa5a3598af6fb9eb733888ce6a # v6.1.3
       id: init-cache
       with:
-        path: /tmp/init-cache
-        key: nix-init-${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
+        primary-key: nix-init-${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
+        restore-prefixes-first-match: nix-init-${{ runner.os }}
 
-    - name: Restore nix store from cache
-      if: ${{ steps.init-cache.outputs.cache-hit == 'true' }}
-      shell: bash
-      run: |
-        echo "::group::Restoring nix store from cache"
-        for x in `grep StorePath /tmp/init-cache/*.narinfo | awk '{print $2}'`; do
-          nix copy $x --from file:///tmp/init-cache/ --offline --no-check-sigs
-        done
-        echo "::endgroup::"
-      continue-on-error: true
+    # - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+    #   id: init-cache
+    #   with:
+    #     path: /tmp/init-cache
+    #     key: nix-init-${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
+
+    # - name: Restore nix store from cache
+    #   if: ${{ steps.init-cache.outputs.cache-hit == 'true' }}
+    #   shell: bash
+    #   run: |
+    #     echo "::group::Restoring nix store from cache"
+    #     for x in `grep StorePath /tmp/init-cache/*.narinfo | awk '{print $2}'`; do
+    #       nix copy $x --from file:///tmp/init-cache/ --offline --no-check-sigs
+    #     done
+    #     echo "::endgroup::"
+    #   continue-on-error: true
 
     - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
       with:
@@ -52,24 +61,29 @@ runs:
     - uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
       if: ${{ inputs.attic_token != '' }}
       with:
-        endpoint: https://cache.trev.zip/
-        cache: nixos
+        endpoint: ${{ inputs.attic_endpoint }}
+        cache: ${{ inputs.nixos }}
         token: ${{ inputs.attic_token }}
 
-    - name: Save nix store to cache
-      if: ${{ steps.init-cache.outputs.cache-hit != 'true' }}
-      shell: bash
-      run: |
-        echo "::group::Saving nix store to cache"
-        nix copy --all --to "file:///tmp/init-cache/?compression=none"
-        echo "::endgroup::"
-
-    - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-      if: ${{ steps.init-cache.outputs.cache-hit != 'true' }}
+    - uses: nix-community/cache-nix-action/save@135667ec418502fa5a3598af6fb9eb733888ce6a # v6.1.3
+      if: ${{ steps.init-cache.outputs.hit-primary-key != 'true' }}
       with:
-        path: /tmp/init-cache
-        key: nix-init-${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
+        primary-key: ${{ steps.init-cache.outputs.primary-key }}
 
-    - name: Delete temp cache
-      shell: bash
-      run: rm -rf /tmp/init-cache
+    # - name: Save nix store to cache
+    #   if: ${{ steps.init-cache.outputs.cache-hit != 'true' }}
+    #   shell: bash
+    #   run: |
+    #     echo "::group::Saving nix store to cache"
+    #     nix copy --all --to "file:///tmp/init-cache/?compression=none"
+    #     echo "::endgroup::"
+
+    # - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+    #   if: ${{ steps.init-cache.outputs.cache-hit != 'true' }}
+    #   with:
+    #     path: /tmp/init-cache
+    #     key: nix-init-${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
+
+    # - name: Delete temp cache
+    #   shell: bash
+    #   run: rm -rf /tmp/init-cache
