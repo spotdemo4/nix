@@ -29,7 +29,7 @@ runs:
       id: init-cache
       with:
         path: /tmp/init-cache
-        key: ${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
+        key: nix-init-${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
 
     - name: Restore nix store from cache
       if: ${{ steps.init-cache.outputs.cache-hit == 'true' }}
@@ -57,7 +57,7 @@ runs:
       if: ${{ steps.init-cache.outputs.cache-hit != 'true' }}
       with:
         path: /tmp/init-cache
-        key: ${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
+        key: nix-init-${{ runner.os }}-${{ hashFiles('**/flake.lock') }}
 
     - name: Delete temp cache
       shell: bash
