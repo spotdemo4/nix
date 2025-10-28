@@ -32,7 +32,7 @@ jobs:
 
       - name: Cache derivations
         run: |
-          readarray -t DERIVATIONS < <(echo ${{ steps.packages.outputs.packages }} | jq -r ".[]")
+          readarray -t DERIVATIONS < <(echo '${{ steps.packages.outputs.packages }}' | jq -r ".[]")
           nix copy --to "file:///tmp/cache/?compression=none" "${DERIVATIONS[@]}"
 
       - name: Upload derivations
