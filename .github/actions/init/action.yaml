@@ -62,7 +62,7 @@ runs:
       if: ${{ inputs.attic_token != '' }}
       with:
         endpoint: ${{ inputs.attic_endpoint }}
-        cache: ${{ inputs.nixos }}
+        cache: ${{ inputs.attic_cache }}
         token: ${{ inputs.attic_token }}
 
     - uses: nix-community/cache-nix-action/save@135667ec418502fa5a3598af6fb9eb733888ce6a # v6.1.3
