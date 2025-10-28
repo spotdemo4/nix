@@ -51,7 +51,7 @@ jobs:
           nix-permission-edict: true
 
       - name: Install nix
-        uses: cachix/install-nix-action@fd24c48048070c1be9acd18c9d369a83f0fe94d7 # v31.8.1
+        uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
 
       - name: Download derivations
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0

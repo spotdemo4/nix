@@ -13,7 +13,12 @@ runs:
 
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-    - uses: cachix/install-nix-action@fd24c48048070c1be9acd18c9d369a83f0fe94d7 # v31.8.1
+    - uses: wimpysworld/nothing-but-nix@6af122a9403f936ef689e44cc013ae3f3e2f1c3b # v6
+      with:
+        nix-permission-edict: true
+        hatchet-protocol: holster
+
+    - uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
 
     - uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
       with:
