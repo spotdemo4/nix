@@ -1,9 +1,14 @@
 name: "init"
 description: "initialize nix"
 inputs:
+  devshell:
+    description: "devshell to use"
+  attic_endpoint:
+    description: "attic endpoint"
+  attic_cache:
+    description: "attic cache"
   attic_token:
     description: "attic token"
-    required: true
 runs:
   using: "composite"
   steps:
@@ -16,15 +21,43 @@ runs:
     - uses: wimpysworld/nothing-but-nix@6af122a9403f936ef689e44cc013ae3f3e2f1c3b # v6
       with:
         hatchet-protocol: holster
+      continue-on-error: true
 
     - uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
 
+    - uses: actions/cache/restore@v4
+      id: init-cache
+      with:
+        path: /tmp/init-cache
+        key: ${{ runner.os }}-${{ hashFiles("**/flake.lock") }}
+
+    - name: Restore nix store from cache
+      if: ${{ steps.init-cache.outputs.cache-hit == "true" }}
+      shell: bash
+      run: nix copy --all --from file:///tmp/init-cache
+
+    - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
+      with:
+        arguments: "--accept-flake-config .#${{ inputs.devshell }}"
+
     - uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
+      if: ${{ inputs.attic_token != "" }}
       with:
         endpoint: https://cache.trev.zip/
         cache: nixos
         token: ${{ inputs.attic_token }}
 
-    - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
+    - name: Save nix store to cache
+      if: ${{ steps.init-cache.outputs.cache-hit != "true" }}
+      shell: bash
+      run: nix copy --all --to file:///tmp/init-cache
+
+    - uses: actions/cache/save@v4
+      if: ${{ steps.init-cache.outputs.cache-hit != "true" }}
       with:
-        arguments: "--accept-flake-config"
+        path: /tmp/init-cache
+        key: ${{ runner.os }}-${{ hashFiles("**/flake.lock") }}
+
+    - name: Delete temp cache
+      shell: bash
+      run: rm -rf /tmp/init-cache
