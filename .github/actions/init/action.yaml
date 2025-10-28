@@ -35,8 +35,8 @@ runs:
       if: ${{ steps.init-cache.outputs.cache-hit == 'true' }}
       shell: bash
       run: |
-        until nix copy --all --from file:///tmp/init-cache --repair; do
-          echo "retrying nix copy..."
+        for x in `grep StorePath /tmp/init-cache/*.narinfo | awk '{print $2}'`; do
+          nix copy $x --from file:///tmp/init-cache/ --offline
         done
       continue-on-error: true
 
