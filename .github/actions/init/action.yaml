@@ -94,8 +94,8 @@ runs:
       id: shell-cache
       with:
         path: /tmp/shell-cache
-        key: init-${{ runner.os }}-${{ steps.shell-info.outputs.hash }}
-        restore-keys: init-${{ runner.os }}
+        key: init-shell-${{ runner.os }}-${{ steps.shell-info.outputs.hash }}
+        restore-keys: init-shell-${{ runner.os }}
 
     - shell: bash
       if: ${{ steps.shell-cache.outputs.cache-matched-key != '' }}
