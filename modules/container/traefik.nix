@@ -93,7 +93,7 @@ in {
     containers = {
       traefik = {
         containerConfig = {
-          image = "docker.io/traefik:v3.5.3@sha256:d6be8725d21b45bdd84b93ea01438256e0e3c94aa8fa51834fe87f37cd5d4af8";
+          image = "docker.io/traefik:v3.5.4@sha256:fa528d4565c8c279328c12d466325ee0f65804a75bcdbef737290664ad971d68";
           pull = "missing";
           secrets = [
             "${secrets."traefik".mount},target=/conf/secret.yml"
