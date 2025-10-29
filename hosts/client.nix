@@ -63,7 +63,7 @@
     ncdu
     nmap
     openconnect
-    protonvpn-cli
+    protonvpn-gui
     unzip
     wget
     wl-clipboard
