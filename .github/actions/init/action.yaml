@@ -71,7 +71,9 @@ runs:
 
     - shell: bash
       if: ${{ steps.flake-cache.outputs.cache-hit != 'true' }}
-      run: sudo rm -rf /tmp/flake-cache
+      run: |
+        sudo chmod -R a+rwX /tmp/flake-cache
+        sudo rm -rf /tmp/flake-cache
 
     # shell setup
 
