@@ -39,13 +39,16 @@ runs:
       id: info
       run: |
         SYSTEM=$(nix eval --impure --raw --expr 'builtins.currentSystem')
-        echo "system=$SYSTEM" >> $GITHUB_OUTPUT
+        echo "system=${SYSTEM}" >> "${GITHUB_OUTPUT}"
 
-        SHELL=$(nix eval --raw .#devShells.${SYSTEM}.${{ inputs.shell }})
-        echo "shell=$SHELL" >> $GITHUB_OUTPUT
+        NAME=".#devShells.${SYSTEM}.${{ inputs.shell }}"
+        echo "name=${NAME}" >> $GITHUB_OUTPUT
 
-        NAME=${SHELL#/nix/store/}
-        echo "name=$NAME" >> $GITHUB_OUTPUT
+        SHELL=$(nix eval --raw "${NAME}")
+        echo "shell=${SHELL}" >> $GITHUB_OUTPUT
+
+        HASH=${SHELL#/nix/store/}
+        echo "hash=${HASH}" >> $GITHUB_OUTPUT
 
     # shell setup
 
@@ -53,7 +56,7 @@ runs:
       id: shell-cache
       with:
         path: /tmp/shell-cache
-        key: init-${{ runner.os }}-${{ steps.info.outputs.name }}
+        key: init-${{ runner.os }}-${{ steps.info.outputs.hash }}
         restore-keys: init-${{ runner.os }}
 
     - shell: bash
@@ -63,7 +66,7 @@ runs:
 
     - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
       with:
-        arguments: ".#${{ inputs.shell }}"
+        arguments: ${{ steps.info.outputs.name }}
 
     - shell: bash
       if: ${{ steps.shell-cache.outputs.cache-hit != 'true' }}
