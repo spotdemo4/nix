@@ -57,7 +57,7 @@ runs:
       continue-on-error: true
       run: |
         nix flake archive --to daemon --store /tmp/flake-cache --offline --no-check-sigs
-        rm -rf /tmp/flake-cache
+        sudo rm -rf /tmp/flake-cache
 
     - shell: bash
       if: ${{ steps.flake-cache.outputs.cache-hit != 'true' }}
@@ -71,9 +71,7 @@ runs:
 
     - shell: bash
       if: ${{ steps.flake-cache.outputs.cache-hit != 'true' }}
-      run: |
-        sudo chmod -R a+rwX /tmp/flake-cache
-        sudo rm -rf /tmp/flake-cache
+      run: sudo rm -rf /tmp/flake-cache
 
     # shell setup
 
