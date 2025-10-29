@@ -56,12 +56,12 @@ runs:
       if: ${{ steps.flake-cache.outputs.cache-matched-key != '' }}
       continue-on-error: true
       run: |
-        nix flake archive --to daemon --store file:///tmp/flake-cache --offline
+        nix flake archive --to daemon --store /tmp/flake-cache --offline --no-check-sigs
         rm -rf /tmp/flake-cache
 
     - shell: bash
       if: ${{ steps.flake-cache.outputs.cache-hit != 'true' }}
-      run: nix flake archive --to "file:///tmp/flake-cache/?compression=none"
+      run: nix flake archive --to /tmp/flake-cache --no-check-sigs
 
     - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       if: ${{ steps.flake-cache.outputs.cache-hit != 'true' }}
