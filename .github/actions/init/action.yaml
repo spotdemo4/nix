@@ -60,9 +60,11 @@ runs:
         restore-keys: init-${{ runner.os }}
 
     - shell: bash
-      if: ${{ steps.shell-cache.outputs.cache-hit == 'true' }}
+      if: ${{ steps.shell-cache.outputs.cache-matched-key != '' }}
       continue-on-error: true
-      run: nix copy --from "file:///tmp/shell-cache" --offline --no-check-sigs "${{ steps.info.outputs.shell }}"
+      run: |
+        nix copy --from "file:///tmp/shell-cache" --offline --no-check-sigs "${{ steps.info.outputs.shell }}"
+        rm -rf /tmp/shell-cache
 
     - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
       with:
@@ -81,6 +83,7 @@ runs:
         key: ${{ steps.shell-cache.outputs.cache-primary-key }}
 
     - shell: bash
+      if: ${{ steps.shell-cache.outputs.cache-hit != 'true' }}
       run: rm -rf /tmp/shell-cache
 
     # attic setup
