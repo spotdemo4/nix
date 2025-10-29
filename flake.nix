@@ -182,7 +182,7 @@
           })
 
           # Actions
-          # nix-fast-build
+          attic-client
           nix-eval-jobs
           flake-checker
           prettier

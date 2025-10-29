@@ -17,7 +17,6 @@ jobs:
       - name: Initialize
         uses: spotdemo4/nix/.github/actions/init@main
         with:
-          attic_endpoint: https://cache.trev.zip/
           attic_cache: nixos
           attic_token: ${{ secrets.ATTIC_TOKEN }}
 
@@ -52,7 +51,6 @@ jobs:
       - name: Initialize
         uses: spotdemo4/nix/.github/actions/init@main
         with:
-          attic_endpoint: https://cache.trev.zip/
           attic_cache: nixos
           attic_token: ${{ secrets.ATTIC_TOKEN }}
 
