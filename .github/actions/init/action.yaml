@@ -70,7 +70,9 @@ runs:
 
     - shell: bash
       if: ${{ steps.shell-cache.outputs.cache-hit != 'true' }}
-      run: nix copy --to "file:///tmp/shell-cache/?compression=none" "${{ steps.info.outputs.shell }}"
+      run: |
+        nix build --no-link "${{ steps.info.outputs.name }}"
+        nix copy --to "file:///tmp/shell-cache/?compression=none" "${{ steps.info.outputs.shell }}"
 
     - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       if: ${{ steps.shell-cache.outputs.cache-hit != 'true' }}
