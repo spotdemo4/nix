@@ -35,94 +35,60 @@ runs:
         extra-conf: |
           accept-flake-config = true
 
-    # flake setup
+    # restore cache
 
     - shell: bash
-      id: flake-info
+      id: hash
       run: |
-        METADATA=$(nix flake metadata --json)
+        NIX_HASH=$(nix hash file flake.nix --type sha1 --base64)
+        echo "nix=${NIX_HASH}" >> $GITHUB_OUTPUT
 
-        FINGERPRINT=$(echo "${METADATA}" | jq -r ".fingerprint")
-        echo "fingerprint=${FINGERPRINT}" >> $GITHUB_OUTPUT
+        LOCK_HASH=$(nix hash file flake.lock --type sha1 --base64)
+        echo "lock=${LOCK_HASH}" >> $GITHUB_OUTPUT
 
     - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-      id: flake-cache
+      id: cache
       with:
-        path: /tmp/flake-cache
-        key: init-flake-${{ runner.os }}-${{ steps.flake-info.outputs.fingerprint }}
-        restore-keys: init-flake-${{ runner.os }}
+        path: /tmp/init
+        key: init-${{ runner.os }}-${{ steps.hash.outputs.nix }}-${{ steps.hash.outputs.lock }}
+        restore-keys: |
+          init-${{ runner.os }}-${{ steps.hash.outputs.nix }}
+          init-${{ runner.os }}
+          init
 
     - shell: bash
-      if: ${{ steps.flake-cache.outputs.cache-matched-key != '' }}
+      if: ${{ steps.cache.outputs.cache-matched-key != '' }}
       continue-on-error: true
       run: |
-        nix flake archive --to daemon --store /tmp/flake-cache --offline --no-check-sigs
-        sudo rm -rf /tmp/flake-cache
+        nix copy --all --to daemon --store /tmp/init --offline --no-check-sigs
+        sudo rm -rf /tmp/init
+
+    # get flake
 
     - shell: bash
-      if: ${{ steps.flake-cache.outputs.cache-hit != 'true' }}
-      run: nix flake archive --to /tmp/flake-cache --no-check-sigs
+      run: nix flake archive --no-check-sigs
 
-    - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-      if: ${{ steps.flake-cache.outputs.cache-hit != 'true' }}
-      with:
-        path: /tmp/flake-cache
-        key: ${{ steps.flake-cache.outputs.cache-primary-key }}
-
-    - shell: bash
-      if: ${{ steps.flake-cache.outputs.cache-hit != 'true' }}
-      run: sudo rm -rf /tmp/flake-cache
-
-    # shell setup
-
-    - shell: bash
-      id: shell-info
-      run: |
-        SYSTEM=$(nix eval --impure --raw --expr 'builtins.currentSystem')
-        echo "system=${SYSTEM}" >> $GITHUB_OUTPUT
-
-        NAME=".#devShells.${SYSTEM}.${{ inputs.shell }}"
-        echo "name=${NAME}" >> $GITHUB_OUTPUT
-
-        SHELL=$(nix eval --raw "${NAME}")
-        echo "shell=${SHELL}" >> $GITHUB_OUTPUT
-
-        HASH=${SHELL#/nix/store/}
-        echo "hash=${HASH}" >> $GITHUB_OUTPUT
-
-    - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-      id: shell-cache
-      with:
-        path: /tmp/shell-cache
-        key: init-shell-${{ runner.os }}-${{ steps.shell-info.outputs.hash }}
-        restore-keys: init-shell-${{ runner.os }}
-
-    - shell: bash
-      if: ${{ steps.shell-cache.outputs.cache-matched-key != '' }}
-      continue-on-error: true
-      run: |
-        nix copy --from "file:///tmp/shell-cache" --offline --no-check-sigs "${{ steps.shell-info.outputs.shell }}"
-        rm -rf /tmp/shell-cache
+    # setup shell
 
     - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
       with:
         arguments: ${{ steps.shell-info.outputs.name }}
 
+    # save cache
+
     - shell: bash
-      if: ${{ steps.shell-cache.outputs.cache-hit != 'true' }}
-      run: |
-        nix build --no-link "${{ steps.shell-info.outputs.name }}"
-        nix copy --to "file:///tmp/shell-cache/?compression=none" "${{ steps.shell-info.outputs.shell }}"
+      if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+      run: nix copy --all --to /tmp/init --no-check-sigs
 
     - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-      if: ${{ steps.shell-cache.outputs.cache-hit != 'true' }}
+      if: ${{ steps.cache.outputs.cache-hit != 'true' }}
       with:
-        path: /tmp/shell-cache
-        key: ${{ steps.shell-cache.outputs.cache-primary-key }}
+        path: /tmp/init
+        key: ${{ steps.cache.outputs.cache-primary-key }}
 
     - shell: bash
-      if: ${{ steps.shell-cache.outputs.cache-hit != 'true' }}
-      run: rm -rf /tmp/shell-cache
+      if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+      run: sudo rm -rf /tmp/init
 
     # attic setup
 
