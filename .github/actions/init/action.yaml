@@ -65,7 +65,7 @@ runs:
       if: ${{ steps.cache.outputs.cache-matched-key != '' }}
       continue-on-error: true
       run: |
-        nix copy --all --to local --store /tmp/init --offline --no-check-sigs
+        sudo nix copy --all --to local --store /tmp/init --offline --no-check-sigs
         sudo rm -rf /tmp/init
 
     # setup shell
