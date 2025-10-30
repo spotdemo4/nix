@@ -56,10 +56,10 @@ runs:
       id: cache
       with:
         path: /tmp/init
-        key: init-${{ runner.os }}-${{ steps.hash.outputs.nix }}-${{ steps.hash.outputs.lock }}
+        key: init-${{ steps.info.outputs.system }}-${{ steps.info.outputs.nix }}-${{ steps.info.outputs.lock }}
         restore-keys: |
-          init-${{ runner.os }}-${{ steps.hash.outputs.nix }}
-          init-${{ runner.os }}
+          init-${{ steps.info.outputs.system }}-${{ steps.info.outputs.nix }}
+          init-${{ steps.info.outputs.system }}
 
     - shell: bash
       if: ${{ steps.cache.outputs.cache-matched-key != '' }}
