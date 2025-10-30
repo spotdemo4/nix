@@ -80,7 +80,7 @@ runs:
       if: ${{ steps.cache.outputs.cache-hit != 'true' }}
       run: |
         nix flake archive --to /tmp/init --no-check-sigs
-        nix copy --to /tmp/init --no-check-sigs "${{ steps.info.outputs.name }}""
+        nix copy --to /tmp/init --no-check-sigs "${{ steps.info.outputs.name }}"
 
     - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       if: ${{ steps.cache.outputs.cache-hit != 'true' }}
