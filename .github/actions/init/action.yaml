@@ -5,7 +5,6 @@ inputs:
   shell:
     description: "dev shell to use"
     default: "default"
-
   attic_endpoint:
     description: "attic endpoint"
     default: "https://cache.trev.zip/"
@@ -17,16 +16,18 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+    - if: ${{ github.server_url == 'https://github.com' }}
+      uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
       with:
         egress-policy: audit
 
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-    - uses: wimpysworld/nothing-but-nix@6af122a9403f936ef689e44cc013ae3f3e2f1c3b # v6
+    - if: ${{ github.server_url == 'https://github.com' }}
+      uses: wimpysworld/nothing-but-nix@6af122a9403f936ef689e44cc013ae3f3e2f1c3b # v6
+      continue-on-error: true
       with:
         hatchet-protocol: holster
-      continue-on-error: true
 
     - uses: DeterminateSystems/nix-installer-action@786fff0690178f1234e4e1fe9b536e94f5433196 # v20
       with:
@@ -34,12 +35,16 @@ runs:
           accept-flake-config = true
 
     - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
+      continue-on-error: true
       with:
         arguments: ".#${{ inputs.shell }}"
 
-    - uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
-      if: ${{ inputs.attic_token != '' }}
+    - if: ${{ inputs.attic_cache != '' && inputs.attic_token != '' }}
+      uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
       with:
         endpoint: ${{ inputs.attic_endpoint }}
         cache: ${{ inputs.attic_cache }}
         token: ${{ inputs.attic_token }}
+
+    - if: ${{ inputs.attic_cache == '' && inputs.attic_token == '' }}
+      uses: spotdemo4/nix-simple-cache-action@678b319b2d13680785ab65a0f5618a2e662ac04d # v1.4.8
