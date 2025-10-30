@@ -65,8 +65,7 @@ runs:
       if: ${{ steps.cache.outputs.cache-matched-key != '' }}
       continue-on-error: true
       run: |
-        BIN=$(which nix)
-        sudo "${BIN}" copy --all --to local --store /tmp/init --offline --no-check-sigs
+        sudo "$(which nix)" copy --all --to local --store /tmp/init --offline --no-check-sigs
         sudo rm -rf /tmp/init
 
     # setup shell
