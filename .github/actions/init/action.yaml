@@ -23,8 +23,6 @@ runs:
 
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-    # nix setup
-
     - uses: wimpysworld/nothing-but-nix@6af122a9403f936ef689e44cc013ae3f3e2f1c3b # v6
       with:
         hatchet-protocol: holster
@@ -35,64 +33,9 @@ runs:
         extra-conf: |
           accept-flake-config = true
 
-    - shell: bash
-      id: info
-      run: |
-        NIX_HASH=$(nix hash file flake.nix --type sha1 --base64)
-        echo "nix=${NIX_HASH}" >> $GITHUB_OUTPUT
-
-        LOCK_HASH=$(nix hash file flake.lock --type sha1 --base64)
-        echo "lock=${LOCK_HASH}" >> $GITHUB_OUTPUT
-
-        SYSTEM=$(nix eval --impure --raw --expr 'builtins.currentSystem')
-        echo "system=${SYSTEM}" >> $GITHUB_OUTPUT
-
-        NAME=".#devShells.${SYSTEM}.${{ inputs.shell }}"
-        echo "name=${NAME}" >> $GITHUB_OUTPUT
-
-    # restore from cache
-
-    - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-      id: cache
-      with:
-        path: /tmp/init
-        key: init-${{ steps.info.outputs.system }}-${{ steps.info.outputs.nix }}-${{ steps.info.outputs.lock }}
-        restore-keys: |
-          init-${{ steps.info.outputs.system }}-${{ steps.info.outputs.nix }}
-          init-${{ steps.info.outputs.system }}
-
-    - shell: bash
-      if: ${{ steps.cache.outputs.cache-matched-key != '' }}
-      continue-on-error: true
-      run: |
-        sudo "$(which nix)" copy --all --to local --store /tmp/init --offline --no-check-sigs
-        sudo rm -rf /tmp/init
-
-    # setup shell
-
     - uses: nicknovitski/nix-develop@9be7cfb4b10451d3390a75dc18ad0465bed4932a # v1.2.1
       with:
-        arguments: ${{ steps.info.outputs.name }}
-
-    # save to cache
-
-    - shell: bash
-      if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-      run: |
-        nix flake archive --to /tmp/init --no-check-sigs
-        nix copy --to /tmp/init --no-check-sigs "${{ steps.info.outputs.name }}"
-
-    - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-      if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-      with:
-        path: /tmp/init
-        key: ${{ steps.cache.outputs.cache-primary-key }}
-
-    - shell: bash
-      if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-      run: sudo rm -rf /tmp/init
-
-    # attic setup
+        arguments: ".#${{ inputs.shell }}"
 
     - uses: ryanccn/attic-action@7fbafba3978e86e585cb68a82c08b30f3672b62d # v0.4.0
       if: ${{ inputs.attic_token != '' }}
