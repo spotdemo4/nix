@@ -47,4 +47,4 @@ runs:
         token: ${{ inputs.attic_token }}
 
     - if: ${{ inputs.attic_cache == '' && inputs.attic_token == '' }}
-      uses: spotdemo4/nix-simple-cache-action@be74283a8cc4c00b53a7b1dbdfbd9679bbdf0629 # v1.4.13
+      uses: spotdemo4/nix-simple-cache-action@8081a7be4147aab699a313ec0e53f937183437a7 # v1.5.2
