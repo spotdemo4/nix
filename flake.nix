@@ -171,6 +171,7 @@
     devShells = forSystem ({pkgs, ...}: {
       default = pkgs.mkShell {
         packages = with pkgs; [
+          nix-eval-jobs
           alejandra
           prettier
           (pkgs.writeShellApplication {

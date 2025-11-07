@@ -37,6 +37,16 @@ jobs:
         id: packages
         run: |
           PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" | jq -c ".neededBuilds")
+
+          # Filter out some packages that we don't care about caching
+          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-etc.drv") | not))')
+          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-system-units.drv") | not))')
+          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-unit-home-manager-trev.service.drv") | not))')
+          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-home-manager-generation.drv") | not))')
+          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-home-manager-files.drv") | not))')
+          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-agenix.service.drv") | not))')
+          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-agenix-home-manager-mount-secrets.drv") | not))')
+
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
       - if: ${{ steps.init.outputs.duplicate != 'true' && needs.check.outputs.packages != '[]' }}
