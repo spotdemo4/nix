@@ -14,30 +14,36 @@ jobs:
   check:
     runs-on: ubuntu-latest
     outputs:
+      duplicate: ${{ steps.init.outputs.duplicate }}
       packages: ${{ steps.packages.outputs.packages }}
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@4c5a0fdbf56657702cf8d379b4ba26b10748e8d3 # v1.4.1
+        id: init
+        uses: spotdemo4/nix-init@96046d314347b69d3ac8193d4c0674d2a6ad802b # v1.5.0
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
           attic_cache: nixos
           shell: default
 
-      - name: Run checks
+      - if: ${{ steps.init.outputs.duplicate != 'true' }}
+        name: Run checks
         run: nix flake check
 
-      - name: Find uncached packages
+      - if: ${{ steps.init.outputs.duplicate != 'true' }}
+        name: Find uncached packages
         id: packages
         run: |
           PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.desktop.config.system.build.toplevel" | jq -c ".neededBuilds")
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
-      - name: Cache derivations
+      - if: ${{ steps.init.outputs.duplicate != 'true' && needs.check.outputs.packages != '[]' }}
+        name: Cache derivations
         run: |
           readarray -t DERIVATIONS < <(echo '${{ steps.packages.outputs.packages }}' | jq -r ".[]")
           nix copy --to "file:///tmp/cache/?compression=none" "${DERIVATIONS[@]}"
 
-      - name: Upload derivations
+      - if: ${{ steps.init.outputs.duplicate != 'true' && needs.check.outputs.packages != '[]' }}
+        name: Upload derivations
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: derivations
@@ -45,6 +51,7 @@ jobs:
 
   build:
     needs: check
+    if: ${{ needs.check.outputs.duplicate != 'true' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
