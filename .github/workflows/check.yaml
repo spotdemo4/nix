@@ -85,7 +85,7 @@ jobs:
     if: always()
     steps:
       - name: Successful deploy
-        if: ${{ !(contains(needs.*.result, 'failure')) || needs.check.outputs.packages == '[]' }}
+        if: ${{ !(contains(needs.*.result, 'failure')) || needs.check.outputs.packages == '[]' || needs.check.outputs.duplicate == 'true' }}
         run: exit 0
 
       - name: Failing deploy
