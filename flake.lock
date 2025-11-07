@@ -35,11 +35,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1761391130,
-        "narHash": "sha256-v7NoATfY4fnhkfvpSiznS8J6uV6Nyx7kbri/VSGxC3M=",
+        "lastModified": 1762046771,
+        "narHash": "sha256-baVZvZZN0t9F3fvVhxmQA1/oNykXGd/YhlF19JqCLc8=",
         "owner": "aylur",
         "repo": "ags",
-        "rev": "83f4895c64b93b4a0993c336be159a7c117406c9",
+        "rev": "fe13af2daec716226ccdb3158606a8577853e0ff",
         "type": "github"
       },
       "original": {
@@ -89,16 +89,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1753099410,
-        "narHash": "sha256-5YhKP2ibNfxCcJLa3FbnQ2hFsJuoYIEunmU+t93iaX8=",
-        "owner": "spotdemo4",
+        "lastModified": 1762466416,
+        "narHash": "sha256-YQ6e/INX6uMCPnfxqVZME8xDZvJalItn990BcBE+dj8=",
+        "owner": "aylur",
         "repo": "astal",
-        "rev": "ad675c4a211a9f9886bb0ee1738398cc76b5ebf9",
+        "rev": "ca82b0653a45f701d06afc3aa59d508f87d73500",
         "type": "github"
       },
       "original": {
-        "owner": "spotdemo4",
-        "ref": "fix-monitor-removed",
+        "owner": "aylur",
         "repo": "astal",
         "type": "github"
       }
@@ -756,11 +755,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1761697232,
-        "narHash": "sha256-tWYpCgHfo+dvnh2jlhl6zSPPw/p/ItORheKGnb1xpCg=",
+        "lastModified": 1762475358,
+        "narHash": "sha256-G1sKizLLCuMx004TS7O7v1sEikl4L2Vn1aNdImiQnms=",
         "owner": "spotdemo4",
         "repo": "trevbar",
-        "rev": "b9a5a26a9e1fa8e96f7509fb3f976a5821d13956",
+        "rev": "a8634e2c33dce6d7104e77c1820b687c02e7b1a0",
         "type": "github"
       },
       "original": {
