@@ -37,7 +37,7 @@ jobs:
         id: packages
         run: |
           # Aggregate uncached packages across all hosts
-          readarray -t HOSTS < <(nix flake show --json | jq -c '.nixosConfigurations | keys')
+          readarray -t HOSTS < <(nix flake show --json | jq -c '.nixosConfigurations | keys' | jq -r '.[]')
           for HOST in "${HOSTS[@]}"; do
 
             # Get uncached packages
