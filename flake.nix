@@ -186,12 +186,10 @@
 
       ci = pkgs.mkShell {
         packages = with pkgs; [
-          attic-client
           nix-eval-jobs
           flake-checker
           pkgs.nur.repos.trev.renovate
         ];
-        shellHook = pkgs.nur.repos.trev.shellhook.ref;
       };
     });
 
