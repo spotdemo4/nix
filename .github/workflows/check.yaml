@@ -49,13 +49,13 @@ jobs:
 
           echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
 
-      - if: ${{ steps.init.outputs.duplicate != 'true' && needs.check.outputs.packages != '[]' }}
+      - if: ${{ steps.init.outputs.duplicate != 'true' && steps.packages.output.packages != '[]' }}
         name: Cache derivations
         run: |
           readarray -t DERIVATIONS < <(echo '${{ steps.packages.outputs.packages }}' | jq -r ".[]")
           nix copy --to "file:///tmp/cache/?compression=none" "${DERIVATIONS[@]}"
 
-      - if: ${{ steps.init.outputs.duplicate != 'true' && needs.check.outputs.packages != '[]' }}
+      - if: ${{ steps.init.outputs.duplicate != 'true' && steps.packages.output.packages != '[]' }}
         name: Upload derivations
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
