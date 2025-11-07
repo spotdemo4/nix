@@ -2,7 +2,7 @@ name: vulnerable
 
 on:
   schedule:
-    - cron: "9 9 * * *"
+    - cron: "0 9 * * 0" # every Sunday at 09:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix/.github/actions/init@main
+        uses: spotdemo4/nix-init@4c5a0fdbf56657702cf8d379b4ba26b10748e8d3 # v1.4.1
         with:
-          attic_cache: nixos
           attic_token: ${{ secrets.ATTIC_TOKEN }}
+          attic_cache: nixos
 
       - name: Check flake
         run: flake-checker -f

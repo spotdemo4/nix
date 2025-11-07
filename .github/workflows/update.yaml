@@ -2,7 +2,7 @@ name: update
 
 on:
   schedule:
-    - cron: "9 9 * * *"
+    - cron: "0 9 * * *" # every day at 09:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -13,20 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix/.github/actions/init@main
+        id: init
+        uses: spotdemo4/nix-init@4c5a0fdbf56657702cf8d379b4ba26b10748e8d3 # v1.4.1
         with:
-          attic_cache: nixos
           attic_token: ${{ secrets.ATTIC_TOKEN }}
-
-      - name: Create github token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
-        id: token
-        with:
-          app-id: ${{ vars.CLIENT_ID }}
-          private-key: ${{ secrets.PRIVATE_KEY }}
+          attic_cache: nixos
+          app_id: ${{ vars.CLIENT_ID }}
+          app_key: ${{ secrets.PRIVATE_KEY }}
 
       - name: Renovate
         env:
           RENOVATE_CONFIG_FILE: .github/renovate.json
-          RENOVATE_TOKEN: ${{ steps.token.outputs.token }}
+          RENOVATE_TOKEN: ${{ steps.init.outputs.token }}
         run: renovate
