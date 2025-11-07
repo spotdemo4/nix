@@ -42,6 +42,7 @@
     obs-studio
     obsidian
     onlyoffice-bin_latest
+    parsec-bin
     plexamp
     prismlauncher
     thunderbird
