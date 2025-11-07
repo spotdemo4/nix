@@ -41,7 +41,7 @@
     nemo-fileroller
     obs-studio
     obsidian
-    onlyoffice-bin
+    onlyoffice-desktopeditors
     parsec-bin
     plexamp
     prismlauncher
