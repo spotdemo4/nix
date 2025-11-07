@@ -171,8 +171,8 @@
     devShells = forSystem ({pkgs, ...}: {
       default = pkgs.mkShell {
         packages = with pkgs; [
-          git
           alejandra
+          prettier
           (pkgs.writeShellApplication {
             name = "secret";
             runtimeInputs = [agenix];
@@ -180,12 +180,15 @@
               EDITOR="nano -L" agenix -e "$@"
             '';
           })
+        ];
+        shellHook = pkgs.nur.repos.trev.shellhook.ref;
+      };
 
-          # Actions
+      ci = pkgs.mkShell {
+        packages = with pkgs; [
           attic-client
           nix-eval-jobs
           flake-checker
-          prettier
           pkgs.nur.repos.trev.renovate
         ];
         shellHook = pkgs.nur.repos.trev.shellhook.ref;

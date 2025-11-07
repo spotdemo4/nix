@@ -20,7 +20,7 @@ jobs:
           attic_cache: nixos
           app_id: ${{ vars.CLIENT_ID }}
           app_key: ${{ secrets.PRIVATE_KEY }}
-          shell: default
+          shell: ci
 
       - name: Renovate
         env:
