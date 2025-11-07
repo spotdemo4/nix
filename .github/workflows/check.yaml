@@ -21,6 +21,7 @@ jobs:
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
           attic_cache: nixos
+          shell: default
 
       - name: Run checks
         run: nix flake check
