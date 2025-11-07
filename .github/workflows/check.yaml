@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Initialize
         id: init
-        uses: spotdemo4/nix-init@3a33ff24fb5e788c1173579790eb19d31c27509a # v1.5.4
+        uses: spotdemo4/nix-init@23b6a794a9cb73f2517371c9040d72b6ec25c36c # v1.5.5
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
           attic_cache: nixos
