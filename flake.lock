@@ -613,11 +613,11 @@
         "systems": "systems_3"
       },
       "locked": {
-        "lastModified": 1762480851,
-        "narHash": "sha256-HC746cDumqMofBLve8eUsDD1TE+qmLgR0U1fVcCUggM=",
+        "lastModified": 1762566868,
+        "narHash": "sha256-fkAwZP7OLwrgAgzfE2C5lNFNcPZRnZnoiSOLvmQ36EE=",
         "owner": "nix-community",
         "repo": "nix4vscode",
-        "rev": "b40836840ee310b55045fb8a50793e24b47f857f",
+        "rev": "ce1055f41c6f511703a0098bf7fcecac600653df",
         "type": "github"
       },
       "original": {
