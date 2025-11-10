@@ -37,6 +37,11 @@
       "automerge": true
     },
     {
+      "groupName": "Nix Inputs",
+      "matchManagers": ["nix"],
+      "matchPackageNames": ["*"]
+    },
+    {
       "groupName": "Docker Images",
       "matchManagers": ["custom.regex"],
       "matchDepTypes": ["image"],
