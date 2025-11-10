@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@23b6a794a9cb73f2517371c9040d72b6ec25c36c # v1.5.5
+        uses: spotdemo4/nix-init@b1a572723d705a405747541fad38545a57f03ee3 # v1.7.0
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
           attic_cache: nixos

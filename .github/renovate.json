@@ -9,7 +9,7 @@
 
   // repository
   "extends": ["config:recommended"],
-  "branchPrefix": "github-renovate/",
+  "branchPrefix": "renovate/",
   "dependencyDashboardTitle": "Dependency Dashboard",
   "lockFileMaintenance": {
     "enabled": true,
