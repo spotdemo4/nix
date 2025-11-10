@@ -181,7 +181,6 @@
     devShells = forSystem ({pkgs, ...}: {
       default = pkgs.mkShell {
         packages = with pkgs; [
-          nix-eval-jobs
           alejandra
           prettier
           (pkgs.writeShellApplication {
@@ -197,7 +196,7 @@
 
       ci = pkgs.mkShell {
         packages = with pkgs; [
-          nix-eval-jobs
+          nix-fast-build
           flake-checker
           pkgs.nur.repos.trev.renovate
         ];

@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       duplicate: ${{ steps.init.outputs.duplicate }}
-      packages: ${{ steps.packages.outputs.packages }}
+      hosts: ${{ steps.list_hosts.outputs.hosts }}
     steps:
       - name: Initialize
         id: init
@@ -33,56 +33,19 @@ jobs:
         run: nix flake check
 
       - if: ${{ steps.init.outputs.duplicate != 'true' }}
-        name: Find uncached packages
-        id: packages
+        name: List hosts
+        id: list_hosts
         run: |
-          # Aggregate uncached packages across all hosts
-          readarray -t HOSTS < <(nix flake show --json | jq -c '.nixosConfigurations | keys' | jq -r '.[]')
-          for HOST in "${HOSTS[@]}"; do
-
-            # Get uncached packages
-            HOST_PACKAGES=$(nix-eval-jobs --check-cache-status --flake ".#nixosConfigurations.${HOST}.config.system.build.toplevel" | jq -c ".neededBuilds")
-            echo "${HOST} packages: ${HOST_PACKAGES}"
-
-            # Aggregate packages
-            PACKAGES=$(echo "${PACKAGES:-[]}" | jq -c ". + ${HOST_PACKAGES}")
-
-          done
-
-          # Remove duplicates
-          PACKAGES=$(echo $PACKAGES | jq -c 'unique')
-
-          # Filter out some packages that we don't care about caching
-          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-etc.drv") | not))')
-          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-system-units.drv") | not))')
-          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-unit-home-manager-trev.service.drv") | not))')
-          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-home-manager-generation.drv") | not))')
-          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-home-manager-files.drv") | not))')
-          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-agenix.service.drv") | not))')
-          PACKAGES=$(echo $PACKAGES | jq -c 'map(select(. | contains("-agenix-home-manager-mount-secrets.drv") | not))')
-
-          echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
-
-      - if: ${{ steps.init.outputs.duplicate != 'true' && steps.packages.outputs.packages != '[]' }}
-        name: Cache derivations
-        run: |
-          readarray -t DERIVATIONS < <(echo '${{ steps.packages.outputs.packages }}' | jq -r ".[]")
-          nix copy --to "file:///tmp/cache/?compression=none" "${DERIVATIONS[@]}"
-
-      - if: ${{ steps.init.outputs.duplicate != 'true' && steps.packages.outputs.packages != '[]' }}
-        name: Upload derivations
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
-        with:
-          name: derivations
-          path: /tmp/cache
+          HOSTS=$(nix flake show --json | jq -c '.nixosConfigurations | keys' | jq -c)
+          echo "hosts=$HOSTS" >> $GITHUB_OUTPUT
 
   build:
     needs: check
-    if: ${{ needs.check.outputs.duplicate != 'true' && needs.check.outputs.packages != '[]' }}
+    if: ${{ needs.check.outputs.duplicate != 'true' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package: ${{ fromJSON(needs.check.outputs.packages) }}
+        host: ${{ fromJSON(needs.check.outputs.hosts) }}
       fail-fast: false
     steps:
       - name: Initialize
@@ -90,18 +53,14 @@ jobs:
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
           attic_cache: nixos
+          shell: ci
 
-      - name: Download derivations
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
-        with:
-          name: derivations
-          path: /tmp/cache
-
-      - name: Populate store
-        run: nix copy --from file:///tmp/cache "${{ matrix.package }}"
-
-      - name: Build ${{ matrix.package }}
-        run: nix-store --realise "${{ matrix.package }}"
+      - name: Build packages
+        run: |
+          nix-fast-build \
+            --skip-cached \
+            --no-nom \
+            --flake ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel"
 
   build-status:
     needs: [check, build]
@@ -109,7 +68,7 @@ jobs:
     if: always()
     steps:
       - name: Successful deploy
-        if: ${{ !(contains(needs.*.result, 'failure')) || needs.check.outputs.packages == '[]' || needs.check.outputs.duplicate == 'true' }}
+        if: ${{ !(contains(needs.*.result, 'failure')) || needs.check.outputs.duplicate == 'true' }}
         run: exit 0
 
       - name: Failing deploy
