@@ -4,12 +4,14 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.trev.zip/nixos"
+      "https://install.determinate.systems"
       "https://cache.trev.zip/nur"
       "https://hyprland.cachix.org"
       "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
       "nixos:jjDrT2JC8pbKe14eKmsSKgnNHdGtSk3yqbqxFVRx0MY="
+      "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
       "nur:70xGHUW1+1b8FqBchldaunN//pZNVo6FKuPL4U/n844="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
@@ -18,6 +20,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+
+    # Detsys
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
     # Zen browser
     zen-browser = {
@@ -76,6 +81,7 @@
   outputs = {
     self,
     nixpkgs,
+    determinate,
     agenix,
     catppuccin,
     home-manager,
@@ -112,6 +118,7 @@
               hostname = nixpkgs.lib.removeSuffix ".nix" name;
             };
             modules = [
+              determinate.nixosModules.default
               agenix.nixosModules.default
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
@@ -130,6 +137,7 @@
             hostname = "laptop";
           };
           modules = [
+            determinate.nixosModules.default
             agenix.nixosModules.default
             catppuccin.nixosModules.catppuccin
             home-manager.nixosModules.home-manager
@@ -144,6 +152,7 @@
             hostname = "desktop";
           };
           modules = [
+            determinate.nixosModules.default
             agenix.nixosModules.default
             catppuccin.nixosModules.catppuccin
             home-manager.nixosModules.home-manager
@@ -158,6 +167,7 @@
             hostname = "htpc";
           };
           modules = [
+            determinate.nixosModules.default
             agenix.nixosModules.default
             catppuccin.nixosModules.catppuccin
             home-manager.nixosModules.home-manager
