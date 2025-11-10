@@ -41,7 +41,7 @@
     nemo-fileroller
     obs-studio
     obsidian
-    onlyoffice-bin_latest
+    onlyoffice-desktopeditors
     parsec-bin
     plexamp
     prismlauncher
@@ -82,7 +82,7 @@
     meslo-lgs-nf
     noto-fonts
     noto-fonts-cjk-sans
-    noto-fonts-emoji
+    noto-fonts-color-emoji
   ];
 
   # -- SYSTEM CONFIGURATION --
