@@ -1,5 +1,5 @@
 {
-  description = "Trev's config flake";
+  description = "trev's config flake";
 
   nixConfig = {
     extra-substituters = [
