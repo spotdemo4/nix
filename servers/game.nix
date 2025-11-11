@@ -5,7 +5,6 @@
     ]
     ++ map (x: self + /modules/container/${x}.nix) [
       # Containers to import
-      "minecraft"
       "portainer-agent"
       "traefik-kop"
       "whiteout"
