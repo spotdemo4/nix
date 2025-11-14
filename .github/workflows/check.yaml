@@ -33,7 +33,7 @@ jobs:
         run: nix flake check
 
       - if: ${{ steps.init.outputs.duplicate != 'true' }}
-        name: List hosts
+        name: Get hosts
         id: list_hosts
         run: |
           HOSTS=$(nix flake show --json | jq -c '.nixosConfigurations | keys' | jq -c)
@@ -67,10 +67,9 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Successful deploy
-        if: ${{ !(contains(needs.*.result, 'failure')) || needs.check.outputs.duplicate == 'true' }}
-        run: exit 0
-
-      - name: Failing deploy
-        if: ${{ contains(needs.*.result, 'failure') }}
+      - name: Failed
+        if: ${{ (contains(needs.*.result, 'failure')) || contains(needs.*.result, 'cancelled')) }}
         run: exit 1
+
+      - name: Success
+        run: echo "All jobs completed successfully."
