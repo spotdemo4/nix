@@ -120,7 +120,7 @@ in {
           };
         };
       in {
-        image = "ghcr.io/stuffanthings/qbit_manage:v4.6.3@sha256:64f749b97604d607747fc8b790821cf0317d8107385ea111afe1ed1c9d1d5b11";
+        image = "ghcr.io/stuffanthings/qbit_manage:v4.6.4@sha256:94399ef83005856209dcb61756427f00e4907092b7c44ba8ee8d631c81daef20";
         pull = "missing";
         environments = {
           QBT_WEB_SERVER = "true";
