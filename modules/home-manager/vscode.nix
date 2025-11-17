@@ -15,7 +15,7 @@
           ms-python.python
           usernamehw.errorlens
         ])
-        ++ (inputs.nix4vscode.lib."${pkgs.system}".forVscodeVersion pkgs.vscodium.version [
+        ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion pkgs.vscodium.version [
           "biomejs.biome"
           "bradlc.vscode-tailwindcss"
           "bufbuild.vscode-buf"
@@ -27,7 +27,7 @@
           "svelte.svelte-vscode"
           "tamasfe.even-better-toml"
         ])
-        ++ (inputs.nix4vscode.lib."${pkgs.system}".forOpenVsxVersion pkgs.vscodium.version [
+        ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion pkgs.vscodium.version [
           "sqlfluff.vscode-sqlfluff"
         ]);
       userSettings = {

@@ -31,7 +31,7 @@
     feh
     file-roller
     heroic
-    inputs.trevbar.packages."${system}".default
+    inputs.trevbar.packages."${stdenv.hostPlatform.system}".default
     jetbrains.datagrip
     jetbrains.idea-community-bin
     kdePackages.kdenlive
@@ -57,7 +57,7 @@
     fastfetch
     ffmpeg
     grimblast
-    inputs.agenix.packages."${system}".default
+    inputs.agenix.packages."${stdenv.hostPlatform.system}".default
     jq
     libnotify
     mprocs
