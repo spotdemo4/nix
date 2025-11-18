@@ -354,11 +354,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1763313531,
-        "narHash": "sha256-yvdCYUL85zEDp2NzPUBmaNBXP6KnWEOhAk3j7PTfsKw=",
+        "lastModified": 1763416652,
+        "narHash": "sha256-8EBEEvtzQ11LCxpQHMNEBQAGtQiCu/pqP9zSovDSbNM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "3670a78eee49deebe4825fc8ecc46b172d1a8391",
+        "rev": "ea164b7c9ccdc2321379c2ff78fd4317b4c41312",
         "type": "github"
       },
       "original": {
@@ -462,11 +462,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1763366374,
-        "narHash": "sha256-gY0xTSVor/ELKmDg8mSAo/9NgFM0BReND0nXFMMz1uQ=",
+        "lastModified": 1763427561,
+        "narHash": "sha256-jARAMSNHOZ5RNYlBZ2wlE2pdujedylA5QDBuaQs3Vrk=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "2b14f27ca87aab7e05dac00dd8534cb878236536",
+        "rev": "edc311544a54a06ce4acb759b4d9a30853695452",
         "type": "github"
       },
       "original": {
@@ -736,11 +736,11 @@
         "systems": "systems_3"
       },
       "locked": {
-        "lastModified": 1763344943,
-        "narHash": "sha256-6+kdZTAAPbXcBLErqTMOF7woOkKyvlpUh7ggNbpeAeA=",
+        "lastModified": 1763432149,
+        "narHash": "sha256-UrGx5YLWXRPyyiTfm8DgbI7ywQWdH7Ezxciy/xPcf0s=",
         "owner": "nix-community",
         "repo": "nix4vscode",
-        "rev": "2bd42d56d113c6434b0be65d919ab562e8a27cdf",
+        "rev": "186104fdeb872509fe8fe0821f6260f41872498b",
         "type": "github"
       },
       "original": {
@@ -835,11 +835,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1763369811,
-        "narHash": "sha256-JzGbEE9w/LTHRqeV76rzIBLMGZzhEyBq1h/xLd0bHf8=",
+        "lastModified": 1763455320,
+        "narHash": "sha256-w5xTyd5ZnNZrv4BmLTJXgKHeWo52Rdzu84Sku1OBViU=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "ce3d701015f40c55659133a3bbf9920815c7ed7b",
+        "rev": "d35dc2802e6673c9c95b662b707e74442edfd830",
         "type": "github"
       },
       "original": {
@@ -976,11 +976,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1763339576,
-        "narHash": "sha256-l33YR0XyPZCRnWeXWsmWeP8xf7O5VYcIdsZnJo9HJSY=",
+        "lastModified": 1763425374,
+        "narHash": "sha256-VcXmxWg2eskU4NEMcj3VIFJRggR6YugILIEauGIZ+JQ=",
         "owner": "spotdemo4",
         "repo": "trevbar",
-        "rev": "4a65577f9aff25cce80f46108461c1c252f4c582",
+        "rev": "6e4d6198d268dad25e3bbb1bc275fec39b69c6bd",
         "type": "github"
       },
       "original": {
