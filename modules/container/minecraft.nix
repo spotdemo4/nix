@@ -24,7 +24,7 @@ in {
         "${config.secrets."curseforge".env},target=CF_API_KEY"
       ];
       volumes = [
-        "${volumes.allthemods10.ref}:/data"
+        "${volumes.allthemods10_2.ref}:/data"
       ];
       publishPorts = [
         "25565"
@@ -43,7 +43,7 @@ in {
     };
 
     volumes = {
-      allthemods10 = {};
+      allthemods10_2 = {};
     };
   };
 }
