@@ -7,7 +7,7 @@
       # Containers to import
       "portainer-agent"
       "traefik-kop"
-      "whiteout"
+      "minecraft"
     ];
 
   # Traefik mapping to gateway
