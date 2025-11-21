@@ -37,6 +37,11 @@
           git
           openssh
           libnotify
+          config.nix.package
+          nixos-rebuild.override
+          {
+            nix = config.nix.package;
+          }
         ];
 
         text = builtins.readFile (
