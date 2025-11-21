@@ -29,8 +29,8 @@ in
     ];
   };
 
-  virtualisation.quadlet.containers = {
-    immich.containerConfig = {
+  virtualisation.quadlet = {
+    containers.immich.containerConfig = {
       image = "ghcr.io/imagegenius/immich:2.3.1@sha256:447ef17217ca08588d787249b65a0bb988e942449c8c047515c8da3cab67824d";
       pull = "missing";
       devices = [
