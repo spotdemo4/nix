@@ -1,18 +1,20 @@
 {
-  prefix ? [],
+  prefix ? [ ],
   attrs,
-}: let
-  toLabel = prefix: attrs:
+}:
+let
+  toLabel =
+    prefix: attrs:
     builtins.concatLists (
       builtins.attrValues (
         builtins.mapAttrs (
           k: v:
-            if builtins.isAttrs v
-            then toLabel (prefix ++ [k]) v
-            else ["${builtins.concatStringsSep "." (prefix ++ [k])}=${toString v}"]
-        )
-        attrs
+          if builtins.isAttrs v then
+            toLabel (prefix ++ [ k ]) v
+          else
+            [ "${builtins.concatStringsSep "." (prefix ++ [ k ])}=${toString v}" ]
+        ) attrs
       )
     );
 in
-  toLabel prefix attrs
+toLabel prefix attrs

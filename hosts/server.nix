@@ -5,7 +5,8 @@
   pkgs,
   self,
   ...
-}: {
+}:
+{
   imports =
     map (x: self + /modules/nixos/${x}.nix) [
       # Programs to import
@@ -91,7 +92,7 @@
       inherit inputs self;
     };
     users = {
-      trev.imports = [(self + /users/trev-server.nix)];
+      trev.imports = [ (self + /users/trev-server.nix) ];
     };
   };
 
@@ -118,11 +119,13 @@
           "render"
         ];
         shell = pkgs.zsh;
-        openssh.authorizedKeys = let
-          nixKeys = import (self + /secrets/keys.nix);
-        in {
-          keys = nixKeys.local;
-        };
+        openssh.authorizedKeys =
+          let
+            nixKeys = import (self + /secrets/keys.nix);
+          in
+          {
+            keys = nixKeys.local;
+          };
       };
     };
   };

@@ -2,10 +2,12 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   virtualisation.quadlet = {
     containers.plex.containerConfig = {
       image = "lscr.io/linuxserver/plex:1.42.2@sha256:a4749f3b84dc3f923a7bd4d2bc4ddc1e871b5a656b62022d3827d3d98afd5efd";
@@ -50,11 +52,11 @@ in {
     };
 
     volumes = {
-      plex = {};
+      plex = { };
     };
 
     networks = {
-      plex = {};
+      plex = { };
     };
   };
 }

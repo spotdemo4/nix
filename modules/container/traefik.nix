@@ -3,12 +3,13 @@
   self,
   config,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   inherit (config) secrets;
   toLabel = import (self + /modules/util/label);
 
-  configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
+  configFile = (pkgs.formats.yaml { }).generate "config.yaml" {
     log.level = "WARN";
     api.insecure = true;
     metrics.prometheus = true;
@@ -36,7 +37,7 @@
     entryPoints = {
       http = {
         address = ":80";
-        http3 = {};
+        http3 = { };
         http.redirections.entryPoint = {
           to = "https";
           scheme = "https";
@@ -45,21 +46,21 @@
       https = {
         address = ":443";
         AsDefault = true;
-        http3 = {};
+        http3 = { };
         http.tls = {
           certResolver = "letsencrypt";
           domains = [
             {
               main = "trev.zip";
-              sans = ["*.trev.zip"];
+              sans = [ "*.trev.zip" ];
             }
             {
               main = "trev.kiwi";
-              sans = ["*.trev.kiwi"];
+              sans = [ "*.trev.kiwi" ];
             }
             {
               main = "trev.xyz";
-              sans = ["*.trev.xyz"];
+              sans = [ "*.trev.xyz" ];
             }
           ];
         };
@@ -80,7 +81,8 @@
 
     tls.options.default.minVersion = "VersionTLS12";
   };
-in {
+in
+{
   secrets = {
     "auth-cookie".file = self + /secrets/auth-cookie.age;
     "auth-github".file = self + /secrets/auth-github.age;
@@ -248,11 +250,11 @@ in {
     };
 
     volumes = {
-      traefik_acme = {};
+      traefik_acme = { };
     };
 
     networks = {
-      traefik = {};
+      traefik = { };
     };
   };
 }

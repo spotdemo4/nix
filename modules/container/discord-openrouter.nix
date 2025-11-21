@@ -2,9 +2,11 @@
   self,
   config,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) volumes;
-in {
+in
+{
   secrets = {
     "openrouter".file = self + /secrets/openrouter.age;
     "discord-openrouter".file = self + /secrets/discord-openrouter.age;
@@ -29,7 +31,7 @@ in {
     };
 
     volumes = {
-      discord-openrouter = {};
+      discord-openrouter = { };
     };
   };
 }

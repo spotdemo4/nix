@@ -17,7 +17,7 @@ jobs:
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
           attic_cache: nixos
-          shell: ci
+          shell: vulnerable
 
       - name: Check flake
         run: flake-checker -f

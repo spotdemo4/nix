@@ -1,17 +1,17 @@
-{self, ...}: {
-  imports =
-    [
-      (self + /hosts/lxc/configuration.nix)
-    ]
-    ++ map (x: self + /modules/container/${x}.nix) [
-      # Containers to import
-      "context7"
-      "discord-openrouter"
-      "intel-gpu-exporter"
-      "ollama"
-      "portainer-agent"
-      "traefik-kop"
-    ];
+{ self, ... }:
+{
+  imports = [
+    (self + /hosts/lxc/configuration.nix)
+  ]
+  ++ map (x: self + /modules/container/${x}.nix) [
+    # Containers to import
+    "context7"
+    "discord-openrouter"
+    "intel-gpu-exporter"
+    "ollama"
+    "portainer-agent"
+    "traefik-kop"
+  ];
 
   # Traefik mapping to gateway
   traefik-kop = {

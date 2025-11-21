@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   programs.waybar = {
     enable = true;
     settings = {
@@ -108,7 +109,11 @@
           "format-source" = " {volume}%";
           "format-source-muted" = "";
           "format-icons" = {
-            "default" = ["" "" ""];
+            "default" = [
+              ""
+              ""
+              ""
+            ];
           };
           "on-click" = "pavucontrol";
         };

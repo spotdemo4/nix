@@ -2,10 +2,12 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   virtualisation.quadlet = {
     containers.stalwart.containerConfig = {
       image = "docker.io/stalwartlabs/stalwart:v0.14.1-alpine@sha256:1ff67f6d1fc41e689e09cc5c224bdd57711e9eb3be27b78a00c196354b9ec445";
@@ -41,11 +43,11 @@ in {
     };
 
     volumes = {
-      stalwart = {};
+      stalwart = { };
     };
 
     networks = {
-      stalwart = {};
+      stalwart = { };
     };
   };
 }

@@ -4,7 +4,8 @@
   ...
 }:
 # https://docs.podman.io/en/stable/markdown/podman-run.1.html#secret-secret-opt-opt
-with lib; {
+with lib;
+{
   options = {
     file = mkOption {
       type = types.str;

@@ -5,7 +5,8 @@
   pkgs,
   self,
   ...
-}: {
+}:
+{
   imports = map (x: self + /modules/nixos/${x}.nix) [
     # Programs to import
     "clickhouse"
@@ -173,14 +174,16 @@
         "render"
       ];
       shell = pkgs.zsh;
-      openssh.authorizedKeys = let
-        nixKeys = import (self + /secrets/keys.nix);
-      in {
-        keys = nixKeys.local;
-      };
+      openssh.authorizedKeys =
+        let
+          nixKeys = import (self + /secrets/keys.nix);
+        in
+        {
+          keys = nixKeys.local;
+        };
     };
   };
-  age.identityPaths = ["/home/trev/.ssh/id_ed25519"];
+  age.identityPaths = [ "/home/trev/.ssh/id_ed25519" ];
 
   # Update script
   update = {

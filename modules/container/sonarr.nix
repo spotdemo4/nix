@@ -2,10 +2,12 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   virtualisation.quadlet = {
     containers.sonarr.containerConfig = {
       image = "lscr.io/linuxserver/sonarr:4.0.16@sha256:4b8a853b76337cd5de5f69961e23b7d0792ce7bf0a8be083dd7202ef670bfc34";
@@ -39,11 +41,11 @@ in {
     };
 
     volumes = {
-      sonarr = {};
+      sonarr = { };
     };
 
     networks = {
-      sonarr = {};
+      sonarr = { };
     };
   };
 }

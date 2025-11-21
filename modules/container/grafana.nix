@@ -2,10 +2,12 @@
   self,
   config,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) volumes networks;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   secrets."grafana".file = self + /secrets/grafana.age;
 
   virtualisation.quadlet = {
@@ -39,7 +41,7 @@ in {
     };
 
     volumes = {
-      grafana = {};
+      grafana = { };
     };
   };
 }

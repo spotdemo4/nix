@@ -3,7 +3,8 @@
   self,
   config,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) volumes networks;
   toLabel = import (self + /modules/util/label);
 
@@ -26,7 +27,8 @@
     # start ollama service
     /llm/ollama/ollama serve
   '';
-in {
+in
+{
   secrets."openwebui".file = self + /secrets/openwebui.age;
 
   virtualisation.quadlet = {
@@ -108,12 +110,12 @@ in {
     };
 
     volumes = {
-      ollama = {};
-      open-webui = {};
+      ollama = { };
+      open-webui = { };
     };
 
     networks = {
-      ipex-llm = {};
+      ipex-llm = { };
     };
   };
 }

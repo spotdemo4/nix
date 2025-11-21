@@ -2,12 +2,14 @@
   self,
   config,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) containers volumes networks;
   inherit (config) mysql;
   toLabel = import (self + /modules/util/label);
-in {
-  imports = [./mysql.nix];
+in
+{
+  imports = [ ./mysql.nix ];
 
   secrets = {
     "mysql-roundcube".file = self + /secrets/mysql-roundcube.age;
@@ -75,11 +77,11 @@ in {
     };
 
     volumes = {
-      roundcube = {};
+      roundcube = { };
     };
 
     networks = {
-      roundcube = {};
+      roundcube = { };
     };
   };
 }

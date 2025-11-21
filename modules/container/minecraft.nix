@@ -2,10 +2,12 @@
   self,
   config,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) volumes;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   secrets."curseforge".file = self + /secrets/curseforge.age;
 
   virtualisation.quadlet = {
@@ -43,7 +45,7 @@ in {
     };
 
     volumes = {
-      allthemods10_2 = {};
+      allthemods10_2 = { };
     };
   };
 }

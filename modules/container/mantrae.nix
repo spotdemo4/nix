@@ -2,11 +2,13 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   inherit (config) secrets;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   secrets = {
     "mantrae-password".file = self + /secrets/mantrae-password.age;
     "mantrae-secret".file = self + /secrets/mantrae-secret.age;
@@ -44,7 +46,7 @@ in {
     };
 
     volumes = {
-      mantrae = {};
+      mantrae = { };
     };
   };
 }

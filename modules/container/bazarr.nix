@@ -2,10 +2,12 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   virtualisation.quadlet = {
     containers.bazarr.containerConfig = {
       image = "lscr.io/linuxserver/bazarr:1.5.3@sha256:a42fef2a5ffa1dca8714e12892ba0b8de5c6c513f1bcdb1ffe4143e715cffb45";
@@ -40,7 +42,7 @@ in {
     };
 
     volumes = {
-      bazarr = {};
+      bazarr = { };
     };
   };
 }

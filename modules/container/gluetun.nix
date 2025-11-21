@@ -4,61 +4,69 @@
   self,
   ...
 }:
-with lib; let
+with lib;
+let
   inherit (config.virtualisation.quadlet) volumes;
-in {
+in
+{
   options.gluetun = mkOption {
-    default = {};
+    default = { };
     description = "Gluetun container configurations";
 
-    type = types.attrsOf (types.submodule ({name, ...}: {
-      options = {
-        ports = mkOption {
-          type = types.listOf types.str;
-          default = ["8080:8080"];
-          description = ''
-            The ports to publish from the container
-          '';
-        };
+    type = types.attrsOf (
+      types.submodule (
+        { name, ... }:
+        {
+          options = {
+            ports = mkOption {
+              type = types.listOf types.str;
+              default = [ "8080:8080" ];
+              description = ''
+                The ports to publish from the container
+              '';
+            };
 
-        environments = mkOption {
-          type = types.attrs;
-          example = {
-            VPN_SERVICE_PROVIDER = "protonvpn";
-            VPN_TYPE = "wireguard";
-            SERVER_CITIES = "Chicago,Toronto";
-            PORT_FORWARD_ONLY = "on";
-            VPN_PORT_FORWARDING = "on";
+            environments = mkOption {
+              type = types.attrs;
+              example = {
+                VPN_SERVICE_PROVIDER = "protonvpn";
+                VPN_TYPE = "wireguard";
+                SERVER_CITIES = "Chicago,Toronto";
+                PORT_FORWARD_ONLY = "on";
+                VPN_PORT_FORWARDING = "on";
+              };
+            };
+
+            networks = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+              description = ''
+                Additional networks to connect the container to
+              '';
+            };
+
+            secret = mkOption {
+              type = types.submodule (import (self + /modules/util/secrets/secret.nix));
+              description = ''
+                Wireguard private key secret
+              '';
+            };
+
+            ref = mkOption {
+              type = types.str;
+              description = "Reference name for the mysql container";
+              default = "gluetun-${name}";
+            };
           };
-        };
-
-        networks = mkOption {
-          type = types.listOf types.str;
-          default = [];
-          description = ''
-            Additional networks to connect the container to
-          '';
-        };
-
-        secret = mkOption {
-          type = types.submodule (import (self + /modules/util/secrets/secret.nix));
-          description = ''
-            Wireguard private key secret
-          '';
-        };
-
-        ref = mkOption {
-          type = types.str;
-          description = "Reference name for the mysql container";
-          default = "gluetun-${name}";
-        };
-      };
-    }));
+        }
+      )
+    );
   };
 
-  config = mkIf (config.gluetun != {}) {
+  config = mkIf (config.gluetun != { }) {
     virtualisation.quadlet = {
-      containers = mapAttrs' (name: opts:
+      containers = mapAttrs' (
+        name: opts:
         nameValuePair "gluetun-${name}" {
           containerConfig = {
             image = "docker.io/qmcgaw/gluetun:latest@sha256:7beb357f2b9e0e181812b6f408812e00ef85334bf2dd1b9b6d2df6c5b0bf8957";
@@ -81,10 +89,10 @@ in {
             environments = opts.environments;
             publishPorts = opts.ports;
           };
-        })
-      config.gluetun;
+        }
+      ) config.gluetun;
 
-      volumes = mapAttrs' (name: _: nameValuePair "gluetun-${name}" {}) config.gluetun;
+      volumes = mapAttrs' (name: _: nameValuePair "gluetun-${name}" { }) config.gluetun;
     };
   };
 }

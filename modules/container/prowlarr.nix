@@ -2,10 +2,12 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   virtualisation.quadlet = {
     containers.prowlarr.containerConfig = {
       image = "lscr.io/linuxserver/prowlarr:2.3.0@sha256:3dd3a316f60ea4e6714863286549a6ccaf0b8cf4efe5578ce3fe0e85475cb1cf";
@@ -39,7 +41,7 @@ in {
     };
 
     volumes = {
-      prowlarr = {};
+      prowlarr = { };
     };
   };
 }

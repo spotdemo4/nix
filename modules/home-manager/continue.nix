@@ -3,8 +3,9 @@
   pkgs,
   self,
   ...
-}: let
-  configFile = (pkgs.formats.yaml {}).generate "config.yaml" {
+}:
+let
+  configFile = (pkgs.formats.yaml { }).generate "config.yaml" {
     name = "TrevChat";
     version = "0.0.1";
     schema = "v1";
@@ -43,7 +44,8 @@
       }
     ];
   };
-in {
+in
+{
   age.secrets."continue".file = self + /secrets/continue.age;
   age.secrets."continue".path = config.home.homeDirectory + "/.continue/.env";
 

@@ -7,7 +7,8 @@
   pkgs,
   modulesPath,
   ...
-}: {
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -20,10 +21,17 @@
     options root=/dev/nvme0n1p4 rw add_efi_memmap
   '';
 
-  boot.initrd.availableKernelModules = ["xhci_pci" "thunderbolt" "nvme" "usb_storage" "usbhid" "sd_mod"];
-  boot.initrd.kernelModules = [];
-  boot.kernelModules = ["kvm-intel"];
-  boot.extraModulePackages = [];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "thunderbolt"
+    "nvme"
+    "usb_storage"
+    "usbhid"
+    "sd_mod"
+  ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-intel" ];
+  boot.extraModulePackages = [ ];
 
   hardware.graphics = {
     enable = true;
@@ -32,22 +40,28 @@
       vpl-gpu-rt # Enable QSV
     ];
   };
-  environment.sessionVariables = {LIBVA_DRIVER_NAME = "iHD";}; # Force intel-media-driver
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD";
+  }; # Force intel-media-driver
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/b626872d-bf85-45b6-ab70-b5a7de35e5bc";
     fsType = "ext4";
   };
 
-  boot.initrd.luks.devices."luks-887ce24b-4846-41c5-acc2-9f1c79580fe1".device = "/dev/disk/by-uuid/887ce24b-4846-41c5-acc2-9f1c79580fe1";
+  boot.initrd.luks.devices."luks-887ce24b-4846-41c5-acc2-9f1c79580fe1".device =
+    "/dev/disk/by-uuid/887ce24b-4846-41c5-acc2-9f1c79580fe1";
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/F48E-D536";
     fsType = "vfat";
-    options = ["fmask=0022" "dmask=0022"];
+    options = [
+      "fmask=0022"
+      "dmask=0022"
+    ];
   };
 
-  swapDevices = [];
+  swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

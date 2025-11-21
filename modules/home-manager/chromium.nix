@@ -1,12 +1,13 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.chromium = {
     enable = true;
     package = pkgs.chromium;
     extensions = [
-      {id = "ddkjiahejlhfcafbddmgiahcphecmpfh";} # UBlock Origin Lite
-      {id = "nngceckbapebfimnlniiiahkandclblb";} # Bitwarden
-      {id = "mnjggcdmjocbbbhaepdhchncahnbgone";} # Sponsorblock
-      {id = "clngdbkpkpeebahjckkjfobafhncgmne";} # Stylus
+      { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # UBlock Origin Lite
+      { id = "nngceckbapebfimnlniiiahkandclblb"; } # Bitwarden
+      { id = "mnjggcdmjocbbbhaepdhchncahnbgone"; } # Sponsorblock
+      { id = "clngdbkpkpeebahjckkjfobafhncgmne"; } # Stylus
     ];
   };
 

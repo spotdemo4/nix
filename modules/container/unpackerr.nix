@@ -2,10 +2,12 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks;
   inherit (config) secrets;
-in {
+in
+{
   secrets = {
     "radarr".file = self + /secrets/radarr.age;
     "sonarr".file = self + /secrets/sonarr.age;

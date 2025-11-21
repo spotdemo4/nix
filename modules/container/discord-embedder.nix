@@ -2,10 +2,12 @@
   self,
   config,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) volumes;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   secrets = {
     "embedder-discord".file = self + /secrets/embedder-discord.age;
     "embedder-instagram".file = self + /secrets/embedder-instagram.age;
@@ -64,7 +66,7 @@ in {
     };
 
     volumes = {
-      discord-embedder = {};
+      discord-embedder = { };
     };
   };
 }

@@ -1,6 +1,8 @@
-{config, ...}: let
+{ config, ... }:
+let
   inherit (config.virtualisation.quadlet) containers volumes;
-in {
+in
+{
   virtualisation.quadlet = {
     containers = {
       rustdesk-hbbs = {
@@ -13,7 +15,7 @@ in {
           publishPorts = [
             "21115:21115" # NAT type test
             "21116:21116/tcp" # hole punching and connection service
-            "21116:21116/udp" #  ID registration and heartbeat service
+            "21116:21116/udp" # ID registration and heartbeat service
           ];
           exec = "hbbs";
         };
@@ -39,7 +41,7 @@ in {
     };
 
     volumes = {
-      rustdesk = {};
+      rustdesk = { };
     };
   };
 }

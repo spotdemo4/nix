@@ -2,7 +2,8 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   programs.vscode = {
     enable = true;
     package = pkgs.vscodium;
@@ -15,21 +16,27 @@
           ms-python.python
           usernamehw.errorlens
         ])
-        ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion pkgs.vscodium.version [
-          "biomejs.biome"
-          "bradlc.vscode-tailwindcss"
-          "bufbuild.vscode-buf"
-          "dbaeumer.vscode-eslint"
-          "esbenp.prettier-vscode"
-          "github.copilot-chat"
-          "github.copilot"
-          "mkhl.direnv"
-          "svelte.svelte-vscode"
-          "tamasfe.even-better-toml"
-        ])
-        ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion pkgs.vscodium.version [
-          "sqlfluff.vscode-sqlfluff"
-        ]);
+        ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion
+          pkgs.vscodium.version
+          [
+            "biomejs.biome"
+            "bradlc.vscode-tailwindcss"
+            "bufbuild.vscode-buf"
+            "dbaeumer.vscode-eslint"
+            "esbenp.prettier-vscode"
+            "github.copilot-chat"
+            "github.copilot"
+            "mkhl.direnv"
+            "svelte.svelte-vscode"
+            "tamasfe.even-better-toml"
+          ]
+        )
+        ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion
+          pkgs.vscodium.version
+          [
+            "sqlfluff.vscode-sqlfluff"
+          ]
+        );
       userSettings = {
         "workbench.editor.labelFormat" = "short";
         "workbench.tree.indent" = 16;

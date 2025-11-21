@@ -4,7 +4,8 @@
   self,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     (self + /hosts/client.nix)
     ./hardware-configuration.nix
@@ -32,7 +33,7 @@
     };
     users = {
       trev = {
-        imports = [(self + /users/trev.nix)];
+        imports = [ (self + /users/trev.nix) ];
         wayland.windowManager.hyprland.settings.exec-once = [
           "steam"
         ];

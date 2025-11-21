@@ -4,50 +4,58 @@
   self,
   ...
 }:
-with lib; let
+with lib;
+let
   inherit (config.virtualisation.quadlet) volumes;
-in {
+in
+{
   options.postgresql = mkOption {
-    default = {};
+    default = { };
     description = "postgresql container configuration";
 
-    type = types.attrsOf (types.submodule ({name, ...}: {
-      options = {
-        database = mkOption {
-          type = types.str;
-        };
+    type = types.attrsOf (
+      types.submodule (
+        { name, ... }:
+        {
+          options = {
+            database = mkOption {
+              type = types.str;
+            };
 
-        username = mkOption {
-          type = types.str;
-          default = "root";
-        };
+            username = mkOption {
+              type = types.str;
+              default = "root";
+            };
 
-        password = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-        };
+            password = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+            };
 
-        passwordSecret = mkOption {
-          type = types.nullOr (types.submodule (import (self + /modules/util/secrets/secret.nix)));
-          default = null;
-        };
+            passwordSecret = mkOption {
+              type = types.nullOr (types.submodule (import (self + /modules/util/secrets/secret.nix)));
+              default = null;
+            };
 
-        networks = mkOption {
-          type = types.listOf types.str;
-          default = [];
-        };
+            networks = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+            };
 
-        ref = mkOption {
-          type = types.str;
-          default = "postgresql-${name}";
-        };
-      };
-    }));
+            ref = mkOption {
+              type = types.str;
+              default = "postgresql-${name}";
+            };
+          };
+        }
+      )
+    );
   };
 
-  config = mkIf (config.postgresql != {}) {
+  config = mkIf (config.postgresql != { }) {
     virtualisation.quadlet = {
-      containers = mapAttrs' (name: opts:
+      containers = mapAttrs' (
+        name: opts:
         nameValuePair "postgresql-${name}" {
           containerConfig = {
             image = "docker.io/postgres:18.1-alpine@sha256:154ea39af68ff30dec041cd1f1b5600009993724c811dbadde54126eb10bedd1";
@@ -68,10 +76,10 @@ in {
             ];
             networks = opts.networks;
           };
-        })
-      config.postgresql;
+        }
+      ) config.postgresql;
 
-      volumes = mapAttrs' (name: _: nameValuePair "postgresql-${name}" {}) config.postgresql;
+      volumes = mapAttrs' (name: _: nameValuePair "postgresql-${name}" { }) config.postgresql;
     };
   };
 }

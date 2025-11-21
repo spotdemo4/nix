@@ -3,7 +3,8 @@
   self,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) containers networks;
   inherit (config) secrets postgresql;
   toLabel = import (self + /modules/util/label);
@@ -14,8 +15,9 @@
     pgPass = postgresql."attic".password;
     pgHost = postgresql."attic".ref;
   };
-in {
-  imports = [(self + /modules/container/postgresql.nix)];
+in
+{
+  imports = [ (self + /modules/container/postgresql.nix) ];
 
   secrets."attic".file = self + /secrets/attic.age;
 
@@ -64,7 +66,7 @@ in {
     };
 
     networks = {
-      attic = {};
+      attic = { };
     };
   };
 }

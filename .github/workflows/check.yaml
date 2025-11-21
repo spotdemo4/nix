@@ -26,7 +26,7 @@ jobs:
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
           attic_cache: nixos
-          shell: ci
+          shell: check
 
       - if: ${{ steps.init.outputs.duplicate != 'true' }}
         name: Run checks
@@ -53,7 +53,7 @@ jobs:
         with:
           attic_token: ${{ secrets.ATTIC_TOKEN }}
           attic_cache: nixos
-          shell: ci
+          shell: check
 
       - name: Build packages
         run: |

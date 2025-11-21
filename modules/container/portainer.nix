@@ -2,10 +2,12 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   virtualisation.quadlet = {
     containers.portainer = {
       containerConfig = {
@@ -45,7 +47,7 @@ in {
     };
 
     volumes = {
-      portainer = {};
+      portainer = { };
     };
   };
 }

@@ -4,7 +4,8 @@
   self,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     (self + /hosts/client.nix)
     ./hardware-configuration.nix
@@ -27,7 +28,7 @@
       inherit inputs self;
     };
     users = {
-      trev.imports = [(self + /users/trev.nix)];
+      trev.imports = [ (self + /users/trev.nix) ];
     };
   };
 

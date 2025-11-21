@@ -2,24 +2,24 @@
   inputs,
   self,
   ...
-}: {
+}:
+{
   # Imports
-  imports =
-    [
-      inputs.catppuccin.homeModules.catppuccin
-      inputs.agenix.homeManagerModules.default
-    ]
-    ++ map (x: self + /modules/home-manager/${x}.nix) [
-      # Home Manager modules to import
-      "bat"
-      "btop"
-      "eza"
-      "fzf"
-      "direnv"
-      "starship"
-      "zoxide"
-      "zsh"
-    ];
+  imports = [
+    inputs.catppuccin.homeModules.catppuccin
+    inputs.agenix.homeManagerModules.default
+  ]
+  ++ map (x: self + /modules/home-manager/${x}.nix) [
+    # Home Manager modules to import
+    "bat"
+    "btop"
+    "eza"
+    "fzf"
+    "direnv"
+    "starship"
+    "zoxide"
+    "zsh"
+  ];
 
   home.username = "trev";
   home.homeDirectory = "/home/trev";

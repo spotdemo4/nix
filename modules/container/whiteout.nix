@@ -2,9 +2,11 @@
   self,
   config,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) volumes;
-in {
+in
+{
   secrets."whiteout".file = self + /secrets/whiteout.age;
 
   virtualisation.quadlet = {
@@ -25,7 +27,7 @@ in {
     };
 
     volumes = {
-      whiteout = {};
+      whiteout = { };
     };
   };
 }

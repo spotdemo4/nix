@@ -81,41 +81,42 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    determinate,
-    agenix,
-    catppuccin,
-    home-manager,
-    nur,
-    quadlet-nix,
-    ...
-  } @ inputs: let
-    build-systems = [
-      "x86_64-linux"
-      "aarch64-linux"
-      "aarch64-darwin"
-    ];
-    forSystem = f:
-      nixpkgs.lib.genAttrs build-systems (
-        system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      determinate,
+      agenix,
+      catppuccin,
+      home-manager,
+      nur,
+      quadlet-nix,
+      ...
+    }@inputs:
+    let
+      build-systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
+      forSystem =
+        f:
+        nixpkgs.lib.genAttrs build-systems (
+          system:
           f {
             inherit system;
             pkgs = import nixpkgs {
               inherit system;
-              overlays = [nur.overlays.default];
+              overlays = [ nur.overlays.default ];
               config.allowUnfree = true;
             };
           }
-      );
+        );
 
-    servers =
-      nixpkgs.lib.mapAttrs' (
+      servers = nixpkgs.lib.mapAttrs' (
         name: value:
-          nixpkgs.lib.nameValuePair
-          (nixpkgs.lib.removeSuffix ".nix" name)
-          (nixpkgs.lib.nixosSystem {
+        nixpkgs.lib.nameValuePair (nixpkgs.lib.removeSuffix ".nix" name) (
+          nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs self;
               hostname = nixpkgs.lib.removeSuffix ".nix" name;
@@ -128,12 +129,12 @@
               quadlet-nix.nixosModules.quadlet
               ./servers/${name}
             ];
-          })
-      )
-      (builtins.readDir ./servers);
-  in rec {
-    nixosConfigurations =
-      {
+          }
+        )
+      ) (builtins.readDir ./servers);
+    in
+    {
+      nixosConfigurations = {
         laptop = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs self;
@@ -181,57 +182,66 @@
       }
       // servers;
 
-    devShells = forSystem ({pkgs, ...}: {
-      default = pkgs.mkShell {
-        packages = with pkgs; [
-          alejandra
-          prettier
-          (pkgs.writeShellApplication {
-            name = "secret";
-            runtimeInputs = [agenix];
-            text = ''
-              EDITOR="nano -L" agenix -e "$@"
+      devShells = forSystem (
+        { pkgs, ... }:
+        {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              nixfmt
+              nixfmt-tree
+              prettier
+              (pkgs.writeShellApplication {
+                name = "secret";
+                runtimeInputs = [ agenix ];
+                text = ''
+                  EDITOR="nano -L" agenix -e "$@"
+                '';
+              })
+            ];
+            shellHook = pkgs.nur.repos.trev.shellhook.ref;
+          };
+
+          check = pkgs.mkShell {
+            packages = with pkgs; [
+              nix-fast-build
+            ];
+          };
+
+          update = pkgs.mkShell {
+            packages = [
+              pkgs.nur.repos.trev.renovate
+            ];
+          };
+
+          vulnerable = pkgs.mkShell {
+            packages = with pkgs; [
+              flake-checker
+            ];
+          };
+        }
+      );
+
+      checks = forSystem (
+        { pkgs, ... }:
+        pkgs.nur.repos.trev.lib.mkChecks {
+          lint = {
+            src = ./.;
+            deps = with pkgs; [
+              nixfmt-tree
+              prettier
+              action-validator
+              pkgs.nur.repos.trev.renovate
+            ];
+            script = ''
+              treefmt --ci
+              prettier --check .
+              action-validator .github/**/*.yaml
+              renovate-config-validator .github/renovate.json
             '';
-          })
-        ];
-        shellHook = pkgs.nur.repos.trev.shellhook.ref;
-      };
+          };
+        }
+      );
 
-      ci = pkgs.mkShell {
-        packages = with pkgs; [
-          nix-fast-build
-          flake-checker
-          pkgs.nur.repos.trev.renovate
-        ];
-      };
-    });
-
-    checks = forSystem ({
-      pkgs,
-      system,
-      ...
-    }:
-      pkgs.nur.repos.trev.lib.mkChecks {
-        lint = {
-          src = ./.;
-          deps = with pkgs; [
-            alejandra
-            prettier
-            action-validator
-            pkgs.nur.repos.trev.renovate
-          ];
-          script = ''
-            alejandra -c .
-            prettier --check .
-            action-validator .github/**/*.yaml
-            renovate-config-validator .github/renovate.json
-          '';
-        };
-      }
-      // {
-        shell = devShells."${system}".default;
-      });
-
-    formatter = forSystem ({pkgs, ...}: pkgs.alejandra);
-  };
+      formatter = forSystem ({ pkgs, ... }: pkgs.nixfmt-tree);
+    };
 }

@@ -7,16 +7,33 @@
   pkgs,
   modulesPath,
   ...
-}: {
+}:
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod"];
-  boot.initrd.kernelModules = ["vfio_pci" "vfio" "vfio_iommu_type1"];
-  boot.kernelModules = ["kvm-intel"];
-  boot.extraModulePackages = [];
-  boot.kernelParams = ["pci=realloc" "intel_iommu=on" "iommu=pt" "vfio-pci.ids=8086:1912"];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+  ];
+  boot.initrd.kernelModules = [
+    "vfio_pci"
+    "vfio"
+    "vfio_iommu_type1"
+  ];
+  boot.kernelModules = [ "kvm-intel" ];
+  boot.extraModulePackages = [ ];
+  boot.kernelParams = [
+    "pci=realloc"
+    "intel_iommu=on"
+    "iommu=pt"
+    "vfio-pci.ids=8086:1912"
+  ];
   boot.extraModprobeConfig = ''
     softdep drm pre: vfio-pci
   '';
@@ -37,10 +54,13 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/801B-2F3A";
     fsType = "vfat";
-    options = ["fmask=0022" "dmask=0022"];
+    options = [
+      "fmask=0022"
+      "dmask=0022"
+    ];
   };
 
-  swapDevices = [];
+  swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

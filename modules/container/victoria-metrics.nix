@@ -3,11 +3,12 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
 
-  configFile = (pkgs.formats.yaml {}).generate "prometheus.yml" {
+  configFile = (pkgs.formats.yaml { }).generate "prometheus.yml" {
     scrape_configs = [
       {
         job_name = "cadvisor";
@@ -46,7 +47,8 @@
       }
     ];
   };
-in {
+in
+{
   virtualisation.quadlet = {
     containers.victoria-metrics.containerConfig = {
       image = "docker.io/victoriametrics/victoria-metrics:v1.130.0@sha256:e724328a2b22bfbe7c193002cf2bf99fa78a06f1967f6de15b621f5fee621dbc";
@@ -80,11 +82,11 @@ in {
     };
 
     networks = {
-      victoria-metrics = {};
+      victoria-metrics = { };
     };
 
     volumes = {
-      victoria-metrics = {};
+      victoria-metrics = { };
     };
   };
 }

@@ -2,10 +2,12 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   virtualisation.quadlet = {
     containers.overseerr.containerConfig = {
       image = "lscr.io/linuxserver/overseerr:latest@sha256:19fe26c92c48136136478790725d680cedfae0bf9cb0f25c6a44ab3008ad6e6a";
@@ -39,7 +41,7 @@ in {
     };
 
     volumes = {
-      overseerr = {};
+      overseerr = { };
     };
   };
 }

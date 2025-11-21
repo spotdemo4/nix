@@ -2,10 +2,12 @@
   config,
   self,
   ...
-}: let
+}:
+let
   inherit (config.virtualisation.quadlet) networks volumes;
   toLabel = import (self + /modules/util/label);
-in {
+in
+{
   virtualisation.quadlet = {
     containers.tautulli.containerConfig = {
       image = "lscr.io/linuxserver/tautulli:latest@sha256:f8b84be159b6e413db2b60426154522ceaf33d7190489c160de415501d5e722e";
@@ -38,7 +40,7 @@ in {
     };
 
     volumes = {
-      tautulli = {};
+      tautulli = { };
     };
   };
 }

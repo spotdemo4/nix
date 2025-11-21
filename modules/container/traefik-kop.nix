@@ -2,7 +2,8 @@
   lib,
   config,
   ...
-}: {
+}:
+{
   options.traefik-kop = {
     enable = lib.mkEnableOption "enable traefik kop";
 
