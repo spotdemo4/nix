@@ -93,6 +93,7 @@ in
 
     volumes = {
       immich = { };
+      postgresql-immich = { };
     };
 
     networks = {
