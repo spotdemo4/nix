@@ -43,6 +43,7 @@ let
           scheme = "https";
         };
       };
+
       https = {
         address = ":443";
         AsDefault = true;
@@ -62,14 +63,30 @@ let
               main = "trev.xyz";
               sans = [ "*.trev.xyz" ];
             }
+            {
+              main = "trev.rs";
+              sans = [ "*.trev.rs" ];
+            }
           ];
         };
       };
+
       minecraft = {
         address = ":25565";
       };
+
       plex = {
         address = ":32400";
+      };
+
+      monero-p2p = {
+        address = ":18080";
+      };
+      monero-zmq = {
+        address = ":18084";
+      };
+      monero-rpc = {
+        address = ":18089";
       };
     };
 
@@ -111,6 +128,9 @@ in
             "443:443" # https
             "32400:32400" # plex
             "25565:25565" # minecraft
+            "18080:18080" # monero p2p
+            "18084:18084" # monero zmq
+            "18089:18089" # monero rpc
           ];
           networks = [
             networks."traefik".ref
