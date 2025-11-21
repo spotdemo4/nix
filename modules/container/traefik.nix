@@ -88,6 +88,13 @@ let
       monero-rpc = {
         address = ":18089";
       };
+
+      p2pool-stratum = {
+        address = ":3333";
+      };
+      p2pool-p2p = {
+        address = ":37889";
+      };
     };
 
     certificatesResolvers.letsencrypt.acme = {
@@ -131,6 +138,8 @@ in
             "18080:18080" # monero p2p
             "18084:18084" # monero zmq
             "18089:18089" # monero rpc
+            "3333:3333" # p2pool stratum
+            "37889:37889" # p2pool p2p
           ];
           networks = [
             networks."traefik".ref
