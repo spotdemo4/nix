@@ -39,5 +39,13 @@ with lib;
       '';
       default = "${name},type=mount";
     };
+
+    path = mkOption {
+      type = types.str;
+      description = ''
+        Path where the decrypted secret will be mounted
+      '';
+      default = "/run/agenix/${name}";
+    };
   };
 }

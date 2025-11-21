@@ -10,6 +10,7 @@
   ++ map (x: self + /modules/container/${x}) [
     "attic"
     "monerod"
+    "copyparty"
   ];
 
   # Traefik mapping to gateway
