@@ -37,8 +37,6 @@
           git
           openssh
           libnotify
-          nix
-          nixos-rebuild
         ];
 
         text = builtins.readFile (
