@@ -67,6 +67,10 @@ let
               main = "trev.rs";
               sans = [ "*.trev.rs" ];
             }
+            {
+              main = "trev.コム";
+              sans = [ "*.trev.コム" ];
+            }
           ];
         };
       };
