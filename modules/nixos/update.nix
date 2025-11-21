@@ -29,19 +29,18 @@
 
   config =
     let
+      nixos-rebuild = pkgs.nixos-rebuild.override { nix = config.nix.package.out; };
+
       updater = pkgs.writeShellApplication {
         name = "update";
 
-        runtimeInputs = with pkgs; [
-          sudo
-          git
-          openssh
-          libnotify
+        runtimeInputs = [
+          pkgs.sudo
+          pkgs.git
+          pkgs.openssh
+          pkgs.libnotify
           config.nix.package
-          nixos-rebuild.override
-          {
-            nix = config.nix.package;
-          }
+          nixos-rebuild
         ];
 
         text = builtins.readFile (
