@@ -43,19 +43,21 @@ in
           traefik = {
             enable = true;
             tcp = {
+              services = {
+                p2pool-stratum.loadbalancer.server.port = 3333;
+                p2pool-p2p.loadbalancer.server.port = 37889;
+              };
               routers = {
                 p2pool-stratum = {
                   rule = "HostSNI(`*`)";
                   entryPoints = "p2pool-stratum";
+                  service = "p2pool-stratum";
                 };
                 p2pool-p2p = {
                   rule = "HostSNI(`*`)";
                   entryPoints = "p2pool-p2p";
+                  service = "p2pool-p2p";
                 };
-              };
-              services = {
-                p2pool-stratum.loadbalancer.server.port = 3333;
-                p2pool-p2p.loadbalancer.server.port = 37889;
               };
             };
           };
