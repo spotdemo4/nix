@@ -25,9 +25,5 @@ in
     system.activationScripts = mapAttrs (name: _: ''
       ${dockerBin} secret create --replace=true ${name} ${config.age.secrets."${name}".path}
     '') cfg;
-
-    secrets = mapAttrs (name: _: {
-      path = config.age.secrets."${name}".path;
-    }) cfg;
   };
 }

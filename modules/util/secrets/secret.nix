@@ -1,6 +1,7 @@
 {
   lib,
   name,
+  config,
   ...
 }:
 # https://docs.podman.io/en/stable/markdown/podman-run.1.html#secret-secret-opt-opt
@@ -45,7 +46,7 @@ with lib;
       description = ''
         Path where the decrypted secret will be mounted
       '';
-      default = "/run/agenix/${name}";
+      default = config.age.secrets."${name}".path;
     };
   };
 }
