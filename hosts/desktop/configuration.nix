@@ -40,4 +40,7 @@
 
   # Latest kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  # Try out eval cores
+  nix.settings.eval-cores = 0;
 }
