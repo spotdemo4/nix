@@ -23,13 +23,13 @@ in
         networks."monero".ref
       ];
       exec = [
-        "--wallet \"48cRLf4fjuQVjzBg2JmAhzCL3QyakZ84tRr6aWKWaLVRHjszar566X8bUEbdZ8hgRC8N8ES69V8RqGJQjpVrK94XUs93Mtw\""
-        "--stratum \"0.0.0.0:3333\""
-        "--p2p \"0.0.0.0:37889\""
-        "--zmq-port \"18084\""
-        "--loglevel \"0\""
-        "--host \"monerod\""
-        "--rpc-port \"18089\""
+        "--wallet 48cRLf4fjuQVjzBg2JmAhzCL3QyakZ84tRr6aWKWaLVRHjszar566X8bUEbdZ8hgRC8N8ES69V8RqGJQjpVrK94XUs93Mtw"
+        "--stratum 0.0.0.0:3333"
+        "--p2p 0.0.0.0:37889"
+        "--zmq-port 18084"
+        "--loglevel 0"
+        "--host monerod"
+        "--rpc-port 18089"
       ];
       labels = toLabel {
         attrs = {
