@@ -39,18 +39,25 @@ in
         attrs = {
           traefik = {
             enable = true;
-            tcp.routers = {
-              monero-p2p = {
-                rule = "HostSNI(`*`)";
-                entryPoints = "monero-p2p";
+            tcp = {
+              routers = {
+                monero-p2p = {
+                  rule = "HostSNI(`*`)";
+                  entryPoints = "monero-p2p";
+                };
+                monero-zmq = {
+                  rule = "HostSNI(`*`)";
+                  entryPoints = "monero-zmq";
+                };
+                monero-rpc = {
+                  rule = "HostSNI(`*`)";
+                  entryPoints = "monero-rpc";
+                };
               };
-              monero-zmq = {
-                rule = "HostSNI(`*`)";
-                entryPoints = "monero-zmq";
-              };
-              monero-rpc = {
-                rule = "HostSNI(`*`)";
-                entryPoints = "monero-rpc";
+              services = {
+                monero-p2p.loadbalancer.server.port = 18080;
+                monero-zmq.loadbalancer.server.port = 18084;
+                monero-rpc.loadbalancer.server.port = 18089;
               };
             };
           };

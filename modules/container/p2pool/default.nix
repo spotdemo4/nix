@@ -42,14 +42,20 @@ in
         attrs = {
           traefik = {
             enable = true;
-            tcp.routers = {
-              p2pool-stratum = {
-                rule = "HostSNI(`*`)";
-                entryPoints = "p2pool-stratum";
+            tcp = {
+              routers = {
+                p2pool-stratum = {
+                  rule = "HostSNI(`*`)";
+                  entryPoints = "p2pool-stratum";
+                };
+                p2pool-p2p = {
+                  rule = "HostSNI(`*`)";
+                  entryPoints = "p2pool-p2p";
+                };
               };
-              p2pool-p2p = {
-                rule = "HostSNI(`*`)";
-                entryPoints = "p2pool-p2p";
+              services = {
+                p2pool-stratum.loadbalancer.server.port = 3333;
+                p2pool-p2p.loadbalancer.server.port = 37889;
               };
             };
           };
