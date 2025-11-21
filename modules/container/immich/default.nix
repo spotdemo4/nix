@@ -83,6 +83,9 @@ in
         volumes = [
           "${volumes."postgresql-immich".ref}:/var/lib/postgresql"
         ];
+        networks = [
+          networks."immich".ref
+        ];
         environments = {
           POSTGRES_USER = "postgres";
           POSTGRES_PASSWORD = "postgres";
