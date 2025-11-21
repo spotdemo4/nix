@@ -5,6 +5,7 @@
   ...
 }:
 let
+  inherit (config.virtualisation.quadlet) volumes;
   inherit (config) secrets;
   toLabel = import (self + /modules/util/label);
 
@@ -18,29 +19,36 @@ in
     "copyparty".file = self + /secrets/copyparty.age;
   };
 
-  virtualisation.quadlet.containers.copyparty.containerConfig = {
-    image = "ghcr.io/9001/copyparty-ac:1.19.20@sha256:81bae1a42e0ad879231f84eeb88f6a8b7dc943e84c1fb838dd44ccfac0fffc5a";
-    pull = "missing";
-    user = "1000:1000";
-    secrets = [
-      "${secrets."copyparty".mount},target=${accounts}"
-    ];
-    volumes = [
-      "/mnt/files:/w"
-      "${cfg}:/cfg/copyparty.conf"
-    ];
-    publishPorts = [
-      "3923"
-    ];
-    labels = toLabel {
-      attrs = {
-        traefik = {
-          enable = true;
-          http.routers.copyparty = {
-            rule = "HostRegexp(`trev.zip`)";
+  virtualisation.quadlet = {
+    containers.copyparty.containerConfig = {
+      image = "ghcr.io/9001/copyparty-ac:1.19.20@sha256:81bae1a42e0ad879231f84eeb88f6a8b7dc943e84c1fb838dd44ccfac0fffc5a";
+      pull = "missing";
+      user = "1000:1000";
+      secrets = [
+        "${secrets."copyparty".mount},target=${accounts}"
+      ];
+      volumes = [
+        "/mnt/files:/w"
+        "${cfg}:/cfg/copyparty.conf"
+        "${volumes."copyparty".ref}:/db"
+      ];
+      publishPorts = [
+        "3923"
+      ];
+      labels = toLabel {
+        attrs = {
+          traefik = {
+            enable = true;
+            http.routers.copyparty = {
+              rule = "HostRegexp(`trev.zip`)";
+            };
           };
         };
       };
+    };
+
+    volumes = {
+      copyparty = { };
     };
   };
 }
