@@ -29,14 +29,14 @@ in
         "0.0.0.0:3333"
         "--p2p"
         "0.0.0.0:37889"
-        "--zmq-port"
-        "18084"
-        "--loglevel"
-        "0"
         "--host"
         "monerod"
+        "--zmq-port"
+        "18084"
         "--rpc-port"
         "18089"
+        "--loglevel"
+        "0"
       ];
       labels = toLabel {
         attrs = {

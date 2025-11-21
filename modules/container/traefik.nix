@@ -85,15 +85,12 @@ let
       monero-zmq = {
         address = ":18084";
       };
-      monero-rpc = {
-        address = ":18089";
-      };
 
-      p2pool-stratum = {
-        address = ":3333";
-      };
       p2pool-p2p = {
         address = ":37889";
+      };
+      p2pool-stratum = {
+        address = ":3333";
       };
     };
 
@@ -137,9 +134,8 @@ in
             "25565:25565" # minecraft
             "18080:18080" # monero p2p
             "18084:18084" # monero zmq
-            "18089:18089" # monero rpc
-            "3333:3333" # p2pool stratum
             "37889:37889" # p2pool p2p
+            "3333:3333" # p2pool stratum
           ];
           networks = [
             networks."traefik".ref

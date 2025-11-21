@@ -43,7 +43,6 @@ in
               services = {
                 monero-p2p.loadbalancer.server.port = 18080;
                 monero-zmq.loadbalancer.server.port = 18084;
-                monero-rpc.loadbalancer.server.port = 18089;
               };
               routers = {
                 monero-p2p = {
@@ -56,11 +55,13 @@ in
                   entryPoints = "monero-zmq";
                   service = "monero-zmq";
                 };
-                monero-rpc = {
-                  rule = "HostSNI(`*`)";
-                  entryPoints = "monero-rpc";
-                  service = "monero-rpc";
-                };
+              };
+            };
+            http = {
+              services.monero-rpc.loadbalancer.server.port = 18089;
+              routers.monero-rpc = {
+                rule = "HostRegexp(`xmr.trev.(xyz|zip|kiwi)`)";
+                service = "monero-rpc";
               };
             };
           };
