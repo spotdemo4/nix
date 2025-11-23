@@ -23,7 +23,7 @@ in
     containers = {
       immich = {
         containerConfig = {
-          image = "ghcr.io/imagegenius/immich:2.3.1@sha256:447ef17217ca08588d787249b65a0bb988e942449c8c047515c8da3cab67824d";
+          image = "ghcr.io/imagegenius/immich:2.3.1@sha256:9f3dc3f8149b227c3910a8cbdb38531cb42c20eb69a79494689f78282c628206";
           pull = "missing";
           devices = [
             "/dev/dri/card0:/dev/dri/card0"
