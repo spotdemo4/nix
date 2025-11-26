@@ -7,6 +7,7 @@
   programs.vscode = {
     enable = true;
     package = pkgs.vscodium;
+    mutableExtensionsDir = false;
     profiles.default = {
       extensions =
         (with pkgs.vscode-extensions; [
@@ -47,6 +48,7 @@
         "svelte.enable-ts-plugin" = true;
         "nix.enableLanguageServer" = true;
         "nix.serverPath" = "nixd";
+        "chat.disableAIFeatures" = false;
 
         # https://github.com/nix-community/vscode-nix-ide/issues/482
         "nix.hiddenLanguageServerErrors" = [
@@ -54,7 +56,6 @@
         ];
       };
     };
-    mutableExtensionsDir = false;
   };
 
   catppuccin.vscode.profiles.default = {
@@ -65,8 +66,9 @@
 
   # Required packages
   home.packages = with pkgs; [
+    biome
     nixd
-    alejandra
+    nixfmt
     sqlfluff
   ];
 }
