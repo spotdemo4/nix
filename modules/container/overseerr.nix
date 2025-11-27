@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.overseerr.containerConfig = {
-      image = "lscr.io/linuxserver/overseerr:latest@sha256:19fe26c92c48136136478790725d680cedfae0bf9cb0f25c6a44ab3008ad6e6a";
+      image = "lscr.io/linuxserver/overseerr:latest@sha256:feddc11664639721d4e220d161ce5eb8fd2483d2e252e3e119570abcce3c7474";
       pull = "missing";
       environments = {
         PUID = "1000";
