@@ -76,7 +76,7 @@ in
       };
 
       postgresql-immich.containerConfig = {
-        image = "ghcr.io/immich-app/postgres:18-vectorchord0.5.3@sha256:84fb60d4bfe0556761d36319e0e12c7635911ab50f74353119a74653b462b750";
+        image = "ghcr.io/immich-app/postgres:18-vectorchord0.5.3@sha256:0b437116382a150b4428b11b63236f95d9481df2f35e2d2206541c0a504c30af";
         pull = "missing";
         healthCmd = "pg_isready -U postgres -d immich";
         notify = "healthy";
