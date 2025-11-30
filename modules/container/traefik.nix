@@ -264,7 +264,7 @@ in
       };
 
       traefik-certs-dumper.containerConfig = {
-        image = "ghcr.io/kereis/traefik-certs-dumper:1.8.15@sha256:0d2eaf3a713030262493eab52bd279f1199dc1ecd155f3f327f8e33c7835167a";
+        image = "ghcr.io/kereis/traefik-certs-dumper:1.8.16@sha256:ccd4d02680ecf9ae719d3e55b5e9ab365bcca2fc7c9c6bf10c0d4cb16001547e";
         pull = "missing";
         user = "1000";
         group = "1000";
