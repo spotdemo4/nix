@@ -57,6 +57,7 @@
     claude-code
     fastfetch
     ffmpeg
+    file
     grimblast
     inputs.agenix.packages."${stdenv.hostPlatform.system}".default
     jq
