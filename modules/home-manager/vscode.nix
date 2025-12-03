@@ -28,6 +28,7 @@
             "github.copilot-chat"
             "github.copilot"
             "mkhl.direnv"
+            "rust-lang.rust-analyzer"
             "svelte.svelte-vscode"
             "tamasfe.even-better-toml"
           ]
