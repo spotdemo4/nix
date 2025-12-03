@@ -54,6 +54,9 @@
         "nix.hiddenLanguageServerErrors" = [
           "textDocument/definition"
         ];
+
+        # disable biome by default
+        "biome.enabled" = false;
       };
     };
   };
