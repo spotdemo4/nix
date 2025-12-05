@@ -31,6 +31,7 @@
             "rust-lang.rust-analyzer"
             "svelte.svelte-vscode"
             "tamasfe.even-better-toml"
+            "timonwong.shellcheck"
           ]
         )
         ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion
