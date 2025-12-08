@@ -120,7 +120,7 @@ in
     containers = {
       traefik = {
         containerConfig = {
-          image = "docker.io/traefik:v3.6.2@sha256:aaf0f6185419a50c74651448c1a5bf4606bd2d2ddb7b8749eed505d55bf8b8ea";
+          image = "docker.io/traefik:v3.6.4@sha256:c5bd185c41ba3dbb42cf8a1b9fbdc368bdc96f90c8e598134879935f64e7a7f1";
           pull = "missing";
           secrets = [
             "${secrets."traefik".mount},target=/conf/secret.yml"
@@ -264,7 +264,7 @@ in
       };
 
       traefik-certs-dumper.containerConfig = {
-        image = "ghcr.io/kereis/traefik-certs-dumper:1.8.16@sha256:ccd4d02680ecf9ae719d3e55b5e9ab365bcca2fc7c9c6bf10c0d4cb16001547e";
+        image = "ghcr.io/kereis/traefik-certs-dumper:1.8.17@sha256:c64ab91963ea51bcaf251b53d1ddffe329361d162c16cae9ec3016d7fc64d74f";
         pull = "missing";
         user = "1000";
         group = "1000";
