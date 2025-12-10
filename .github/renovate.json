@@ -38,8 +38,7 @@
     },
     {
       "groupName": "Nix Inputs",
-      "matchManagers": ["nix"],
-      "matchPackageNames": ["*"]
+      "matchManagers": ["nix"]
     },
     {
       "groupName": "Docker Images",
@@ -49,8 +48,7 @@
     },
     {
       "groupName": "GitHub Actions",
-      "matchManagers": ["github-actions"],
-      "matchPackageNames": ["*"]
+      "matchManagers": ["github-actions"]
     }
   ]
 }
