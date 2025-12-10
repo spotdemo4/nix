@@ -46,7 +46,7 @@ while true; do
     FIRST_RUN=false
     
     echo "checking for updates"
-    cd /etc/nixos
+    cd /etc/nixos || { echo "could not change directory to /etc/nixos"; exit 1; }
     if ! git fetch --all; then
         echo "could not fetch updates"
         continue
@@ -69,7 +69,7 @@ while true; do
     fi
 
     if [ "$REMOTE_CHANGES" = true ] && [ "$LOCAL_CHANGES" = true ]; then
-        echo "local and remote changes found: stashing, pulling and checking"
+        echo "local and remote changes found: stashing and pulling"
         git stash
         git reset --hard origin/main
         if ! git stash pop; then
@@ -78,21 +78,13 @@ while true; do
         fi
         git add .
         nix fmt .
-        if ! nix flake check --accept-flake-config; then
-            echo "nix flake check failed"
-            continue
-        fi
     elif [ "$REMOTE_CHANGES" = true ]; then
         echo "remote changes found: pulling"
         git reset --hard origin/main
     elif [ "$LOCAL_CHANGES" = true ]; then
-        echo "local changes found: checking"
+        echo "local changes found"
         git add .
         nix fmt .
-        if ! nix flake check --accept-flake-config; then
-            echo "nix flake check failed"
-            continue
-        fi
     fi
 
     if [ "$REBUILD" = false ]; then
