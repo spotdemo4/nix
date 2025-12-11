@@ -11,7 +11,7 @@ in
   virtualisation.quadlet = {
     containers.portainer = {
       containerConfig = {
-        image = "docker.io/portainer/portainer-ce:2.36.0@sha256:ec77ae8c4b36a31e00e8e6740bbdaf624f36f637c1ef1cdf3da50a63668aa483";
+        image = "docker.io/portainer/portainer-ce:2.37.0@sha256:b48a491b8d2838c7ee98da6e00e32a04d0347a26466f48b20fb11e484e28f32a";
         pull = "missing";
         volumes = [
           "/run/podman/podman.sock:/var/run/docker.sock"
