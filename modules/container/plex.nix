@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.plex.containerConfig = {
-      image = "lscr.io/linuxserver/plex:1.42.2@sha256:ab81c7313fb5dc4d1f9562e5bbd5e5877a8a3c5ca6b9f9fff3437b5096a2b123";
+      image = "lscr.io/linuxserver/plex:1.42.2@sha256:7cc7874ad35b105fe1fe4d99ef27be9c5eb2f4115ccf91af5a7283cae0024599";
       pull = "missing";
       devices = [
         "/dev/dri/card0:/dev/dri/card0"
