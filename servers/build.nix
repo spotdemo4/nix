@@ -3,15 +3,17 @@
   self,
   ...
 }:
+let
+  toImports = import self + /modules/util/import;
+in
 {
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ map (x: self + /modules/container/${x}.nix) [
-    # Containers to import
-    "portainer-agent"
+  ++ toImports "container" [
     "gitea-runner"
     "github-runner"
+    "portainer-agent"
   ];
 
   # Github runners

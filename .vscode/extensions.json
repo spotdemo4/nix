@@ -1,3 +1,7 @@
 {
-  "recommendations": ["jnoortheen.nix-ide", "prettier.prettier-vscode", "redhat.vscode-yaml"]
+  "recommendations": [
+    "jnoortheen.nix-ide",
+    "prettier.prettier-vscode",
+    "redhat.vscode-yaml"
+  ]
 }

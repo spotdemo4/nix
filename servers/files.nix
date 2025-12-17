@@ -1,16 +1,17 @@
 { self, ... }:
+let
+  toImports = import self + /modules/util/import;
+in
 {
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ map (x: self + /modules/container/${x}.nix) [
-    "portainer-agent"
-    "traefik-kop"
-  ]
-  ++ map (x: self + /modules/container/${x}) [
+  ++ toImports "container" [
     "attic"
     "copyparty"
     "immich"
+    "portainer-agent"
+    "traefik-kop"
   ];
 
   # Traefik mapping to gateway
