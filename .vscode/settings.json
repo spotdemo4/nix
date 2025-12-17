@@ -1,5 +1,9 @@
 {
   "editor.formatOnSave": true,
+  "files.associations": {
+    "renovate.json": "jsonc",
+    ".envrc.project": "shellscript"
+  },
 
   // nix
   "nix.enableLanguageServer": true,
@@ -8,10 +12,6 @@
     "editor.defaultFormatter": "jnoortheen.nix-ide"
   },
 
-  // actions
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "files.associations": {
-    "renovate.json": "jsonc",
-    ".envrc.project": "shellscript"
-  }
+  // yaml & json
+  "editor.defaultFormatter": "prettier.prettier-vscode"
 }
