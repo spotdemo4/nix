@@ -2,6 +2,19 @@
 
 http:
   middlewares:
+    cors:
+      headers:
+        customResponseHeaders:
+          Access-Control-Allow-Origin: "*"
+          Access-Control-Allow-Methods: "*"
+          Access-Control-Allow-Headers: "*"
+
+    limit:
+      rateLimit:
+        average: 100
+        period: 1s
+        burst: 200
+
     auth-trev:
       basicAuth:
         removeHeader: true
@@ -12,9 +25,14 @@ http:
         removeHeader: true
         usersFile: "@user-admin@"
 
-    cors:
-      headers:
-        customResponseHeaders:
-          Access-Control-Allow-Origin: "*"
-          Access-Control-Allow-Methods: "*"
-          Access-Control-Allow-Headers: "*"
+    secure-trev:
+      chain:
+        middlewares:
+          - limit
+          - auth-trev
+
+    secure-admin:
+      chain:
+        middlewares:
+          - limit
+          - auth-admin

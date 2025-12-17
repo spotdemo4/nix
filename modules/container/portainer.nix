@@ -27,7 +27,7 @@ in
               http = {
                 routers.portainer = {
                   rule = "HostRegexp(`portainer.trev.(zip|kiwi)`)";
-                  middlewares = "auth-trev@file";
+                  middlewares = "secure-trev@file";
                 };
                 services.portainer.loadbalancer.server = {
                   scheme = "http";

@@ -34,7 +34,7 @@ in
             enable = true;
             http.routers.bazarr = {
               rule = "HostRegexp(`bazarr.trev.(zip|kiwi)`)";
-              middlewares = "auth-admin@file";
+              middlewares = "secure-admin@file";
             };
           };
         };

@@ -73,7 +73,7 @@ in
               http.routers.api = {
                 rule = "HostRegexp(`traefik.trev.(zip|kiwi)`)";
                 service = "api@internal";
-                middlewares = "auth-trev@file";
+                middlewares = "secure-trev@file";
               };
             };
           };

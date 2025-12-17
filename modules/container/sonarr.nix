@@ -33,7 +33,7 @@ in
             enable = true;
             http.routers.sonarr = {
               rule = "HostRegexp(`sonarr.trev.(zip|kiwi)`)";
-              middlewares = "auth-admin@file";
+              middlewares = "secure-admin@file";
             };
           };
         };

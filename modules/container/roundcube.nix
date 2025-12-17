@@ -61,7 +61,7 @@ in
                 enable = true;
                 http.routers.roundcube = {
                   rule = "HostRegexp(`roundcube.trev.(zip|kiwi)`)";
-                  middlewares = "auth-admin@file";
+                  middlewares = "secure-admin@file";
                 };
               };
             };

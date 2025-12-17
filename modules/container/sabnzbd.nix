@@ -34,7 +34,7 @@ in
             enable = true;
             http.routers.sabnzbd = {
               rule = "HostRegexp(`sabnzbd.trev.(zip|kiwi)`)";
-              middlewares = "auth-trev@file";
+              middlewares = "secure-trev@file";
             };
           };
         };
