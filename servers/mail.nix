@@ -6,14 +6,12 @@ in
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ toImports (
-    self "container" [
-      "portainer-agent"
-      "roundcube"
-      "stalwart"
-      "traefik-kop"
-    ]
-  );
+  ++ (toImports self "container" [
+    "portainer-agent"
+    "roundcube"
+    "stalwart"
+    "traefik-kop"
+  ]);
 
   # Traefik mapping to gateway
   traefik-kop = {

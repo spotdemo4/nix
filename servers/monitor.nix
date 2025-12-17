@@ -6,14 +6,12 @@ in
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ toImports (
-    self "container" [
-      "grafana"
-      "portainer-agent"
-      "traefik-kop"
-      "victoria-metrics"
-    ]
-  );
+  ++ (toImports self "container" [
+    "grafana"
+    "portainer-agent"
+    "traefik-kop"
+    "victoria-metrics"
+  ]);
 
   # Traefik mapping to gateway
   traefik-kop = {
