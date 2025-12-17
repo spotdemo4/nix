@@ -52,7 +52,7 @@ in
             "/run/podman/podman.sock:/var/run/docker.sock"
             "${configFile}:/etc/traefik/traefik.yml"
             "${providerFile}:/config/provider.yaml"
-            "${volumes."traefik_acme".ref}:/etc/traefik/acme"
+            "${volumes."acme".ref}:/etc/traefik/acme"
           ];
           publishPorts = [
             "80:80" # http
@@ -94,7 +94,7 @@ in
     };
 
     volumes = {
-      traefik_acme = { };
+      acme = { };
     };
 
     networks = {

@@ -11,9 +11,3 @@ http:
       digestAuth:
         removeHeader: true
         usersFile: "@user-admin@"
-
-tcp:
-  serversTransports:
-    proxy:
-      proxyProtocol:
-        version: 2
