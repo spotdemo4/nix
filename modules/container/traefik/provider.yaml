@@ -11,3 +11,10 @@ http:
       basicAuth:
         removeHeader: true
         usersFile: "@user-admin@"
+
+    cors:
+      headers:
+        customResponseHeaders:
+          Access-Control-Allow-Origin: "*"
+          Access-Control-Allow-Methods: "*"
+          Access-Control-Allow-Headers: "*"

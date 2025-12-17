@@ -62,6 +62,7 @@ in
               routers.monero-rpc = {
                 rule = "HostRegexp(`xmr.trev.(xyz|zip|kiwi)`)";
                 service = "monero-rpc";
+                middlewares = "cors@file";
               };
             };
           };
