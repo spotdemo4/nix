@@ -15,13 +15,8 @@ in
       volumes = [
         "/mnt/monero:/home/monero"
       ];
-      publishPorts = [
-        "18080:18080" # p2p
-        "18084:18084" # zmq
-        "18089:18089" # rpc
-      ];
       networks = [
-        networks."monero".ref
+        networks."traefik".ref
       ];
       exec = [
         "--rpc-restricted-bind-ip=0.0.0.0"
@@ -68,10 +63,6 @@ in
           };
         };
       };
-    };
-
-    networks = {
-      monero = { };
     };
   };
 }

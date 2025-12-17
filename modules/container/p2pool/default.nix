@@ -15,12 +15,8 @@ in
       volumes = [
         "${volumes."p2pool".ref}:/home/p2pool"
       ];
-      publishPorts = [
-        "3333:3333" # stratum
-        "37889:37889" # p2p
-      ];
       networks = [
-        networks."monero".ref
+        networks."traefik".ref
       ];
       exec = [
         "--wallet"
