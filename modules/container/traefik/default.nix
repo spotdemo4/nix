@@ -10,6 +10,7 @@ let
   toLabel = import (self + /modules/util/label);
 
   configFile = pkgs.replaceVars ./config.yaml {
+    acme = "/etc/traefik/acme";
     file = "/config/provider.yaml";
     redis = valkey."traefik".ref;
   };
@@ -43,7 +44,6 @@ in
           image = "docker.io/traefik:v3.6.4@sha256:c5bd185c41ba3dbb42cf8a1b9fbdc368bdc96f90c8e598134879935f64e7a7f1";
           pull = "missing";
           secrets = [
-            "${providerFile}:/config/provider.yaml"
             "${secrets."cloudflare-dns".env},target=CF_DNS_API_TOKEN"
             "${secrets."user-admin".mount},target=/secrets/user-admin"
             "${secrets."user-trev".mount},target=/secrets/user-trev"
@@ -51,7 +51,8 @@ in
           volumes = [
             "/run/podman/podman.sock:/var/run/docker.sock"
             "${configFile}:/etc/traefik/traefik.yml"
-            "${volumes."traefik_acme".ref}:/etc/traefik/acme"
+            "${providerFile}:/config/provider.yaml"
+            "${volumes."acme".ref}:/etc/traefik/acme"
           ];
           publishPorts = [
             "80:80" # http
@@ -93,7 +94,7 @@ in
     };
 
     volumes = {
-      traefik_acme = { };
+      acme = { };
     };
 
     networks = {

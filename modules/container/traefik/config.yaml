@@ -82,7 +82,7 @@ certificatesResolvers:
   letsencrypt:
     acme:
       email: "me@trev.xyz"
-      storage: "/etc/traefik/acme/acme.json"
+      storage: "%acme%/acme.json"
       dnsChallenge:
         provider: "cloudflare"
 
