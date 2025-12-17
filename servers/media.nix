@@ -1,6 +1,6 @@
 { self, ... }:
 let
-  toImports = import self + /modules/util/import;
+  toImports = import (self + /modules/util/import);
 in
 {
   imports = [
