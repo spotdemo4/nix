@@ -48,18 +48,26 @@
         "explorer.compactFolders" = false;
         "editor.fontFamily" = "Fira Code";
         "editor.fontLigatures" = true;
-        "svelte.enable-ts-plugin" = true;
-        "nix.enableLanguageServer" = true;
-        "nix.serverPath" = "nixd";
+
+        # https://github.com/microsoft/vscode/issues/237819#issuecomment-3265147980
         "chat.disableAIFeatures" = false;
 
+        # jnoortheen.nix-ide
+        "nix.enableLanguageServer" = true;
+        "nix.serverPath" = "nixd";
         # https://github.com/nix-community/vscode-nix-ide/issues/482
         "nix.hiddenLanguageServerErrors" = [
           "textDocument/definition"
         ];
 
-        # disable biome by default
+        # biomejs.biome
         "biome.enabled" = false;
+
+        # redhat.vscode-yaml
+        "redhat.telemetry.enabled" = false;
+
+        # svelte.svelte-vscode
+        "svelte.enable-ts-plugin" = true;
       };
     };
   };
