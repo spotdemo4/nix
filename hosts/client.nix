@@ -111,6 +111,7 @@
         "root"
         "trev"
       ];
+      fallback = true;
     };
 
     gc = {

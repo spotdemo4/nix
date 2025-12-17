@@ -45,6 +45,7 @@
         "nix-command"
         "flakes"
       ];
+      fallback = true;
     };
 
     gc = {
