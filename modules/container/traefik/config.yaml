@@ -82,8 +82,3 @@ certificatesResolvers:
       storage: "@acme@/acme.json"
       dnsChallenge:
         provider: "cloudflare"
-
-tls:
-  options:
-    default:
-      minVersion: "VersionTLS12"

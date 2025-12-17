@@ -11,3 +11,12 @@ http:
       digestAuth:
         removeHeader: true
         usersFile: "@user-admin@"
+
+tls:
+  stores:
+    default:
+      defaultGeneratedCert:
+        resolver: "letsencrypt"
+  options:
+    default:
+      minVersion: "VersionTLS12"
