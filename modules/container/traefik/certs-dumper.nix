@@ -16,7 +16,7 @@ in
         "CAP_DAC_OVERRIDE"
       ];
       volumes = [
-        "${volumes."acme".ref}:/traefik"
+        "${volumes."traefik_acme".ref}:/traefik"
         "/mnt/certs:/output"
       ];
     };

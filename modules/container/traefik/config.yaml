@@ -28,6 +28,7 @@ providers:
 entryPoints:
   http:
     address: ":80"
+    http3: {}
     http:
       redirections:
         entryPoint:
@@ -61,18 +62,14 @@ entryPoints:
           - main: "trev.コム"
             sans:
               - "*.trev.コム"
-
   minecraft:
     address: ":25565"
-
   plex:
     address: ":32400"
-
   monero-p2p:
     address: ":18080"
   monero-zmq:
     address: ":18084"
-
   p2pool-p2p:
     address: ":37889"
   p2pool-stratum:
