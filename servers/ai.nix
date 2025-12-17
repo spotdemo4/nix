@@ -6,14 +6,14 @@ in
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ (toImports self "container" [
+  ++ toImports "container" [
     "context7"
     "discord-openrouter"
     "intel-gpu-exporter"
     "ollama"
     "portainer-agent"
     "traefik-kop"
-  ]);
+  ];
 
   # Traefik mapping to gateway
   traefik-kop = {

@@ -6,13 +6,13 @@ in
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ (toImports self "container" [
+  ++ toImports "container" [
     "attic"
     "copyparty"
     "immich"
     "portainer-agent"
     "traefik-kop"
-  ]);
+  ];
 
   # Traefik mapping to gateway
   traefik-kop = {

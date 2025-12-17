@@ -1,9 +1,9 @@
-self: type: modules:
+type: modules:
 
 map (
   module:
-  if builtins.pathExists self + /modules/${type}/${module}.nix then
-    self + /modules/${type}/${module}.nix
+  if builtins.pathExists ../../${type}/${module}.nix then
+    ../../${type}/${module}.nix
   else
-    self + /modules/${type}/${module}
+    ../../${type}/${module}
 ) modules

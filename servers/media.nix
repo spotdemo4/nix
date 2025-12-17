@@ -6,7 +6,7 @@ in
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ (toImports self "container" [
+  ++ toImports "container" [
     "bazarr"
     "discord-embedder"
     "overseerr"
@@ -20,7 +20,7 @@ in
     "tautulli"
     "traefik-kop"
     "unpackerr"
-  ]);
+  ];
 
   # Traefik mapping to gateway
   traefik-kop = {

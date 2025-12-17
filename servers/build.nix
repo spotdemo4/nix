@@ -10,11 +10,11 @@ in
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ (toImports self "container" [
+  ++ toImports "container" [
     "gitea-runner"
     "github-runner"
     "portainer-agent"
-  ]);
+  ];
 
   # Github runners
   github-runner = {

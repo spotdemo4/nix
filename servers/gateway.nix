@@ -6,8 +6,8 @@ in
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ (toImports self "container" [
+  ++ toImports "container" [
     "portainer"
     "traefik"
-  ]);
+  ];
 }
