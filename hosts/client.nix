@@ -40,7 +40,6 @@
     moonlight-qt
     nemo
     nemo-fileroller
-    nur.repos.Ev357.helium
     obs-studio
     obsidian
     onlyoffice-desktopeditors
