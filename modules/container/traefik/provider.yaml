@@ -4,10 +4,12 @@ http:
   middlewares:
     auth-trev:
       digestAuth:
+        realm: "traefik"
         removeHeader: true
         usersFile: "@user-trev@"
 
     auth-admin:
       digestAuth:
+        realm: "traefik"
         removeHeader: true
         usersFile: "@user-admin@"
