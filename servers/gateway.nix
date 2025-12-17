@@ -4,8 +4,9 @@
     (self + /hosts/lxc/configuration.nix)
   ]
   ++ map (x: self + /modules/container/${x}.nix) [
-    # Containers to import
     "portainer"
+  ]
+  ++ map (x: self + /modules/container/${x}) [
     "traefik"
   ];
 }

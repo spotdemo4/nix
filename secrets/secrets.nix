@@ -25,7 +25,8 @@ in
 
   # gateway server
   "cloudflare-dns.age".publicKeys = keys.local ++ [ keys.gateway ];
-  "traefik.age".publicKeys = keys.local ++ [ keys.gateway ];
+  "user-admin.age".publicKeys = keys.local ++ [ keys.gateway ];
+  "user-trev.age".publicKeys = keys.local ++ [ keys.gateway ];
 
   # mail server
   "mysql-roundcube.age".publicKeys = keys.local ++ [ keys.mail ];

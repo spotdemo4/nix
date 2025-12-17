@@ -1,0 +1,92 @@
+# yaml-language-server: $schema=https://json.schemastore.org/traefik-v3.json
+
+log:
+  level: WARN
+
+api:
+  insecure: true
+    
+metrics:
+  prometheus:
+    headerLabels:
+      useragent: User-Agent
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    watch: true
+
+  redis:
+    endpoints:
+      - "@redis@:6379"
+
+  file:
+    filename: "@file@"
+    watch: true
+
+entryPoints:
+  http:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: "https"
+          scheme: "https"
+
+  https:
+    address: ":443"
+    asDefault: true
+    http3: {}
+    http:
+      tls:
+        certResolver: "letsencrypt"
+        domains:
+          - main: "trev.zip"
+            sans:
+              - "*.trev.zip"
+
+          - main: "trev.kiwi"
+            sans:
+              - "*.trev.kiwi"
+
+          - main: "trev.xyz"
+            sans:
+              - "*.trev.xyz"
+
+          - main: "trev.rs"
+            sans:
+              - "*.trev.rs"
+
+          - main: "trev.コム"
+            sans:
+              - "*.trev.コム"
+
+  minecraft:
+    address: ":25565"
+
+  plex:
+    address: ":32400"
+
+  monero-p2p:
+    address: ":18080"
+  monero-zmq:
+    address: ":18084"
+
+  p2pool-p2p:
+    address: ":37889"
+  p2pool-stratum:
+    address: ":3333"
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: "me@trev.xyz"
+      storage: "/etc/traefik/acme/acme.json"
+      dnsChallenge:
+        provider: "cloudflare"
+
+tls:
+  options:
+    default:
+      minVersion: "VersionTLS12"
