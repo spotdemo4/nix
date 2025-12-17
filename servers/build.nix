@@ -10,7 +10,7 @@ in
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ toImports "container" [
+  ++ toImports self "container" [
     "gitea-runner"
     "github-runner"
     "portainer-agent"

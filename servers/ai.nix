@@ -6,7 +6,7 @@ in
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ toImports "container" [
+  ++ toImports self "container" [
     "context7"
     "discord-openrouter"
     "intel-gpu-exporter"
