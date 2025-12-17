@@ -59,7 +59,7 @@ in
                 enable = true;
                 http.routers.qbittorrent = {
                   rule = "HostRegexp(`qbittorrent.trev.(zip|kiwi)`)";
-                  middlewares = "auth-github@docker";
+                  middlewares = "auth-trev@file";
                 };
               };
             };
@@ -153,7 +153,7 @@ in
                 enable = true;
                 http.routers.qbitmanage = {
                   rule = "HostRegexp(`qbitmanage.trev.(zip|kiwi)`)";
-                  middlewares = "auth-github@docker";
+                  middlewares = "auth-trev@file";
                 };
               };
             };

@@ -33,7 +33,7 @@ in
             enable = true;
             http.routers.grafana = {
               rule = "HostRegexp(`grafana.trev.(zip|kiwi)`)";
-              middlewares = "auth-github@docker";
+              middlewares = "auth-admin@file";
             };
           };
         };

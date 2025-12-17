@@ -33,7 +33,7 @@ in
             enable = true;
             http.routers.prowlarr = {
               rule = "HostRegexp(`prowlarr.trev.(zip|kiwi)`)";
-              middlewares = "auth-github@docker";
+              middlewares = "auth-trev@file";
             };
           };
         };

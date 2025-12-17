@@ -34,7 +34,7 @@ in
           http = {
             routers.mantrae = {
               rule = "HostRegexp(`mantrae.trev.(zip|kiwi)`)";
-              middlewares = "auth-github@docker";
+              middlewares = "auth-trev@file";
             };
             services.mantrae.loadbalancer.server = {
               scheme = "http";

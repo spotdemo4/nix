@@ -27,11 +27,6 @@ let
         filename = "/conf/secret.yml";
         watch = true;
       };
-
-      # http = {
-      #   endpoint = "http://mantrae:3000/api/gateway?token=3cjohutm4i";
-      #   pollInterval = "10s";
-      # };
     };
 
     entryPoints = {
@@ -109,9 +104,6 @@ let
 in
 {
   secrets = {
-    "auth-cookie".file = self + /secrets/auth-cookie.age;
-    "auth-github".file = self + /secrets/auth-github.age;
-    "auth-plex".file = self + /secrets/auth-plex.age;
     "cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
     "traefik".file = self + /secrets/traefik.age;
   };
@@ -150,7 +142,7 @@ in
               http.routers.api = {
                 rule = "HostRegexp(`traefik.trev.(zip|kiwi)`)";
                 service = "api@internal";
-                middlewares = "auth-github@docker";
+                middlewares = "auth-trev@file";
               };
             };
           };
@@ -175,92 +167,6 @@ in
         networks = [
           networks."traefik".ref
         ];
-      };
-
-      traefik-auth-github.containerConfig = {
-        image = "ghcr.io/spotdemo4/traefik-forward-auth:edge@sha256:f7c41686cc4a84feb7f32ef4fa20ead85f58a423752ea81fdd107f8b33db2328";
-        pull = "missing";
-        environments = {
-          TFA_HOSTNAME = "auth-github.trev.*";
-          TFA_COOKIEDOMAIN = "trev.*";
-          TFA_COOKIENAME = "auth_github";
-          TFA_METRICSSERVERPORT = "2112";
-
-          TFA_AUTHPROVIDER = "github";
-          TFA_AUTHGITHUB_CLIENTID = "Iv23liIkJQVqxVXVwKIn";
-          TFA_AUTHGITHUB_ALLOWEDUSERS = "spotdemo4";
-        };
-        secrets = [
-          "${secrets."auth-github".env},target=TFA_AUTHGITHUB_CLIENTSECRET"
-          "${secrets."auth-cookie".env},target=TFA_TOKENSIGNINGKEY"
-        ];
-        networks = [
-          networks."traefik".ref
-        ];
-        labels = toLabel {
-          attrs.traefik = {
-            enable = true;
-            http = {
-              routers.traefik-auth-github = {
-                rule = "HostRegexp(`auth-github.trev.(zip|kiwi)`)";
-                priority = 500;
-              };
-              services.traefik-auth-github.loadbalancer.server = {
-                scheme = "http";
-                port = 4181;
-              };
-              middlewares.auth-github.forwardauth = {
-                address = "http://traefik-auth-github:4181";
-                trustForwardHeader = true;
-                authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
-              };
-            };
-          };
-        };
-      };
-
-      traefik-auth-plex.containerConfig = {
-        image = "ghcr.io/spotdemo4/traefik-forward-auth:edge@sha256:f7c41686cc4a84feb7f32ef4fa20ead85f58a423752ea81fdd107f8b33db2328";
-        pull = "missing";
-        environments = {
-          TFA_HOSTNAME = "auth-plex.trev.*";
-          TFA_COOKIEDOMAIN = "trev.*";
-          TFA_COOKIENAME = "auth_plex";
-          TFA_METRICSSERVERPORT = "2112";
-
-          TFA_AUTHPROVIDER = "plex";
-          TFA_AUTHPLEX_CLIENTID = "Iv23liIkJQVqxVXVwKIn";
-          TFA_AUTHPLEX_CLIENTNAME = "trev llc inc";
-          TFA_AUTHPLEX_ALLOWFRIENDS = "true";
-          TFA_AUTHPLEX_ALLOWEDUSERS = "spotdemo4";
-        };
-        secrets = [
-          "${secrets."auth-plex".env},target=TFA_AUTHPLEX_TOKEN"
-          "${secrets."auth-cookie".env},target=TFA_TOKENSIGNINGKEY"
-        ];
-        networks = [
-          networks."traefik".ref
-        ];
-        labels = toLabel {
-          attrs.traefik = {
-            enable = true;
-            http = {
-              routers.traefik-auth-plex = {
-                rule = "HostRegexp(`auth-plex.trev.(zip|kiwi)`)";
-                priority = 500;
-              };
-              services.traefik-auth-plex.loadbalancer.server = {
-                scheme = "http";
-                port = 4181;
-              };
-              middlewares.auth-plex.forwardauth = {
-                address = "http://traefik-auth-plex:4181";
-                trustForwardHeader = true;
-                authResponseHeaders = "X-Forwarded-User,X-Forwarded-Email";
-              };
-            };
-          };
-        };
       };
 
       traefik-certs-dumper.containerConfig = {

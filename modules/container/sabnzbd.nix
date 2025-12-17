@@ -34,7 +34,7 @@ in
             enable = true;
             http.routers.sabnzbd = {
               rule = "HostRegexp(`sabnzbd.trev.(zip|kiwi)`)";
-              middlewares = "auth-github@docker";
+              middlewares = "auth-trev@file";
             };
           };
         };

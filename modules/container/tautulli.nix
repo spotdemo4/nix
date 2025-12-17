@@ -32,7 +32,7 @@ in
             enable = true;
             http.routers.tautulli = {
               rule = "HostRegexp(`tautulli.trev.(zip|kiwi)`)";
-              middlewares = "auth-github@docker";
+              middlewares = "auth-trev@file";
             };
           };
         };

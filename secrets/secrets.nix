@@ -24,12 +24,7 @@ in
   "whiteout.age".publicKeys = keys.local ++ [ keys.game ];
 
   # gateway server
-  "auth-cookie.age".publicKeys = keys.local ++ [ keys.gateway ];
-  "auth-github.age".publicKeys = keys.local ++ [ keys.gateway ];
-  "auth-plex.age".publicKeys = keys.local ++ [ keys.gateway ];
   "cloudflare-dns.age".publicKeys = keys.local ++ [ keys.gateway ];
-  "mantrae-password.age".publicKeys = keys.local ++ [ keys.gateway ];
-  "mantrae-secret.age".publicKeys = keys.local ++ [ keys.gateway ];
   "traefik.age".publicKeys = keys.local ++ [ keys.gateway ];
 
   # mail server
@@ -50,7 +45,7 @@ in
   "grafana.age".publicKeys = keys.local ++ [ keys.monitor ];
 
   # local only
-  "auth-basic.age".publicKeys = keys.local;
+  "auth.age".publicKeys = keys.local;
   "continue.age".publicKeys = keys.local;
   "gpg.age".publicKeys = keys.local;
   "mods.age".publicKeys = keys.local;

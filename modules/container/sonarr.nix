@@ -33,7 +33,7 @@ in
             enable = true;
             http.routers.sonarr = {
               rule = "HostRegexp(`sonarr.trev.(zip|kiwi)`)";
-              middlewares = "auth-github@docker,header-basic@file";
+              middlewares = "auth-admin@file";
             };
           };
         };

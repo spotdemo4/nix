@@ -101,7 +101,7 @@ in
               enable = true;
               http.routers.open-webui = {
                 rule = "HostRegexp(`chat.trev.(zip|kiwi)`)";
-                middlewares = "auth-plex@docker";
+                middlewares = "auth-admin@file";
               };
             };
           };
