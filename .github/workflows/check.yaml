@@ -41,7 +41,7 @@ jobs:
 
   build:
     needs: check
-    if: ${{ needs.check.outputs.duplicate != 'true' }}
+    if: ${{ needs.check.outputs.duplicate != 'true' && github.event_name != 'push' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
