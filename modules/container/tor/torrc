@@ -13,3 +13,4 @@ ExitPolicy reject *:*
 
 # metrics
 MetricsPort 0.0.0.0:9091
+MetricsPortPolicy accept 10.10.10.109
