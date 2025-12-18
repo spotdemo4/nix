@@ -31,6 +31,9 @@
     logs = "journalctl -b -e -u";
   };
 
+  # https://github.com/nix-community/home-manager/issues/7935
+  manual.manpages.enable = false;
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
