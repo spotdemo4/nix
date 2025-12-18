@@ -19,6 +19,7 @@ in
       ];
       publishPorts = [
         "9090:9090"
+        "9091:9091" # metrics
       ];
     };
 

@@ -17,3 +17,8 @@ scrape_configs:
     static_configs:
       - targets:
           - "10.10.10.105:8080"
+
+  - job_name: tor
+    static_configs:
+      - targets:
+          - "10.10.10.105:9091"
