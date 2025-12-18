@@ -10,6 +10,7 @@ in
     "monerod"
     "p2pool"
     "portainer"
+    "tor"
     "traefik"
   ];
 }

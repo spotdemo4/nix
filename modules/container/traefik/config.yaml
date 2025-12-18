@@ -63,14 +63,20 @@ entryPoints:
             sans:
               - "*.trev.コム"
 
+  tor:
+    address: ":9090"
+
   minecraft:
     address: ":25565"
+
   plex:
     address: ":32400"
+
   monero-p2p:
     address: ":18080"
   monero-zmq:
     address: ":18084"
+
   p2pool-p2p:
     address: ":37889"
   p2pool-stratum:

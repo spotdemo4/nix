@@ -57,6 +57,7 @@ in
           publishPorts = [
             "80:80" # http
             "443:443" # https
+            "9090:9090" # tor
             "32400:32400" # plex
             "25565:25565" # minecraft
             "18080:18080" # monero p2p

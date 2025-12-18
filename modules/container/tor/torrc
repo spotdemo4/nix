@@ -1,0 +1,12 @@
+Nickname trevrelay
+ContactInfo tor AT trev DOT kiwi
+DataDirectory /var/lib/tor
+SocksPort 0
+
+# relay
+ORPort 9090
+RelayBandwidthRate 20 MBytes
+
+# no exits allowed
+ExitRelay 0
+ExitPolicy reject *:*
