@@ -31,7 +31,7 @@ in
         attrs.traefik = {
           enable = true;
           http.routers.victoria-metrics = {
-            rule = "HostRegexp(`victoria-metrics.trev.(zip|kiwi)`)";
+            rule = "Host(`victoria-metrics.trev.xyz`)";
             middlewares = "secure-trev@file";
           };
         };

@@ -22,7 +22,8 @@ in
         "3000"
       ];
       networks = [
-        networks.victoria-metrics.ref
+        networks."victoria-metrics".ref
+        networks."victoria-traces".ref
       ];
       secrets = [
         "${config.secrets."grafana".mount},target=/etc/secrets/client"
@@ -32,7 +33,7 @@ in
           traefik = {
             enable = true;
             http.routers.grafana = {
-              rule = "HostRegexp(`grafana.trev.(zip|kiwi)`)";
+              rule = "Host(`grafana.trev.xyz`)";
               middlewares = "secure-admin@file";
             };
           };

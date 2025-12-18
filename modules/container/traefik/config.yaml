@@ -11,6 +11,12 @@ metrics:
     headerLabels:
       useragent: User-Agent
 
+tracing:
+  otlp:
+    grpc:
+      endpoint: "10.10.10.109:10428" # victoria-traces
+      insecure: true
+
 providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"
