@@ -16,7 +16,12 @@ in
         "/mnt/monero:/home/monero"
       ];
       networks = [
+        networks."monero".ref
         networks."traefik".ref
+      ];
+      publishPorts = [
+        "18080:18080" # p2p
+        "18084:18084" # zmq
       ];
       exec = [
         "--rpc-restricted-bind-ip=0.0.0.0"
@@ -34,35 +39,21 @@ in
         attrs = {
           traefik = {
             enable = true;
-            tcp = {
-              services = {
-                monero-p2p.loadbalancer.server.port = 18080;
-                monero-zmq.loadbalancer.server.port = 18084;
-              };
-              routers = {
-                monero-p2p = {
-                  rule = "HostSNI(`*`)";
-                  entryPoints = "monero-p2p";
-                  service = "monero-p2p";
-                };
-                monero-zmq = {
-                  rule = "HostSNI(`*`)";
-                  entryPoints = "monero-zmq";
-                  service = "monero-zmq";
-                };
-              };
-            };
             http = {
-              services.monero-rpc.loadbalancer.server.port = 18089;
-              routers.monero-rpc = {
-                rule = "HostRegexp(`xmr.trev.(xyz|zip|kiwi)`)";
-                service = "monero-rpc";
+              services.monero.loadbalancer.server.port = 18089;
+              routers.monero = {
+                rule = "Host(`xmr.trev.kiwi`)";
+                service = "monero";
                 middlewares = "cors@file";
               };
             };
           };
         };
       };
+    };
+
+    networks = {
+      monerod = { };
     };
   };
 }

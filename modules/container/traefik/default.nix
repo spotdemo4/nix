@@ -14,6 +14,7 @@ let
     file = "/config/provider.yaml";
     redis = valkey."traefik".ref;
   };
+
   providerFile = pkgs.replaceVars ./provider.yaml {
     user-admin = "/secrets/user-admin";
     user-trev = "/secrets/user-trev";
@@ -58,13 +59,8 @@ in
             "80:80" # http
             "443:443" # https
             "8080:8080" # metrics
-            "9090:9090" # tor
             "32400:32400" # plex
             "25565:25565" # minecraft
-            "18080:18080" # monero p2p
-            "18084:18084" # monero zmq
-            "37889:37889" # p2pool p2p
-            "3333:3333" # p2pool stratum
           ];
           networks = [
             networks."traefik".ref
@@ -73,7 +69,7 @@ in
             attrs.traefik = {
               enable = true;
               http.routers.api = {
-                rule = "HostRegexp(`traefik.trev.(zip|kiwi)`)";
+                rule = "Host(`traefik.trev.xyz`)";
                 service = "api@internal";
                 middlewares = "secure-trev@file";
               };
@@ -82,14 +78,8 @@ in
         };
 
         unitConfig = {
-          After = [
-            "podman.socket"
-            valkey."traefik".ref
-          ];
-          BindsTo = [
-            "podman.socket"
-            valkey."traefik".ref
-          ];
+          After = "podman.socket";
+          BindsTo = "podman.socket";
           ReloadPropagatedFrom = "podman.socket";
         };
       };

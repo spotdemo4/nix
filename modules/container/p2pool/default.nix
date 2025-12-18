@@ -1,11 +1,9 @@
 {
   config,
-  self,
   ...
 }:
 let
   inherit (config.virtualisation.quadlet) volumes networks;
-  toLabel = import (self + /modules/util/label);
 in
 {
   virtualisation.quadlet = {
@@ -16,7 +14,11 @@ in
         "${volumes."p2pool".ref}:/home/p2pool"
       ];
       networks = [
-        networks."traefik".ref
+        networks."monero".ref
+      ];
+      publishPorts = [
+        "3333:3333" # stratum
+        "37889:37889" # p2p
       ];
       exec = [
         "--wallet"
@@ -34,31 +36,6 @@ in
         "--loglevel"
         "0"
       ];
-      labels = toLabel {
-        attrs = {
-          traefik = {
-            enable = true;
-            tcp = {
-              services = {
-                p2pool-stratum.loadbalancer.server.port = 3333;
-                p2pool-p2p.loadbalancer.server.port = 37889;
-              };
-              routers = {
-                p2pool-stratum = {
-                  rule = "HostSNI(`*`)";
-                  entryPoints = "p2pool-stratum";
-                  service = "p2pool-stratum";
-                };
-                p2pool-p2p = {
-                  rule = "HostSNI(`*`)";
-                  entryPoints = "p2pool-p2p";
-                  service = "p2pool-p2p";
-                };
-              };
-            };
-          };
-        };
-      };
     };
 
     volumes = {

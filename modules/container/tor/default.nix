@@ -1,11 +1,9 @@
 {
   config,
-  self,
   ...
 }:
 let
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /modules/util/label);
 in
 {
   virtualisation.quadlet = {
@@ -17,24 +15,18 @@ in
         "${./torrc}:/etc/tor/torrc"
       ];
       networks = [
-        networks."traefik".ref
+        networks."tor".ref
       ];
-      labels = toLabel {
-        attrs.traefik = {
-          enable = true;
-          tcp = {
-            services.tor.loadbalancer.server.port = 9090;
-            routers.tor = {
-              rule = "HostSNI(`*`)";
-              entryPoints = "tor";
-              service = "tor";
-            };
-          };
-        };
-      };
+      publishPorts = [
+        "9090:9090"
+      ];
     };
 
     volumes = {
+      tor = { };
+    };
+
+    networks = {
       tor = { };
     };
   };
