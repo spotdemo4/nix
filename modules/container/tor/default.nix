@@ -14,7 +14,7 @@ in
       pull = "missing";
       volumes = [
         "${volumes."tor".ref}:/var/lib/tor"
-        "${./torrc}:/var/lib/tor/torrc"
+        "${./torrc}:/etc/tor/torrc"
       ];
       networks = [
         networks."traefik".ref
