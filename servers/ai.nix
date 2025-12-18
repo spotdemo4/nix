@@ -26,4 +26,10 @@ in
     card = "card1";
     render = "renderD129";
   };
+
+  # Journald upload to victoria Logs
+  services.journald.upload = {
+    enable = true;
+    settings.Upload.URL = "http://10.10.10.109:9428/insert/journald";
+  };
 }

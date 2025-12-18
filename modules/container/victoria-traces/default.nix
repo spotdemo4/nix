@@ -32,7 +32,7 @@ in
           http = {
             services.victoria-traces.loadbalancer.server.port = 10428;
             routers.victoria-traces = {
-              rule = "Host(`victoria-traces.trev.xyz`)";
+              rule = "Host(`traces.trev.xyz`)";
               service = "victoria-traces";
               middlewares = "secure-trev@file";
             };

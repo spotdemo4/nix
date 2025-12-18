@@ -16,12 +16,13 @@ in
       pull = "missing";
       user = "root";
       volumes = [
-        "${volumes.grafana.ref}:/var/lib/grafana"
+        "${volumes."grafana".ref}:/var/lib/grafana"
       ];
       publishPorts = [
         "3000"
       ];
       networks = [
+        networks."victoria-logs".ref
         networks."victoria-metrics".ref
         networks."victoria-traces".ref
       ];
