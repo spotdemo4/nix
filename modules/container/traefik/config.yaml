@@ -12,6 +12,7 @@ metrics:
       useragent: User-Agent
 
 tracing:
+  addInternals: true
   otlp:
     grpc:
       endpoint: "10.10.10.109:4317" # victoria-traces
