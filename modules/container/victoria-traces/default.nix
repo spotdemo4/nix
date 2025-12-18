@@ -24,6 +24,7 @@ in
       ];
       exec = [
         "-otlpGRPCListenAddr=:4317"
+        "-otlpGRPC.tls=false"
       ];
       labels = toLabel {
         attrs.traefik = {
