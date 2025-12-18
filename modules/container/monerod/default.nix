@@ -53,7 +53,7 @@ in
     };
 
     networks = {
-      monerod = { };
+      monero = { };
     };
   };
 }
