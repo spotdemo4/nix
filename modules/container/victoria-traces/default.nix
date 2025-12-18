@@ -16,17 +16,25 @@ in
         "${volumes."victoria-traces".ref}:/victoria-traces-data"
       ];
       publishPorts = [
-        "10428:10428"
+        "10428:10428" # http
+        "4317:4317" # grpc
       ];
       networks = [
         networks."victoria-traces".ref
       ];
+      exec = [
+        "-otlpGRPCListenAddr=:4317"
+      ];
       labels = toLabel {
         attrs.traefik = {
           enable = true;
-          http.routers.victoria-traces = {
-            rule = "Host(`victoria-traces.trev.xyz`)";
-            middlewares = "secure-trev@file";
+          http = {
+            services.victoria-traces.loadbalancer.server.port = 10428;
+            routers.victoria-traces = {
+              rule = "Host(`victoria-traces.trev.xyz`)";
+              service = "victoria-traces";
+              middlewares = "secure-trev@file";
+            };
           };
         };
       };

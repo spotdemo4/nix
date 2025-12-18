@@ -14,7 +14,7 @@ metrics:
 tracing:
   otlp:
     grpc:
-      endpoint: "10.10.10.109:10428" # victoria-traces
+      endpoint: "10.10.10.109:4317" # victoria-traces
       insecure: true
 
 providers:
