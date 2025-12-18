@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://json.schemastore.org/prometheus.json
+
+scrape_configs:
+  - job_name: cadvisor
+    static_configs:
+      - targets:
+          - "10.10.10.105:8069" # gateway
+          - "10.10.10.107:8069" # media
+          - "10.10.10.108:8069" # build
+          - "10.10.10.109:8069" # monitor
+          - "10.10.10.111:8069" # game
+          - "10.10.10.112:8069" # mail
+          - "10.10.10.113:8069" # files
+          - "10.10.10.114:8069" # etc
+
+  - job_name: traefik
+    static_configs:
+      - targets:
+          - "10.10.10.105:8080"
