@@ -1,7 +1,7 @@
 # Trev's NixOS Config
 
-![check](https://github.com/spotdemo4/nix/actions/workflows/check.yaml/badge.svg)
-![vulnerable](https://github.com/spotdemo4/nix/actions/workflows/vulnerable.yaml/badge.svg)
+![check](https://github.com/spotdemo4/nix/actions/workflows/check.yaml/badge.svg?branch=main)
+![vulnerable](https://github.com/spotdemo4/nix/actions/workflows/vulnerable.yaml/badge.svg?branch=main)
 
 Flake-based NixOS config. Not really meant for public use except as a reference
 
