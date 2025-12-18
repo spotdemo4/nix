@@ -12,4 +12,4 @@ ExitRelay 0
 ExitPolicy reject *:*
 
 # metrics
-MetricsPort 9091
+MetricsPort 0.0.0.0:9091
