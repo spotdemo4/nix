@@ -11,6 +11,7 @@ in
     "portainer-agent"
     "traefik-kop"
     "victoria-metrics"
+    "victoria-traces"
   ];
 
   # Traefik mapping to gateway
