@@ -19,9 +19,13 @@ in
         PUBLIC_URL = "https://anubis.trev.xyz";
         COOKIE_DOMAIN = "trev.xyz";
         SLOG_LEVEL = "DEBUG";
+        POLICY_FNAME = "/policy.yaml";
       };
       networks = [
         networks."traefik".ref
+      ];
+      volumes = [
+        "${./policy.yaml}:/policy.yaml:ro"
       ];
       labels = toLabel {
         attrs.traefik = {

@@ -207,8 +207,8 @@ openGraph:
 # the most aggressive scraper bots seem to really, really, want an HTTP 200 and
 # will stop sending requests once they get it.
 status_codes:
-  CHALLENGE: 403
-  DENY: 403
+  CHALLENGE: 200
+  DENY: 200
 
 # Anubis can store temporary data in one of a few backends. See the storage
 # backends section of the docs for more information:
