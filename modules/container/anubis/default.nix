@@ -15,7 +15,8 @@ in
         TARGET = " ";
         REDIRECT_DOMAINS = "anubis.trev.xyz,trev.xyz,*.trev.xyz,trev.zip,*.trev.zip";
         PUBLIC_URL = "https://anubis.trev.xyz";
-        COOKIE_DOMAIN = "trev.xyz";
+        # COOKIE_DOMAIN = "trev.xyz";
+        COOKIE_DYNAMIC_DOMAIN = "true";
         SLOG_LEVEL = "DEBUG";
         POLICY_FNAME = "/policy.yaml";
       };
