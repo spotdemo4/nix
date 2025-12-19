@@ -51,21 +51,21 @@ entryPoints:
       tls:
         certResolver: "letsencrypt"
         domains:
-          - main: "trev.zip"
-            sans:
-              - "*.trev.zip"
-
           - main: "trev.kiwi"
             sans:
               - "*.trev.kiwi"
+
+          - main: "trev.rs"
+            sans:
+              - "*.trev.rs"
 
           - main: "trev.xyz"
             sans:
               - "*.trev.xyz"
 
-          - main: "trev.rs"
+          - main: "trev.zip"
             sans:
-              - "*.trev.rs"
+              - "*.trev.zip"
 
           - main: "trev.コム"
             sans:

@@ -21,7 +21,7 @@ let
         BIND = ":8080";
         TARGET = " ";
         REDIRECT_DOMAINS = "anubis.${domain},${domain},*.${domain}";
-        PUBLIC_URL = "https://${domain}";
+        PUBLIC_URL = "https://anubis.${domain}";
         COOKIE_DOMAIN = "${domain}";
         POLICY_FNAME = "/policy.yaml";
       };
@@ -58,8 +58,11 @@ in
 
   virtualisation.quadlet = {
     containers = {
-      "anubis-zip" = mkAnubis "trev.zip" "zip" "8080";
+      "anubis-kiwi" = mkAnubis "trev.kiwi" "kiwi" "8082";
+      "anubis-rs" = mkAnubis "trev.rs" "rs" "8083";
       "anubis-xyz" = mkAnubis "trev.xyz" "xyz" "8081";
+      "anubis-zip" = mkAnubis "trev.zip" "zip" "8080";
+      "anubis-コム" = mkAnubis "trev.コム" "コム" "8084";
     };
 
     networks = {
