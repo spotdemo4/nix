@@ -40,7 +40,7 @@ in
           traefik = {
             enable = true;
             http.routers.copyparty = {
-              rule = "Host(`trev.zip`)";
+              rule = "Host(`files.trev.zip`)";
             };
           };
         };

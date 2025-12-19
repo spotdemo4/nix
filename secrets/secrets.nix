@@ -17,6 +17,7 @@ in
 
   # etc server
   "geolite.age".publicKeys = keys.local ++ [ keys.etc ];
+  "protonvpn-cobalt.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink.age".publicKeys = keys.local ++ [ keys.etc ];
 
   # file server
