@@ -1,9 +1,18 @@
 {
   self,
+  config,
+  pkgs,
   ...
 }:
 let
+  inherit (config.virtualisation.quadlet) networks;
+  inherit (config) valkey;
   toLabel = import (self + /modules/util/label);
+
+  policy = pkgs.replaceVars ./policy.yaml {
+    valkey = valkey."anubis".ref;
+  };
+
   mkAnubis = domain: suffix: port: {
     containerConfig = {
       image = "ghcr.io/techarohq/anubis:latest@sha256:170d30f7de14f6b19e5d7647a1ea8ff58740828a08a6a364e08210df2955639b";
@@ -20,7 +29,10 @@ let
         "8080:${port}"
       ];
       volumes = [
-        "${./policy.yaml}:/policy.yaml:ro"
+        "${policy}:/policy.yaml:ro"
+      ];
+      networks = [
+        networks."anubis".ref
       ];
       labels = toLabel {
         attrs.traefik = {
@@ -36,8 +48,22 @@ let
   };
 in
 {
-  virtualisation.quadlet.containers = {
-    "anubis-zip" = mkAnubis "trev.zip" "zip" "8080";
-    "anubis-xyz" = mkAnubis "trev.xyz" "xyz" "8081";
+  imports = [
+    (self + /modules/container/valkey)
+  ];
+
+  valkey."anubis" = {
+    networks = [ networks."anubis".ref ];
+  };
+
+  virtualisation.quadlet = {
+    containers = {
+      "anubis-zip" = mkAnubis "trev.zip" "zip" "8080";
+      "anubis-xyz" = mkAnubis "trev.xyz" "xyz" "8081";
+    };
+
+    networks = {
+      anubis = { };
+    };
   };
 }

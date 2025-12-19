@@ -215,8 +215,9 @@ status_codes:
 #
 # https://anubis.techaro.lol/docs/admin/policies#storage-backends
 store:
-  backend: memory
-  parameters: {}
+  backend: valkey
+  parameters:
+    url: "redis://@valkey@:6379/0"
 
 # The weight thresholds for when to trigger individual challenges. Any
 # CHALLENGE will take precedence over this.
