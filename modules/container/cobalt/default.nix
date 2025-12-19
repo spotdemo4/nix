@@ -10,7 +10,6 @@ in
 {
   imports = [
     (self + /modules/container/gluetun.nix)
-    ./youtube.nix
     ./web.nix
   ];
 
@@ -31,11 +30,10 @@ in
 
   virtualisation.quadlet.containers.cobalt = {
     containerConfig = {
-      image = "ghcr.io/imputnet/cobalt:11.5@sha256:01637bc0ae6668f132f66b2dd992fc71865b7373ff483a406afa81d679118fc0";
+      image = "ghcr.io/zimpatrick/cobalt:staging@sha256:beaeb6df54276480edea826287c60b5c8b7224a35663111b2137d18f17eae500";
       pull = "missing";
       environments = {
         API_URL = "https://cobalt.trev.zip/";
-        YOUTUBE_SESSION_SERVER = "http://cobalt-youtube:8080/token";
       };
       networks = [
         "container:${gluetun."cobalt".ref}"
