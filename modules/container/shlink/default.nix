@@ -49,7 +49,7 @@ in
         labels = toLabel {
           attrs.traefik = {
             enable = true;
-            http.routers.radarr = {
+            http.routers.shlink = {
               rule = "Host(`trev.rs`)";
             };
           };
