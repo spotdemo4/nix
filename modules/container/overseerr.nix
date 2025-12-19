@@ -33,8 +33,8 @@ in
           traefik = {
             enable = true;
             http.routers.overseerr = {
-              rule = "HostRegexp(`overseerr.trev.(xyz|zip|kiwi)`)";
-              middlewares = "anubis@docker";
+              rule = "HostRegexp(`overseerr.trev.(xyz|zip)`)";
+              middlewares = "anubis@file";
             };
           };
         };

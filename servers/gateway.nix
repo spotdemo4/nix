@@ -7,7 +7,6 @@ in
     (self + /hosts/lxc/configuration.nix)
   ]
   ++ toImports "container" [
-    "anubis"
     "monero"
     "portainer"
     "tor"

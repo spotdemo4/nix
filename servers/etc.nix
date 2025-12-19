@@ -7,6 +7,7 @@ in
     (self + /hosts/lxc/configuration.nix)
   ]
   ++ toImports "container" [
+    "anubis"
     "cobalt"
     "portainer-agent"
     "shlink"

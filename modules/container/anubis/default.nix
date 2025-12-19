@@ -24,19 +24,17 @@ in
       networks = [
         networks."traefik".ref
       ];
+      publishPorts = [
+        "8080"
+      ];
       volumes = [
         "${./policy.yaml}:/policy.yaml:ro"
       ];
       labels = toLabel {
         attrs.traefik = {
           enable = true;
-          http = {
-            services.anubis.loadbalancer.server.port = 8080;
-            routers.anubis = {
-              rule = "Host(`anubis.trev.xyz`)";
-              service = "anubis";
-            };
-            middlewares.anubis.forwardauth.address = "http://anubis:8080/.within.website/x/cmd/anubis/api/check";
+          http.routers.anubis = {
+            rule = "Host(`anubis.trev.xyz`)";
           };
         };
       };
