@@ -4,7 +4,6 @@
   ...
 }:
 let
-  inherit (config.virtualisation.quadlet) containers;
   inherit (config) gluetun secrets;
   toLabel = import (self + /modules/util/label);
 in
@@ -49,9 +48,9 @@ in
     };
 
     unitConfig = {
-      After = containers."gluetun-cobalt".ref;
-      BindsTo = containers."gluetun-cobalt".ref;
-      ReloadPropagatedFrom = containers."gluetun-cobalt".ref;
+      After = gluetun."cobalt".ref;
+      BindsTo = gluetun."cobalt".ref;
+      ReloadPropagatedFrom = gluetun."cobalt".ref;
     };
   };
 }
