@@ -8,6 +8,10 @@ let
   toLabel = import (self + /modules/util/label);
 in
 {
+  imports = [
+    ./json-exporter.nix
+  ];
+
   virtualisation.quadlet = {
     containers.victoria-metrics.containerConfig = {
       image = "docker.io/victoriametrics/victoria-metrics:v1.132.0@sha256:6bf82afbd51dcdadf5f908d80e38c78be01232aa94f945ce93fae99daa84d0d9";

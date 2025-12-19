@@ -1,0 +1,32 @@
+modules:
+  monero:
+    metrics:
+      - name: node
+        type: object
+        help: monero node
+        epochTimestamp: "{ .adjusted_time }"
+        path: "{ $ }"
+        labels:
+          nettype: "{ .nettype }"
+          top_block_hash: "{ .top_block_hash }"
+          wide_cumulative_difficulty: "{ .wide_cumulative_difficulty }"
+          wide_difficulty: "{ .wide_difficulty }"
+          status: "{ .status }"
+        values:
+          block_size_limit: "{ .block_size_limit }"
+          block_size_median: "{ .block_size_median }"
+          block_weight_limit: "{ .block_weight_limit }"
+          block_weight_median: "{ .block_weight_median }"
+          busy_syncing: "{ .busy_syncing }"
+          database_size: "{ .database_size }"
+          difficulty: "{ .difficulty }"
+          height: "{ .height }"
+          offline: "{ .offline }"
+          restricted: "{ .restricted }"
+          outgoing_connections_count: "{ .outgoing_connections_count }"
+          rpc_connections_count: "{ .rpc_connections_count }"
+          synchronized: "{ .synchronized }"
+          tx_count: "{ .tx_count }"
+          tx_pool_size: "{ .tx_pool_size }"
+          untrusted: "{ .untrusted }"
+          update_available: "{ .update_available }"

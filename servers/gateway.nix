@@ -7,8 +7,7 @@ in
     (self + /hosts/lxc/configuration.nix)
   ]
   ++ toImports "container" [
-    "monerod"
-    "p2pool"
+    "monero"
     "portainer"
     "tor"
     "traefik"
