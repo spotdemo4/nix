@@ -15,13 +15,13 @@ in
     "victoria-traces"
   ];
 
-  # Traefik mapping to gateway
+  # mapping to gateway
   traefik-kop = {
     enable = true;
     ip = "10.10.10.109";
   };
 
-  # Journald upload to victoria Logs
+  # upload to victoria logs
   services.journald.upload = {
     enable = true;
     settings.Upload.URL = "http://10.10.10.109:9428/insert/journald";

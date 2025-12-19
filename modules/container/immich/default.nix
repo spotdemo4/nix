@@ -4,13 +4,14 @@
   ...
 }:
 let
-  inherit (config.virtualisation.quadlet) networks volumes;
+  inherit (config.virtualisation.quadlet) containers networks volumes;
   inherit (config) valkey;
   toLabel = import (self + /modules/util/label);
 in
 {
   imports = [
     (self + /modules/container/valkey)
+    ./postgres.nix
   ];
 
   valkey."immich" = {
@@ -20,83 +21,54 @@ in
   };
 
   virtualisation.quadlet = {
-    containers = {
-      immich = {
-        containerConfig = {
-          image = "ghcr.io/imagegenius/immich:2.3.1@sha256:5d2057e8b1b40c925f6a04a8f2bb4d5a18fa66eccb70d67b290f36f0c2fac696";
-          pull = "missing";
-          devices = [
-            "/dev/dri/card0:/dev/dri/card0"
-            "/dev/dri/renderD128:/dev/dri/renderD128"
-          ];
-          environments = {
-            PUID = "1000";
-            PGID = "1000";
-            TZ = "America/Detroit";
+    containers.immich = {
+      containerConfig = {
+        image = "ghcr.io/imagegenius/immich:2.3.1@sha256:5d2057e8b1b40c925f6a04a8f2bb4d5a18fa66eccb70d67b290f36f0c2fac696";
+        pull = "missing";
+        devices = [
+          "/dev/dri/card0:/dev/dri/card0"
+          "/dev/dri/renderD128:/dev/dri/renderD128"
+        ];
+        environments = {
+          PUID = "1000";
+          PGID = "1000";
+          TZ = "America/Detroit";
 
-            DB_HOSTNAME = "postgresql-immich";
-            DB_USERNAME = "postgres";
-            DB_PASSWORD = "postgres";
-            DB_DATABASE_NAME = "immich";
+          DB_HOSTNAME = containers."postgresql-immich".ref;
+          DB_USERNAME = "postgres";
+          DB_PASSWORD = "postgres";
+          DB_DATABASE_NAME = "immich";
 
-            REDIS_HOSTNAME = valkey."immich".ref;
-          };
-          volumes = [
-            "${volumes."immich".ref}:/config"
-            "/mnt/photos:/photos"
-          ];
-          publishPorts = [
-            "8080"
-          ];
-          networks = [
-            networks."immich".ref
-          ];
-          labels = toLabel {
-            attrs = {
-              traefik = {
-                enable = true;
-                http.routers.immich = {
-                  rule = "HostRegexp(`photos.trev.(xyz|zip)`)";
-                };
-              };
+          REDIS_HOSTNAME = valkey."immich".ref;
+        };
+        volumes = [
+          "${volumes."immich".ref}:/config"
+          "/mnt/photos:/photos"
+        ];
+        publishPorts = [
+          "8080"
+        ];
+        networks = [
+          networks."immich".ref
+        ];
+        labels = toLabel {
+          attrs.traefik = {
+            enable = true;
+            http.routers.immich = {
+              rule = "Host(`photos.trev.zip`)";
             };
           };
         };
 
         unitConfig = {
-          After = [
-            "postgresql-immich"
-            valkey."immich".ref
-          ];
-          BindsTo = [
-            "postgresql-immich"
-            valkey."immich".ref
-          ];
-        };
-      };
-
-      postgresql-immich.containerConfig = {
-        image = "ghcr.io/immich-app/postgres:18-vectorchord0.5.3@sha256:7c7a43a59e407b66eeeb5ca13f5f20293fe484ca1673da508266be5e3088aa96";
-        pull = "missing";
-        healthCmd = "pg_isready -U postgres -d immich";
-        notify = "healthy";
-        volumes = [
-          "${volumes."postgresql-immich".ref}:/var/lib/postgresql"
-        ];
-        networks = [
-          networks."immich".ref
-        ];
-        environments = {
-          POSTGRES_USER = "postgres";
-          POSTGRES_PASSWORD = "postgres";
-          POSTGRES_DB = "immich";
+          After = containers."postgresql-immich".ref;
+          BindsTo = containers."postgresql-immich".ref;
         };
       };
     };
 
     volumes = {
       immich = { };
-      postgresql-immich = { };
     };
 
     networks = {

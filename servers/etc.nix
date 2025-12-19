@@ -8,16 +8,17 @@ in
   ]
   ++ toImports "container" [
     "portainer-agent"
+    "shlink"
     "traefik-kop"
   ];
 
-  # Traefik mapping to gateway
+  # mapping to gateway
   traefik-kop = {
     enable = true;
     ip = "10.10.10.114";
   };
 
-  # Journald upload to victoria Logs
+  # upload to victoria Logs
   services.journald.upload = {
     enable = true;
     settings.Upload.URL = "http://10.10.10.109:9428/insert/journald";

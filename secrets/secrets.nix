@@ -15,6 +15,9 @@ in
   "gitea.age".publicKeys = keys.local ++ [ keys.build ];
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
 
+  # etc server
+  "geolite.age".publicKeys = keys.local ++ [ keys.etc ];
+
   # file server
   "attic.age".publicKeys = keys.local ++ [ keys.files ];
   "copyparty.age".publicKeys = keys.local ++ [ keys.files ];
