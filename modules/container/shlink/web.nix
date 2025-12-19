@@ -21,7 +21,7 @@ in
           SHLINK_SERVER_URL = "https://trev.rs";
         };
         publishPorts = [
-          "8000"
+          "8080"
         ];
         labels = toLabel {
           attrs.traefik = {
@@ -43,7 +43,7 @@ in
                 };
                 shlink-web-redirect = {
                   rule = "Host(`trev.rs`) && Path(`/`)";
-                  middlewares = "shlink-web-redirect@docker";
+                  middlewares = "shlink-web-redirect@redis";
                   service = "noop@internal";
                 };
               };
