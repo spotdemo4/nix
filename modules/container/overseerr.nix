@@ -34,6 +34,7 @@ in
             enable = true;
             http.routers.overseerr = {
               rule = "HostRegexp(`overseerr.trev.(xyz|zip|kiwi)`)";
+              middlewares = "anubis@docker";
             };
           };
         };
