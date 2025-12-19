@@ -35,7 +35,7 @@ in
       pull = "missing";
       environments = {
         API_URL = "https://cobalt.trev.zip/";
-        YOUTUBE_SESSION_SERVER = "http://cobalt-youtube:8080";
+        YOUTUBE_SESSION_SERVER = "http://cobalt-youtube:8080/token";
       };
       networks = [
         "container:${gluetun."cobalt".ref}"
