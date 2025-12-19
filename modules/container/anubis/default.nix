@@ -15,7 +15,7 @@ in
       environments = {
         BIND = ":8080";
         TARGET = " ";
-        REDIRECT_DOMAINS = "trev.xyz,trev.zip,trev.kiwi,trev.rs,trev.コム";
+        REDIRECT_DOMAINS = "anubis.trev.xyz,overseerr.trev.xyz,trev.zip,trev.kiwi,trev.rs,trev.コム";
         PUBLIC_URL = "https://anubis.trev.xyz";
         COOKIE_DOMAIN = "trev.xyz";
         POLICY_FNAME = "/policy.yaml";
