@@ -1,10 +1,8 @@
 {
-  config,
   self,
   ...
 }:
 let
-  inherit (config.virtualisation.quadlet) networks;
   toLabel = import (self + /modules/util/label);
 in
 {
@@ -21,9 +19,6 @@ in
         SLOG_LEVEL = "DEBUG";
         POLICY_FNAME = "/policy.yaml";
       };
-      networks = [
-        networks."traefik".ref
-      ];
       publishPorts = [
         "8080"
       ];
