@@ -17,6 +17,7 @@ in
 
   # etc server
   "geolite.age".publicKeys = keys.local ++ [ keys.etc ];
+  "shlink.age".publicKeys = keys.local ++ [ keys.etc ];
 
   # file server
   "attic.age".publicKeys = keys.local ++ [ keys.files ];

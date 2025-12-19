@@ -9,9 +9,15 @@ let
   toLabel = import (self + /modules/util/label);
 in
 {
-  imports = [ (self + /modules/container/postgresql.nix) ];
+  imports = [
+    (self + /modules/container/postgresql.nix)
+    ./web.nix
+  ];
 
-  secrets."geolite".file = self + /secrets/geolite.age;
+  secrets = {
+    "geolite".file = self + /secrets/geolite.age;
+    "shlink".file = self + /secrets/shlink.age;
+  };
 
   postgresql."shlink" = {
     database = "shlink";
@@ -29,6 +35,7 @@ in
         pull = "missing";
         secrets = [
           "${secrets."geolite".env},target=GEOLITE_LICENSE_KEY"
+          "${secrets."shlink".env},target=INITIAL_API_KEY"
         ];
         environments = {
           DEFAULT_DOMAIN = "trev.rs";
