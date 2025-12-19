@@ -26,7 +26,7 @@ let
         POLICY_FNAME = "/policy.yaml";
       };
       publishPorts = [
-        "8080:${port}"
+        "${port}:8080"
       ];
       volumes = [
         "${policy}:/policy.yaml:ro"
