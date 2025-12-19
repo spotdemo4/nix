@@ -15,10 +15,11 @@ in
       environments = {
         BIND = ":8080";
         TARGET = " ";
-        REDIRECT_DOMAINS = "overseerr.trev.xyz";
+        REDIRECT_DOMAINS = "overseerr.trev.xyz,anubis:8080";
         PUBLIC_URL = "https://anubis.trev.xyz";
         COOKIE_DOMAIN = "trev.xyz";
         POLICY_FNAME = "/policy.yaml";
+        SLOG_LEVEL = "DEBUG";
       };
       networks = [
         networks."traefik".ref
