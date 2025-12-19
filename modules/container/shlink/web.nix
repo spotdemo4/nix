@@ -27,13 +27,10 @@ in
           attrs.traefik = {
             enable = true;
             http = {
-              middlewares = {
-                shlink-web-redirect = {
-                  redirectRegex = {
-                    regex = "^https://trev\\.rs/";
-                    replacement = "https://s.trev.rs/";
-                    permanent = true;
-                  };
+              middlewares.shlink-web-redirect = {
+                redirectRegex = {
+                  regex = "^https://trev\\.rs/";
+                  replacement = "https://s.trev.rs/";
                 };
               };
               routers = {
@@ -42,7 +39,7 @@ in
                   middlewares = "secure-admin@file";
                 };
                 shlink-web-redirect = {
-                  rule = "Host(`trev.rs`) && Path(`/`)";
+                  rule = "Host(`trev.rs`) && Path(`/`) && Method(`GET`)";
                   middlewares = "shlink-web-redirect@redis";
                   service = "noop@internal";
                 };
