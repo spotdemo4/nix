@@ -18,9 +18,13 @@ in
         REDIRECT_DOMAINS = "trev.xyz,trev.zip,trev.kiwi,trev.rs,trev.コム";
         PUBLIC_URL = "https://anubis.trev.xyz";
         COOKIE_DOMAIN = "trev.xyz";
+        POLICY_FNAME = "/policy.yaml";
       };
       networks = [
         networks."traefik".ref
+      ];
+      volumes = [
+        "${./policy.yaml}:/policy.yaml"
       ];
       labels = toLabel {
         attrs.traefik = {
