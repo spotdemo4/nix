@@ -15,10 +15,6 @@ http:
         period: 1s
         burst: 200
 
-    anubis:
-      forwardAuth:
-        address: "http://10.10.10.114:8080/.within.website/x/cmd/anubis/api/check"
-
     auth-trev:
       basicAuth:
         removeHeader: true

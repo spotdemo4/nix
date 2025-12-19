@@ -4,24 +4,20 @@
 }:
 let
   toLabel = import (self + /modules/util/label);
-in
-{
-  virtualisation.quadlet = {
-    containers.anubis.containerConfig = {
+  mkAnubis = domain: suffix: port: {
+    virtualisation.quadlet.containers."anubis-${suffix}".containerConfig = {
       image = "ghcr.io/techarohq/anubis:latest@sha256:170d30f7de14f6b19e5d7647a1ea8ff58740828a08a6a364e08210df2955639b";
       pull = "missing";
       environments = {
         BIND = ":8080";
         TARGET = " ";
-        REDIRECT_DOMAINS = "anubis.trev.xyz,trev.xyz,*.trev.xyz,trev.zip,*.trev.zip";
-        PUBLIC_URL = "https://anubis.trev.xyz";
-        # COOKIE_DOMAIN = "trev.xyz";
-        COOKIE_DYNAMIC_DOMAIN = "true";
-        SLOG_LEVEL = "DEBUG";
+        REDIRECT_DOMAINS = "anubis.${domain},${domain},*.${domain}";
+        PUBLIC_URL = "https://${domain}";
+        COOKIE_DOMAIN = "${domain}";
         POLICY_FNAME = "/policy.yaml";
       };
       publishPorts = [
-        "8080:8080"
+        "8080:${port}"
       ];
       volumes = [
         "${./policy.yaml}:/policy.yaml:ro"
@@ -29,11 +25,26 @@ in
       labels = toLabel {
         attrs.traefik = {
           enable = true;
-          http.routers.anubis = {
-            rule = "Host(`anubis.trev.xyz`)";
+          http = {
+            routers."anubis-${suffix}".rule = "Host(`anubis.${domain}`)";
+            middlewares."anubis-${suffix}".forwardauth.address =
+              "http://10.10.10.114:${port}/.within.website/x/cmd/anubis/api/check";
           };
         };
       };
     };
   };
+in
+{
+  imports = [
+    mkAnubis
+    "trev.zip"
+    "zip"
+    "8080"
+
+    mkAnubis
+    "trev.xyz"
+    "xyz"
+    "8081"
+  ];
 }

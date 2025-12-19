@@ -33,8 +33,8 @@ in
           traefik = {
             enable = true;
             http.routers.overseerr = {
-              rule = "HostRegexp(`overseerr.trev.(xyz|zip)`)";
-              middlewares = "anubis@file";
+              rule = "Host(`overseerr.trev.xyz`)";
+              middlewares = "anubis-xyz@redis";
             };
           };
         };
