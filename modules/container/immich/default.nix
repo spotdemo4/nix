@@ -59,11 +59,11 @@ in
             };
           };
         };
+      };
 
-        unitConfig = {
-          After = containers."postgresql-immich".ref;
-          BindsTo = containers."postgresql-immich".ref;
-        };
+      unitConfig = {
+        After = containers."postgresql-immich".ref;
+        BindsTo = containers."postgresql-immich".ref;
       };
     };
 
