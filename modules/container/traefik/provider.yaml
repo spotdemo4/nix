@@ -17,7 +17,7 @@ http:
 
     anubis:
       forwardAuth:
-        address: "https://anubis.trev.xyz/.within.website/x/cmd/anubis/api/check"
+        address: "http://10.10.10.114:8080/.within.website/x/cmd/anubis/api/check"
 
     auth-trev:
       basicAuth:

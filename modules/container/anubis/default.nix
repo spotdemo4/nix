@@ -20,7 +20,7 @@ in
         POLICY_FNAME = "/policy.yaml";
       };
       publishPorts = [
-        "8080"
+        "8080:8080"
       ];
       volumes = [
         "${./policy.yaml}:/policy.yaml:ro"
