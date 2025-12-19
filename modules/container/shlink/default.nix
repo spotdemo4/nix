@@ -32,7 +32,7 @@ in
         ];
         environments = {
           DEFAULT_DOMAIN = "trev.rs";
-          IS_HTTPS_ENABLED = "false";
+          IS_HTTPS_ENABLED = "true";
 
           DB_DRIVER = "postgres";
           DB_NAME = postgresql."shlink".database;
