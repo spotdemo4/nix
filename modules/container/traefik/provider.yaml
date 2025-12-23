@@ -30,7 +30,8 @@ http:
           enabled: true
           defaultDecisionSeconds: 60
           crowdsecMode: live
-          crowdsecLapiKey: { { env "CROWDSEC" } }
+          # prettier-ignore
+          crowdsecLapiKey: {{ env "CROWDSEC" }}
           crowdsecLapiHost: 10.10.10.114:6061
           crowdsecLapiScheme: http
           crowdsecLapiTLSInsecureVerify: false
