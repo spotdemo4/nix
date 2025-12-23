@@ -1,6 +1,6 @@
 name: attic_whitelist
-description: Whitelist Attic alerts
+description: Whitelist attic@redis alerts
 whitelist:
-  reason: Ignore Attic alerts
+  reason: ignore attic@redis
   expression:
-    - all(evt.Overflow.Alert.Events, {.GetMeta("http_path") startsWith "/mywebapp"})
+    - "evt.Parsed.traefik_router_name == 'attic@redis'"
