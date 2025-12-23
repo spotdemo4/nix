@@ -5,6 +5,10 @@ log:
 
 experimental:
   otlplogs: true
+  plugins:
+    bouncer:
+      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      version: v1.4.6
 
 api:
   insecure: false

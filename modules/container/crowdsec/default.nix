@@ -1,11 +1,9 @@
 {
   config,
-  self,
   ...
 }:
 let
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = import (self + /modules/util/label);
 in
 {
   virtualisation.quadlet = {
@@ -22,18 +20,9 @@ in
         "${./traefik.yaml}:/etc/crowdsec/acquis.d/traefik.yaml:ro"
       ];
       publishPorts = [
-        "8080"
+        "6061:8080" # api
         "6060:6060" # prometheus
       ];
-      labels = toLabel {
-        attrs.traefik = {
-          enable = true;
-          http.routers.sonarr = {
-            rule = "Host(`crowdsec.trev.xyz`)";
-            middlewares = "secure-admin@file";
-          };
-        };
-      };
     };
 
     volumes = {

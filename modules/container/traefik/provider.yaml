@@ -9,11 +9,37 @@ http:
           Access-Control-Allow-Methods: "*"
           Access-Control-Allow-Headers: "*"
 
-    limit:
+    security-headers:
+      headers:
+        frameDeny: true
+        browserXssFilter: true
+
+    rate-limit:
       rateLimit:
         average: 100
         period: 1s
         burst: 200
+
+    crowdsec:
+      plugin:
+        bouncer:
+          enabled: true
+          defaultDecisionSeconds: 60
+          crowdsecMode: live
+          crowdsecLapiKey: { { env "CROWDSEC" } }
+          crowdsecLapiHost: 10.10.10.109:6061
+          crowdsecLapiScheme: http
+          crowdsecLapiTLSInsecureVerify: false
+          forwardedHeadersTrustedIPs:
+            # private class ranges
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+          clientTrustedIPs:
+            # private class ranges
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
 
     auth-trev:
       basicAuth:
@@ -25,14 +51,21 @@ http:
         removeHeader: true
         usersFile: "@user-admin@"
 
+    secure:
+      chain:
+        middlewares:
+          - security-headers
+          - rate-limit
+          - crowdsec
+
     secure-trev:
       chain:
         middlewares:
-          - limit
+          - secure
           - auth-trev
 
     secure-admin:
       chain:
         middlewares:
-          - limit
+          - secure
           - auth-admin

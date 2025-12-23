@@ -34,6 +34,7 @@ in
 
   secrets = {
     "cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
+    "crowdsec".file = self + /secrets/crowdsec.age;
     "user-admin".file = self + /secrets/user-admin.age;
     "user-trev".file = self + /secrets/user-trev.age;
   };
@@ -46,6 +47,7 @@ in
           pull = "missing";
           secrets = [
             "${secrets."cloudflare-dns".env},target=CF_DNS_API_TOKEN"
+            "${secrets."crowdsec".env},target=CROWDSEC"
             "${secrets."user-admin".mount},target=/secrets/user-admin"
             "${secrets."user-trev".mount},target=/secrets/user-trev"
           ];
