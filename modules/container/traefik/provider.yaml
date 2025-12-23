@@ -18,6 +18,17 @@ http:
         stsPreload: true
         stsSeconds: 31536000
         referrerPolicy: "same-origin"
+        accessControlAllowOriginListRegex:
+          - "*.trev.kiwi"
+          - "*.trev.rs"
+          - "*.trev.xyz"
+          - "*.trev.zip"
+          - "*.trev.コム"
+          - "trev.kiwi"
+          - "trev.rs"
+          - "trev.xyz"
+          - "trev.zip"
+          - "trev.コム"
 
     rate-limit:
       rateLimit:
