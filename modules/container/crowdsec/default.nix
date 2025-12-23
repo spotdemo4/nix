@@ -19,11 +19,11 @@ in
       volumes = [
         "${volumes."crowdsec-db".ref}:/var/lib/crowdsec/data/"
         "${volumes."crowdsec-config".ref}:/etc/crowdsec/"
-        "${./ssh.yaml}:/etc/crowdsec/acquis.d/ssh.yaml:ro"
         "${./traefik.yaml}:/etc/crowdsec/acquis.d/traefik.yaml:ro"
       ];
       publishPorts = [
         "8080"
+        "6060:6060" # prometheus
       ];
       labels = toLabel {
         attrs.traefik = {

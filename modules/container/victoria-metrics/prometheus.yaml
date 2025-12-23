@@ -23,6 +23,11 @@ scrape_configs:
       - targets:
           - "10.10.10.105:9091"
 
+  - job_name: crowdsec
+    static_configs:
+      - targets:
+          - "10.10.10.114:6060"
+
   - job_name: monero
     metrics_path: /probe
     params:
