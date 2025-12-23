@@ -34,7 +34,7 @@
     heroic
     inputs.trevbar.packages."${stdenv.hostPlatform.system}".default
     jetbrains.datagrip
-    jetbrains.idea-community-bin
+    jetbrains.idea
     kdePackages.kdenlive
     monero-gui
     moonlight-qt
