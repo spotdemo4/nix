@@ -1,0 +1,9 @@
+source: victorialogs
+mode: tail
+log_level: info
+url: http://10.10.10.109:9428/
+limit: 1000
+query: |
+  _SYSTEMD_UNIT:="traefik.service"
+labels:
+  type: traefik

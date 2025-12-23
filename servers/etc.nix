@@ -9,6 +9,7 @@ in
   ++ toImports "container" [
     "anubis"
     "cobalt"
+    "crowdsec"
     "portainer-agent"
     "shlink"
     "traefik-kop"
