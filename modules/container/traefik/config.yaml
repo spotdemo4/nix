@@ -31,7 +31,9 @@ accessLog:
     headers:
       defaultMode: drop # drop all headers per default
       names:
-        User-Agent: keep # log user agent strings
+        User-Agent: keep
+        ServiceName: keep
+        RouterName: keep
   otlp:
     http:
       endpoint: http://10.10.10.109:9428/insert/opentelemetry/v1/logs # victoria-logs

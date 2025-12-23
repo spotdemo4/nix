@@ -11,8 +11,12 @@ http:
 
     security-headers:
       headers:
-        frameDeny: true
         browserXssFilter: true
+        contentTypeNosniff: true
+        frameDeny: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
 
     rate-limit:
       rateLimit:
@@ -26,7 +30,7 @@ http:
           enabled: true
           defaultDecisionSeconds: 60
           crowdsecMode: live
-          crowdsecLapiKey: {{ env "CROWDSEC" }}
+          crowdsecLapiKey: { { env "CROWDSEC" } }
           crowdsecLapiHost: 10.10.10.114:6061
           crowdsecLapiScheme: http
           crowdsecLapiTLSInsecureVerify: false

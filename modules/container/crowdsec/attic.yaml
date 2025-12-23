@@ -1,0 +1,6 @@
+name: attic_whitelist
+description: Whitelist Attic alerts
+whitelist:
+  reason: Ignore Attic alerts
+  expression:
+    - all(evt.Overflow.Alert.Events, {.GetMeta("http_path") startsWith "/mywebapp"})
