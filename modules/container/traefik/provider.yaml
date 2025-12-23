@@ -27,7 +27,7 @@ http:
           defaultDecisionSeconds: 60
           crowdsecMode: live
           crowdsecLapiKey: {{ env "CROWDSEC" }}
-          crowdsecLapiHost: 10.10.10.109:6061
+          crowdsecLapiHost: 10.10.10.114:6061
           crowdsecLapiScheme: http
           crowdsecLapiTLSInsecureVerify: false
           forwardedHeadersTrustedIPs:
