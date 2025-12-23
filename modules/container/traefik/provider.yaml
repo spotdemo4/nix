@@ -19,11 +19,11 @@ http:
         stsSeconds: 31536000
         referrerPolicy: "same-origin"
         accessControlAllowOriginListRegex:
-          - "*\\.trev\\.kiwi"
-          - "*\\.trev\\.rs"
-          - "*\\.trev\\.xyz"
-          - "*\\.trev\\.zip"
-          - "*\\.trev\\.コム"
+          - ".*\\.trev\\.kiwi"
+          - ".*\\.trev\\.rs"
+          - ".*\\.trev\\.xyz"
+          - ".*\\.trev\\.zip"
+          - ".*\\.trev\\.コム"
           - "trev\\.kiwi"
           - "trev\\.rs"
           - "trev\\.xyz"
