@@ -8,7 +8,7 @@ in
 {
   virtualisation.quadlet = {
     containers.postgresql-immich.containerConfig = {
-      image = "ghcr.io/immich-app/postgres:18-vectorchord0.5.3@sha256:b37a5b203ce64f37a9392cb443afe37e0b2068ef721d99afee297fbd6f536176";
+      image = "ghcr.io/immich-app/postgres:18-vectorchord0.5.3@sha256:81d9261d3ff893d5e9b1c481c95c464e6992c38ec3ba1c1dc931020f139ab096";
       pull = "missing";
       healthCmd = "pg_isready -U postgres -d immich";
       notify = "healthy";
