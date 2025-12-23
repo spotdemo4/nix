@@ -16,6 +16,7 @@ in
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
 
   # etc server
+  "anubis.age".publicKeys = keys.local ++ [ keys.etc ];
   "geolite.age".publicKeys = keys.local ++ [ keys.etc ];
   "protonvpn-cobalt.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink.age".publicKeys = keys.local ++ [ keys.etc ];

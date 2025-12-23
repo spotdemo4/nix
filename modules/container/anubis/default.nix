@@ -6,7 +6,7 @@
 }:
 let
   inherit (config.virtualisation.quadlet) networks;
-  inherit (config) valkey;
+  inherit (config) secrets valkey;
   toLabel = import (self + /modules/util/label);
 
   policy = pkgs.replaceVars ./policy.yaml {
@@ -24,12 +24,16 @@ let
         PUBLIC_URL = "https://anubis.${domain}";
         COOKIE_DOMAIN = "${domain}";
         POLICY_FNAME = "/policy.yaml";
+        ED25519_PRIVATE_KEY_HEX_FILE = "/key";
       };
       publishPorts = [
         "${port}:8080"
       ];
       volumes = [
         "${policy}:/policy.yaml:ro"
+      ];
+      secrets = [
+        "${secrets."anubis".mount},target=/key"
       ];
       networks = [
         networks."anubis".ref
@@ -55,6 +59,8 @@ in
   valkey."anubis" = {
     networks = [ networks."anubis".ref ];
   };
+
+  secrets."anubis".file = self + /secrets/anubis.age;
 
   virtualisation.quadlet = {
     containers = {
