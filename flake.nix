@@ -77,7 +77,6 @@
     trevbar = {
       url = "github:spotdemo4/trevbar";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nur.follows = "nur";
     };
   };
 
