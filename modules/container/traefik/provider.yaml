@@ -26,7 +26,7 @@ http:
           enabled: true
           defaultDecisionSeconds: 60
           crowdsecMode: live
-          crowdsecLapiKey: { { env "CROWDSEC" } }
+          crowdsecLapiKey: {{ env "CROWDSEC" }}
           crowdsecLapiHost: 10.10.10.109:6061
           crowdsecLapiScheme: http
           crowdsecLapiTLSInsecureVerify: false
@@ -61,11 +61,15 @@ http:
     secure-trev:
       chain:
         middlewares:
-          - secure
+          - security-headers
+          - rate-limit
+          - crowdsec
           - auth-trev
 
     secure-admin:
       chain:
         middlewares:
-          - secure
+          - security-headers
+          - rate-limit
+          - crowdsec
           - auth-admin
