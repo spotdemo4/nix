@@ -54,7 +54,6 @@ in
             enable = true;
             http.routers.attic = {
               rule = "Host(`cache.trev.zip`)";
-              middlewares = "secure@file";
             };
           };
         };
