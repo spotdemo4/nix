@@ -56,6 +56,7 @@ in
             enable = true;
             http.routers.immich = {
               rule = "Host(`photos.trev.zip`)";
+              middlewares = "secure@file";
             };
           };
         };

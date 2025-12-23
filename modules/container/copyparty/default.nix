@@ -41,6 +41,7 @@ in
             enable = true;
             http.routers.copyparty = {
               rule = "Host(`files.trev.zip`)";
+              middlewares = "secure@file";
             };
           };
         };

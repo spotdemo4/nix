@@ -34,7 +34,7 @@ in
             enable = true;
             http.routers.overseerr = {
               rule = "Host(`overseerr.trev.xyz`)";
-              middlewares = "anubis-xyz@redis";
+              middlewares = "secure@file";
             };
           };
         };

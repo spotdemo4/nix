@@ -53,7 +53,8 @@ in
           attrs.traefik = {
             enable = true;
             http.routers.attic = {
-              rule = "HostRegexp(`cache.trev.(zip|kiwi)`)";
+              rule = "Host(`cache.trev.zip`)";
+              middlewares = "secure@file";
             };
           };
         };

@@ -1,6 +1,6 @@
 name: attic_whitelist
-description: Whitelist attic@redis alerts
+description: Whitelist alerts for attic
 whitelist:
-  reason: ignore attic@redis
+  reason: ignore attic
   expression:
     - "evt.Parsed.traefik_router_name == 'attic@redis'"

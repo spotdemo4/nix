@@ -22,7 +22,7 @@ in
           enable = true;
           http.routers.cobalt-web = {
             rule = "Host(`trev.zip`)";
-            middlewares = "anubis-zip@redis";
+            middlewares = "secure@file";
           };
         };
       };
