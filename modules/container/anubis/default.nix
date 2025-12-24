@@ -15,7 +15,7 @@ let
 
   mkAnubis = domain: suffix: port: {
     containerConfig = {
-      image = "ghcr.io/techarohq/anubis:latest@sha256:170d30f7de14f6b19e5d7647a1ea8ff58740828a08a6a364e08210df2955639b";
+      image = "ghcr.io/techarohq/anubis:latest@sha256:4bdf6ddd1a8dc8bfe7a33d823a1cb72157885ca4fd3ee749654b21cba732e439";
       pull = "missing";
       environments = {
         BIND = ":8080";
