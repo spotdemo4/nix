@@ -12,18 +12,15 @@ jobs:
   renovate:
     runs-on: ubuntu-latest
     steps:
-      - name: Initialize
-        id: init
-        uses: spotdemo4/nix-init@b80cbe5c81391f01badbe906f05ec34d7aef53c5 # v1.16.0
+      - name: Checkout
+        id: checkout
+        uses: spotdemo4/better-checkout@fbd1d9e60d4d4c5c9efb2244c052cac648d62944 # v0.1.1
         with:
-          attic_token: ${{ secrets.ATTIC_TOKEN }}
-          attic_cache: nixos
-          app_id: ${{ vars.CLIENT_ID }}
-          app_key: ${{ secrets.PRIVATE_KEY }}
-          shell: update
+          app-id: ${{ vars.CLIENT_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
 
       - name: Renovate
-        env:
-          RENOVATE_CONFIG_FILE: .github/renovate.json
-          RENOVATE_TOKEN: ${{ steps.init.outputs.token }}
-        run: renovate
+        uses: renovatebot/github-action@8b7941943a108b2cc2150730963164aa8baeab8c # v44.2.2
+        with:
+          configurationFile: .github/renovate.json
+          token: ${{ steps.checkout.outputs.token }}

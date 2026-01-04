@@ -206,12 +206,6 @@
             ];
           };
 
-          update = pkgs.mkShell {
-            packages = [
-              pkgs.nur.repos.trev.renovate
-            ];
-          };
-
           vulnerable = pkgs.mkShell {
             packages = with pkgs; [
               flake-checker
@@ -229,7 +223,7 @@
               nixfmt-tree
               prettier
               action-validator
-              pkgs.nur.repos.trev.renovate
+              renovate
             ];
             script = ''
               treefmt --ci
