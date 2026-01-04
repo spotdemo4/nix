@@ -34,16 +34,4 @@
 
   # Power metrics
   services.upower.enable = true;
-
-  # Test user
-  users.users.test = {
-    isNormalUser = true;
-    description = "test";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "docker"
-    ];
-    shell = pkgs.zsh;
-  };
 }
