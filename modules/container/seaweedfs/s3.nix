@@ -4,12 +4,12 @@
   ...
 }:
 let
-  inherit (config.virtualisation.quadlet) containers volumes networks;
+  inherit (config.virtualisation.quadlet) containers networks;
   toLabel = import (self + /modules/util/label);
 in
 {
   virtualisation.quadlet = {
-    containers.seaweedfs-admin = {
+    containers.seaweedfs-s3 = {
       containerConfig = {
         image = "docker.io/chrislusf/seaweedfs:4.05@sha256:295b8f7bd2209afdf5b3fe5bc3a2ca8a72747365fe111b4de412511aa9f56e99";
         pull = "missing";
@@ -20,33 +20,28 @@ in
           networks."seaweedfs".ref
         ];
         volumes = [
-          "${volumes."seaweedfs-admin".ref}:/data"
+          "/mnt/seaweed:/data"
         ];
         labels = toLabel {
           attrs.traefik = {
             enable = true;
-            http.routers.seaweedfs-admin = {
-              rule = "Host(`admin.trev.zip`)";
-              middlewares = "secure-admin@file";
+            http.routers.seaweedfs-s3 = {
+              rule = "Host(`s3.trev.zip`)";
+              middlewares = "secure@file";
             };
           };
         };
         exec = [
-          "admin"
+          "s3"
           "-port=8080"
-          "-masters=seaweedfs:8080"
-          "-dataDir=/data"
+          "-filer=seaweedfs-filer:8080"
         ];
       };
 
       unitConfig = {
-        After = containers."seaweedfs".ref;
-        BindsTo = containers."seaweedfs".ref;
+        After = containers."seaweedfs-filer".ref;
+        BindsTo = containers."seaweedfs-filer".ref;
       };
-    };
-
-    volumes = {
-      seaweedfs-admin = { };
     };
   };
 }

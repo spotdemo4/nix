@@ -1,15 +1,16 @@
 {
   config,
-  self,
   ...
 }:
 let
-  inherit (config.virtualisation.quadlet) networks;
-  toLabel = import (self + /modules/util/label);
+  inherit (config.virtualisation.quadlet) volumes networks;
 in
 {
   imports = [
     ./admin.nix
+    ./filer.nix
+    ./s3.nix
+    ./volume.nix
   ];
 
   virtualisation.quadlet = {
@@ -17,36 +18,27 @@ in
       image = "docker.io/chrislusf/seaweedfs:4.05@sha256:295b8f7bd2209afdf5b3fe5bc3a2ca8a72747365fe111b4de412511aa9f56e99";
       pull = "missing";
       publishPorts = [
-        # "9333" # master
-        # "8080" # volume
-        # "8888" # filer
-        "8333" # s3
+        "8080"
       ];
       networks = [
         networks."seaweedfs".ref
       ];
       volumes = [
-        "/mnt/seaweed:/data"
+        "${volumes."seaweedfs".ref}:/data"
       ];
-      labels = toLabel {
-        attrs.traefik = {
-          enable = true;
-          http.routers.seaweedfs-s3 = {
-            rule = "Host(`s3.trev.zip`)";
-            middlewares = "secure@file";
-          };
-        };
-      };
       exec = [
-        "server"
+        "master"
+        "-port=8080"
         "-ip=seaweedfs"
-        "-dir=/data"
-        "-filer"
-        "-s3"
+        "-mdir=/data"
       ];
     };
 
     networks = {
+      seaweedfs = { };
+    };
+
+    volumes = {
       seaweedfs = { };
     };
   };
