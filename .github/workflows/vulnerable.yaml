@@ -16,4 +16,6 @@ jobs:
         uses: spotdemo4/better-checkout@fbd1d9e60d4d4c5c9efb2244c052cac648d62944 # v0.1.1
 
       - name: Check flake
-        uses: DeterminateSystems/flake-checker-action@1d9e9f37224ff2904b7dbca5cad576725ee814e5 # v0.2.11
+        uses: DeterminateSystems/flake-checker-action@3164002371bc90729c68af0e24d5aacf20d7c9f6 # v12
+        with:
+          fail-mode: true
