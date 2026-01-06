@@ -13,6 +13,7 @@ in
     ./filer.nix
     ./s3.nix
     ./volume.nix
+    ./worker.nix
   ];
 
   virtualisation.quadlet = {
