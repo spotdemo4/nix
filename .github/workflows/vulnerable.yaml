@@ -12,12 +12,8 @@ jobs:
   flake:
     runs-on: ubuntu-latest
     steps:
-      - name: Initialize
-        uses: spotdemo4/nix-init@52cb2ce76d8414b55e388944a72ddaabbff8bd55 # v1.17.0
-        with:
-          attic_token: ${{ secrets.ATTIC_TOKEN }}
-          attic_cache: nixos
-          shell: vulnerable
+      - name: Checkout
+        uses: spotdemo4/better-checkout@fbd1d9e60d4d4c5c9efb2244c052cac648d62944 # v0.1.1
 
       - name: Check flake
-        run: flake-checker -f
+        uses: DeterminateSystems/flake-checker-action@1d9e9f37224ff2904b7dbca5cad576725ee814e5 # v0.2.11

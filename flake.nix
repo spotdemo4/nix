@@ -225,12 +225,6 @@
               nix-fast-build
             ];
           };
-
-          vulnerable = pkgs.mkShell {
-            packages = with pkgs; [
-              flake-checker
-            ];
-          };
         };
 
         checks = pkgs.lib.mkChecks {
