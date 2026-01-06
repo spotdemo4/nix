@@ -35,7 +35,6 @@ in
           "volume"
           "-master=seaweedfs:9333"
           "-dir=/data"
-          "-disk=ssd"
           "-max=8"
         ];
       };
