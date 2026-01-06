@@ -6,14 +6,12 @@
       "https://cache.trev.zip/nixos"
       "https://install.determinate.systems"
       "https://cache.trev.zip/nur"
-      "https://hyprland.cachix.org"
       "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
       "nixos:jjDrT2JC8pbKe14eKmsSKgnNHdGtSk3yqbqxFVRx0MY="
       "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
       "nur:70xGHUW1+1b8FqBchldaunN//pZNVo6FKuPL4U/n844="
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
   };
@@ -47,16 +45,6 @@
     catppuccin = {
       url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # hyprland
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      inputs.systems.follows = "systems";
-    };
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-      inputs.hyprland.follows = "hyprland";
     };
 
     # nix vscode extensions
