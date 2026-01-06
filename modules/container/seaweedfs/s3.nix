@@ -14,7 +14,7 @@ in
         image = "docker.io/chrislusf/seaweedfs:4.05@sha256:295b8f7bd2209afdf5b3fe5bc3a2ca8a72747365fe111b4de412511aa9f56e99";
         pull = "missing";
         publishPorts = [
-          "8080"
+          "8333"
         ];
         networks = [
           networks."seaweedfs".ref
@@ -33,8 +33,7 @@ in
         };
         exec = [
           "s3"
-          "-port=8080"
-          "-filer=seaweedfs-filer:8080"
+          "-filer=seaweedfs-filer:8888"
         ];
       };
 

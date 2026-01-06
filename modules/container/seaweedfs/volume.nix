@@ -33,10 +33,10 @@ in
         };
         exec = [
           "volume"
-          "-port=8080"
-          "-master=seaweedfs:8080"
+          "-master=seaweedfs:9333"
           "-dir=/data"
           "-disk=ssd"
+          "-max=8"
         ];
       };
 

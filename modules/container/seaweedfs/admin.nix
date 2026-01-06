@@ -34,7 +34,7 @@ in
         exec = [
           "admin"
           "-port=8080"
-          "-masters=seaweedfs:8080"
+          "-masters=seaweedfs:9333"
           "-dataDir=/data"
         ];
       };
