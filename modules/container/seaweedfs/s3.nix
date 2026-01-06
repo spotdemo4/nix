@@ -19,9 +19,6 @@ in
         networks = [
           networks."seaweedfs".ref
         ];
-        volumes = [
-          "/mnt/seaweed:/data"
-        ];
         labels = toLabel {
           attrs.traefik = {
             enable = true;
