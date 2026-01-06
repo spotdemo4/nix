@@ -208,6 +208,7 @@
               nixfmt
               nixfmt-tree
               prettier
+              podlet
               (pkgs.writeShellApplication {
                 name = "secret";
                 runtimeInputs = [ agenix ];
