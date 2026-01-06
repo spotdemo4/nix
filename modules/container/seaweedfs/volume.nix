@@ -34,7 +34,7 @@ in
         exec = [
           "volume"
           "-port=8080"
-          "-mserver=seaweedfs:8080"
+          "-master=seaweedfs:8080"
           "-dir=/data"
           "-disk=ssd"
         ];

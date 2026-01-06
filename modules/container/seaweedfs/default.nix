@@ -1,9 +1,11 @@
 {
   config,
+  self,
   ...
 }:
 let
   inherit (config.virtualisation.quadlet) volumes networks;
+  toLabel = import (self + /modules/util/label);
 in
 {
   imports = [
@@ -26,6 +28,15 @@ in
       volumes = [
         "${volumes."seaweedfs".ref}:/data"
       ];
+      labels = toLabel {
+        attrs.traefik = {
+          enable = true;
+          http.routers.seaweedfs = {
+            rule = "Host(`seaweedfs.trev.zip`)";
+            middlewares = "secure-trev@file";
+          };
+        };
+      };
       exec = [
         "master"
         "-port=8080"
