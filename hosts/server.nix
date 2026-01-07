@@ -27,9 +27,9 @@
     # CLI
     fastfetch
     ffmpeg
-    iperf
     ncdu
     nmap
+    traceroute
     unzip
     wget
     yt-dlp
