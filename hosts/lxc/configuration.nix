@@ -5,4 +5,7 @@
     (self + /hosts/server.nix)
     ./hardware-configuration.nix
   ];
+
+  # disable wpa_supplicant
+  networking.wireless.enable = false;
 }

@@ -27,6 +27,7 @@
     # CLI
     fastfetch
     ffmpeg
+    iperf
     ncdu
     nmap
     traceroute
