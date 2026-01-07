@@ -10,6 +10,7 @@ in
     "anubis"
     "cobalt"
     "crowdsec"
+    "discord-openrouter"
     "portainer-agent"
     "shlink"
     "traefik-kop"

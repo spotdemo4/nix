@@ -4,11 +4,6 @@ in
 {
   "tailscale.age".publicKeys = keys.all;
 
-  # ai server
-  "discord-openrouter.age".publicKeys = keys.local ++ [ keys.ai ];
-  "openrouter.age".publicKeys = keys.local ++ [ keys.ai ];
-  "openwebui.age".publicKeys = keys.local ++ [ keys.ai ];
-
   # build server
   "codeberg.age".publicKeys = keys.local ++ [ keys.build ];
   "gitea-quanta.age".publicKeys = keys.local ++ [ keys.build ];
@@ -17,7 +12,10 @@ in
 
   # etc server
   "anubis.age".publicKeys = keys.local ++ [ keys.etc ];
+  "discord-openrouter.age".publicKeys = keys.local ++ [ keys.etc ];
   "geolite.age".publicKeys = keys.local ++ [ keys.etc ];
+  "openrouter.age".publicKeys = keys.local ++ [ keys.etc ];
+  "openwebui.age".publicKeys = keys.local ++ [ keys.etc ];
   "protonvpn-cobalt.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink.age".publicKeys = keys.local ++ [ keys.etc ];
 
