@@ -11,7 +11,6 @@ in
     "copyparty"
     "immich"
     "portainer-agent"
-    "seaweedfs"
     "traefik-kop"
   ];
 
