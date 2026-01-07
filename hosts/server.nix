@@ -111,10 +111,8 @@
         isNormalUser = true;
         uid = 1000;
         description = "trev";
-
         group = "trev";
         extraGroups = [
-          "networkmanager"
           "wheel"
           "podman"
           "video"
