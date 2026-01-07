@@ -28,13 +28,11 @@ in
         networks."radarr".ref
       ];
       labels = toLabel {
-        attrs = {
-          traefik = {
-            enable = true;
-            http.routers.prowlarr = {
-              rule = "HostRegexp(`prowlarr.trev.(zip|kiwi)`)";
-              middlewares = "secure-trev@file";
-            };
+        attrs.traefik = {
+          enable = true;
+          http.routers.prowlarr = {
+            rule = "HostRegexp(`prowlarr.trev.(zip|kiwi)`)";
+            middlewares = "secure-trev@file";
           };
         };
       };
