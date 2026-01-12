@@ -7,7 +7,7 @@ in
     containers = {
       rustdesk-hbbs = {
         containerConfig = {
-          image = "ghcr.io/rustdesk/rustdesk-server:1.1.12@sha256:9b1197d116f7bb4d3ad93a50bc1bc59ddb388de267df221a351f5ce10fac3dcf";
+          image = "ghcr.io/rustdesk/rustdesk-server:1.1.15@sha256:2554c35d71a71a4c4c342afe0c5b3bd42af4d581a821638ca1631eddbb2ae076";
           pull = "missing";
           volumes = [
             "${volumes."rustdesk".ref}:/root"
@@ -28,7 +28,7 @@ in
       };
 
       rustdesk-hbbr.containerConfig = {
-        image = "ghcr.io/rustdesk/rustdesk-server:1.1.12@sha256:9b1197d116f7bb4d3ad93a50bc1bc59ddb388de267df221a351f5ce10fac3dcf";
+        image = "ghcr.io/rustdesk/rustdesk-server:1.1.15@sha256:2554c35d71a71a4c4c342afe0c5b3bd42af4d581a821638ca1631eddbb2ae076";
         pull = "missing";
         volumes = [
           "${volumes."rustdesk".ref}:/root"
