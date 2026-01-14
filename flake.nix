@@ -146,6 +146,7 @@
           laptop = nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs self;
+              trev = trev.packages."${system}";
               hostname = "laptop";
             };
             modules = [
@@ -161,6 +162,7 @@
           desktop = nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs self;
+              trev = trev.packages."${system}";
               hostname = "desktop";
             };
             modules = [
@@ -176,6 +178,7 @@
           htpc = nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs self;
+              trev = trev.packages."${system}";
               hostname = "htpc";
             };
             modules = [

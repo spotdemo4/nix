@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  trev,
   ...
 }:
 {
@@ -23,8 +24,8 @@
         stylus
         sponsorblock
       ];
-      userChrome = builtins.readFile "${pkgs.catppuccin-zen-browser}/Mocha/Sky/userChrome.css";
-      userContent = builtins.readFile "${pkgs.catppuccin-zen-browser}/Mocha/Sky/userContent.css";
+      userChrome = builtins.readFile "${trev.catppuccin-zen-browser}/Mocha/Sky/userChrome.css";
+      userContent = builtins.readFile "${trev.catppuccin-zen-browser}/Mocha/Sky/userContent.css";
     };
   };
 }
