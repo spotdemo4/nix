@@ -33,6 +33,7 @@
             "svelte.svelte-vscode"
             "tamasfe.even-better-toml"
             "timonwong.shellcheck"
+            "tombi-toml.tombi"
           ]
         )
         ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion
