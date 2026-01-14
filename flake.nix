@@ -146,7 +146,6 @@
           laptop = nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs self;
-              trev = trev.packages."${system}";
               hostname = "laptop";
             };
             modules = [
@@ -155,6 +154,7 @@
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
               nur.modules.nixos.default
+              trev.nixosModules.overlay
               ./hosts/laptop/configuration.nix
             ];
           };
@@ -162,7 +162,6 @@
           desktop = nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs self;
-              trev = trev.packages."${system}";
               hostname = "desktop";
             };
             modules = [
@@ -171,6 +170,7 @@
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
               nur.modules.nixos.default
+              trev.nixosModules.overlay
               ./hosts/desktop/configuration.nix
             ];
           };
@@ -178,7 +178,6 @@
           htpc = nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs self;
-              trev = trev.packages."${system}";
               hostname = "htpc";
             };
             modules = [
@@ -187,6 +186,7 @@
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
               nur.modules.nixos.default
+              trev.nixosModules.overlay
               ./hosts/htpc/configuration.nix
             ];
           };

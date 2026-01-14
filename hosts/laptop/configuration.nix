@@ -3,7 +3,6 @@
   inputs,
   self,
   pkgs,
-  trev,
   ...
 }:
 {
@@ -26,7 +25,7 @@
   home-manager = {
     useGlobalPkgs = true;
     extraSpecialArgs = {
-      inherit inputs self trev;
+      inherit inputs self;
     };
     users = {
       trev.imports = [ (self + /users/trev.nix) ];
