@@ -18,7 +18,9 @@ bash -s (host | server)
 
 ## Bookmarks
 
-- [nixos manual](https://nixos.org/manual/nixos/unstable/)
+- [nixos](https://nixos.org/manual/nixos/unstable/)
+- [nixpkgs](https://search.nixos.org/packages)
+- [home-manager](https://home-manager-options.extranix.com/?query=&release=master)
 - [quadlet-nix](https://seiarotg.github.io/quadlet-nix/)
 - [systemd.unit](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html)
 - [podman-systemd.unit](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html)
