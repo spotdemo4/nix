@@ -16,11 +16,11 @@
     settings = {
       initial_session = {
         user = "trev";
-        command = "hyprland";
+        command = "start-hyprland";
       };
       default_session = {
         user = "trev";
-        command = "${pkgs.greetd}/bin/agreety --cmd hyprland";
+        command = "${pkgs.greetd}/bin/agreety --cmd start-hyprland";
       };
     };
   };

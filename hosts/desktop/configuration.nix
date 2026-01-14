@@ -16,7 +16,7 @@
     settings = {
       default_session = {
         user = "trev";
-        command = "${pkgs.greetd}/bin/agreety --cmd hyprland";
+        command = "${pkgs.greetd}/bin/agreety --cmd start-hyprland";
       };
     };
   };

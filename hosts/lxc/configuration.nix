@@ -6,6 +6,7 @@
     ./hardware-configuration.nix
   ];
 
+  # Hostname mapping
   networking.hosts = {
     "10.10.10.105" = [
       "trev.xyz"
@@ -14,5 +15,11 @@
       "trev.rs"
       "cache.trev.zip"
     ];
+  };
+
+  # Upload journal to victoria logs
+  services.journald.upload = {
+    enable = true;
+    settings.Upload.URL = "http://10.10.10.109:9428/insert/journald";
   };
 }

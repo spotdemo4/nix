@@ -18,10 +18,4 @@ in
     enable = true;
     ip = "10.10.10.112";
   };
-
-  # upload to victoria logs
-  services.journald.upload = {
-    enable = true;
-    settings.Upload.URL = "http://10.10.10.109:9428/insert/journald";
-  };
 }
