@@ -4,25 +4,42 @@
     enable = true;
     settings = {
       ipc = "on";
-
-      preload = [
-        "/etc/nixos/static/fishy_1080.png"
-        "/etc/nixos/static/fishy_1080_vertical.png"
-        "/etc/nixos/static/fishy_1440.png"
-        "/etc/nixos/static/fishy_2160.png"
-      ];
+      splash = false;
 
       wallpaper = [
         # Laptop
-        "eDP-1,/etc/nixos/static/fishy_1080.png"
+        {
+          monitor = "eDP-1";
+          path = "/etc/nixos/static/fishy_1080.png";
+        }
 
         # Work
-        "desc:Samsung Electric Company S34J55x H4LT901888,/etc/nixos/static/fishy_1440.png"
+        {
+          monitor = "desc:Samsung Electric Company S34J55x H4LT901888";
+          path = "/etc/nixos/static/fishy_1440.png";
+        }
 
         # Home
-        "desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A 23072B001686,/etc/nixos/static/fishy_1440.png"
-        "desc:Dell Inc. S2719DGF 1HSYBY2,/etc/nixos/static/fishy_1080_vertical.png"
-        "desc:XXX Beyond TV 0x00010000,/etc/nixos/static/fishy_2160.png"
+        {
+          monitor = "desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A";
+          path = "/etc/nixos/static/fishy_1440.png";
+        }
+        {
+          monitor = "desc:Dell Inc. S2719DGF 1HSYBY2";
+          path = "/etc/nixos/static/fishy_1080_vertical.png";
+        }
+
+        # HTPC
+        {
+          monitor = "desc:XXX Beyond TV 0x00010000";
+          path = "/etc/nixos/static/fishy_2160.png";
+        }
+
+        # Default
+        {
+          monitor = "";
+          path = "/etc/nixos/static/fishy_1080.png";
+        }
       ];
     };
   };

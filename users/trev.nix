@@ -43,6 +43,10 @@
   home.homeDirectory = "/home/trev";
   home.stateVersion = "24.05";
 
+  home.shellAliases = {
+    temp = "cd $(mktemp -d)";
+  };
+
   # https://github.com/nix-community/home-manager/issues/7935
   manual.manpages.enable = false;
 

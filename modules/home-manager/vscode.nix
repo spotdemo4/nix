@@ -76,6 +76,11 @@
     enable = true;
     accent = "sky";
     flavor = "mocha";
+
+    icons = {
+      enable = true;
+      flavor = "mocha";
+    };
   };
 
   # Required packages
