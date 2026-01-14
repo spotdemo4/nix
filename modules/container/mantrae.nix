@@ -16,7 +16,7 @@ in
 
   virtualisation.quadlet = {
     containers.mantrae.containerConfig = {
-      image = "ghcr.io/mizuchilabs/mantrae:0.8.2@sha256:e16d9f036cb913b1d4f5fa0798053b69621422481af209ebc02f383bdc13a894";
+      image = "ghcr.io/mizuchilabs/mantrae:0.8.3@sha256:163defeb36866c13bd01601bb3eaa72b3dbef7c5b0e0e29e7ddf43263c5413ff";
       pull = "missing";
       secrets = [
         "${secrets."mantrae-password".env},target=ADMIN_PASSWORD"
