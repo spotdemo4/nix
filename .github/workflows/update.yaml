@@ -12,15 +12,17 @@ jobs:
   renovate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        id: checkout
-        uses: spotdemo4/better-checkout@fbd1d9e60d4d4c5c9efb2244c052cac648d62944 # v0.1.1
+      - name: Initialize
+        id: init
+        uses: spotdemo4/nix-init@52cb2ce76d8414b55e388944a72ddaabbff8bd55 # v1.17.0
         with:
-          app-id: ${{ vars.CLIENT_ID }}
-          private-key: ${{ secrets.PRIVATE_KEY }}
+          app_id: ${{ vars.CLIENT_ID }}
+          app_key: ${{ secrets.PRIVATE_KEY }}
+          shell: update
 
       - name: Renovate
-        uses: renovatebot/github-action@66387ab8c2464d575b933fa44e9e5a86b2822809 # v44.2.4
-        with:
-          configurationFile: .github/renovate.json
-          token: ${{ steps.checkout.outputs.token }}
+        run: renovate
+        env:
+          RENOVATE_CONFIG_FILE: .github/renovate.json
+          RENOVATE_TOKEN: ${{ steps.init.outputs.token }}
+          LOG_LEVEL: ${{ runner.debug == '1' && 'debug' || 'info' }}

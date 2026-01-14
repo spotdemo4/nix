@@ -214,6 +214,12 @@
               nix-fast-build
             ];
           };
+
+          update = pkgs.mkShell {
+            packages = with pkgs; [
+              renovate
+            ];
+          };
         };
 
         checks = pkgs.lib.mkChecks {
