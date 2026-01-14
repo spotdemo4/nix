@@ -3,6 +3,7 @@
   inputs,
   self,
   pkgs,
+  trev,
   ...
 }:
 {
@@ -29,7 +30,7 @@
   home-manager = {
     useGlobalPkgs = true;
     extraSpecialArgs = {
-      inherit inputs self;
+      inherit inputs self trev;
     };
     users = {
       trev = {
