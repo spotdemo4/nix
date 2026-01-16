@@ -9,6 +9,8 @@ in
   "gitea-quanta.age".publicKeys = keys.local ++ [ keys.build ];
   "gitea.age".publicKeys = keys.local ++ [ keys.build ];
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
+  "org-token.age".publicKeys = keys.local ++ [ keys.build ];
+  "repo-token.age".publicKeys = keys.local ++ [ keys.build ];
 
   # etc server
   "anubis.age".publicKeys = keys.local ++ [ keys.etc ];

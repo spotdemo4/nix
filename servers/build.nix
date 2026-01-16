@@ -13,6 +13,7 @@ in
   ++ toImports "container" [
     "gitea-runner"
     "github-runner"
+    "nix-action"
     "portainer-agent"
   ];
 
