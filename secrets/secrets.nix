@@ -10,6 +10,7 @@ in
   "gitea.age".publicKeys = keys.local ++ [ keys.build ];
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
   "org-token.age".publicKeys = keys.local ++ [ keys.build ];
+  "quantadev-token.age".publicKeys = keys.local ++ [ keys.build ];
   "repo-token.age".publicKeys = keys.local ++ [ keys.build ];
 
   # etc server
