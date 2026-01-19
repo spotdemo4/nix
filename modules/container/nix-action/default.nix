@@ -16,7 +16,7 @@ in
 
   virtualisation.quadlet = {
     containers."nix-action".containerConfig = {
-      image = "ghcr.io/trevllc/nix-runner:v0.0.2@sha256:020c4bef305a723c9636dd531b154681d211517ffc7910a531dcf0f20f6eb96a";
+      image = "ghcr.io/trevllc/nix-runner:v0.0.3@sha256:fbf08eaabf0ea21957dd49bc8ec4dbc8024e5500324e298fe0d09997f156b2b9";
       pull = "missing";
       secrets = [
         "${secrets."org-token".env},target=ORG_TOKEN"
