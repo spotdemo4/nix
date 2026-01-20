@@ -63,6 +63,9 @@ in
             "8080:8080" # metrics
             "32400:32400" # plex
             "25565:25565" # minecraft
+            "7777:7777/tcp" # satisfactory-server
+            "7777:7777/udp" # satisfactory-query
+            "8888:8888/tcp" # satisfactory-game
           ];
           networks = [
             networks."traefik".ref

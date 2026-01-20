@@ -9,6 +9,7 @@ in
   ++ toImports "container" [
     "minecraft"
     "portainer-agent"
+    "satisfactory"
     "traefik-kop"
   ];
 

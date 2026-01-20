@@ -97,6 +97,13 @@ entryPoints:
   plex:
     address: ":32400"
 
+  satisfactory-server:
+    address: ":7777/tcp"
+  satisfactory-query:
+    address: ":7777/udp"
+  satisfactory-game:
+    address: ":8888/tcp"
+
 certificatesResolvers:
   letsencrypt:
     acme:
