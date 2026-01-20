@@ -31,8 +31,8 @@ in
           enable = true;
           tcp = {
             services = {
-              satisfactory-server.loadbalancer.port = "7777";
-              satisfactory-game.loadbalancer.port = "8888";
+              satisfactory-server.loadbalancer.server.port = "7777";
+              satisfactory-game.loadbalancer.server.port = "8888";
             };
             routers = {
               satisfactory-server = {
@@ -48,7 +48,7 @@ in
             };
           };
           udp = {
-            services.satisfactory-query.loadbalancer.port = "7777";
+            services.satisfactory-query.loadbalancer.server.port = "7777";
             routers.satisfactory-query = {
               rule = "HostSNI(`*`)";
               entryPoints = "satisfactory-query";
