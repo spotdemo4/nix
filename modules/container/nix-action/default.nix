@@ -16,7 +16,7 @@ in
 
   virtualisation.quadlet = {
     containers."nix-action".containerConfig = {
-      image = "ghcr.io/trevllc/nix-runner:v0.0.3@sha256:fbf08eaabf0ea21957dd49bc8ec4dbc8024e5500324e298fe0d09997f156b2b9";
+      image = "ghcr.io/trevllc/nix-runner:v0.0.4@sha256:1d9b708391fc2937fe59310e8e608bf69c6a061461403335a5c90f7e083cf4e9";
       pull = "missing";
       secrets = [
         "${secrets."org-token".env},target=ORG_TOKEN"
@@ -28,11 +28,11 @@ in
       ];
       exec = [
         # github
-        "trevllc"
-        "spotdemo4/go-template"
-        "spotdemo4/svelte-template"
-        "spotdemo4/node-template"
-        "spotdemo4/rust-template"
+        "https://github.com/trevllc"
+        "https://github.com/spotdemo4/go-template"
+        "https://github.com/spotdemo4/svelte-template"
+        "https://github.com/spotdemo4/node-template"
+        "https://github.com/spotdemo4/rust-template"
 
         # gitea
         "https://git.quantadev.cc"
