@@ -50,7 +50,6 @@ in
           udp = {
             services.satisfactory-query.loadbalancer.server.port = 7777;
             routers.satisfactory-query = {
-              rule = "HostSNI(`*`)";
               entryPoints = "satisfactory-query";
               service = "satisfactory-query";
             };
