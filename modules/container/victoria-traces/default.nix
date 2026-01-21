@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.victoria-traces.containerConfig = {
-      image = "docker.io/victoriametrics/victoria-traces:v0.6.0@sha256:fd0493a39c5fa2412c005694608d1ed1a0212456bde75b422be0ec8e4eaa2e78";
+      image = "docker.io/victoriametrics/victoria-traces:v0.7.0@sha256:992b03c8eff7d30cb6b35506be162c8c93306d4965fda4cd88d635e9fe7eb7d5";
       pull = "missing";
       volumes = [
         "${volumes."victoria-traces".ref}:/victoria-traces-data"
