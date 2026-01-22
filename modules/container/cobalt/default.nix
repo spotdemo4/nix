@@ -30,10 +30,10 @@ in
 
   virtualisation.quadlet.containers.cobalt = {
     containerConfig = {
-      image = "ghcr.io/imputnet/cobalt:11.5@sha256:01637bc0ae6668f132f66b2dd992fc71865b7373ff483a406afa81d679118fc0";
+      image = "git.canine.tools/canine.tools/cobalt:api@sha256:8ed45d47170180eb59feb1b76abf3ca6c61f98f279156e2bbc67d4bd2a99212f";
       pull = "missing";
       environments = {
-        API_URL = "https://cobalt.trev.zip/";
+        API_URL = "https://cobalt-api.trev.zip/";
       };
       networks = [
         "container:${gluetun."cobalt".ref}"
@@ -42,7 +42,7 @@ in
         attrs.traefik = {
           enable = true;
           http.routers.cobalt = {
-            rule = "Host(`cobalt.trev.zip`)";
+            rule = "Host(`cobalt-api.trev.zip`)";
           };
         };
       };
