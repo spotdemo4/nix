@@ -59,7 +59,7 @@ in
         name: opts:
         nameValuePair "mysql-${name}" {
           containerConfig = {
-            image = "docker.io/mysql:9.5.0@sha256:57c892ddeb17e6c7dddf219914db017b2cf3e2797806a75424444b83622cc8ef";
+            image = "docker.io/mysql:9.6.0@sha256:c5467c2e0e1b0363d9b67633dff98d3e0ab5be2fa70f90e12fc4b63dc79a5f73";
             pull = "missing";
             healthCmd = "mysqladmin ping -h localhost";
             notify = "healthy";
