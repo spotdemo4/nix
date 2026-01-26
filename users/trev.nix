@@ -47,6 +47,12 @@
     temp = "cd $(mktemp -d)";
   };
 
+  programs.zsh.siteFunctions = {
+    qc = ''
+      git add . && git commit -m "$1"
+    '';
+  };
+
   # https://github.com/nix-community/home-manager/issues/7935
   manual.manpages.enable = false;
 
