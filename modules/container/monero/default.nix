@@ -14,7 +14,7 @@ in
 
   virtualisation.quadlet = {
     containers.monerod.containerConfig = {
-      image = "ghcr.io/sethforprivacy/simple-monerod:v0.18.4.5@sha256:3760d68b2825174e3db504cbea06e9dd06262a2e4593fb13940da3f9ddaa0685";
+      image = "ghcr.io/sethforprivacy/simple-monerod:v0.18.4.5@sha256:b28d208602ab5a74685a799f338236113f45cf7972b510ad67666643e0e4a0f3";
       pull = "missing";
       volumes = [
         "/mnt/monero:/home/monero"
