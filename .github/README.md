@@ -1,11 +1,14 @@
-# Trev's NixOS Config
+# trev's nix infra
 
-![check](https://github.com/spotdemo4/nix/actions/workflows/check.yaml/badge.svg?branch=main)
-![vulnerable](https://github.com/spotdemo4/nix/actions/workflows/vulnerable.yaml/badge.svg?branch=main)
+[![check](https://img.shields.io/github/actions/workflow/status/spotdemo4/nix/check.yaml?branch=main&logo=github&logoColor=%23bac2de&label=check&labelColor=%23313244)](https://github.com/spotdemo4/nix/actions/workflows/check.yaml/)
+[![vulnerable](https://img.shields.io/github/actions/workflow/status/spotdemo4/nix/vulnerable.yaml?branch=main&logo=github&logoColor=%23bac2de&label=vulnerable&labelColor=%23313244)](https://github.com/spotdemo4/nix/actions/workflows/vulnerable.yaml)
+[![nix](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fspotdemo4%2Fnix%2Frefs%2Fheads%2Fmain%2Fflake.lock&query=%24.nodes.nixpkgs_2.original.ref&logo=nixos&logoColor=%23bac2de&label=channel&labelColor=%23313244&color=%234d6fb7)](https://nixos.org/)
 
-Flake-based NixOS config. Not really meant for public use except as a reference
+flake-based NixOS config
 
-## Install on NixOS
+not really meant for public use except as a reference
+
+## install
 
 ```bash
 source /etc/set-environment &&
@@ -16,7 +19,7 @@ bash -s (host | server)
 [hosts](/hosts)
 [servers](/servers)
 
-## Bookmarks
+## bookmarks
 
 - [nixos](https://nixos.org/manual/nixos/unstable/)
 - [nixpkgs](https://search.nixos.org/packages)

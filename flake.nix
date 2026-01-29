@@ -140,6 +140,8 @@
             }
           )
         ) (builtins.readDir ./servers);
+
+        fs = pkgs.lib.fileset;
       in
       {
         nixosConfigurations = {
@@ -195,6 +197,7 @@
 
         devShells = {
           default = pkgs.mkShell {
+            name = "dev";
             packages = with pkgs; [
               nixfmt
               nixfmt-tree
@@ -213,12 +216,14 @@
           };
 
           check = pkgs.mkShell {
+            name = "check";
             packages = with pkgs; [
               nix-fast-build
             ];
           };
 
           update = pkgs.mkShell {
+            name = "update";
             packages = with pkgs; [
               renovate
             ];
@@ -226,19 +231,57 @@
         };
 
         checks = pkgs.lib.mkChecks {
-          lint = {
-            src = ./.;
+          nix = {
+            src = fs.toSource {
+              root = ./.;
+              fileset = fs.fileFilter (file: file.hasExt "nix") ./.;
+            };
             deps = with pkgs; [
               nixfmt-tree
-              prettier
-              action-validator
-              renovate
             ];
             script = ''
               treefmt --ci
+            '';
+          };
+
+          actions = {
+            src = fs.toSource {
+              root = ./.github/workflows;
+              fileset = ./.github/workflows;
+            };
+            deps = with pkgs; [
+              action-validator
+              octoscan
+            ];
+            script = ''
+              action-validator **/*.yaml
+              octoscan scan .
+            '';
+          };
+
+          renovate = {
+            src = fs.toSource {
+              root = ./.github;
+              fileset = ./.github/renovate.json;
+            };
+            deps = with pkgs; [
+              renovate
+            ];
+            script = ''
+              renovate-config-validator renovate.json
+            '';
+          };
+
+          prettier = {
+            src = fs.toSource {
+              root = ./.;
+              fileset = fs.fileFilter (file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md") ./.;
+            };
+            deps = with pkgs; [
+              prettier
+            ];
+            script = ''
               prettier --check .
-              action-validator .github/**/*.yaml
-              renovate-config-validator .github/renovate.json
             '';
           };
         };
