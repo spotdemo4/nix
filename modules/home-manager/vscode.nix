@@ -26,12 +26,12 @@
             "dbaeumer.vscode-eslint"
             "github.copilot-chat"
             "github.copilot"
+            "gleam.gleam"
             "mkhl.direnv"
             "prettier.prettier-vscode"
             "redhat.vscode-yaml"
             "rust-lang.rust-analyzer"
             "svelte.svelte-vscode"
-            "tamasfe.even-better-toml"
             "timonwong.shellcheck"
             "tombi-toml.tombi"
           ]
