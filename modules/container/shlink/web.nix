@@ -12,7 +12,7 @@ in
   virtualisation.quadlet = {
     containers.shlink-web = {
       containerConfig = {
-        image = "docker.io/shlinkio/shlink-web-client:4.6.2@sha256:93d4c24ca33d856e8e8076232eed6f5e5b01c70d705fdeae63fc7ae4034ea07d";
+        image = "docker.io/shlinkio/shlink-web-client:4.7.0@sha256:80b4d00c445f61e38164a4f13bea4f915b0bdc051e74705fe21ffa92a3d6fed5";
         pull = "missing";
         secrets = [
           "${secrets."shlink".env},target=SHLINK_SERVER_API_KEY"
