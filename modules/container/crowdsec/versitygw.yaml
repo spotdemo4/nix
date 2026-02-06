@@ -1,0 +1,6 @@
+name: versitygw_whitelist
+description: Whitelist alerts for versitygw
+whitelist:
+  reason: ignore versitygw
+  expression:
+    - "evt.Parsed.traefik_router_name == 'versitygw@redis'"

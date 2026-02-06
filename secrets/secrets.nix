@@ -25,6 +25,7 @@ in
   # file server
   "attic.age".publicKeys = keys.local ++ [ keys.files ];
   "copyparty.age".publicKeys = keys.local ++ [ keys.files ];
+  "versitygw.age".publicKeys = keys.local ++ [ keys.files ];
 
   # game server
   "curseforge.age".publicKeys = keys.local ++ [ keys.game ];

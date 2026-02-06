@@ -19,6 +19,7 @@ in
         "${volumes."crowdsec-config".ref}:/etc/crowdsec/"
         "${./traefik.yaml}:/etc/crowdsec/acquis.d/traefik.yaml:ro"
         "${./attic.yaml}:/etc/crowdsec/parsers/s02-enrich/attic.yaml:ro"
+        "${./versitygw.yaml}:/etc/crowdsec/parsers/s02-enrich/versitygw.yaml:ro"
       ];
       publishPorts = [
         "6061:8080" # api
