@@ -86,6 +86,8 @@ entryPoints:
           - main: "trev.zip"
             sans:
               - "*.trev.zip"
+              - "*.s3.trev.zip"
+              - "*.web.trev.zip"
 
           - main: "trev.コム"
             sans:
