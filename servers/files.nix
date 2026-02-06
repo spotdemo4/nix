@@ -9,11 +9,11 @@ in
   ++ toImports "container" [
     "attic"
     "copyparty"
+    "garage"
     "immich"
     "niks3"
     "portainer-agent"
     "traefik-kop"
-    "versitygw"
   ];
 
   # mapping to gateway

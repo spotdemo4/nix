@@ -1,0 +1,21 @@
+metadata_dir = "@metadata_dir@"
+data_dir = "@data_dir@"
+db_engine = "sqlite"
+
+replication_factor = 1
+
+[s3_api]
+s3_region = "garage"
+api_bind_addr = "[::]:3900"
+root_domain = ".s3.trev.zip"
+
+[s3_web]
+bind_addr = "[::]:3901"
+root_domain = ".web.trev.zip"
+index = "index.html"
+
+[admin]
+api_bind_addr = "[::]:3902"
+admin_token_file = "@admin_token_file@"
+metrics_token_file = "@metrics_token_file@"
+metrics_require_token = true
