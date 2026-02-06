@@ -4,8 +4,9 @@
   ...
 }:
 let
-  toLabel = import (self + /modules/util/label);
+  inherit (config.virtualisation.quadlet) networks;
   inherit (config) secrets;
+  toLabel = import (self + /modules/util/label);
 in
 {
   secrets."versitygw".file = self + /secrets/versitygw.age;
@@ -28,6 +29,9 @@ in
       publishPorts = [
         "7070"
       ];
+      networks = [
+        networks."versitygw".ref
+      ];
       labels = toLabel {
         attrs.traefik = {
           enable = true;
@@ -37,6 +41,10 @@ in
           };
         };
       };
+    };
+
+    networks = {
+      versitygw = { };
     };
   };
 }

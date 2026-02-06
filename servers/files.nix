@@ -10,6 +10,7 @@ in
     "attic"
     "copyparty"
     "immich"
+    "niks3"
     "portainer-agent"
     "traefik-kop"
     "versitygw"
