@@ -14,6 +14,7 @@
       "trev.kiwi"
       "trev.rs"
       "cache.trev.zip"
+      "s3.trev.zip"
     ];
   };
 
