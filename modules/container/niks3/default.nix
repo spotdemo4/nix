@@ -34,7 +34,7 @@ in
         pull = "missing";
         environments = {
           NIKS3_DB = "postgres://${postgresql."niks3".username}:${postgresql."niks3".password}@${postgresql."niks3".ref}/${postgresql."niks3".database}?sslmode=disable";
-          NIKS3_CACHE_URL = "https://nix.web.trev.zip";
+          # NIKS3_CACHE_URL = "https://nix.web.trev.zip";
           NIKS3_S3_ENDPOINT = "s3.trev.zip";
           NIKS3_S3_BUCKET = "nix";
           NIKS3_SIGN_KEY_PATHS = "/secrets/signing-key";
