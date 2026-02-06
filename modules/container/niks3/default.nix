@@ -23,6 +23,8 @@ in
   secrets = {
     "niks3".file = self + /secrets/niks3.age;
     "niks3-signing-key".file = self + /secrets/niks3-signing-key.age;
+    "garage-nix-key".file = self + /secrets/garage-nix-key.age;
+    "garage-nix-secret".file = self + /secrets/garage-nix-secret.age;
   };
 
   virtualisation.quadlet = {
