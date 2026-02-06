@@ -33,6 +33,7 @@ in
         environments = {
           NIKS3_DB = "postgres://${postgresql."niks3".username}:${postgresql."niks3".password}@${postgresql."niks3".ref}/${postgresql."niks3".database}?sslmode=disable";
           NIKS3_S3_ENDPOINT = "versitygw:7070";
+          NIKS3_S3_USE_SSL = "false";
           NIKS3_S3_BUCKET = "nix";
           NIKS3_S3_ACCESS_KEY = "trev";
           NIKS3_SIGN_KEY_PATHS = "/secrets/signing-key";
