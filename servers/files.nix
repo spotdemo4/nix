@@ -12,6 +12,7 @@ in
     "immich"
     "portainer-agent"
     "traefik-kop"
+    "versitygw"
   ];
 
   # mapping to gateway
