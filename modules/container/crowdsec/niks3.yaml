@@ -3,4 +3,4 @@ description: Whitelist alerts for niks3
 whitelist:
   reason: ignore niks3
   expression:
-    - "evt.Parsed.traefik_router_name == 'niks3@redis'"
+    - "evt.Parsed.traefik_router_name == 'niks@redis'"
