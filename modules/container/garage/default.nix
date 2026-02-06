@@ -34,9 +34,9 @@ in
         "/mnt/garage:/data"
       ];
       secrets = [
-        "${secrets."garage-rpc".mount},target=/secrets/rpc-secret"
-        "${secrets."garage-admin".mount},target=/secrets/admin-token"
-        "${secrets."garage-metrics".mount},target=/secrets/metrics-token"
+        "${secrets."garage-rpc".mount},target=/secrets/rpc-secret,mode=0400"
+        "${secrets."garage-admin".mount},target=/secrets/admin-token,mode=0400"
+        "${secrets."garage-metrics".mount},target=/secrets/metrics-token,mode=0400"
       ];
       publishPorts = [
         "3900:3900" # s3
