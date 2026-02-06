@@ -47,6 +47,11 @@ in
         attrs.traefik = {
           enable = true;
           http = {
+            middlewares = {
+              nix-cache = {
+                headers.customrequestheaders."X-Forwarded-Host" = "nix.web.trev.zip";
+              };
+            };
             routers = {
               garage-s3 = {
                 rule = "Host(`s3.trev.zip`) || HostRegexp(`^.+\.s3\.trev\.zip$`)";
@@ -62,6 +67,11 @@ in
                 rule = "Host(`admin.trev.zip`)";
                 service = "garage-admin";
                 middlewares = "secure@file";
+              };
+              nix-cache = {
+                rule = "Host(`nix.trev.zip`)";
+                service = "garage-web";
+                middlewares = "nix-cache@redis";
               };
             };
             services = {
