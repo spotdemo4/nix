@@ -35,13 +35,13 @@ in
           NIKS3_CACHE_URL = "https://niks3.trev.zip";
           NIKS3_S3_ENDPOINT = "s3.trev.zip";
           NIKS3_S3_BUCKET = "nix";
-          NIKS3_S3_ACCESS_KEY = "trev";
           NIKS3_SIGN_KEY_PATHS = "/secrets/signing-key";
         };
         secrets = [
-          "${secrets."versitygw".env},target=NIKS3_S3_SECRET_KEY"
           "${secrets."niks3".env},target=NIKS3_API_TOKEN"
           "${secrets."niks3-signing-key".mount},target=/secrets/signing-key"
+          "${secrets."garage-nix-key".env},target=NIKS3_S3_ACCESS_KEY"
+          "${secrets."garage-nix-secret".env},target=NIKS3_S3_SECRET_KEY"
         ];
         publishPorts = [
           "5751"

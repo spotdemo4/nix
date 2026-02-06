@@ -11,6 +11,7 @@ in
     "copyparty"
     "garage"
     "immich"
+    "niks3"
     "portainer-agent"
     "traefik-kop"
   ];
