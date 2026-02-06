@@ -5,3 +5,4 @@ whitelist:
   expression:
     - "evt.Parsed.traefik_router_name == 'garage-s3@redis'"
     - "evt.Parsed.traefik_router_name == 'garage-web@redis'"
+    - "evt.Parsed.traefik_router_name == 'nix-cache@redis'"
