@@ -49,7 +49,10 @@ in
           http = {
             middlewares = {
               nix-cache = {
-                headers.customrequestheaders."X-Forwarded-Host" = "nix.web.trev.zip";
+                headers.customrequestheaders = {
+                  "Host" = "nix.web.trev.zip";
+                  "X-Forwarded-Host" = "nix.web.trev.zip";
+                };
               };
             };
             routers = {
