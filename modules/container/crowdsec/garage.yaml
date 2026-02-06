@@ -1,0 +1,6 @@
+name: garage_whitelist
+description: Whitelist alerts for garage
+whitelist:
+  reason: ignore garage
+  expression:
+    - "evt.Parsed.traefik_router_name == 'garage@redis'"
