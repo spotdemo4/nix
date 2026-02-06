@@ -55,7 +55,7 @@ in
           attrs.traefik = {
             enable = true;
             http.routers.niks3 = {
-              rule = "Host(`niks3.trev.zip`)";
+              rule = "Host(`niks.trev.zip`)";
               middlewares = "secure@file";
             };
           };
