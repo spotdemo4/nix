@@ -38,6 +38,7 @@ in
           NIKS3_S3_ENDPOINT = "s3.trev.zip";
           NIKS3_S3_BUCKET = "nix";
           NIKS3_SIGN_KEY_PATHS = "/secrets/signing-key";
+          NIKS3_OIDC_CONFIG = "/config/oidc.json";
         };
         secrets = [
           "${secrets."niks3".env},target=NIKS3_API_TOKEN"
@@ -45,11 +46,14 @@ in
           "${secrets."garage-nix-key".env},target=NIKS3_S3_ACCESS_KEY"
           "${secrets."garage-nix-secret".env},target=NIKS3_S3_SECRET_KEY"
         ];
-        publishPorts = [
-          "5751"
+        volumes = [
+          "${./oidc.json}:/config/oidc.json"
         ];
         networks = [
           networks."niks3".ref
+        ];
+        publishPorts = [
+          "5751"
         ];
         labels = toLabel {
           attrs.traefik = {
