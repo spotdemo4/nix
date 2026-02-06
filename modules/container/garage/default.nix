@@ -12,13 +12,15 @@ let
   cfg = pkgs.replaceVars ./garage.toml {
     metadata_dir = "/meta";
     data_dir = "/data";
+    rpc_secret_file = "/secrets/rpc-secret";
     admin_token_file = "/secrets/admin-token";
     metrics_token_file = "/secrets/metrics-token";
   };
 in
 {
   secrets = {
-    "garage".file = self + /secrets/garage.age;
+    "garage-rpc".file = self + /secrets/garage-rpc.age;
+    "garage-admin".file = self + /secrets/garage-admin.age;
     "garage-metrics".file = self + /secrets/garage-metrics.age;
   };
 
@@ -32,7 +34,8 @@ in
         "/mnt/garage:/data"
       ];
       secrets = [
-        "${secrets."garage".mount},target=/secrets/admin-token"
+        "${secrets."garage-rpc".mount},target=/secrets/rpc-secret"
+        "${secrets."garage-admin".mount},target=/secrets/admin-token"
         "${secrets."garage-metrics".mount},target=/secrets/metrics-token"
       ];
       publishPorts = [

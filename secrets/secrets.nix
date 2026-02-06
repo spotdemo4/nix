@@ -28,8 +28,9 @@ in
   "versitygw.age".publicKeys = keys.local ++ [ keys.files ];
   "niks3.age".publicKeys = keys.local ++ [ keys.files ];
   "niks3-signing-key.age".publicKeys = keys.local ++ [ keys.files ];
-  "garage.age".publicKeys = keys.local ++ [ keys.files ];
+  "garage-admin.age".publicKeys = keys.local ++ [ keys.files ];
   "garage-metrics.age".publicKeys = keys.local ++ [ keys.files ];
+  "garage-rpc.age".publicKeys = keys.local ++ [ keys.files ];
 
   # game server
   "curseforge.age".publicKeys = keys.local ++ [ keys.game ];
