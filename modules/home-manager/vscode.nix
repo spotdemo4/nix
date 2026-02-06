@@ -20,26 +20,26 @@
         ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion
           pkgs.vscodium.version
           [
-            "biomejs.biome"
-            "bradlc.vscode-tailwindcss"
-            "bufbuild.vscode-buf"
-            "dbaeumer.vscode-eslint"
             "github.copilot-chat"
             "github.copilot"
-            "gleam.gleam"
-            "mkhl.direnv"
-            "prettier.prettier-vscode"
-            "redhat.vscode-yaml"
-            "rust-lang.rust-analyzer"
-            "svelte.svelte-vscode"
-            "timonwong.shellcheck"
-            "tombi-toml.tombi"
           ]
         )
         ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion
           pkgs.vscodium.version
           [
+            "biomejs.biome"
+            "bradlc.vscode-tailwindcss"
+            "bufbuild.vscode-buf"
+            "dbaeumer.vscode-eslint"
+            "esbenp.prettier-vscode"
+            "gleam.gleam"
+            "mkhl.direnv"
+            "redhat.vscode-yaml"
+            "rust-lang.rust-analyzer"
             "sqlfluff.vscode-sqlfluff"
+            "svelte.svelte-vscode"
+            "timonwong.shellcheck"
+            "tombi-toml.tombi"
           ]
         );
       userSettings = {
