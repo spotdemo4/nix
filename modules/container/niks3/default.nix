@@ -54,8 +54,8 @@ in
         labels = toLabel {
           attrs.traefik = {
             enable = true;
-            http.routers.niks = {
-              rule = "Host(`niks.trev.zip`)";
+            http.routers.niks3 = {
+              rule = "Host(`niks3.trev.zip`)";
               middlewares = "secure@file";
             };
           };
