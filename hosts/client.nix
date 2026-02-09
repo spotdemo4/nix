@@ -65,6 +65,7 @@
     mprocs
     ncdu
     nmap
+    opencode
     openconnect
     protonvpn-gui
     unzip
