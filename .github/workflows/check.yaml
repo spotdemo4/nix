@@ -12,25 +12,24 @@ concurrency:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   check:
     runs-on: ubuntu-latest
     outputs:
-      hosts: ${{ steps.list_hosts.outputs.hosts }}
+      hosts: ${{ steps.hosts.outputs.hosts }}
     steps:
-      - id: init
-        name: Initialize
-        uses: spotdemo4/nix-init@e007104fa840f028e46ef5b24520ee14dda33cec # v1.26.0
+      - name: Initialize
+        uses: spotdemo4/nix-init@db612fdb73875f6aac1a51d1db58e438c120a031 # v1.27.0
         with:
-          attic_token: ${{ secrets.ATTIC_TOKEN }}
-          attic_cache: nixos
+          niks3_audience: https://niks3.trev.zip
           shell: check
 
       - name: Run checks
         run: nix flake check
 
-      - id: list_hosts
+      - id: hosts
         name: Get hosts
         run: |
           HOSTS=$(nix flake show --json | jq -c '.nixosConfigurations | keys' | jq -c)
@@ -46,10 +45,9 @@ jobs:
       fail-fast: false
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@e007104fa840f028e46ef5b24520ee14dda33cec # v1.26.0
+        uses: spotdemo4/nix-init@db612fdb73875f6aac1a51d1db58e438c120a031 # v1.27.0
         with:
-          attic_token: ${{ secrets.ATTIC_TOKEN }}
-          attic_cache: nixos
+          niks3_audience: https://niks3.trev.zip
           shell: check
 
       - name: Build packages
