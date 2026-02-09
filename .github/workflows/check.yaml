@@ -58,7 +58,7 @@ jobs:
         uses: spotdemo4/niks3-action@main
         with:
           audience: https://niks3.trev.zip
-          max-concurrent-uploads: 1
+          max-concurrent-uploads: 10
 
       - name: Build packages
         run: |
