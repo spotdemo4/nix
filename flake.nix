@@ -230,6 +230,17 @@
               renovate
             ];
           };
+
+          vulnerable = pkgs.mkShell {
+            name = "vulnerable";
+            packages = with pkgs; [
+              # nix
+              flake-checker
+
+              # actions
+              octoscan
+            ];
+          };
         };
 
         checks = pkgs.lib.mkChecks {
