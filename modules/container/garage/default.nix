@@ -59,7 +59,6 @@ in
               garage-s3 = {
                 rule = "Host(`s3.trev.zip`) || HostRegexp(`^.+\\.s3\\.trev\\.zip$`)";
                 service = "garage-s3";
-                middlewares = "secure@file";
               };
               garage-web = {
                 rule = "Host(`web.trev.zip`) || HostRegexp(`^.+\\.web\\.trev\\.zip$`)";
