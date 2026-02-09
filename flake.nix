@@ -3,18 +3,14 @@
 
   nixConfig = {
     extra-substituters = [
-      "https://cache.trev.zip/nixos"
-      "https://install.determinate.systems"
-      "https://cache.trev.zip/nur"
-      "https://nix-community.cachix.org"
       "https://nix.trev.zip"
+      "https://install.determinate.systems"
+      "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
-      "nixos:jjDrT2JC8pbKe14eKmsSKgnNHdGtSk3yqbqxFVRx0MY="
-      "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
-      "nur:70xGHUW1+1b8FqBchldaunN//pZNVo6FKuPL4U/n844="
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "trev:I39N/EsnHkvfmsbx8RUW+ia5dOzojTQNCTzKYij1chU="
+      "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
   };
 
