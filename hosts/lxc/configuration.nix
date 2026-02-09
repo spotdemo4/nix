@@ -15,6 +15,7 @@
       "trev.rs"
       "cache.trev.zip"
       "s3.trev.zip"
+      "nix.trev.zip"
     ];
   };
 
