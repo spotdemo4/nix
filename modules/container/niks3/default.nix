@@ -60,7 +60,6 @@ in
             enable = true;
             http.routers.niks3 = {
               rule = "Host(`niks3.trev.zip`)";
-              middlewares = "secure@file";
             };
           };
         };
