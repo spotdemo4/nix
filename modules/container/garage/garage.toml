@@ -3,6 +3,7 @@ data_dir = "@data_dir@"
 db_engine = "sqlite"
 
 replication_factor = 1
+block_max_concurrent_writes_per_request = 30
 
 # rpc server isn't exposed, but we still need to set a secret and bind address
 rpc_bind_addr = "[::]:3903"
