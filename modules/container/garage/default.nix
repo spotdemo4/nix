@@ -26,7 +26,7 @@ in
 
   virtualisation.quadlet = {
     containers."garage".containerConfig = {
-      image = "docker.io/dxflrs/garage:v1.3.1@sha256:58e68794286868230708803e50495bfe7d1d1c7b696e0c2dee99b03c524fc960";
+      image = "docker.io/dxflrs/garage:v2.2.0@sha256:45a61ce3f7c9c24fc23d9ed2b09b27ed560ab87b34605d175d5c588f539c24e4";
       pull = "missing";
       volumes = [
         "${cfg}:/etc/garage.toml"
