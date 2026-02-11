@@ -21,9 +21,8 @@ jobs:
       hosts: ${{ steps.hosts.outputs.hosts }}
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@a5ea6d41ce120b209d0a58900d2906e1f59c2698 # v1.27.2
+        uses: spotdemo4/nix-init@33dd78ad344e4e6d4ef4c1ef8e135786125e9b0c # v1.27.5
         with:
-          audience: https://niks3.trev.zip
           shell: check
 
       - name: Run checks
@@ -45,9 +44,8 @@ jobs:
         host: ${{ fromJSON(needs.check.outputs.hosts) }}
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@a5ea6d41ce120b209d0a58900d2906e1f59c2698 # v1.27.2
+        uses: spotdemo4/nix-init@33dd78ad344e4e6d4ef4c1ef8e135786125e9b0c # v1.27.5
         with:
-          audience: https://niks3.trev.zip
           shell: check
 
       - name: Build packages
