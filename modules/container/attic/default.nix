@@ -17,7 +17,7 @@ let
   };
 in
 {
-  imports = [ (self + /modules/container/postgresql.nix) ];
+  imports = [ (self + /modules/container/postgresql) ];
 
   secrets."attic".file = self + /secrets/attic.age;
 

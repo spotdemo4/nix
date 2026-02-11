@@ -9,7 +9,9 @@ let
   toLabel = import (self + /modules/util/label);
 in
 {
-  imports = [ ./mysql.nix ];
+  imports = [
+    (self + /modules/container/mysql)
+  ];
 
   secrets = {
     "mysql-roundcube".file = self + /secrets/mysql-roundcube.age;
@@ -56,13 +58,11 @@ in
             networks."roundcube".ref
           ];
           labels = toLabel {
-            attrs = {
-              traefik = {
-                enable = true;
-                http.routers.roundcube = {
-                  rule = "HostRegexp(`roundcube.trev.(zip|kiwi)`)";
-                  middlewares = "secure-admin@file";
-                };
+            attrs.traefik = {
+              enable = true;
+              http.routers.roundcube = {
+                rule = "HostRegexp(`roundcube.trev.(zip|kiwi)`)";
+                middlewares = "secure-admin@file";
               };
             };
           };

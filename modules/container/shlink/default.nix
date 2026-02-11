@@ -10,7 +10,7 @@ let
 in
 {
   imports = [
-    (self + /modules/container/postgresql.nix)
+    (self + /modules/container/postgresql)
     ./web.nix
   ];
 

@@ -32,13 +32,11 @@ in
         "25565"
       ];
       labels = toLabel {
-        attrs = {
-          traefik = {
-            enable = true;
-            tcp.routers.minecraft = {
-              rule = "HostSNI(`*`)";
-              entryPoints = "minecraft";
-            };
+        attrs.traefik = {
+          enable = true;
+          tcp.routers.minecraft = {
+            rule = "HostSNI(`*`)";
+            entryPoints = "minecraft";
           };
         };
       };

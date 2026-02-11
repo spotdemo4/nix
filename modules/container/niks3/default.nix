@@ -9,7 +9,7 @@ let
   toLabel = import (self + /modules/util/label);
 in
 {
-  imports = [ (self + /modules/container/postgresql.nix) ];
+  imports = [ (self + /modules/container/postgresql) ];
 
   postgresql."niks3" = {
     database = "niks3";

@@ -1,12 +1,9 @@
 { self, ... }:
-let
-  toImports = import (self + /modules/util/import);
-in
 {
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ toImports "container" [
+  ++ map (c: self + /modules/container/${c}) [
     "monero"
     "portainer"
     "tor"

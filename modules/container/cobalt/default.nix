@@ -9,7 +9,7 @@ let
 in
 {
   imports = [
-    (self + /modules/container/gluetun.nix)
+    (self + /modules/container/gluetun)
     ./web.nix
   ];
 

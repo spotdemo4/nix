@@ -10,7 +10,7 @@ let
 in
 {
   imports = [
-    ../gluetun.nix
+    (self + /modules/container/gluetun)
     ./ports.nix
   ];
 

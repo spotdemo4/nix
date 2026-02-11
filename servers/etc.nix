@@ -1,17 +1,14 @@
 { self, ... }:
-let
-  toImports = import (self + /modules/util/import);
-in
 {
   imports = [
     (self + /hosts/lxc/configuration.nix)
   ]
-  ++ toImports "container" [
+  ++ map (c: self + /modules/container/${c}) [
     "anubis"
     "cobalt"
     "crowdsec"
     "discord-openrouter"
-    "portainer-agent"
+    "portainer/agent.nix"
     "shlink"
     "traefik-kop"
   ];
