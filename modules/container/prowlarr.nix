@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.prowlarr.containerConfig = {
-      image = "lscr.io/linuxserver/prowlarr:2.3.0@sha256:5339e9050cfcc0cb5331e9c98610ed9d4ce70ef481a5461ea664a13dda3f1eb0";
+      image = "lscr.io/linuxserver/prowlarr:2.3.0@sha256:e74a1e093dcc223d671d4b7061e2b4946f1989a4d3059654ff4e623b731c9134";
       pull = "missing";
       environments = {
         PUID = "1000";
