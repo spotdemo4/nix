@@ -203,5 +203,8 @@
   # PGP
   programs.gnupg.agent.enable = true;
 
+  # Run unpatched dynamic binaries
+  programs.nix-ld.enable = true;
+
   system.stateVersion = "24.05"; # Don't change
 }
