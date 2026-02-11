@@ -9,7 +9,7 @@ in
   virtualisation.quadlet = {
     containers.seaweedfs-worker = {
       containerConfig = {
-        image = "docker.io/chrislusf/seaweedfs:4.10@sha256:78a4bff48e5e803552a206e3ab5b49c25ce8233f19913ba17c3c1967f582543c";
+        image = "docker.io/chrislusf/seaweedfs:4.12@sha256:d7f3fdf6fb9c9375551e95bc985abae74a157789d868341e9e84a999ed8ea21c";
         pull = "missing";
         networks = [
           networks."seaweedfs".ref
