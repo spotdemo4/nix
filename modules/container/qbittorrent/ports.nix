@@ -8,16 +8,15 @@ let
 in
 {
   virtualisation.quadlet = {
-    containers.qbittorrent-ports = {
+    containers.qbittorrent-port-glue = {
       containerConfig = {
-        image = "docker.io/snoringdragon/gluetun-qbittorrent-port-manager:1.3@sha256:679b7a92c494f93b78ad37ef24f3a261e73d0a1a52505ad4f1e39580eedfa14f";
+        image = "ghcr.io/spotdemo4/qbittorrent-port-glue:0.0.2@sha256:ac740ed0df44d74e4d807d4f278794fff53bd3bd19bc171e6e1a1e8c2f98eaf5";
         pull = "missing";
         environments = {
-          QBITTORRENT_SERVER = "localhost";
+          QBITTORRENT_HOST = "http://localhost";
           QBITTORRENT_PORT = "8185";
           QBITTORRENT_USER = "trev";
-          PORT_FORWARDED = "/tmp/gluetun/forwarded_port";
-          HTTP_S = "http";
+          PORT_FILE = "/tmp/gluetun/forwarded_port";
         };
         secrets = [
           "${secrets."password".env},target=QBITTORRENT_PASS"
@@ -31,8 +30,8 @@ in
       };
 
       unitConfig = {
-        After = containers."qbittorrent".ref;
         BindsTo = containers."qbittorrent".ref;
+        After = containers."qbittorrent".ref;
         ReloadPropagatedFrom = containers."qbittorrent".ref;
       };
     };

@@ -66,8 +66,8 @@ in
       };
 
       unitConfig = {
-        After = containers."gluetun-qbittorrent".ref;
         BindsTo = containers."gluetun-qbittorrent".ref;
+        After = containers."gluetun-qbittorrent".ref;
         ReloadPropagatedFrom = containers."gluetun-qbittorrent".ref;
       };
     };
