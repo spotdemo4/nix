@@ -28,13 +28,11 @@ in
         networks."sonarr".ref
       ];
       labels = toLabel {
-        attrs = {
-          traefik = {
-            enable = true;
-            http.routers.sonarr = {
-              rule = "HostRegexp(`sonarr.trev.(zip|kiwi)`)";
-              middlewares = "secure-admin@file";
-            };
+        attrs.traefik = {
+          enable = true;
+          http.routers.sonarr = {
+            rule = "HostRegexp(`sonarr.trev.(zip|kiwi)`)";
+            middlewares = "secure-admin@file";
           };
         };
       };
