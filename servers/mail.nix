@@ -7,7 +7,6 @@
     "portainer/agent.nix"
     "roundcube"
     "stalwart"
-    "tmail"
     "traefik-kop"
   ];
 
