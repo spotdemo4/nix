@@ -66,7 +66,6 @@ http:
     secure-trev:
       chain:
         middlewares:
-          - security-headers
           - rate-limit
           - crowdsec
           - auth-trev
@@ -74,7 +73,6 @@ http:
     secure-admin:
       chain:
         middlewares:
-          - security-headers
           - rate-limit
           - crowdsec
           - auth-admin
