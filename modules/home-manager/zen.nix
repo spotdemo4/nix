@@ -13,6 +13,7 @@
     policies = {
       DisableAppUpdate = true;
       DisableTelemetry = true;
+      DontCheckDefaultBrowser = true;
     };
     profiles.default = {
       name = "default";
