@@ -14,6 +14,7 @@
       DisableAppUpdate = true;
       DisableTelemetry = true;
       DontCheckDefaultBrowser = true;
+      OfferToSaveLogins = false;
     };
     profiles.default = {
       name = "default";
