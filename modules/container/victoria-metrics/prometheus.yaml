@@ -33,6 +33,11 @@ scrape_configs:
       - targets:
           - "192.96.218.130:9100"
 
+  - job_name: nvtop_exporter
+    static_configs:
+      - targets:
+          - "192.96.218.130:8080"
+
   - job_name: monero
     metrics_path: /probe
     params:
