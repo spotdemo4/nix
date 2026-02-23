@@ -28,6 +28,11 @@ scrape_configs:
       - targets:
           - "10.10.10.114:6060"
 
+  - job_name: node_exporter
+    static_configs:
+      - targets:
+          - "192.96.218.130:9100"
+
   - job_name: monero
     metrics_path: /probe
     params:
