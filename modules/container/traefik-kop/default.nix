@@ -27,7 +27,7 @@
   config = lib.mkIf config.update.enable {
     virtualisation.quadlet.containers.traefik-kop = {
       containerConfig = {
-        image = "ghcr.io/spotdemo4/traefik-kop:0.0.4-next-b0db12c-amd64@sha256:3416dab4056779032984bf05c242c0fb62cdd194a4d3823d0f688640e89b2e96";
+        image = "ghcr.io/jittering/traefik-kop:0.19.4@sha256:e772673cc437070646229354e55fb1b5b348cf4d7fade5514e3b61c1f3d0b319";
         pull = "missing";
         volumes = [
           "/run/podman/podman.sock:/var/run/docker.sock"
@@ -42,6 +42,14 @@
         After = "podman.socket";
         BindsTo = "podman.socket";
         ReloadPropagatedFrom = "podman.socket";
+
+        # Disable rate-limiting restarts
+        StartLimitIntervalSec = 0;
+      };
+
+      serviceConfig = {
+        Restart = "always";
+        RestartSec = 5;
       };
     };
   };
