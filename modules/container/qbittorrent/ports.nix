@@ -10,7 +10,7 @@ in
   virtualisation.quadlet = {
     containers.qbittorrent-port-glue = {
       containerConfig = {
-        image = "ghcr.io/spotdemo4/qbittorrent-port-glue:0.1.0@sha256:45c274cee588a11a45bba89f99a98c73ddba5a53711fbc5643f11ac826d4dda4";
+        image = "ghcr.io/spotdemo4/qbittorrent-port-glue:0.1.1@sha256:28587cf6c7b28ed3e8464a36f476ea11881e8a0a204cdaae852f0f438f8c7cc1";
         pull = "missing";
         environments = {
           QBITTORRENT_HOST = "http://localhost";
