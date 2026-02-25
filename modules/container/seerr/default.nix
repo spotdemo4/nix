@@ -9,16 +9,15 @@ let
 in
 {
   virtualisation.quadlet = {
-    containers.overseerr.containerConfig = {
-      image = "lscr.io/linuxserver/overseerr:latest@sha256:53a1b839ffa81f139e1552840772bff8a5d13f5c78a69cce22458b9a6cd0844d";
+    containers.seerr.containerConfig = {
+      image = "ghcr.io/seerr-team/seerr:v3.0.1@sha256:1b5fc1ea825631d9d165364472663b817a4c58ef6aa1013f58d82c1570d7c866";
       pull = "missing";
       environments = {
-        PUID = "1000";
-        PGID = "1000";
+        LOG_LEVEL = "debug";
         TZ = "America/Detroit";
       };
       volumes = [
-        "${volumes.overseerr.ref}:/config"
+        "${volumes."seerr".ref}:/app/config"
       ];
       publishPorts = [
         "5055"
@@ -32,8 +31,8 @@ in
         attrs = {
           traefik = {
             enable = true;
-            http.routers.overseerr = {
-              rule = "Host(`overseerr.trev.xyz`)";
+            http.routers.seerr = {
+              rule = "Host(`overseerr.trev.xyz`) || Host(`seerr.trev.xyz`)";
               middlewares = "secure@file";
             };
           };
@@ -42,7 +41,7 @@ in
     };
 
     volumes = {
-      overseerr = { };
+      seerr = { };
     };
   };
 }

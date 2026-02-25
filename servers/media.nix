@@ -6,7 +6,7 @@
   ++ map (c: self + /modules/container/${c}) [
     "bazarr"
     "discord-embedder"
-    "overseerr"
+    "seerr"
     "plex"
     "portainer/agent.nix"
     "prowlarr"
