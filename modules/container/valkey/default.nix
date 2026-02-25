@@ -45,7 +45,7 @@ with lib;
         name: opts:
         nameValuePair "valkey-${name}" {
           containerConfig = {
-            image = "docker.io/valkey/valkey:9.0.2-alpine@sha256:68677f85c863830af7836ff07c4a13b7f085ebeff62f4dedb71499ca27d229f2";
+            image = "docker.io/valkey/valkey:9.0.3-alpine@sha256:ad09f25978db13ed3ed7c635a0e43118568deca056ed8f7a5020f40632e2923e";
             pull = "missing";
             healthCmd = "valkey-cli PING";
             notify = "healthy";
