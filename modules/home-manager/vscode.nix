@@ -35,6 +35,7 @@
             "gleam.gleam"
             "mkhl.direnv"
             "redhat.vscode-yaml"
+            "ReneSaarsoo.sql-formatter-vsc"
             "rust-lang.rust-analyzer"
             "sqlfluff.vscode-sqlfluff"
             "svelte.svelte-vscode"
