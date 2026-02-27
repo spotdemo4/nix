@@ -27,6 +27,7 @@
         ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion
           pkgs.vscodium.version
           [
+            "a-h.templ"
             "biomejs.biome"
             "bradlc.vscode-tailwindcss"
             "bufbuild.vscode-buf"
