@@ -58,7 +58,7 @@ in
         name: opts:
         nameValuePair "postgresql-${name}" {
           containerConfig = {
-            image = "docker.io/postgres:18.3-alpine@sha256:97e0c20847f5fe90be7e002ce2619be71f037e898f6c7364ad59e3826d60fee5";
+            image = "docker.io/postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911";
             pull = "missing";
             healthCmd = "pg_isready -U ${opts.username} -d ${opts.database}";
             notify = "healthy";
