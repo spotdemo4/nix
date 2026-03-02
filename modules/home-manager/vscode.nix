@@ -21,7 +21,6 @@
           pkgs.vscodium.version
           [
             "github.copilot-chat"
-            "github.copilot"
           ]
         )
         ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion
@@ -52,6 +51,18 @@
         "explorer.compactFolders" = false;
         "editor.fontFamily" = "Fira Code";
         "editor.fontLigatures" = true;
+
+        "json.schemaDownload.trustedDomains" = {
+          # defaults
+          "https://schemastore.azurewebsites.net/" = true;
+          "https://raw.githubusercontent.com/" = true;
+          "https://www.schemastore.org/" = true;
+          "https://json.schemastore.org/" = true;
+          "https://json-schema.org/" = true;
+
+          # https://github.com/catppuccin/vscode/issues/632
+          "https://esm.sh/" = true;
+        };
 
         # https://github.com/microsoft/vscode/issues/237819#issuecomment-3265147980
         "chat.disableAIFeatures" = false;
