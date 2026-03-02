@@ -22,6 +22,7 @@
           [
             "github.copilot-chat"
             "github.copilot"
+            "ms-vscode.cpptools"
           ]
         )
         ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion
