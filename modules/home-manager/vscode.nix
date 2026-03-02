@@ -22,7 +22,6 @@
           [
             "github.copilot-chat"
             "github.copilot"
-            "ms-vscode.cpptools"
           ]
         )
         ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion
@@ -35,6 +34,7 @@
             "dbaeumer.vscode-eslint"
             "esbenp.prettier-vscode"
             "gleam.gleam"
+            "llvm-vs-code-extensions.vscode-clangd"
             "mkhl.direnv"
             "redhat.vscode-yaml"
             "ReneSaarsoo.sql-formatter-vsc"
