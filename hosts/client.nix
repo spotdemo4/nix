@@ -31,6 +31,7 @@
     bruno
     feh
     file-roller
+    gimp
     heroic
     inputs.trevbar.packages."${stdenv.hostPlatform.system}".default
     jetbrains.datagrip
