@@ -31,7 +31,7 @@ in
   virtualisation.quadlet = {
     containers.shlink = {
       containerConfig = {
-        image = "ghcr.io/shlinkio/shlink:5.0.0@sha256:5bbedb6913b951f23428a61b581e7a22e33bdda0446455dfb4a598e57f15ff73";
+        image = "ghcr.io/shlinkio/shlink:5.0.1@sha256:a6d8508bc6b0eba5a28e1ee8b64dd5253434cd113c950e715baab4020edcd2a1";
         pull = "missing";
         secrets = [
           "${secrets."geolite".env},target=GEOLITE_LICENSE_KEY"
