@@ -46,6 +46,7 @@
         );
       userSettings = {
         "workbench.editor.labelFormat" = "short";
+        "workbench.editor.showTabs" = "none";
         "workbench.tree.indent" = 16;
         "explorer.sortOrder" = "filesFirst";
         "explorer.compactFolders" = false;
