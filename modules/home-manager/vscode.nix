@@ -63,6 +63,9 @@
 
           # https://github.com/catppuccin/vscode/issues/632
           "https://esm.sh/" = true;
+
+          # biomejs.biome
+          "https://biomejs.dev" = true;
         };
 
         # https://github.com/microsoft/vscode/issues/237819#issuecomment-3265147980
