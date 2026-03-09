@@ -21,7 +21,7 @@ in
 
   virtualisation.quadlet = {
     containers.copyparty.containerConfig = {
-      image = "ghcr.io/9001/copyparty-ac:1.20.10@sha256:c17e537e2197e8f476be79247e645380b5b56644924d77d8d5dc7777773d4691";
+      image = "ghcr.io/9001/copyparty-ac:1.20.11@sha256:32c59c85640219f1e0f8d6fb25611e7757990fe028b137531047cc3e020f88d5";
       pull = "missing";
       user = "1000:1000";
       secrets = [

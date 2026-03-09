@@ -15,7 +15,7 @@ in
 
   virtualisation.quadlet = {
     containers.unpackerr.containerConfig = {
-      image = "ghcr.io/unpackerr/unpackerr:0.15.0@sha256:9f4cb99b78d8fe2d55f79c490a715e14a8a28d9868373dad642ca5adc2ac3e91";
+      image = "ghcr.io/unpackerr/unpackerr:0.15.2@sha256:89e13608521ece21dd300c39229fd595a55fbf4b8152771af5670a7455b5c747";
       pull = "missing";
       user = "1000:1000";
       secrets = [
