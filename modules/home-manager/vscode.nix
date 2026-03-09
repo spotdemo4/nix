@@ -42,6 +42,7 @@
             "svelte.svelte-vscode"
             "timonwong.shellcheck"
             "tombi-toml.tombi"
+            "ziglang.vscode-zig"
           ]
         );
       userSettings = {
