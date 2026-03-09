@@ -88,6 +88,9 @@
 
         # svelte.svelte-vscode
         "svelte.enable-ts-plugin" = true;
+
+        # zigland.vscode-zig
+        "zig.zls.enabled" = "on";
       };
     };
   };
