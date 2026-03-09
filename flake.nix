@@ -234,17 +234,6 @@
         };
 
         checks = pkgs.lib.mkChecks {
-          nix = {
-            root = ./.;
-            filter = file: file.hasExt "nix";
-            deps = with pkgs; [
-              nixfmt
-            ];
-            forEach = ''
-              nixfmt --check $file
-            '';
-          };
-
           actions = {
             root = ./.github/workflows;
             fileset = ./.github/workflows;
@@ -258,6 +247,17 @@
             '';
           };
 
+          shellcheck = {
+            root = ./.;
+            filter = file: file.hasExt "sh";
+            deps = with pkgs; [
+              shellcheck
+            ];
+            forEach = ''
+              shellcheck $file
+            '';
+          };
+
           renovate = {
             root = ./.github;
             fileset = ./.github/renovate.json;
@@ -266,6 +266,17 @@
             ];
             script = ''
               renovate-config-validator renovate.json
+            '';
+          };
+
+          nix = {
+            root = ./.;
+            filter = file: file.hasExt "nix";
+            deps = with pkgs; [
+              nixfmt
+            ];
+            forEach = ''
+              nixfmt --check $file
             '';
           };
 
