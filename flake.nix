@@ -138,8 +138,6 @@
             }
           )
         ) (builtins.readDir ./servers);
-
-        fs = pkgs.lib.fileset;
       in
       {
         nixosConfigurations = {
@@ -195,7 +193,6 @@
 
         devShells = {
           default = pkgs.mkShell {
-            name = "dev";
             packages = with pkgs; [
               nixfmt
               nixfmt-tree
@@ -214,21 +211,18 @@
           };
 
           check = pkgs.mkShell {
-            name = "check";
             packages = with pkgs; [
               nix-fast-build
             ];
           };
 
           update = pkgs.mkShell {
-            name = "update";
             packages = with pkgs; [
               renovate
             ];
           };
 
           vulnerable = pkgs.mkShell {
-            name = "vulnerable";
             packages = with pkgs; [
               # nix
               flake-checker
@@ -241,38 +235,32 @@
 
         checks = pkgs.lib.mkChecks {
           nix = {
-            src = fs.toSource {
-              root = ./.;
-              fileset = fs.fileFilter (file: file.hasExt "nix") ./.;
-            };
+            root = ./.;
+            filter = file: file.hasExt "nix";
             deps = with pkgs; [
-              nixfmt-tree
+              nixfmt
             ];
-            script = ''
-              treefmt --ci
+            forEach = ''
+              nixfmt --check $file
             '';
           };
 
           actions = {
-            src = fs.toSource {
-              root = ./.github/workflows;
-              fileset = ./.github/workflows;
-            };
+            root = ./.github/workflows;
+            fileset = ./.github/workflows;
             deps = with pkgs; [
               action-validator
               octoscan
             ];
-            script = ''
-              action-validator **/*.yaml
-              octoscan scan .
+            forEach = ''
+              action-validator $file
+              octoscan scan $file
             '';
           };
 
           renovate = {
-            src = fs.toSource {
-              root = ./.github;
-              fileset = ./.github/renovate.json;
-            };
+            root = ./.github;
+            fileset = ./.github/renovate.json;
             deps = with pkgs; [
               renovate
             ];
@@ -282,15 +270,13 @@
           };
 
           prettier = {
-            src = fs.toSource {
-              root = ./.;
-              fileset = fs.fileFilter (file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md") ./.;
-            };
+            root = ./.;
+            filter = file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md";
             deps = with pkgs; [
               prettier
             ];
-            script = ''
-              prettier --check .
+            forEach = ''
+              prettier --check "$file"
             '';
           };
         };
