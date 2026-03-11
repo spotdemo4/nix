@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.bazarr.containerConfig = {
-      image = "lscr.io/linuxserver/bazarr:1.5.6@sha256:94eee5e3e14430b7b144d4556be73963a7daf6f1bddc25586627f426465482ce";
+      image = "lscr.io/linuxserver/bazarr:1.5.6@sha256:05f9d5b24884f37120453dc1a008a47be244eebec32099ae1bd29032e75b67aa";
       pull = "missing";
       environments = {
         PUID = "1000";
