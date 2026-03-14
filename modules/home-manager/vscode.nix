@@ -53,6 +53,8 @@
         "explorer.compactFolders" = false;
         "editor.fontFamily" = "Fira Code";
         "editor.fontLigatures" = true;
+        "editor.minimap.enabled" = false;
+        "chat.viewSessions.orientation" = "stacked";
 
         "json.schemaDownload.trustedDomains" = {
           # defaults
