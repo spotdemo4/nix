@@ -116,6 +116,15 @@
       fallback = true;
     };
 
+    buildMachines = {
+      build = {
+        system = "x86_64-linux";
+        sshUser = "trev";
+        protocol = "ssh-ng";
+        hostName = "build";
+      };
+    };
+
     gc = {
       automatic = true;
       dates = "weekly";

@@ -13,6 +13,10 @@
     "portainer/agent.nix"
   ];
 
+  nix.extraOptions = ''
+    trusted-users = trev
+  '';
+
   # Github runners
   github-runner = {
     enable = true;

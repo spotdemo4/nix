@@ -242,8 +242,8 @@
               octoscan
             ];
             forEach = ''
-              action-validator $file
-              octoscan scan $file
+              action-validator "$file"
+              octoscan scan "$file"
             '';
           };
 
@@ -254,7 +254,7 @@
               shellcheck
             ];
             forEach = ''
-              shellcheck $file
+              shellcheck "$file"
             '';
           };
 
@@ -276,7 +276,7 @@
               nixfmt
             ];
             forEach = ''
-              nixfmt --check $file
+              nixfmt --check "$file"
             '';
           };
 
