@@ -47,6 +47,12 @@
         "nix-command"
         "flakes"
       ];
+      extra-substituters = [
+        "https://nix.trev.zip"
+      ];
+      extra-trusted-public-keys = [
+        "trev:I39N/EsnHkvfmsbx8RUW+ia5dOzojTQNCTzKYij1chU="
+      ];
       fallback = true;
     };
 
