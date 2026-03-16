@@ -11,6 +11,8 @@
     ./hardware-configuration.nix
   ];
 
+  nix.distributedBuilds = true;
+
   services.greetd = {
     enable = true;
     settings = {
