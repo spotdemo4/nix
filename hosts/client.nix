@@ -116,6 +116,7 @@
         "trev"
       ];
       fallback = true;
+      builders-use-substitutes = true;
     };
 
     buildMachines = [
