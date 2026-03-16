@@ -118,7 +118,7 @@
 
     buildMachines = [
       {
-        hostName = "build";
+        hostName = "100.64.100.94";
         system = "x86_64-linux";
         sshUser = "trev";
         protocol = "ssh-ng";

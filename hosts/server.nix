@@ -119,13 +119,9 @@
           "render"
         ];
         shell = pkgs.zsh;
-        openssh.authorizedKeys =
-          let
-            nixKeys = import (self + /secrets/keys.nix);
-          in
-          {
-            keys = nixKeys.local;
-          };
+        openssh.authorizedKeys = {
+          keys = (import (self + /secrets/keys.nix)).local;
+        };
       };
     };
   };
