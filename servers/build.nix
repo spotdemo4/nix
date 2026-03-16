@@ -13,8 +13,18 @@
     "portainer/agent.nix"
   ];
 
+  users.users.builder = {
+    isNormalUser = true;
+    description = "builder";
+    openssh.authorizedKeys = {
+      keys = (import (self + /secrets/keys.nix)).local ++ [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJPQ+mXNZQNbbFOQhk8t1uwgFk0FOgPRd70PL4mBjdml"
+      ];
+    };
+  };
+
   nix.extraOptions = ''
-    trusted-users = trev
+    trusted-users = builder
   '';
 
   # Github runners

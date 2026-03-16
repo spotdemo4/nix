@@ -12,6 +12,7 @@ in
   "org-token.age".publicKeys = keys.local ++ [ keys.build ];
   "quantadev-token.age".publicKeys = keys.local ++ [ keys.build ];
   "repo-token.age".publicKeys = keys.local ++ [ keys.build ];
+  "builder-key.age".publicKeys = keys.local ++ [ keys.build ];
 
   # etc server
   "anubis.age".publicKeys = keys.local ++ [ keys.etc ];

@@ -4,6 +4,7 @@
   inputs,
   pkgs,
   self,
+  config,
   ...
 }:
 {
@@ -103,6 +104,7 @@
   };
 
   # Nix Settings
+  age.secrets."builder-key".file = self + /secrets/builder-key.age;
   nix = {
     settings = {
       experimental-features = [
@@ -118,9 +120,10 @@
 
     buildMachines = [
       {
-        hostName = "100.64.100.94";
+        hostName = "build";
+        sshUser = "builder";
+        sshKey = config.age.secrets."builder-key".path;
         system = "x86_64-linux";
-        sshUser = "trev";
         protocol = "ssh-ng";
       }
     ];
@@ -187,13 +190,9 @@
         "render"
       ];
       shell = pkgs.zsh;
-      openssh.authorizedKeys =
-        let
-          nixKeys = import (self + /secrets/keys.nix);
-        in
-        {
-          keys = nixKeys.local;
-        };
+      openssh.authorizedKeys = {
+        keys = (import (self + /secrets/keys.nix)).local;
+      };
     };
   };
   age.identityPaths = [ "/home/trev/.ssh/id_ed25519" ];
