@@ -48,6 +48,7 @@
     parsec-bin
     plexamp
     prismlauncher
+    protonvpn-gui
     thunderbird
     tor-browser
     vesktop
