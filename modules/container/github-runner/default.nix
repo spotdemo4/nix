@@ -28,7 +28,7 @@
           repo:
           lib.nameValuePair "github-runner-${builtins.replaceStrings [ "/" "." ] [ "-" "" ] repo}" {
             containerConfig = {
-              image = "ghcr.io/myoung34/docker-github-actions-runner:2.332.0-ubuntu-noble@sha256:dfb5c11cc9ca3b153786ce65d35a9642e71bda0bc8851283e9d805eb471cc8df";
+              image = "ghcr.io/myoung34/docker-github-actions-runner:2.333.0-ubuntu-noble@sha256:d7eaf5f429719cc1c6ec6ceee06a81cf74716899058dd646debfeb61d35b5174";
               pull = "missing";
               environments = {
                 REPO_URL = "https://github.com/${repo}";
