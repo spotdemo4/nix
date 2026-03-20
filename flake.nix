@@ -107,18 +107,8 @@
       ...
     }@inputs:
     trev.libs.mkFlake (
-      system:
+      system: pkgs:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            trev.overlays.packages
-            trev.overlays.libs
-            nur.overlays.default
-          ];
-          config.allowUnfree = true;
-        };
-
         servers = nixpkgs.lib.mapAttrs' (
           name: value:
           nixpkgs.lib.nameValuePair (nixpkgs.lib.removeSuffix ".nix" name) (
@@ -233,7 +223,7 @@
           };
         };
 
-        checks = pkgs.lib.mkChecks {
+        checks = pkgs.mkChecks {
           actions = {
             root = ./.github/workflows;
             fileset = ./.github/workflows;
