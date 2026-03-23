@@ -25,9 +25,10 @@
       # Display configuration
       monitor = [
         "eDP-1, preferred, auto, 1" # laptop screen
-        "desc:Dell Inc. DELL S2725QS 4TYKT84, 3840x2160@120, auto, auto" # main monitor
-        "desc:Dell Inc. S2719DGF 1HSYBY2, 2560x1440@60, auto, auto" # alt at home
-        "desc:Philips Consumer Electronics Company PHL 221V8LB UK02442041972, 1920x1080@100, auto, auto" # alt at work
+        "desc:Dell Inc. DELL S2725QS 4TYKT84, 3840x2160@120, auto, auto" # main @ office
+        "desc:Philips Consumer Electronics Company PHL 221V8LB UK02442041972, 1920x1080@100, auto, auto" # alt @ office
+        "desc:Dell Inc. DELL S2725QS 137GT84, 3840x2160@120, auto, auto" # main @ home
+        "desc:Dell Inc. S2719DGF 1HSYBY2, 2560x1440@155, auto, auto" # alt @ home
         ", preferred, auto, auto"
       ];
 
