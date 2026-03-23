@@ -24,16 +24,11 @@
 
       # Display configuration
       monitor = [
-        # Laptop
-        "eDP-1,preferred,auto,1"
-        "desc:Samsung Electric Company S34J55x H4LT901888,3440x1440@49.99Hz,auto,auto"
-
-        #Desktop
-        "desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A,3440x1440@60,auto,auto"
-        "desc:GIGA-BYTE TECHNOLOGY CO. LTD. G34WQC A 23072B001686,3440x1440@144,auto,auto"
-        "desc:Dell Inc. S2719DGF 1HSYBY2,2560x1440@60,auto,auto,transform,1"
-
-        ",preferred,auto,auto"
+        "eDP-1, preferred, auto, 1" # laptop screen
+        "desc:Dell Inc. DELL S2725QS 4TYKT84, 3840x2160@120, auto, auto" # main monitor
+        "desc:Dell Inc. S2719DGF 1HSYBY2, 2560x1440@60, auto, auto" # alt at home
+        "desc:Philips Consumer Electronics Company PHL 221V8LB UK02442041972, 1920x1080@100, auto, auto" # alt at work
+        ", preferred, auto, auto"
       ];
 
       workspace = "m[desc:Dell Inc. S2719DGF 1HSYBY2], layoutopt:orientation:top";
