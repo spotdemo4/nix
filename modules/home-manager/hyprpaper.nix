@@ -13,22 +13,28 @@
           path = "/etc/nixos/static/fishy_2160.png";
         }
 
-        # Main Monitor
+        # Main @ Office
         {
           monitor = "desc:Dell Inc. DELL S2725QS 4TYKT84";
           path = "/etc/nixos/static/fishy_2160.png";
         }
 
-        # Alt Home Monitor
-        {
-          monitor = "desc:Dell Inc. S2719DGF 1HSYBY2";
-          path = "/etc/nixos/static/fishy_2160.png";
-        }
-
-        # Alt Work Monitor
+        # Alt @ Office
         {
           monitor = "desc:Philips Consumer Electronics Company PHL 221V8LB UK02442041972";
           path = "/etc/nixos/static/fishy_1080.png";
+        }
+
+        # Main @ Home
+        {
+          monitor = "desc:Dell Inc. DELL S2725QS 137GT84";
+          path = "/etc/nixos/static/fishy_2160.png";
+        }
+
+        # Alt @ Home
+        {
+          monitor = "desc:Dell Inc. S2719DGF 1HSYBY2";
+          path = "/etc/nixos/static/fishy_2160.png";
         }
 
         # HTPC TV
