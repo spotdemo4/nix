@@ -13,7 +13,6 @@
 
   environment.systemPackages = with pkgs; [
     nvtopPackages.intel # intel gpu monitoring
-    openrgb # rgb lighting control
   ];
 
   services.greetd = {
@@ -42,6 +41,7 @@
     brscan5.enable = true;
   };
 
+  services.hardware.openrgb.enable = true; # RGB lighting control
   services.fwupd.enable = true; # firmware updates
   boot.kernelPackages = pkgs.linuxPackages_latest; # latest kernel
   nix.settings.eval-cores = 0; # try out eval cores
