@@ -11,6 +11,10 @@
     ./hardware-configuration.nix
   ];
 
+  environment.systemPackages = with pkgs; [
+    nvtopPackages.intel # intel gpu monitoring
+  ];
+
   services.greetd = {
     enable = true;
     settings = {

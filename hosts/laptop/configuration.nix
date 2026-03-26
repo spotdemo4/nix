@@ -11,7 +11,11 @@
     ./hardware-configuration.nix
   ];
 
-  nix.distributedBuilds = true;
+  environment.systemPackages = with pkgs; [
+    nvtopPackages.intel # intel gpu monitoring
+  ];
+
+  nix.distributedBuilds = true; # Enable remote builds
 
   services.greetd = {
     enable = true;
