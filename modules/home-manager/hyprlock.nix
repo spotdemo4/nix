@@ -1,6 +1,6 @@
 { ... }:
 {
-  services.hyprlock = {
+  programs.hyprlock = {
     enable = true;
     settings = {
       general = {
