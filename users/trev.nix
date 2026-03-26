@@ -10,7 +10,6 @@
     inputs.agenix.homeManagerModules.default
   ]
   ++ map (x: self + /modules/home-manager/${x}.nix) [
-    # Home Manager modules
     "bat"
     "btop"
     "chromium"
@@ -23,6 +22,7 @@
     "ghostty"
     "gpg"
     "gtk"
+    "hypridle"
     "hyprland"
     "hyprlock"
     "hyprpaper"
