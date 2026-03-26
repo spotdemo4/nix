@@ -13,6 +13,7 @@
 
   environment.systemPackages = with pkgs; [
     nvtopPackages.intel # intel gpu monitoring
+    openrgb # rgb lighting control
   ];
 
   services.greetd = {
