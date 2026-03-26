@@ -31,8 +31,8 @@
         "desc:Philips Consumer Electronics Company PHL 221V8LB UK02442041972, 1920x1080@100, auto, auto"
 
         # home
-        "desc:Dell Inc. DELL S2725QS 137GT84, 3840x2160@120, auto, 1"
-        "desc:Dell Inc. DELL S2725QS JGKHT84, 3840x2160@120, auto, 1"
+        "desc:Dell Inc. DELL S2725QS 137GT84, 3840x2160@120, auto, auto"
+        "desc:Dell Inc. DELL S2725QS JGKHT84, 3840x2160@120, auto, auto"
 
         ", preferred, auto, auto"
       ];
