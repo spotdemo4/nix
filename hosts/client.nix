@@ -45,7 +45,6 @@
     parsec-bin
     plexamp
     prismlauncher
-    protonvpn-gui
     thunderbird
     tor-browser
     vesktop
@@ -68,7 +67,7 @@
     nmap
     opencode
     openconnect
-    protonvpn-gui
+    proton-vpn-cli
     unzip
     wget
     wl-clipboard
