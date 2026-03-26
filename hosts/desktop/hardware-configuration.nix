@@ -22,7 +22,10 @@
     "sd_mod"
   ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
+  boot.kernelModules = [
+    "kvm-amd"
+    "nct6775"
+  ];
   boot.kernelParams = [
     # Use xe driver for Intel Arc GPU
     # "i915.force_probe=!56a0"
