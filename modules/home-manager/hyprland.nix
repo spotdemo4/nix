@@ -24,15 +24,18 @@
 
       # Display configuration
       monitor = [
-        "eDP-1, preferred, auto, 1" # laptop screen
-        "desc:Dell Inc. DELL S2725QS 4TYKT84, 3840x2160@120, auto, auto" # main @ office
-        "desc:Philips Consumer Electronics Company PHL 221V8LB UK02442041972, 1920x1080@100, auto, auto" # alt @ office
-        "desc:Dell Inc. DELL S2725QS 137GT84, 3840x2160@120, auto, auto" # main @ home
-        "desc:Dell Inc. S2719DGF 1HSYBY2, 2560x1440@155, auto, auto" # alt @ home
+        "eDP-1, preferred, auto, 1" # laptop
+
+        # office
+        "desc:Dell Inc. DELL S2725QS 4TYKT84, 3840x2160@120, auto, auto"
+        "desc:Philips Consumer Electronics Company PHL 221V8LB UK02442041972, 1920x1080@100, auto, auto"
+
+        # home
+        "desc:Dell Inc. DELL S2725QS 137GT84, 3840x2160@120, auto, auto"
+        "desc:Dell Inc. DELL S2725QS JGKHT84, 3840x2160@120, auto, auto"
+
         ", preferred, auto, auto"
       ];
-
-      workspace = "m[desc:Dell Inc. S2719DGF 1HSYBY2], layoutopt:orientation:top";
 
       general = {
         "gaps_in" = 5;
