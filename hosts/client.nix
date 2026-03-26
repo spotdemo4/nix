@@ -59,6 +59,7 @@
     ffmpeg
     file
     grimblast
+    igsc
     inputs.agenix.packages."${stdenv.hostPlatform.system}".default
     jq
     libnotify
