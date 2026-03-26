@@ -209,7 +209,6 @@
   virtualisation.docker.enable = true;
   programs.gnupg.agent.enable = true; # pgp
   programs.nix-ld.enable = true; # run unpatched dynamic binaries
-  services.passSecretService.enable = true; # expose pass to secret service
 
   system.stateVersion = "24.05"; # don't change
 }
