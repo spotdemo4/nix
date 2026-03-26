@@ -58,7 +58,6 @@
     fastfetch
     ffmpeg
     file
-    fwupd
     grimblast
     igsc
     inputs.agenix.packages."${stdenv.hostPlatform.system}".default

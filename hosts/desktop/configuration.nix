@@ -25,7 +25,6 @@
     };
   };
 
-  # Home manager
   home-manager = {
     useGlobalPkgs = true;
     extraSpecialArgs = {
@@ -42,9 +41,7 @@
     brscan5.enable = true;
   };
 
-  # Latest kernel
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  # Try out eval cores
-  nix.settings.eval-cores = 0;
+  services.fwupd.enable = true; # firmware updates
+  boot.kernelPackages = pkgs.linuxPackages_latest; # latest kernel
+  nix.settings.eval-cores = 0; # try out eval cores
 }
