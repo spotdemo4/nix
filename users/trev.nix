@@ -10,7 +10,7 @@
     inputs.agenix.homeManagerModules.default
   ]
   ++ map (x: self + /modules/home-manager/${x}.nix) [
-    # Home Manager modules to import
+    # Home Manager modules
     "bat"
     "btop"
     "chromium"
@@ -24,6 +24,7 @@
     "gpg"
     "gtk"
     "hyprland"
+    "hyprlock"
     "hyprpaper"
     "kitty"
     "mako"
@@ -45,12 +46,11 @@
 
   home.shellAliases = {
     temp = "cd $(mktemp -d)";
+    logs = "journalctl -b -e -u";
   };
 
   programs.zsh.siteFunctions = {
-    qc = ''
-      git add . && git commit -m "$1"
-    '';
+    qc = "git add . && git commit -m \"$1\"";
   };
 
   # https://github.com/nix-community/home-manager/issues/7935

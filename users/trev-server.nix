@@ -26,8 +26,7 @@
   home.stateVersion = "24.05";
 
   home.shellAliases = {
-    # Create an alias for podman that selects the root socket
-    docker = "podman --url unix:///run/podman/podman.sock";
+    docker = "podman --url unix:///run/podman/podman.sock"; # selects the root socket
     logs = "journalctl -b -e -u";
   };
 
