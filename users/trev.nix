@@ -26,6 +26,7 @@
     "hyprland"
     "hyprlock"
     "hyprpaper"
+    "hyprshutdown"
     "kitty"
     "mako"
     "mods"
