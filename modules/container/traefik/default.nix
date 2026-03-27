@@ -43,7 +43,7 @@ in
     containers = {
       traefik = {
         containerConfig = {
-          image = "docker.io/traefik:v3.6.11@sha256:acfc80650104f0194a15f73dc1648f517561bc1645391a15705332a064cfc33c";
+          image = "docker.io/traefik:v3.6.12@sha256:171c9c3565b29f6c133f1c1b43c5d4e5853415198e9e1078c001f8702ff66aec";
           pull = "missing";
           secrets = [
             "${secrets."cloudflare-dns".env},target=CF_DNS_API_TOKEN"
