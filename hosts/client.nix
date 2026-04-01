@@ -50,7 +50,6 @@
     vesktop
 
     # CLI
-    alejandra
     android-tools
     attic-client
     claude-code
@@ -64,6 +63,7 @@
     libnotify
     mprocs
     ncdu
+    nix-tree
     nmap
     opencode
     openconnect
