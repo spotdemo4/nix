@@ -15,7 +15,7 @@
   };
 
   inputs = {
-    systems.url = "github:nix-systems/default-linux";
+    systems.url = "github:spotdemo4/systems";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # quadlet nix

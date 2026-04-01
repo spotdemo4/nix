@@ -454,16 +454,16 @@
     },
     "systems": {
       "locked": {
-        "lastModified": 1689347949,
-        "narHash": "sha256-12tWmuL2zgBgZkdoB6qXZsgJEH9LR3oUgpaQq2RbI80=",
-        "owner": "nix-systems",
-        "repo": "default-linux",
-        "rev": "31732fcf5e8fea42e59c2488ad31a0e651500f68",
+        "lastModified": 1774907047,
+        "narHash": "sha256-dhGYA99iXafW9QblBWbh5mggjbdJt0SZO8vzuL0XvKo=",
+        "owner": "spotdemo4",
+        "repo": "systems",
+        "rev": "7759b373a7b0119835939988964a9b49bc3023af",
         "type": "github"
       },
       "original": {
-        "owner": "nix-systems",
-        "repo": "default-linux",
+        "owner": "spotdemo4",
+        "repo": "systems",
         "type": "github"
       }
     },
