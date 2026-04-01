@@ -27,6 +27,7 @@
           pkgs.vscodium.version
           [
             "a-h.templ"
+            "anthropic.claude-code"
             "biomejs.biome"
             "bradlc.vscode-tailwindcss"
             "bufbuild.vscode-buf"
@@ -35,6 +36,7 @@
             "gleam.gleam"
             "llvm-vs-code-extensions.vscode-clangd"
             "mkhl.direnv"
+            "openai.chatgpt"
             "redhat.vscode-yaml"
             "ReneSaarsoo.sql-formatter-vsc"
             "rust-lang.rust-analyzer"
