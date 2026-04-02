@@ -8,7 +8,7 @@ in
 {
   virtualisation.quadlet = {
     containers.crowdsec.containerConfig = {
-      image = "docker.io/crowdsecurity/crowdsec:v1.7.6@sha256:63b595fef92de1778573b375897a45dd226637ee9a3d3db9f57ac7355c369493";
+      image = "docker.io/crowdsecurity/crowdsec:v1.7.7@sha256:6ca53ad26196ca59ddd4fa692a586b73d8fcde085046163b9ca2f04887dca563";
       pull = "missing";
       environments = {
         COLLECTIONS = "crowdsecurity/linux crowdsecurity/traefik";
