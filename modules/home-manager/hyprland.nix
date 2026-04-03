@@ -25,6 +25,7 @@
       # Display configuration
       monitor = [
         "eDP-1, preferred, auto, 1" # laptop
+        "desc:XXX Beyond TV 0x00010000, 3840x2160@120, auto, 2" # TV
 
         # office
         "desc:Dell Inc. DELL S2725QS 4TYKT84, 3840x2160@120, auto, auto"
