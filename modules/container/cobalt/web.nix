@@ -8,7 +8,7 @@ in
 {
   virtualisation.quadlet.containers.cobalt-web = {
     containerConfig = {
-      image = "ghcr.io/spotdemo4/cobalt-web:11.3@sha256:2e776e4643dccd8f842905bd39e670b3a958f9993af6ace996b6850cfebb8185";
+      image = "ghcr.io/spotdemo4/cobalt-web:11.7@sha256:30392487965b2c96f70f04ec5e3ef24a7804eec6ef0c7b9fd7d1e19ed955d1c9";
       pull = "missing";
       environments = {
         WEB_DEFAULT_API = "https://cobalt-api.trev.zip/";
