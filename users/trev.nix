@@ -33,6 +33,7 @@
     "mpv"
     "qt"
     "starship"
+    "steam"
     "vscode"
     "waybar"
     "wofi"
