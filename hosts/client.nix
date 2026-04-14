@@ -124,6 +124,8 @@
       builders-use-substitutes = true;
     };
 
+    nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
+
     buildMachines = [
       {
         hostName = "build";
