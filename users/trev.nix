@@ -49,6 +49,7 @@
   home.shellAliases = {
     temp = "cd $(mktemp -d)";
     logs = "journalctl -b -e -u";
+    codium = "code";
   };
 
   programs.zsh.siteFunctions = {

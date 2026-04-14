@@ -6,36 +6,29 @@
 {
   programs.vscode = {
     enable = true;
-    package = pkgs.vscodium;
+    package = pkgs.vscode;
     mutableExtensionsDir = false;
     profiles.default = {
       extensions =
-        (with pkgs.vscode-extensions; [
-          charliermarsh.ruff
-          golang.go
-          jnoortheen.nix-ide
-          ms-python.python
-          usernamehw.errorlens
+        (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion pkgs.vscode.version [
+          "github.copilot-chat"
         ])
-        ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion
-          pkgs.vscodium.version
-          [
-            "github.copilot-chat"
-          ]
-        )
-        ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion
-          pkgs.vscodium.version
+        ++ (inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forOpenVsxVersion pkgs.vscode.version
           [
             "a-h.templ"
             "anthropic.claude-code"
             "biomejs.biome"
             "bradlc.vscode-tailwindcss"
             "bufbuild.vscode-buf"
+            "charliermarsh.ruff"
             "dbaeumer.vscode-eslint"
             "esbenp.prettier-vscode"
             "gleam.gleam"
+            "golang.Go"
+            "jnoortheen.nix-ide"
             "llvm-vs-code-extensions.vscode-clangd"
             "mkhl.direnv"
+            "ms-python.python"
             "openai.chatgpt"
             "redhat.vscode-yaml"
             "ReneSaarsoo.sql-formatter-vsc"
@@ -44,10 +37,12 @@
             "svelte.svelte-vscode"
             "timonwong.shellcheck"
             "tombi-toml.tombi"
+            "usernamehw.errorlens"
             "ziglang.vscode-zig"
           ]
         );
       userSettings = {
+        "telemetry.telemetryLevel" = "off";
         "workbench.editor.labelFormat" = "short";
         "workbench.editor.showTabs" = "none";
         "workbench.tree.indent" = 16;
