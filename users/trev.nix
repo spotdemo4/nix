@@ -55,6 +55,10 @@
   home.homeDirectory = "/home/trev";
   home.stateVersion = "24.05";
 
+  home.sessionVariables = {
+    NIX_PATH = "nixpkgs=${inputs.nixpkgs.outPath}";
+  };
+
   home.shellAliases = {
     temp = "cd $(mktemp -d)";
     logs = "journalctl -b -e -u";
