@@ -100,7 +100,7 @@
       inherit inputs self;
     };
     users = {
-      trev.imports = [ (self + /users/trev-server.nix) ];
+      trev.imports = [ (self + /users/server.nix) ];
     };
   };
 
