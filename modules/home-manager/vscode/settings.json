@@ -1,0 +1,37 @@
+{
+  "$schema": "vscode://schemas/settings/user",
+
+  "telemetry.telemetryLevel": "off",
+  "update.mode": "none",
+  "workbench.editor.labelFormat": "short",
+  "workbench.editor.showTabs": "none",
+  "workbench.tree.indent": 16,
+  "explorer.sortOrder": "filesFirst",
+  "explorer.compactFolders": false,
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
+  "editor.minimap.enabled": false,
+  "chat.viewSessions.orientation": "stacked",
+  "chat.disableAIFeatures": false,
+
+  "json.schemaDownload.trustedDomains": {
+    "https://schemastore.azurewebsites.net/": true,
+    "https://raw.githubusercontent.com/microsoft/vscode/": true,
+    "https://raw.githubusercontent.com/devcontainers/spec/": true,
+    "https://www.schemastore.org/": true,
+    "https://json.schemastore.org/": true,
+    "https://json-schema.org/": true,
+    "https://developer.microsoft.com/json-schemas/": true,
+    "https://esm.sh/": true,
+    "https://biomejs.dev": true
+  },
+
+  "nix.enableLanguageServer": true,
+  "nix.serverPath": "nixd",
+  "nix.hiddenLanguageServerErrors": ["textDocument/definition"],
+
+  "biome.enabled": false,
+  "redhat.telemetry.enabled": false,
+  "svelte.enable-ts-plugin": true,
+  "zig.zls.enabled": "on"
+}
