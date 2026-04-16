@@ -47,7 +47,7 @@
 
     # nix vscode extensions
     nix4vscode = {
-      url = "github:nix-community/nix4vscode/2e9e45ebfb1a634e2b4670008f8f0fa1a7551b22";
+      url = "github:nix-community/nix4vscode/5128910e49919880c4942f773286b40aede79ac4";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
