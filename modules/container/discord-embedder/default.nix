@@ -32,7 +32,6 @@ in
         TMP_DIR = "/tmp";
         HOST = "https://embed.trev.xyz";
         PORT = "8080";
-        QUICKSYNC = "true";
         INSTAGRAM_USERNAME = "spam@trev.xyz";
         REDDIT_USERNAME = "spotemo7";
         TIKTOK_USERNAME = "embedder@trev.xyz";
