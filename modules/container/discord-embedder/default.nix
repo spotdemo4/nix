@@ -20,6 +20,7 @@ in
     containers.discord-embedder.containerConfig = {
       image = "ghcr.io/spotdemo4/discord-embedder:0.1.19@sha256:ca8363930a486b4c94f71404e6a6f93d65c5a3e4d22441c9112a4d3ace1932ff";
       pull = "missing";
+      user = "1000:1000";
       devices = [
         "/dev/dri/card0:/dev/dri/card0"
         "/dev/dri/renderD128:/dev/dri/renderD128"
@@ -32,7 +33,6 @@ in
         HOST = "https://embed.trev.xyz";
         PORT = "8080";
         QUICKSYNC = "true";
-
         INSTAGRAM_USERNAME = "spam@trev.xyz";
         REDDIT_USERNAME = "spotemo7";
         TIKTOK_USERNAME = "embedder@trev.xyz";
