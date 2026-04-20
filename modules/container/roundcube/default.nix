@@ -30,7 +30,7 @@ in
     containers = {
       roundcube = {
         containerConfig = {
-          image = "docker.io/roundcube/roundcubemail:1.6.15-apache@sha256:1dbeb155a35099b97bfaf3c07b80235709b3741859218b89e3f96b58c80cae85";
+          image = "docker.io/roundcube/roundcubemail:1.6.15-apache@sha256:6e89f90f32d152391c59ee40bb34591636fb4d2482d1fc1d25cfdc15ef1c2935";
           pull = "missing";
           environments = {
             ROUNDCUBEMAIL_DEFAULT_HOST = "stalwart";
