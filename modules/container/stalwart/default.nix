@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.stalwart.containerConfig = {
-      image = "docker.io/stalwartlabs/stalwart:v0.15.5-alpine@sha256:0620ceba9165c104789d5cacb0aa209e7f16295f54edead631b1925b1ccc1ccf";
+      image = "docker.io/stalwartlabs/stalwart:v0.16.0-alpine@sha256:1e6acf43a3cf56eb9121e60fdbc95da81c86b1488357c88fa2b74f7e8b461d0f";
       pull = "missing";
       volumes = [
         "${volumes.stalwart.ref}:/opt/stalwart"
