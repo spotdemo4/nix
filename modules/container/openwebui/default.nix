@@ -12,7 +12,7 @@ in
 
   virtualisation.quadlet = {
     containers.open-webui.containerConfig = {
-      image = "ghcr.io/open-webui/open-webui:main@sha256:b8095f79a6a8ffad8f830bdacc9b5b0aef805689b31bca0b065cc2424d3cfaeb";
+      image = "ghcr.io/open-webui/open-webui:main@sha256:e01a51e3278dcf9ce38f937f08e33bee31e64f78eb0ed026403f8893893d2edf";
       pull = "missing";
       environments = {
         WEBUI_URL = "https://chat.trev.zip";
