@@ -69,7 +69,7 @@ in
         name: opts:
         nameValuePair "gluetun-${name}" {
           containerConfig = {
-            image = "docker.io/qmcgaw/gluetun:latest@sha256:122bd8a294e317e7df44b3508a04b5c676273b63f7987fa59150b5df2558cb7c";
+            image = "docker.io/qmcgaw/gluetun:latest@sha256:b81e65b1d5c0edefd70f7cfcbb353c44bd7458ed1b6f108f6555e20d8fdcb762";
             pull = "missing";
             devices = [
               "/dev/net/tun:/dev/net/tun"
