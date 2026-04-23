@@ -13,7 +13,7 @@ in
 
   virtualisation.quadlet = {
     containers.versitygw.containerConfig = {
-      image = "docker.io/versity/versitygw:v1.4.0@sha256:6bd4d92bb27ece3097be3c930ea702ebf275288b8711ec91421ccf81d6f36a42";
+      image = "docker.io/versity/versitygw:v1.4.1@sha256:0400cb59f59da0f1cf9f7fd49505191abc348dfadf54509bf1988caaff4eb96f";
       pull = "missing";
       environments = {
         VGW_BACKEND = "posix";
