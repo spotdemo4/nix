@@ -28,7 +28,7 @@
         "desc:XXX Beyond TV 0x00010000, 3840x2160@120, auto, 2" # TV
 
         # office
-        "desc:Dell Inc. DELL S2725QS 4TYKT84, 3840x2160@120, auto, auto"
+        "desc:Dell Inc. DELL S2725QS 4TYKT84, 3840x2160@60, auto, auto"
         "desc:Philips Consumer Electronics Company PHL 221V8LB UK02442041972, 1920x1080@100, auto, auto"
 
         # home
