@@ -14,6 +14,8 @@ in
       pull = "missing";
       volumes = [
         "${volumes.stalwart.ref}:/opt/stalwart"
+        "${volumes.stalwart-conf.ref}:/etc/stalwart"
+        "${volumes.stalwart-data.ref}:/var/lib/stalwart"
         "/mnt/certs:/data/certs:ro"
       ];
       publishPorts = [
@@ -44,6 +46,8 @@ in
 
     volumes = {
       stalwart = { };
+      stalwart-conf = { };
+      stalwart-data = { };
     };
 
     networks = {
