@@ -6,6 +6,7 @@
   "workbench.editor.labelFormat": "short",
   "workbench.editor.showTabs": "none",
   "workbench.tree.indent": 16,
+  "workbench.startupEditor": "none",
   "explorer.sortOrder": "filesFirst",
   "explorer.compactFolders": false,
   "editor.fontFamily": "Fira Code",
