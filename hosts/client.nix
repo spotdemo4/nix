@@ -154,6 +154,10 @@
     hostName = hostname;
     networkmanager.enable = true;
     firewall.enable = false;
+    nameservers = [
+      "1.1.1.1"
+      "9.9.9.9"
+    ];
   };
 
   security = {
