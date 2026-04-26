@@ -21,7 +21,7 @@ jobs:
       hosts: ${{ steps.hosts.outputs.hosts }}
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@91bbca32bfa8d48baf47c8b2c0a15ce89c5ff0aa # v1.42.0
+        uses: spotdemo4/nix-init@0570d65d7c69d827384b0749108a291c40b67b34 # v1.44.1
         with:
           shell: check
 
@@ -42,7 +42,7 @@ jobs:
         host: ${{ fromJSON(needs.check.outputs.hosts) }}
     steps:
       - name: Initialize
-        uses: spotdemo4/nix-init@91bbca32bfa8d48baf47c8b2c0a15ce89c5ff0aa # v1.42.0
+        uses: spotdemo4/nix-init@0570d65d7c69d827384b0749108a291c40b67b34 # v1.44.1
         with:
           shell: check
 
