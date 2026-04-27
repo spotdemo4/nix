@@ -21,7 +21,6 @@ in
           enable = true;
           http.routers.moonlight = {
             rule = "Host(`windows.trev.xyz`)";
-            middlewares = "secure-admin@file";
           };
         };
       };
