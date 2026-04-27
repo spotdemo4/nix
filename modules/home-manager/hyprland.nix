@@ -122,6 +122,7 @@
         "$mod, G, layoutmsg, swapwithmaster"
         "$mod, S, exec, $screenshot"
         "$mod, T, togglegroup"
+        "$mod, F, fullscreen"
 
         # Switch workspace with mainMod + [0-9]
         "$mod, 1, workspace, 1"
