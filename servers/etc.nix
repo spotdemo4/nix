@@ -8,6 +8,7 @@
     "cobalt"
     "crowdsec"
     "discord-openrouter"
+    "moonlight"
     "portainer/agent.nix"
     "shlink"
     "traefik-kop"
