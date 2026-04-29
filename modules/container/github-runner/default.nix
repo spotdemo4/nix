@@ -39,6 +39,8 @@
                 RUNNER_SCOPE = "repo";
                 RUN_AS_ROOT = "false";
                 USER = "runner";
+                DISABLE_AUTO_UPDATE = "true";
+                NO_DEFAULT_LABELS = "true";
               };
               secrets = [
                 "${config.secrets."github-runner".env},target=ACCESS_TOKEN"

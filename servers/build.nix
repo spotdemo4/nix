@@ -1,6 +1,7 @@
 {
   config,
   self,
+  pkgs,
   ...
 }:
 {
@@ -9,7 +10,6 @@
   ]
   ++ map (c: self + /modules/container/${c}) [
     "gitea-runner"
-    "github-runner"
     "portainer/agent.nix"
   ];
 
@@ -28,11 +28,38 @@
   '';
 
   # Github runners
-  github-runner = {
-    enable = true;
-    repos = [
-      "spotdemo4/zig-template"
-    ];
+  age.secrets."github-runner".file = self + /secrets/github-runner.age;
+  services.github-runners = {
+    zig-template = {
+      enable = true;
+
+      name = "builder";
+      replace = true;
+
+      extraLabels = "builder";
+      noDefaultLabels = true;
+
+      user = "builder";
+
+      url = "https://github.com/spotdemo4/zig-template";
+
+      extraPackages = with pkgs; [
+        nodejs_24
+        nodejs_20
+      ];
+      nodeRuntimes = [
+        "node24"
+        "node20"
+      ];
+
+      serviceOverrides = {
+        MemoryHigh = "12G";
+        MemoryMax = "15G";
+        CPUWeight = 20;
+      };
+
+      tokenFile = config.age.secrets."github-runner".path;
+    };
   };
 
   # Gitea runners
