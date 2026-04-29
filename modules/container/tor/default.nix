@@ -28,10 +28,7 @@ in
     };
 
     networks = {
-      tor.networkConfig = {
-        driver = "macvlan";
-        interfaceName = "eth0";
-      };
+      tor = { };
     };
   };
 }

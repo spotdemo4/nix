@@ -56,10 +56,7 @@ in
     };
 
     networks = {
-      monero.networkConfig = {
-        driver = "macvlan";
-        interfaceName = "eth0";
-      };
+      monero = { };
     };
   };
 }
