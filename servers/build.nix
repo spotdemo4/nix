@@ -75,28 +75,28 @@
   };
 
   # Gitea runners
-  # age.secrets."gitea-quanta".file = self + /secrets/gitea-quanta.age;
-  # services.gitea-actions-runner.instances = {
-  #   quanta = {
-  #     enable = true;
-  #     url = "https://git.quantadev.cc";
-  #     tokenFile = config.age.secrets."gitea-quanta".path;
+  age.secrets."gitea-quanta".file = self + /secrets/gitea-quanta.age;
+  services.gitea-actions-runner.instances = {
+    quanta = {
+      enable = true;
+      url = "https://git.quantadev.cc";
+      tokenFile = config.age.secrets."gitea-quanta".path;
 
-  #     name = "builder";
-  #     labels = [
-  #       "ubuntu-latest:docker://docker.gitea.com/runner-images:ubuntu-latest"
-  #       "ubuntu-24.04:docker://docker.gitea.com/runner-images:ubuntu-24.04"
-  #       "node-24:docker://node:24-bookworm"
-  #       "builder:host"
-  #     ];
+      name = "builder";
+      labels = [
+        "ubuntu-latest:docker://docker.gitea.com/runner-images:ubuntu-latest"
+        "ubuntu-24.04:docker://docker.gitea.com/runner-images:ubuntu-24.04"
+        "node-24:docker://node:24-bookworm"
+        "builder:host"
+      ];
 
-  #     hostPackages = with pkgs; [
-  #       curl
-  #       gh
-  #       nodejs_24
-  #       openssl
-  #       wget
-  #     ];
-  #   };
-  # };
+      hostPackages = with pkgs; [
+        curl
+        gh
+        nodejs_24
+        openssl
+        wget
+      ];
+    };
+  };
 }
