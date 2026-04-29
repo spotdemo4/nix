@@ -32,6 +32,8 @@
   services.github-runners = {
     zig-template = {
       enable = true;
+      url = "https://github.com/spotdemo4/zig-template";
+      tokenFile = config.age.secrets."github-runner".path;
 
       name = "builder";
       replace = true;
@@ -40,12 +42,11 @@
       noDefaultLabels = true;
 
       user = "builder";
-
-      url = "https://github.com/spotdemo4/zig-template";
-
       extraPackages = with pkgs; [
         nodejs_24
-        nodejs_20
+        curl
+        wget
+        gh
       ];
       nodeRuntimes = [
         "node24"
@@ -57,8 +58,6 @@
         MemoryMax = "15G";
         CPUWeight = 20;
       };
-
-      tokenFile = config.age.secrets."github-runner".path;
     };
   };
 
