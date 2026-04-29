@@ -35,6 +35,7 @@
                 RUNNER_NAME = "builder";
                 LABELS = "builder";
                 CONFIGURED_ACTIONS_RUNNER_FILES_DIR = "/runner/data";
+                DISABLE_AUTOMATIC_DEREGISTRATION = "true";
                 RUNNER_SCOPE = "repo";
                 RUN_AS_ROOT = "false";
                 USER = "runner";
