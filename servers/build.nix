@@ -9,23 +9,41 @@
     (self + /hosts/lxc/configuration.nix)
   ]
   ++ map (c: self + /modules/container/${c}) [
-    "gitea-runner"
     "portainer/agent.nix"
   ];
 
-  users.users.builder = {
-    isNormalUser = true;
-    description = "builder";
-    openssh.authorizedKeys = {
-      keys = (import (self + /secrets/keys.nix)).local ++ [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJPQ+mXNZQNbbFOQhk8t1uwgFk0FOgPRd70PL4mBjdml"
-      ];
+  users.users = {
+    builder = {
+      isNormalUser = true;
+      description = "remote build user";
+      openssh.authorizedKeys = {
+        keys = (import (self + /secrets/keys.nix)).local ++ [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJPQ+mXNZQNbbFOQhk8t1uwgFk0FOgPRd70PL4mBjdml"
+        ];
+      };
+    };
+
+    github-runner = {
+      isNormalUser = true;
+      description = "github runner user";
+    };
+
+    gitea-runner = {
+      isNormalUser = true;
+      description = "gitea runner user";
     };
   };
 
+  # allow users to use nix
   nix.extraOptions = ''
-    trusted-users = builder
+    allowed-users = builder github-runner gitea-runner
   '';
+
+  # make sure nix can't use too much memory when building
+  systemd.services.nix-daemon.serviceConfig = {
+    MemoryHigh = "10G";
+    CPUWeight = 20;
+  };
 
   # Github runners
   age.secrets."github-runner".file = self + /secrets/github-runner.age;
@@ -41,7 +59,7 @@
       extraLabels = [ "builder" ];
       noDefaultLabels = true;
 
-      user = "builder";
+      user = "github-runner";
       extraPackages = with pkgs; [
         curl
         gh
@@ -53,34 +71,32 @@
         "node24"
         "node20"
       ];
-
-      serviceOverrides = {
-        MemoryHigh = "12G";
-        MemoryMax = "15G";
-        CPUWeight = 20;
-      };
     };
   };
 
   # Gitea runners
-  age.secrets."gitea".file = self + /secrets/gitea.age;
   age.secrets."gitea-quanta".file = self + /secrets/gitea-quanta.age;
-  age.secrets."codeberg".file = self + /secrets/codeberg.age;
-  gitea-runner = {
-    enable = true;
-    instances = {
-      gitea-ts = {
-        url = "https://gitea.com";
-        tokenFile = config.age.secrets."gitea".path;
-      };
-      gitea-quanta = {
-        url = "https://git.quantadev.cc";
-        tokenFile = config.age.secrets."gitea-quanta".path;
-      };
-      forgejo-ts = {
-        url = "https://codeberg.org";
-        tokenFile = config.age.secrets."codeberg".path;
-      };
+  services.gitea-actions-runner.instances = {
+    quanta = {
+      enable = true;
+      url = "https://git.quantadev.cc";
+      tokenFile = config.age.secrets."gitea-quanta".path;
+
+      name = "builder";
+      labels = [
+        "ubuntu-latest:docker://docker.gitea.com/runner-images:ubuntu-latest"
+        "ubuntu-24.04:docker://docker.gitea.com/runner-images:ubuntu-24.04"
+        "node-24:docker://node:24-bookworm"
+        "builder:host"
+      ];
+
+      hostPackages = with pkgs; [
+        curl
+        gh
+        nodejs_24
+        openssl
+        wget
+      ];
     };
   };
 }

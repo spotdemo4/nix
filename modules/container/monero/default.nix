@@ -56,7 +56,7 @@ in
     };
 
     networks = {
-      monero = { };
+      monero.networkConfig.interfaceName = "eth0";
     };
   };
 }

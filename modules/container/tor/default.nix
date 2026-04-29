@@ -19,7 +19,7 @@ in
       ];
       publishPorts = [
         "9090:9090"
-        "9091:9091" # metrics
+        "10.10.10.105:9091:9091" # metrics
       ];
     };
 
@@ -28,7 +28,7 @@ in
     };
 
     networks = {
-      tor = { };
+      tor.networkConfig.interfaceName = "eth0";
     };
   };
 }
