@@ -36,7 +36,7 @@
       name = "builder";
       replace = true;
 
-      extraLabels = "builder";
+      extraLabels = [ "builder" ];
       noDefaultLabels = true;
 
       user = "builder";
