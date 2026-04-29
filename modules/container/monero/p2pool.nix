@@ -39,7 +39,7 @@ in
     };
 
     volumes = {
-      p2pool.networkConfig.interfaceName = "eth0";
+      p2pool = { };
     };
   };
 }
