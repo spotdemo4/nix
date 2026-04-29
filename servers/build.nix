@@ -43,10 +43,11 @@
 
       user = "builder";
       extraPackages = with pkgs; [
-        nodejs_24
         curl
-        wget
         gh
+        nodejs_24
+        openssl
+        wget
       ];
       nodeRuntimes = [
         "node24"
