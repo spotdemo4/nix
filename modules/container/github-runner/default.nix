@@ -32,11 +32,10 @@
               pull = "missing";
               environments = {
                 REPO_URL = "https://github.com/${repo}";
-                RUNNER_NAME = "${builtins.replaceStrings [ "/" ] [ "-" ] repo}";
-                RUNNER_SCOPE = "repo";
-                LABELS = "ubuntu-latest,ubuntu-24.04";
+                RUNNER_NAME = "builder";
+                LABELS = "builder";
                 CONFIGURED_ACTIONS_RUNNER_FILES_DIR = "/runner/data";
-                DISABLE_AUTOMATIC_DEREGISTRATION = "true";
+                RUNNER_SCOPE = "repo";
                 RUN_AS_ROOT = "false";
                 USER = "runner";
               };
