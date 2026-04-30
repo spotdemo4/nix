@@ -2,7 +2,7 @@
 {
   virtualisation.quadlet.containers.portainer-agent = {
     containerConfig = {
-      image = "docker.io/portainer/agent:2.40.0@sha256:956f99ebb48840b7cbe502b340be1fd2bb334b2ed357663cb274d7f9f8a75911";
+      image = "docker.io/portainer/agent:2.41.0@sha256:181a4ba5710ffb9ea5ca548ac77b257e77353530df0c830545808637a5f43475";
       pull = "missing";
       volumes = [
         "/run/podman/podman.sock:/var/run/docker.sock"
