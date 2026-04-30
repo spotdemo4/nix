@@ -27,6 +27,7 @@
           "mkhl.direnv"
           "ms-python.python"
           "openai.chatgpt"
+          "oxc.oxc-vscode"
           "redhat.vscode-yaml"
           "ReneSaarsoo.sql-formatter-vsc"
           "rust-lang.rust-analyzer"
