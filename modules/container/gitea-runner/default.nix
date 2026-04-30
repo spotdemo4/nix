@@ -51,7 +51,7 @@ in
               };
             in
             {
-              image = "docker.io/gitea/act_runner:nightly@sha256:a3ccb3a3f7365f9e4a78a3f623bb72fdbb0b6542642be8b541e7ab18a63c42a8";
+              image = "docker.io/gitea/act_runner:nightly@sha256:22e107d6fb5a2d76110cefc0f1f0a193caabafd186a7dec5723989879df14ed1";
               pull = "missing";
               environments = {
                 CONFIG_FILE = "/config.yaml";
