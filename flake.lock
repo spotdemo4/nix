@@ -433,18 +433,18 @@
         "nur": "nur",
         "quadlet-nix": "quadlet-nix",
         "systems": "systems",
-        "trev": "trev",
         "trevbar": "trevbar",
+        "trevpkgs": "trevpkgs",
         "zen-browser": "zen-browser"
       }
     },
     "schema": {
       "locked": {
-        "lastModified": 1775244557,
-        "narHash": "sha256-iYXRXIX9eafJmwJFAhqT3YxvvpNRuPFSLRCSpvGh8Ic=",
+        "lastModified": 1776384880,
+        "narHash": "sha256-28Cg9HI/IwFHUm5fZyMEGCQ94L3Il6K4OfHeRf0b+Zw=",
         "owner": "DeterminateSystems",
         "repo": "flake-schemas",
-        "rev": "15edbeeaf77e42216dbcba8bfd907fdeabb75a2b",
+        "rev": "b852751d29c6e09919f25c1e10754646bdc181c9",
         "type": "github"
       },
       "original": {
@@ -468,30 +468,6 @@
         "type": "github"
       }
     },
-    "trev": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "schema": "schema",
-        "systems": [
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1775900287,
-        "narHash": "sha256-/ng/xIYzoSR4hZUg+6MAnUY0zr9Vkr/IT7Ju/pU/+8w=",
-        "owner": "spotdemo4",
-        "repo": "nur",
-        "rev": "17b02ac6c769eb6721362c63f5921973f10d0139",
-        "type": "github"
-      },
-      "original": {
-        "owner": "spotdemo4",
-        "repo": "nur",
-        "type": "github"
-      }
-    },
     "trevbar": {
       "inputs": {
         "ags": "ags",
@@ -503,7 +479,7 @@
           "systems"
         ],
         "trev": [
-          "trev"
+          "trevpkgs"
         ]
       },
       "locked": {
@@ -517,6 +493,30 @@
       "original": {
         "owner": "spotdemo4",
         "repo": "trevbar",
+        "type": "github"
+      }
+    },
+    "trevpkgs": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "schema": "schema",
+        "systems": [
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777673871,
+        "narHash": "sha256-fQQtNgEtrlgdt2rMIjQiRl8Eu4V88aVbFdCQCbZzKAU=",
+        "owner": "spotdemo4",
+        "repo": "trevpkgs",
+        "rev": "abae9bf1b4448308cc71a7ea59d11a2c3e991048",
+        "type": "github"
+      },
+      "original": {
+        "owner": "spotdemo4",
+        "repo": "trevpkgs",
         "type": "github"
       }
     },

@@ -55,8 +55,8 @@
     };
 
     # trev's repository
-    trev = {
-      url = "github:spotdemo4/nur";
+    trevpkgs = {
+      url = "github:spotdemo4/trevpkgs";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -88,7 +88,7 @@
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
-        trev.follows = "trev";
+        trev.follows = "trevpkgs";
       };
     };
   };
@@ -102,11 +102,11 @@
       home-manager,
       nur,
       catppuccin,
-      trev,
+      trevpkgs,
       agenix,
       ...
     }@inputs:
-    trev.libs.mkFlake (
+    trevpkgs.libs.mkFlake (
       system: pkgs:
       let
         servers = nixpkgs.lib.mapAttrs' (
@@ -142,7 +142,7 @@
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
               nur.modules.nixos.default
-              trev.nixosModules.overlay
+              trevpkgs.nixosModules.overlay
               ./hosts/laptop/configuration.nix
             ];
           };
@@ -158,7 +158,7 @@
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
               nur.modules.nixos.default
-              trev.nixosModules.overlay
+              trevpkgs.nixosModules.overlay
               ./hosts/desktop/configuration.nix
             ];
           };
@@ -174,7 +174,7 @@
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
               nur.modules.nixos.default
-              trev.nixosModules.overlay
+              trevpkgs.nixosModules.overlay
               ./hosts/htpc/configuration.nix
             ];
           };
