@@ -38,7 +38,7 @@
           "ziglang.vscode-zig"
         ]
         ++ [
-          pkgs.oxc-vscode
+          pkgs.trev.oxc-vscode
         ]
       );
       userSettings = pkgs.lib.importJSON ./settings.json;
