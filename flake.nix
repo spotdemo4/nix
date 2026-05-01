@@ -283,6 +283,7 @@
         };
 
         formatter = pkgs.nixfmt-tree;
+        schemas = trevpkgs.schemas;
       }
     );
 }
