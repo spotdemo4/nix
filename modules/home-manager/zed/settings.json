@@ -1,0 +1,4 @@
+{
+  "$schema": "zed://schemas/settings",
+  "buffer_font_family": "Fira Code"
+}

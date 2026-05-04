@@ -46,6 +46,7 @@
         "vscode"
         "waybar"
         "wofi"
+        "zed"
         "zen"
         "zoxide"
         "zsh"
