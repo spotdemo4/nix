@@ -8,7 +8,7 @@
     "claude-acp": {
       "type": "registry",
       "env": {
-        "CLAUDE_CODE_EXECUTABLE": "@claude@",
+        "CLAUDE_CODE_EXECUTABLE": "@claude_bin@",
       },
     },
   },
