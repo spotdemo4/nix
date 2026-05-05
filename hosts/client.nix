@@ -47,6 +47,7 @@
     prismlauncher
     thunderbird
     tor-browser
+    trev.helium
     vesktop
 
     # CLI
