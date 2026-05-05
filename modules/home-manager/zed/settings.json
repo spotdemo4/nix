@@ -1,13 +1,16 @@
 {
   "$schema": "zed://schemas/settings",
   "buffer_font_family": "Fira Code",
+  "cli_default_open_behavior": "new_window",
   "project_panel": {
-    "sort_mode": "files_first"
+    "sort_mode": "files_first",
+    "dock": "left"
   },
   "edit_predictions": {
     "provider": "copilot"
   },
   "agent": {
+    "dock": "left",
     "favorite_models": [
       {
         "provider": "copilot_chat",
