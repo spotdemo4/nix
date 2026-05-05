@@ -20,7 +20,7 @@
     ];
     mutableUserSettings = false;
     userSettings = builtins.fromJSON (
-      builtins.replaceStrings [ "@claude_bin@" ] "${pkgs.claude-code}/bin/claude" (
+      builtins.replaceStrings [ "@claude_bin@" ] [ "${pkgs.claude-code}/bin/claude" ] (
         builtins.readFile ./settings.json
       )
     );
