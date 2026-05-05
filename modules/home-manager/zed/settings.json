@@ -10,7 +10,7 @@
     "provider": "copilot"
   },
   "agent": {
-    "dock": "left",
+    "dock": "right",
     "favorite_models": [
       {
         "provider": "copilot_chat",
