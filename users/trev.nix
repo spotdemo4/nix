@@ -64,6 +64,7 @@
     temp = "cd $(mktemp -d)";
     logs = "journalctl -b -e -u";
     codium = "code";
+    zed = "zeditor";
   };
 
   programs.zsh.siteFunctions = {
