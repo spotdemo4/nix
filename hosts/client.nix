@@ -213,6 +213,7 @@
   virtualisation.docker.enable = true;
   programs.gnupg.agent.enable = true; # pgp
   programs.nix-ld.enable = true; # run unpatched dynamic binaries
+  services.gnome.gnome-keyring.enable = true; # https://wiki.nixos.org/wiki/Secret_Service
 
   system.stateVersion = "24.05"; # don't change
 }

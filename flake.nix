@@ -184,9 +184,6 @@
         devShells = {
           default = pkgs.mkShell {
             packages = with pkgs; [
-              nixfmt
-              nixfmt-tree
-              prettier
               podlet
               (pkgs.writeShellApplication {
                 name = "secret";
@@ -195,6 +192,12 @@
                   EDITOR="nano -L" agenix -e "$@"
                 '';
               })
+
+              # format
+              nixfmt
+              nixfmt-tree
+              prettier
+              oxfmt
             ];
 
             shellHook = pkgs.shellhook.ref;
