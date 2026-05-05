@@ -1,4 +1,20 @@
 {
   "$schema": "zed://schemas/settings",
-  "buffer_font_family": "Fira Code"
+  "buffer_font_family": "Fira Code",
+  "project_panel": {
+    "sort_mode": "files_first",
+  },
+  "agent_servers": {
+    "claude-acp": {
+      "type": "registry",
+      "env": {
+        "CLAUDE_CODE_EXECUTABLE": "@claude@",
+      },
+    },
+  },
+  "languages": {
+    "Proto": {
+      "language_servers": ["buf"],
+    },
+  },
 }
