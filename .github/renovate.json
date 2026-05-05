@@ -37,7 +37,9 @@
     },
     {
       "matchManagers": ["nix"],
-      "groupName": "nix inputs"
+      "groupName": "nix inputs",
+      "prHourlyLimit": 0,
+      "prConcurrentLimit": 0
     },
     {
       "matchManagers": ["custom.regex"],
