@@ -6,6 +6,7 @@
       "gleam"
       "html"
       "nix"
+      "oxc"
       "proto"
       "ruff"
       "sql"

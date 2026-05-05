@@ -4,6 +4,9 @@
   "project_panel": {
     "sort_mode": "files_first"
   },
+  "edit_predictions": {
+    "provider": "copilot"
+  },
   "languages": {
     "Proto": {
       "language_servers": ["buf"]
