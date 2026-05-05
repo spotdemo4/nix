@@ -12,6 +12,7 @@
       "sql"
       "svelte"
       "toml"
+      "tsgo"
       "zig"
     ];
     extraPackages = with pkgs; [
