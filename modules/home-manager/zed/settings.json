@@ -4,14 +4,6 @@
   "project_panel": {
     "sort_mode": "files_first",
   },
-  "agent_servers": {
-    "claude-acp": {
-      "type": "registry",
-      "env": {
-        "CLAUDE_CODE_EXECUTABLE": "@claude_bin@",
-      },
-    },
-  },
   "languages": {
     "Proto": {
       "language_servers": ["buf"],

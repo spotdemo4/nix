@@ -19,17 +19,12 @@
       claude-code
     ];
     mutableUserSettings = false;
-    userSettings = pkgs.lib.attrsets.updateManyAttrsByPath [
-      {
-        path = [
-          "agent_servers"
-          "claude-acp"
-          "env"
-          "CLAUDE_CODE_EXECUTABLE"
-        ];
-        update = _: "${pkgs.claude-code}/bin/claude";
-      }
-    ] builtins.fromJSON (builtins.readFile ./settings.json);
+    userSettings = builtins.fromJSON (builtins.readFile ./settings.json) // {
+      agent_servers.claude-acp = {
+        type = "registry";
+        env.CLAUDE_CODE_EXECUTABLE = "${pkgs.claude-code}/bin/claude";
+      };
+    };
   };
 
   # Zed Theme
