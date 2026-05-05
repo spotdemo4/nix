@@ -12,7 +12,7 @@ in
 
   virtualisation.quadlet = {
     containers.grafana.containerConfig = {
-      image = "docker.io/grafana/grafana-enterprise:12.4.3@sha256:c7516cc195e0c6fed177006156312cae0a90867274afe9373a45229ed20a7cf7";
+      image = "docker.io/grafana/grafana-enterprise:13.0.1@sha256:f7e79dc47a09b9543901e2178ed8dd5a4d4ffd8ce4cc4977cb9a9d56bd2a08dd";
       pull = "missing";
       user = "root";
       volumes = [
