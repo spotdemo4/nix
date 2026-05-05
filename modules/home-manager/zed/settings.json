@@ -7,6 +7,26 @@
   "edit_predictions": {
     "provider": "copilot"
   },
+  "agent": {
+    "favorite_models": [
+      {
+        "provider": "copilot_chat",
+        "model": "gpt-5.3-codex"
+      },
+      {
+        "provider": "openrouter",
+        "model": "moonshotai/kimi-k2.6"
+      },
+      {
+        "provider": "openrouter",
+        "model": "anthropic/claude-opus-4.7"
+      },
+      {
+        "provider": "copilot_chat",
+        "model": "gpt-5-mini"
+      }
+    ]
+  },
   "languages": {
     "Proto": {
       "language_servers": ["buf"]
