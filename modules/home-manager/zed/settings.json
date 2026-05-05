@@ -2,11 +2,11 @@
   "$schema": "zed://schemas/settings",
   "buffer_font_family": "Fira Code",
   "project_panel": {
-    "sort_mode": "files_first",
+    "sort_mode": "files_first"
   },
   "languages": {
     "Proto": {
-      "language_servers": ["buf"],
-    },
-  },
+      "language_servers": ["buf"]
+    }
+  }
 }
