@@ -7,11 +7,13 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   renovate:
     runs-on: ubuntu-latest
+    environment: nix
+    permissions:
+      id-token: write
     steps:
       - id: init
         name: Initialize

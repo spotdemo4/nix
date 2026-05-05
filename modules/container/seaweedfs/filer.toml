@@ -22,4 +22,4 @@ recursive_delete = false
 # local on disk, mostly for simple single-machine setup, fairly scalable
 # faster than previous leveldb, recommended.
 enabled = true
-dir = "/data"                    # directory to store level db files
+dir = "/data" # directory to store level db files

@@ -1,5 +1,4 @@
 {
-  "editor.formatOnSave": true,
   "files.associations": {
     "renovate.json": "jsonc",
     ".envrc.project": "dotenv",
@@ -9,6 +8,14 @@
 
   "json.schemaDownload.trustedDomains": {
     "https://docs.renovatebot.com/": true
+  },
+
+  // oxc.oxc-vscode
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "always" // oxlint
   },
 
   // jnoortheen.nix-ide
@@ -23,8 +30,5 @@
         "expr": "(builtins.getFlake (builtins.toString ./.)).outputs.nixpkgs.${builtins.currentSystem}"
       }
     }
-  },
-
-  // esbenp.prettier-vscode
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

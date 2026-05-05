@@ -183,6 +183,7 @@
 
         devShells = {
           default = pkgs.mkShell {
+            shellHook = pkgs.shellhook.ref;
             packages = with pkgs; [
               podlet
               (pkgs.writeShellApplication {
@@ -193,14 +194,15 @@
                 '';
               })
 
+              # lint
+              shellcheck
+              action-validator
+              zizmor
+
               # format
               nixfmt
-              nixfmt-tree
-              prettier
               oxfmt
             ];
-
-            shellHook = pkgs.shellhook.ref;
           };
 
           check = pkgs.mkShell {
@@ -217,30 +219,25 @@
 
           vulnerable = pkgs.mkShell {
             packages = with pkgs; [
-              # nix
               flake-checker
-
-              # actions
-              octoscan
+              zizmor
             ];
           };
         };
 
         checks = pkgs.mkChecks {
-          actions = {
-            root = ./.github/workflows;
-            fileset = ./.github/workflows;
-            deps = with pkgs; [
-              action-validator
-              octoscan
+          format = {
+            root = ./.;
+            filter = file: file.hasExt "json" || file.hasExt "yaml" || file.hasExt "toml" || file.hasExt "md";
+            packages = with pkgs; [
+              oxfmt
             ];
-            forEach = ''
-              action-validator "$file"
-              octoscan scan "$file"
+            script = ''
+              oxfmt --check
             '';
           };
 
-          shellcheck = {
+          scripts = {
             root = ./.;
             filter = file: file.hasExt "sh";
             deps = with pkgs; [
@@ -251,14 +248,15 @@
             '';
           };
 
-          renovate = {
-            root = ./.github;
-            fileset = ./.github/renovate.json;
+          actions = {
+            root = ./.github/workflows;
             deps = with pkgs; [
-              renovate
+              action-validator
+              zizmor
             ];
-            script = ''
-              renovate-config-validator renovate.json
+            forEach = ''
+              action-validator "$file"
+              zizmor --offline "$file"
             '';
           };
 
@@ -273,19 +271,26 @@
             '';
           };
 
-          prettier = {
-            root = ./.;
-            filter = file: file.hasExt "yaml" || file.hasExt "json" || file.hasExt "md";
+          renovate = {
+            root = ./.github;
+            fileset = ./.github/renovate.json;
             deps = with pkgs; [
-              prettier
+              renovate
             ];
-            forEach = ''
-              prettier --check "$file"
+            script = ''
+              renovate-config-validator renovate.json
             '';
           };
         };
 
-        formatter = pkgs.nixfmt-tree;
+        formatter = pkgs.treefmt.withConfig {
+          configFile = ./treefmt.toml;
+          runtimeInputs = with pkgs; [
+            oxfmt
+            nixfmt
+          ];
+        };
+
         schemas = trevpkgs.schemas;
       }
     );

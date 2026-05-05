@@ -12,11 +12,12 @@ concurrency:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   check:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     outputs:
       hosts: ${{ steps.hosts.outputs.hosts }}
     steps:
@@ -36,6 +37,8 @@ jobs:
     needs: check
     if: ${{ github.event_name != 'push' }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -47,11 +50,13 @@ jobs:
           shell: check
 
       - name: Build packages
+        env:
+          HOST: ${{ matrix.host }}
         run: |
           nix-fast-build \
             --skip-cached \
             --no-nom \
-            --flake ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel"
+            --flake ".#nixosConfigurations.${HOST}.config.system.build.toplevel"
 
   build-status:
     needs: [check, build]
