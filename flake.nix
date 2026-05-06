@@ -195,6 +195,8 @@
               })
 
               # lint
+              nixd
+              nil
               shellcheck
               action-validator
               zizmor
