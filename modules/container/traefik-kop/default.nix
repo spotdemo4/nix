@@ -27,7 +27,7 @@
   config = lib.mkIf config.update.enable {
     virtualisation.quadlet.containers.traefik-kop = {
       containerConfig = {
-        image = "ghcr.io/jittering/traefik-kop:0.19.4@sha256:e772673cc437070646229354e55fb1b5b348cf4d7fade5514e3b61c1f3d0b319";
+        image = "ghcr.io/jittering/traefik-kop:0.20.0@sha256:ad6b4b997001b1e43c5a98c1efa75a625968d2435ecb81094bf58ef280aa164c";
         pull = "missing";
         volumes = [
           "/run/podman/podman.sock:/var/run/docker.sock"
