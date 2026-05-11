@@ -54,6 +54,7 @@
     android-tools
     attic-client
     claude-code
+    codex
     fastfetch
     ffmpeg
     file
