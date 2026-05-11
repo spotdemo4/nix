@@ -32,6 +32,7 @@
   "nix.serverPath": "nixd",
   "nix.hiddenLanguageServerErrors": ["textDocument/definition"],
 
+  "prettier.enable": false,
   "biome.enabled": false,
   "redhat.telemetry.enabled": false,
   "svelte.enable-ts-plugin": true,
