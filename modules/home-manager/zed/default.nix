@@ -12,6 +12,7 @@
       "ruff"
       "sql"
       "svelte"
+      "tombi"
       "toml"
       "tsgo"
       "zig"
