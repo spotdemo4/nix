@@ -8,7 +8,7 @@ in
 {
   virtualisation.quadlet = {
     containers.tor.containerConfig = {
-      image = "docker.io/dockurr/tor:0.4.9.6@sha256:e391750e92cbadaa862eeb2be5b2d675119788ae307d494137ecdbeaca70cebc";
+      image = "docker.io/dockurr/tor:0.4.9.8@sha256:b4cb4770d4c08c73881255b0aea868bffce1bc0d2ef0b859d226422d8c6626cf";
       pull = "missing";
       volumes = [
         "${volumes."tor".ref}:/var/lib/tor"
