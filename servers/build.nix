@@ -90,6 +90,16 @@
         "builder:host"
       ];
 
+      settings = {
+        runner = {
+          capacity = 2;
+        };
+        container = {
+          privileged = true;
+          docker_host = "unix:///run/podman/podman.sock";
+        };
+      };
+
       hostPackages = with pkgs; [
         bash
         coreutils
