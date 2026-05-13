@@ -91,6 +91,7 @@
       ];
 
       hostPackages = with pkgs; [
+        bash
         curl
         gh
         nodejs_24

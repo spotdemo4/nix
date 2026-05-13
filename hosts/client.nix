@@ -70,6 +70,7 @@
     opencode
     openconnect
     proton-vpn-cli
+    ripgrep
     unzip
     wget
     wl-clipboard

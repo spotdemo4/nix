@@ -17,11 +17,6 @@
       "tsgo"
       "zig"
     ];
-    extraPackages = with pkgs; [
-      nixd
-      nil
-      claude-code
-    ];
     mutableUserSettings = false;
     userSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // {
       agent_servers = {
@@ -35,6 +30,11 @@
       };
     };
   };
+
+  home.packages = with pkgs; [
+    claude-code
+    codex
+  ];
 
   # Zed Theme
   catppuccin.zed = {
