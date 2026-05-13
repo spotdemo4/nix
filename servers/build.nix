@@ -94,9 +94,11 @@
         bash
         curl
         gh
+        gnutar
         nodejs_24
         openssl
         wget
+        zip
       ];
     };
   };
