@@ -95,7 +95,7 @@
           capacity = 2;
         };
         container = {
-          network = "bridge";
+          network = "host";
           privileged = true;
           docker_host = "unix:///run/podman/podman.sock";
         };
