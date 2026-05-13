@@ -47,6 +47,10 @@
         "nix-command"
         "flakes"
       ];
+      trusted-users = [
+        "root"
+        "trev"
+      ];
       extra-substituters = [
         "https://nix.trev.zip"
       ];
