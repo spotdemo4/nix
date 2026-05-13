@@ -242,21 +242,21 @@
           scripts = {
             root = ./.;
             filter = file: file.hasExt "sh";
-            deps = with pkgs; [
+            packages = with pkgs; [
               shellcheck
             ];
-            forEach = ''
+            script = ''
               shellcheck "$file"
             '';
           };
 
           actions = {
             root = ./.github/workflows;
-            deps = with pkgs; [
+            packages = with pkgs; [
               action-validator
               zizmor
             ];
-            forEach = ''
+            script = ''
               action-validator "$file"
               zizmor --offline "$file"
             '';
@@ -265,10 +265,10 @@
           nix = {
             root = ./.;
             filter = file: file.hasExt "nix";
-            deps = with pkgs; [
+            packages = with pkgs; [
               nixfmt
             ];
-            forEach = ''
+            script = ''
               nixfmt --check "$file"
             '';
           };
@@ -276,7 +276,7 @@
           renovate = {
             root = ./.github;
             fileset = ./.github/renovate.json;
-            deps = with pkgs; [
+            packages = with pkgs; [
               renovate
             ];
             script = ''

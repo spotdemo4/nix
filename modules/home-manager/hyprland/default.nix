@@ -3,6 +3,9 @@
   wayland.windowManager.hyprland = {
     enable = true;
 
+    # TODO: switch to lua
+    configType = "hyprlang";
+
     settings = {
       # Startup
       exec-once = [

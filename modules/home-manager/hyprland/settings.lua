@@ -1,0 +1,5 @@
+hl.on("hyprland.start", function()
+    hl.exec_cmd("nm-applet --indicator")
+    hl.exec_cmd("blueman-applet")
+    hl.exec_cmd("trevbar")
+end)
