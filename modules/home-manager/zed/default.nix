@@ -7,6 +7,7 @@
       "git-firefly"
       "gleam"
       "html"
+      "lua"
       "nix"
       "oxc"
       "proto"
