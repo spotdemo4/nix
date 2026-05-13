@@ -44,7 +44,7 @@ while true; do
         fi
     fi
     FIRST_RUN=false
-    
+
     echo "checking for updates"
     cd /etc/nixos || { echo "could not change directory to /etc/nixos"; exit 1; }
     if ! git fetch --all; then
@@ -93,18 +93,17 @@ while true; do
 
     gprint "Updating"
     if ! nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
-        bprint "Update failed"
-
         RETRY_COUNT=$((RETRY_COUNT + 1))
         if [ "$RETRY_COUNT" -ge 3 ]; then
-            bprint "Update failed 3 times, not retrying again"
+            if ! nixos-rebuild boot --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
+                bprint "Update failed"
+            else
+                gprint "Update successful, reboot required"
+            fi
+
             RETRY_COUNT=0
         fi
-
-        continue
+    else
+        gprint "Update successful"
     fi
-    
-    RETRY_COUNT=0
-
-    gprint "Update finished"
 done
