@@ -65,6 +65,7 @@
     libnotify
     mprocs
     ncdu
+    niks3
     nix-tree
     nmap
     opencode
