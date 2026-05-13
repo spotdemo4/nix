@@ -94,9 +94,11 @@
         bash
         curl
         gh
+        git
         gnutar
         gzip
         jq
+        nix
         nodejs_24
         openssl
         wget
