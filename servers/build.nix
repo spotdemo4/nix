@@ -96,6 +96,7 @@
         gh
         gnutar
         gzip
+        jq
         nodejs_24
         openssl
         wget
