@@ -92,9 +92,12 @@
 
       hostPackages = with pkgs; [
         bash
+        coreutils
         curl
+        gawk
         gh
-        git
+        gitMinimal
+        gnused
         gnutar
         gzip
         jq
