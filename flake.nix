@@ -45,6 +45,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # niks3
+    niks3 = {
+      url = "github:Mic92/niks3";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # nix vscode extensions
     nix4vscode = {
       url = "github:nix-community/nix4vscode";
@@ -102,6 +108,7 @@
       home-manager,
       nur,
       catppuccin,
+      niks3,
       trevpkgs,
       agenix,
       ...
@@ -121,6 +128,7 @@
                 determinate.nixosModules.default
                 agenix.nixosModules.default
                 catppuccin.nixosModules.catppuccin
+                niks3.nixosModules.default
                 home-manager.nixosModules.home-manager
                 quadlet-nix.nixosModules.quadlet
                 ./servers/${name}

@@ -31,7 +31,6 @@
     file-roller
     gimp
     heroic
-    inputs.trevbar.packages."${stdenv.hostPlatform.system}".default
     jetbrains.datagrip
     jetbrains.idea
     kdePackages.kdenlive
@@ -49,6 +48,7 @@
     tor-browser
     trev.helium
     vesktop
+    inputs.trevbar.packages."${stdenv.hostPlatform.system}".default
 
     # CLI
     android-tools
@@ -60,12 +60,10 @@
     file
     grimblast
     igsc
-    inputs.agenix.packages."${stdenv.hostPlatform.system}".default
     jq
     libnotify
     mprocs
     ncdu
-    niks3
     nix-tree
     nmap
     opencode
@@ -77,6 +75,8 @@
     wl-clipboard
     yt-dlp
     zip
+    inputs.agenix.packages."${stdenv.hostPlatform.system}".default
+    inputs.niks3.packages."${stdenv.hostPlatform.system}".default
 
     # Applets
     networkmanagerapplet
