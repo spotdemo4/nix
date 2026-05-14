@@ -6,6 +6,7 @@
   ++ map (c: self + /modules/container/${c}) [
     "attic"
     "copyparty"
+    "forgejo"
     "garage"
     "immich"
     "niks3"
