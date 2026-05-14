@@ -5,14 +5,15 @@ in
   "tailscale.age".publicKeys = keys.all;
 
   # build server
+  "builder-key.age".publicKeys = keys.local ++ [ keys.build ];
   "codeberg.age".publicKeys = keys.local ++ [ keys.build ];
+  "forgejo.age".publicKeys = keys.local ++ [ keys.build ];
   "gitea-quanta.age".publicKeys = keys.local ++ [ keys.build ];
   "gitea.age".publicKeys = keys.local ++ [ keys.build ];
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
   "org-token.age".publicKeys = keys.local ++ [ keys.build ];
   "quantadev-token.age".publicKeys = keys.local ++ [ keys.build ];
   "repo-token.age".publicKeys = keys.local ++ [ keys.build ];
-  "builder-key.age".publicKeys = keys.local ++ [ keys.build ];
 
   # etc server
   "anubis.age".publicKeys = keys.local ++ [ keys.etc ];

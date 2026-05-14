@@ -74,50 +74,34 @@
     };
   };
 
-  # Gitea runners
-  age.secrets."gitea-quanta".file = self + /secrets/gitea-quanta.age;
-  services.gitea-actions-runner.instances = {
-    quanta = {
-      enable = true;
-      url = "https://git.quantadev.cc";
-      tokenFile = config.age.secrets."gitea-quanta".path;
+  # Forgejo runners
+  age.secrets."forgejo".file = self + /secrets/forgejo.age;
+  services.gitea-actions-runner = {
+    package = pkgs.forgejo-runner;
+    instances = {
+      trev = {
+        enable = true;
+        url = "https://trev.zip/";
+        tokenFile = config.age.secrets."forgejo".path;
 
-      name = "builder";
-      labels = [
-        "ubuntu-latest:docker://docker.gitea.com/runner-images:ubuntu-latest"
-        "ubuntu-24.04:docker://docker.gitea.com/runner-images:ubuntu-24.04"
-        "node-24:docker://node:24-bookworm"
-        "builder:host"
-      ];
+        name = "builder";
+        labels = [
+          "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest-slim@sha256:3331771047a52b7603a8996c232816de6033f01282706615fa16b481718d4cf4"
+          "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04-slim@sha256:3331771047a52b7603a8996c232816de6033f01282706615fa16b481718d4cf4"
+          "nixos-latest:docker://nixos/nix:2.32.8@sha256:080e6df285c98b2ea34080bf3762308288e73d7f4012e3bcf96bb98911a24311"
+        ];
 
-      settings = {
-        runner = {
-          capacity = 2;
-        };
-        container = {
-          network = "host";
-          privileged = true;
-          docker_host = "unix:///run/podman/podman.sock";
+        settings = {
+          runner = {
+            capacity = 2;
+          };
+          container = {
+            network = "host";
+            privileged = true;
+            docker_host = "unix:///run/podman/podman.sock";
+          };
         };
       };
-
-      hostPackages = with pkgs; [
-        bash
-        coreutils
-        curl
-        gawk
-        gh
-        gitMinimal
-        gnused
-        gnutar
-        gzip
-        jq
-        nix
-        nodejs_24
-        openssl
-        wget
-        zip
-      ];
     };
   };
 }
