@@ -86,8 +86,8 @@
 
         name = "builder";
         labels = [
-          "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest-slim@sha256:3331771047a52b7603a8996c232816de6033f01282706615fa16b481718d4cf4"
-          "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04-slim@sha256:3331771047a52b7603a8996c232816de6033f01282706615fa16b481718d4cf4"
+          "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest@sha256:fe8d1cc3bad5e07f5859aae1f8ece47521f14417bb184480bfba84e80299b3be"
+          "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04@sha256:fe8d1cc3bad5e07f5859aae1f8ece47521f14417bb184480bfba84e80299b3be"
           "nixos-latest:docker://nixos/nix:2.32.8@sha256:080e6df285c98b2ea34080bf3762308288e73d7f4012e3bcf96bb98911a24311"
         ];
 
