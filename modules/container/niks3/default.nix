@@ -30,7 +30,7 @@ in
   virtualisation.quadlet = {
     containers."niks3" = {
       containerConfig = {
-        image = "ghcr.io/mic92/niks3:main@sha256:fcd2787324b2f2493fe5f0a69d66eb6c93d58c2653758b3fc64a089cfd495a6e";
+        image = "ghcr.io/mic92/niks3:main@sha256:b62a0908678e6a313eac49c5828b09ef5f40079cdf734e3f4399cd20a4678221";
         pull = "missing";
         environments = {
           NIKS3_DB = "postgres://${postgresql."niks3".username}:${postgresql."niks3".password}@${postgresql."niks3".ref}/${postgresql."niks3".database}?sslmode=disable";
