@@ -41,6 +41,8 @@ in
 
   # gateway server
   "cloudflare-dns.age".publicKeys = keys.local ++ [ keys.gateway ];
+  "cloudflare-turnstile-secret-key.age".publicKeys = keys.local ++ [ keys.gateway ];
+  "cloudflare-turnstile-site-key.age".publicKeys = keys.local ++ [ keys.gateway ];
   "crowdsec.age".publicKeys = keys.local ++ [ keys.gateway ];
   "user-admin.age".publicKeys = keys.local ++ [ keys.gateway ];
   "user-trev.age".publicKeys = keys.local ++ [ keys.gateway ];

@@ -17,9 +17,9 @@ in
       volumes = [
         "${volumes."crowdsec-db".ref}:/var/lib/crowdsec/data/"
         "${volumes."crowdsec-config".ref}:/etc/crowdsec/"
+        "${./profiles.yaml}:/etc/crowdsec/profiles.yaml:ro"
         "${./traefik.yaml}:/etc/crowdsec/acquis.d/traefik.yaml:ro"
         "${./attic.yaml}:/etc/crowdsec/parsers/s02-enrich/attic.yaml:ro"
-        "${./versitygw.yaml}:/etc/crowdsec/parsers/s02-enrich/versitygw.yaml:ro"
         "${./garage.yaml}:/etc/crowdsec/parsers/s02-enrich/garage.yaml:ro"
         "${./niks3.yaml}:/etc/crowdsec/parsers/s02-enrich/niks3.yaml:ro"
       ];

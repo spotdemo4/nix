@@ -30,11 +30,15 @@ http:
           enabled: true
           defaultDecisionSeconds: 60
           crowdsecMode: stream
-          # prettier-ignore
-          crowdsecLapiKey: {{ env "CROWDSEC" }}
+          crowdsecLapiKey: /secrets/crowdsec/lapi_key
           crowdsecLapiHost: 10.10.10.114:6061
           crowdsecLapiScheme: http
           crowdsecLapiTLSInsecureVerify: false
+          captchaProvider: turnstile
+          captchaSiteKey: /secrets/turnstile/site_key
+          captchaSecretKey: /secrets/turnstile/secret_key
+          captchaGracePeriodSeconds: 1800
+          captchaHTMLFilePath: /captcha.html
           forwardedHeadersTrustedIPs:
             # private class ranges
             - 10.0.0.0/8

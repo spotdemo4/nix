@@ -35,6 +35,8 @@ in
   secrets = {
     "cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
     "crowdsec".file = self + /secrets/crowdsec.age;
+    "cloudflare-turnstile-site-key".file = self + /secrets/cloudflare-turnstile-site-key.age;
+    "cloudflare-turnstile-secret-key".file = self + /secrets/cloudflare-turnstile-secret-key.age;
     "user-admin".file = self + /secrets/user-admin.age;
     "user-trev".file = self + /secrets/user-trev.age;
   };
@@ -47,7 +49,9 @@ in
           pull = "missing";
           secrets = [
             "${secrets."cloudflare-dns".env},target=CF_DNS_API_TOKEN"
-            "${secrets."crowdsec".env},target=CROWDSEC"
+            "${secrets."crowdsec".mount},target=/secrets/crowdsec/lapi_key"
+            "${secrets."cloudflare-turnstile-site-key".mount},target=/secrets/turnstile/site_key"
+            "${secrets."cloudflare-turnstile-secret-key".mount},target=/secrets/turnstile/secret_key"
             "${secrets."user-admin".mount},target=/secrets/user-admin"
             "${secrets."user-trev".mount},target=/secrets/user-trev"
           ];
@@ -56,6 +60,7 @@ in
             "${configFile}:/etc/traefik/traefik.yml"
             "${providerFile}:/config/provider.yaml"
             "${volumes."acme".ref}:/etc/traefik/acme"
+            "${./captcha.html}:/captcha.html"
           ];
           publishPorts = [
             "80:80" # http
