@@ -30,13 +30,13 @@ http:
           enabled: true
           defaultDecisionSeconds: 60
           crowdsecMode: stream
-          crowdsecLapiKey: /secrets/crowdsec/lapi_key
+          crowdsecLapiKeyFile: /secrets/crowdsec/lapi_key
           crowdsecLapiHost: 10.10.10.114:6061
           crowdsecLapiScheme: http
           crowdsecLapiTLSInsecureVerify: false
           captchaProvider: turnstile
-          captchaSiteKey: /secrets/turnstile/site_key
-          captchaSecretKey: /secrets/turnstile/secret_key
+          captchaSiteKeyFile: /secrets/turnstile/site_key
+          captchaSecretKeyFile: /secrets/turnstile/secret_key
           captchaGracePeriodSeconds: 1800
           captchaHTMLFilePath: /captcha.html
           forwardedHeadersTrustedIPs:
