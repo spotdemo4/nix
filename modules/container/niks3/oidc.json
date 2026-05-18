@@ -6,6 +6,13 @@
       "bound_claims": {
         "repository_owner": ["spotdemo4"]
       }
+    },
+    "trevzip": {
+      "issuer": "https://trev.zip/api/actions",
+      "audience": "https://niks3.trev.zip",
+      "bound_claims": {
+        "repository_owner": ["trev"]
+      }
     }
   }
 }
