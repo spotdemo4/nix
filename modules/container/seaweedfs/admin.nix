@@ -11,7 +11,7 @@ in
   virtualisation.quadlet = {
     containers.seaweedfs-admin = {
       containerConfig = {
-        image = "docker.io/chrislusf/seaweedfs:4.26@sha256:cc1e3b75e57a3e1b9a698b9aaabd3fe54f4a43c315db457658d584599bd4b3cc";
+        image = "docker.io/chrislusf/seaweedfs:4.27@sha256:62521129b7f2a66f7f0b4e4be612736ff0989e9e502746f3dc42de4e7b54c9d8";
         pull = "missing";
         publishPorts = [
           "8080"
