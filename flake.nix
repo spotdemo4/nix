@@ -212,6 +212,7 @@
               # format
               nixfmt
               oxfmt
+              treefmt
             ];
           };
 
