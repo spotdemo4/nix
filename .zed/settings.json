@@ -1,5 +1,20 @@
 {
   "lsp": {
+    "nixd": {
+      "settings": {
+        "nixpkgs": {
+          "expr": "(builtins.getFlake (builtins.toString ./.)).outputs.nixpkgs.${builtins.currentSystem}"
+        },
+        "options": {
+          "nixos": {
+            "expr": "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.desktop.options"
+          },
+          "home-manager": {
+            "expr": "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.desktop.options.home-manager.users.type.getSubOptions []"
+          }
+        }
+      }
+    },
     "oxfmt": {
       "initialization_options": {
         "settings": {
