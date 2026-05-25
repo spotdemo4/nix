@@ -1,6 +1,6 @@
 {
   "workspace": {
-    "library": ["/usr/share/hypr/stubs"]
+    "library": ["/home/trev/.nix-profile/share/hypr/stubs"]
   },
   "diagnostics": {
     "globals": ["hl"]
