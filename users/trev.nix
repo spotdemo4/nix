@@ -9,49 +9,40 @@
     inputs.catppuccin.homeModules.catppuccin
     inputs.agenix.homeManagerModules.default
   ]
-  ++
-    map
-      (
-        x:
-        if builtins.pathExists (self + /modules/home-manager/${x}.nix) then
-          self + /modules/home-manager/${x}.nix
-        else
-          self + /modules/home-manager/${x}
-      )
-      [
-        "bat"
-        "btop"
-        "chromium"
-        "codex"
-        "continue"
-        "cursor"
-        "direnv"
-        "discord"
-        "eza"
-        "fzf"
-        "ghostty"
-        "gpg"
-        "gtk"
-        "hypridle"
-        "hyprland"
-        "hyprlock"
-        "hyprpaper"
-        "hyprshutdown"
-        "kitty"
-        "mako"
-        "mods"
-        "mpv"
-        "qt"
-        "starship"
-        "steam"
-        "vscode"
-        "waybar"
-        "wofi"
-        "zed"
-        "zen"
-        "zoxide"
-        "zsh"
-      ];
+  ++ map (x: self + /modules/home-manager/${x}) [
+    "bat"
+    "btop"
+    "chromium"
+    "codex"
+    "continue"
+    "cursor"
+    "direnv"
+    "discord"
+    "eza"
+    "fzf"
+    "ghostty"
+    "gpg"
+    "gtk"
+    "hypridle"
+    "hyprland"
+    "hyprlock"
+    "hyprpaper"
+    "hyprshutdown"
+    "kitty"
+    "mako"
+    "mods"
+    "mpv"
+    "qt"
+    "starship"
+    "steam"
+    "vscode"
+    "waybar"
+    "wofi"
+    "zed"
+    "zen"
+    "zoxide"
+    "zsh"
+  ];
 
   home.username = "trev";
   home.homeDirectory = "/home/trev";

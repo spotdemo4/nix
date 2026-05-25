@@ -8,7 +8,7 @@
 }:
 {
   imports =
-    map (x: self + /modules/nixos/${x}.nix) [
+    map (x: self + /modules/nixos/${x}) [
       # Programs to import
       "cadvisor"
       "git"

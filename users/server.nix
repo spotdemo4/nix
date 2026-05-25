@@ -9,7 +9,7 @@
     inputs.catppuccin.homeModules.catppuccin
     inputs.agenix.homeManagerModules.default
   ]
-  ++ map (x: self + /modules/home-manager/${x}.nix) [
+  ++ map (x: self + /modules/home-manager/${x}) [
     "bat"
     "btop"
     "eza"

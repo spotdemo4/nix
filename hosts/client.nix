@@ -8,7 +8,7 @@
   ...
 }:
 {
-  imports = map (x: self + /modules/nixos/${x}.nix) [
+  imports = map (x: self + /modules/nixos/${x}) [
     "git"
     "gnome-auth-agent"
     "hyprland"
