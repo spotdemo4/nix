@@ -28,6 +28,8 @@
         };
         codex-acp = {
           type = "registry";
+          default_model = "GPT-5.5";
+          default_mode = "Default";
         };
       };
     };

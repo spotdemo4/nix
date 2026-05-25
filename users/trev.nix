@@ -22,6 +22,7 @@
         "bat"
         "btop"
         "chromium"
+        "codex"
         "continue"
         "cursor"
         "direnv"
