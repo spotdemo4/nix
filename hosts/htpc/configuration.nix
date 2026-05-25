@@ -1,6 +1,7 @@
 # HTPC config
 {
   inputs,
+  lib,
   self,
   pkgs,
   ...
@@ -39,9 +40,11 @@
     users = {
       trev = {
         imports = [ (self + /users/trev.nix) ];
-        wayland.windowManager.hyprland.settings.exec-once = [
-          "steam"
-        ];
+        wayland.windowManager.hyprland.extraConfig = lib.mkAfter ''
+          hl.on("hyprland.start", function()
+              hl.exec_cmd("steam")
+          end)
+        '';
       };
     };
   };
