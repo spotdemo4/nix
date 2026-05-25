@@ -6,7 +6,6 @@
   ++ map (c: self + /modules/container/${c}) [
     "minecraft"
     "portainer/agent.nix"
-    "satisfactory"
     "traefik-kop"
   ];
 
