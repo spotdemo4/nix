@@ -1,6 +1,11 @@
 /.env
 /.envrc
 
+# ai
+/.agents/
+/.codex/
+/.claude/
+
 # nix
 /result*
 /.direnv/
