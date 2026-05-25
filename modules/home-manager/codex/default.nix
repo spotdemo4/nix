@@ -2,6 +2,6 @@
 {
   programs.codex = {
     enable = true;
-    settings = fromTOML (builtins.readFile ./settings.toml);
+    settings = fromTOML (builtins.readFile ./config.toml);
   };
 }
