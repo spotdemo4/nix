@@ -9,36 +9,36 @@
     package = pkgs.vscode;
     mutableExtensionsDir = false;
     profiles.default = {
-      extensions = (
-        inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion pkgs.vscode.version [
-          "a-h.templ"
-          "anthropic.claude-code"
-          "biomejs.biome"
-          "bradlc.vscode-tailwindcss"
-          "bufbuild.vscode-buf"
-          "charliermarsh.ruff"
-          "dbaeumer.vscode-eslint"
-          "esbenp.prettier-vscode"
-          "github.copilot-chat"
-          "gleam.gleam"
-          "golang.Go"
-          "jnoortheen.nix-ide"
-          "llvm-vs-code-extensions.vscode-clangd"
-          "mkhl.direnv"
-          "ms-python.python"
-          "openai.chatgpt"
-          "oxc.oxc-vscode"
-          "redhat.vscode-yaml"
-          "ReneSaarsoo.sql-formatter-vsc"
-          "rust-lang.rust-analyzer"
-          "sqlfluff.vscode-sqlfluff"
-          "svelte.svelte-vscode"
-          "timonwong.shellcheck"
-          "tombi-toml.tombi"
-          "usernamehw.errorlens"
-          "ziglang.vscode-zig"
-        ]
-      );
+      extensions =
+        inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion pkgs.vscode.version
+          [
+            "a-h.templ"
+            "anthropic.claude-code"
+            "biomejs.biome"
+            "bradlc.vscode-tailwindcss"
+            "bufbuild.vscode-buf"
+            "charliermarsh.ruff"
+            "dbaeumer.vscode-eslint"
+            "esbenp.prettier-vscode"
+            "github.copilot-chat"
+            "gleam.gleam"
+            "golang.Go"
+            "jnoortheen.nix-ide"
+            "llvm-vs-code-extensions.vscode-clangd"
+            "mkhl.direnv"
+            "ms-python.python"
+            "openai.chatgpt"
+            "oxc.oxc-vscode"
+            "redhat.vscode-yaml"
+            "ReneSaarsoo.sql-formatter-vsc"
+            "rust-lang.rust-analyzer"
+            "sqlfluff.vscode-sqlfluff"
+            "svelte.svelte-vscode"
+            "timonwong.shellcheck"
+            "tombi-toml.tombi"
+            "usernamehw.errorlens"
+            "ziglang.vscode-zig"
+          ];
       userSettings = pkgs.lib.importJSON ./settings.json;
     };
   };
