@@ -26,7 +26,10 @@
   },
   "agent_servers": {
     "codex-acp": {
-      "type": "registry"
+      "type": "registry",
+      "default_config_options": {
+        "mode": "default"
+      }
     }
   }
 }
