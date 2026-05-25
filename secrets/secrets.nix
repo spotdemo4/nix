@@ -6,26 +6,17 @@ in
 
   # build server
   "builder-key.age".publicKeys = keys.local ++ [ keys.build ];
-  "codeberg.age".publicKeys = keys.local ++ [ keys.build ];
   "forgejo.age".publicKeys = keys.local ++ [ keys.build ];
-  "gitea-quanta.age".publicKeys = keys.local ++ [ keys.build ];
-  "gitea.age".publicKeys = keys.local ++ [ keys.build ];
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
-  "org-token.age".publicKeys = keys.local ++ [ keys.build ];
-  "quantadev-token.age".publicKeys = keys.local ++ [ keys.build ];
-  "repo-token.age".publicKeys = keys.local ++ [ keys.build ];
 
   # etc server
-  "anubis.age".publicKeys = keys.local ++ [ keys.etc ];
   "discord-openrouter.age".publicKeys = keys.local ++ [ keys.etc ];
   "geolite.age".publicKeys = keys.local ++ [ keys.etc ];
   "openrouter.age".publicKeys = keys.local ++ [ keys.etc ];
-  "openwebui.age".publicKeys = keys.local ++ [ keys.etc ];
   "protonvpn-cobalt.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink.age".publicKeys = keys.local ++ [ keys.etc ];
 
   # file server
-  "attic.age".publicKeys = keys.local ++ [ keys.files ];
   "copyparty.age".publicKeys = keys.local ++ [ keys.files ];
   "garage-admin.age".publicKeys = keys.local ++ [ keys.files ];
   "garage-metrics.age".publicKeys = keys.local ++ [ keys.files ];
@@ -37,7 +28,6 @@ in
 
   # game server
   "curseforge.age".publicKeys = keys.local ++ [ keys.game ];
-  "whiteout.age".publicKeys = keys.local ++ [ keys.game ];
 
   # gateway server
   "cloudflare-dns.age".publicKeys = keys.local ++ [ keys.gateway ];
@@ -46,9 +36,6 @@ in
   "crowdsec.age".publicKeys = keys.local ++ [ keys.gateway ];
   "user-admin.age".publicKeys = keys.local ++ [ keys.gateway ];
   "user-trev.age".publicKeys = keys.local ++ [ keys.gateway ];
-
-  # mail server
-  "mysql-roundcube.age".publicKeys = keys.local ++ [ keys.mail ];
 
   # media server
   "embedder-discord.age".publicKeys = keys.local ++ [ keys.media ];
@@ -65,9 +52,7 @@ in
   "grafana.age".publicKeys = keys.local ++ [ keys.monitor ];
 
   # local only
-  "auth.age".publicKeys = keys.local;
   "continue.age".publicKeys = keys.local;
   "gpg.age".publicKeys = keys.local;
   "mods.age".publicKeys = keys.local;
-  "attic-trev.age".publicKeys = keys.local;
 }
