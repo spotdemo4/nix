@@ -4,11 +4,9 @@
     (self + /hosts/lxc/configuration.nix)
   ]
   ++ map (c: self + /modules/container/${c}) [
-    "anubis"
     "cobalt"
     "crowdsec"
     "discord-openrouter"
-    "moonlight"
     "portainer/agent.nix"
     "shlink"
     "traefik-kop"
