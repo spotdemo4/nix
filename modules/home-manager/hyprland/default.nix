@@ -80,11 +80,6 @@
         ];
       };
 
-      dwindle = {
-        "pseudotile" = "yes";
-        "preserve_split" = "yes";
-      };
-
       master = {
         "mfact" = "0.5";
       };
