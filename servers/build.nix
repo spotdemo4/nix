@@ -69,7 +69,6 @@
       ];
       nodeRuntimes = [
         "node24"
-        "node20"
       ];
     };
   };
