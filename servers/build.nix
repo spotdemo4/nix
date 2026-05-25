@@ -36,7 +36,8 @@
 
   # allow users to use nix
   nix.extraOptions = ''
-    allowed-users = builder github-runner gitea-runner
+    allowed-users = github-runner gitea-runner
+    trusted-users = builder
   '';
 
   # make sure nix can't use too much memory when building
