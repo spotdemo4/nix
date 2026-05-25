@@ -27,6 +27,7 @@
           "mkhl.direnv"
           "ms-python.python"
           "openai.chatgpt"
+          "oxc.oxc-vscode"
           "redhat.vscode-yaml"
           "ReneSaarsoo.sql-formatter-vsc"
           "rust-lang.rust-analyzer"
@@ -36,9 +37,6 @@
           "tombi-toml.tombi"
           "usernamehw.errorlens"
           "ziglang.vscode-zig"
-        ]
-        ++ [
-          pkgs.trev.oxc-vscode
         ]
       );
       userSettings = pkgs.lib.importJSON ./settings.json;
