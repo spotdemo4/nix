@@ -20,7 +20,9 @@
       "zig"
     ];
     mutableUserSettings = false;
+    mutableUserKeymaps = false;
     userSettings = builtins.fromJSON (builtins.readFile ./settings.json);
+    userKeymaps = builtins.fromJSON (builtins.readFile ./keymap.json);
   };
 
   home.packages = with pkgs; [

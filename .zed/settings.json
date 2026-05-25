@@ -7,6 +7,22 @@
           "run": "onSave"
         }
       }
+    },
+    "json-language-server": {
+      "settings": {
+        "json": {
+          "schemas": [
+            {
+              "fileMatch": ["modules/home-manager/zed/settings.json"],
+              "url": "zed://schemas/settings"
+            },
+            {
+              "fileMatch": ["modules/home-manager/zed/keymap.json"],
+              "url": "zed://schemas/keymap"
+            }
+          ]
+        }
+      }
     }
   },
   "languages": {

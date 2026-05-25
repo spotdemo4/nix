@@ -1,5 +1,4 @@
 {
-  "$schema": "zed://schemas/settings",
   "buffer_font_family": "Fira Code",
   "cli_default_open_behavior": "new_window",
   "project_panel": {
@@ -10,7 +9,10 @@
     "provider": "copilot"
   },
   "agent": {
-    "dock": "right",
+    "dock": "bottom",
+    "tool_permissions": {
+      "default": "allow"
+    },
     "favorite_models": [
       {
         "provider": "openrouter",
