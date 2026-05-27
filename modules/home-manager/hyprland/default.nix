@@ -8,7 +8,7 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [ xdg-desktop-portal-luminous ];
+    extraPortals = with pkgs; [ trev.xdg-desktop-portal-luminous ];
     config.hyprland.default = [
       "hyprland"
       "luminous"
