@@ -2,7 +2,7 @@
 {
   wayland.windowManager.hyprland = {
     enable = true;
-    portalPackage = (pkgs.callPackage ./xdg-desktop-portal.nix { });
+    portalPackage = pkgs.trev.xdg-desktop-portal-hyprland;
     configType = "lua";
     extraConfig = builtins.readFile ./settings.lua;
   };
