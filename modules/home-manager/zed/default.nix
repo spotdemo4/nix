@@ -8,6 +8,7 @@
       "gleam"
       "html"
       "lua"
+      "neocmake"
       "nix"
       "oxc"
       "proto"
