@@ -8,11 +8,18 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [ trev.xdg-desktop-portal-luminous ];
-    config.hyprland.default = [
-      "hyprland"
-      "luminous"
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      trev.xdg-desktop-portal-luminous
     ];
+    config.hyprland = {
+      default = [
+        "hyprland"
+        "gtk"
+      ];
+      "org.freedesktop.impl.portal.RemoteDesktop" = "luminous";
+      "org.freedesktop.impl.portal.ScreenCast" = "hyprland";
+    };
   };
 
   home.packages = with pkgs; [
