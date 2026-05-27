@@ -2,6 +2,7 @@
 {
   gtk = {
     enable = true;
+    colorScheme = "dark";
     theme = {
       package = pkgs.trev.catppuccin-gtk.override {
         themeVariants = [ "sky" ];

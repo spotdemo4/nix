@@ -217,6 +217,7 @@
   programs.gnupg.agent.enable = true; # pgp
   programs.nix-ld.enable = true; # run unpatched dynamic binaries
   services.gnome.gnome-keyring.enable = true; # https://wiki.nixos.org/wiki/Secret_Service
+  programs.dconf.enable = true; # https://wiki.nixos.org/wiki/GNOME#Dark_mode
 
   system.stateVersion = "24.05"; # don't change
 }
