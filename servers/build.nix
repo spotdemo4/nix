@@ -77,6 +77,7 @@
   # Forgejo runners
   age.secrets."forgejo".file = self + /secrets/forgejo.age;
   age.secrets."forgejo-org".file = self + /secrets/forgejo-org.age;
+  age.secrets."forgejo-template".file = self + /secrets/forgejo-template.age;
   services.gitea-actions-runner = {
     package = pkgs.forgejo-runner;
     instances = {
@@ -108,6 +109,30 @@
         enable = true;
         url = "https://trev.zip/";
         tokenFile = config.age.secrets."forgejo-org".path;
+
+        name = "builder";
+        labels = [
+          "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest@sha256:fe8d1cc3bad5e07f5859aae1f8ece47521f14417bb184480bfba84e80299b3be"
+          "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04@sha256:fe8d1cc3bad5e07f5859aae1f8ece47521f14417bb184480bfba84e80299b3be"
+          "nixos-latest:docker://nixos/nix:2.32.8@sha256:080e6df285c98b2ea34080bf3762308288e73d7f4012e3bcf96bb98911a24311"
+        ];
+
+        settings = {
+          runner = {
+            capacity = 2;
+          };
+          container = {
+            network = "host";
+            privileged = true;
+            docker_host = "unix:///run/podman/podman.sock";
+          };
+        };
+      };
+
+      template = {
+        enable = true;
+        url = "https://trev.zip/";
+        tokenFile = config.age.secrets."forgejo-template".path;
 
         name = "builder";
         labels = [
