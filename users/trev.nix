@@ -53,14 +53,11 @@
   };
 
   home.shellAliases = {
-    temp = "cd $(mktemp -d)";
-    logs = "journalctl -b -e -u";
     codium = "code";
+    logs = "journalctl -b -e -u";
+    qc = "codex-commit";
+    temp = "cd $(mktemp -d)";
     zed = "zeditor";
-  };
-
-  programs.zsh.siteFunctions = {
-    qc = "git add . && git commit -m \"$1\"";
   };
 
   # https://github.com/nix-community/home-manager/issues/7935

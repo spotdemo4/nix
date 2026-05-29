@@ -70,6 +70,7 @@
     openconnect
     proton-vpn-cli
     ripgrep
+    trev.codex-commit
     unzip
     wget
     wl-clipboard
