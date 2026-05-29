@@ -7,6 +7,7 @@ in
   # build server
   "builder-key.age".publicKeys = keys.local ++ [ keys.build ];
   "forgejo.age".publicKeys = keys.local ++ [ keys.build ];
+  "forgejo-org.age".publicKeys = keys.local ++ [ keys.build ];
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
 
   # etc server
