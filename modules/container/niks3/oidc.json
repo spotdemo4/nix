@@ -11,7 +11,7 @@
       "issuer": "https://trev.zip/api/actions",
       "audience": "https://niks3.trev.zip",
       "bound_claims": {
-        "repository_owner": ["trev"]
+        "repository_owner": ["trev", "llc"]
       }
     }
   }
