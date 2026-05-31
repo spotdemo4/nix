@@ -60,6 +60,11 @@
     zed = "zeditor";
   };
 
+  catppuccin = {
+    enable = true;
+    autoEnable = false;
+  };
+
   # https://github.com/nix-community/home-manager/issues/7935
   manual.manpages.enable = false;
 
