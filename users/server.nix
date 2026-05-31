@@ -29,6 +29,7 @@
     logs = "journalctl -b -e -u";
   };
 
+  # Theme
   catppuccin = {
     enable = true;
     autoEnable = false;

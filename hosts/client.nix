@@ -101,9 +101,14 @@
     efi.canTouchEfiVariables = true;
   };
 
-  catppuccin.tty = {
+  # Theme
+  catppuccin = {
     enable = true;
-    flavor = "mocha";
+    autoEnable = false;
+    tty = {
+      enable = true;
+      flavor = "mocha";
+    };
   };
 
   # Nix settings

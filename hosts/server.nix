@@ -97,6 +97,12 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  # Theme
+  catppuccin = {
+    enable = true;
+    autoEnable = false;
+  };
+
   # Home manager
   home-manager = {
     useGlobalPkgs = true;

@@ -60,6 +60,7 @@
     zed = "zeditor";
   };
 
+  # Theme
   catppuccin = {
     enable = true;
     autoEnable = false;
