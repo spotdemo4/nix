@@ -70,6 +70,10 @@ in
         After = containers."gluetun-qbittorrent".ref;
         ReloadPropagatedFrom = containers."gluetun-qbittorrent".ref;
       };
+
+      serviceConfig = {
+        RestartSec = "20s"; # https://github.com/linuxserver/docker-qbittorrent/issues/443#issuecomment-4547062581
+      };
     };
 
     volumes = {
