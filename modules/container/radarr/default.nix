@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.radarr.containerConfig = {
-      image = "lscr.io/linuxserver/radarr:6.1.1@sha256:079e48870584baf2a3e7e43e7ba6d3c834555931851a59c82c51cc792d285caf";
+      image = "lscr.io/linuxserver/radarr:6.1.1@sha256:c0a4335d4249b46102f64cf6fa27ffc3bddfd9138fac1e4ddf238afd37f02d1f";
       pull = "missing";
       environments = {
         PUID = "1000";
