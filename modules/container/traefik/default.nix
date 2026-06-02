@@ -27,7 +27,7 @@ in
   ];
 
   valkey."traefik" = {
-    publish = true;
+    publishPorts = [ "10.10.10.105:6379:6379" ];
     networks = [ networks."traefik".ref ];
     args = [ "--notify-keyspace-events Ksg" ];
   };

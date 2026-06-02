@@ -14,9 +14,10 @@ with lib;
         { name, ... }:
         {
           options = {
-            publish = mkOption {
-              type = types.bool;
-              default = false;
+            publishPorts = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+              description = "Ports to publish from the Valkey container.";
             };
 
             networks = mkOption {
@@ -49,7 +50,7 @@ with lib;
             pull = "missing";
             healthCmd = "valkey-cli PING";
             notify = "healthy";
-            publishPorts = mkIf opts.publish [ "6379:6379" ];
+            publishPorts = opts.publishPorts;
             networks = opts.networks;
             environments = {
               VALKEY_EXTRA_FLAGS = builtins.concatStringsSep " " opts.args;
