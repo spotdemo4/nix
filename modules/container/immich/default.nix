@@ -23,7 +23,7 @@ in
   virtualisation.quadlet = {
     containers.immich = {
       containerConfig = {
-        image = "ghcr.io/imagegenius/immich:2.7.5@sha256:ebf930275e27ca15f768218f38673eccb47011294990526fab13238acb4f4be5";
+        image = "ghcr.io/imagegenius/immich:2.7.5@sha256:bc9ebe4775a2d2575d83012fe7c2cd4e350e8e1ef858a5deac914800849ae7a6";
         pull = "missing";
         devices = [
           "/dev/dri/card0:/dev/dri/card0"
