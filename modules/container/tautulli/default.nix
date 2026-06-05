@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.tautulli.containerConfig = {
-      image = "lscr.io/linuxserver/tautulli:latest@sha256:97a8127cfd3be10f653cea347cef64098243e315c2d81385813b7d8fc6fc384b";
+      image = "lscr.io/linuxserver/tautulli:latest@sha256:8e1a0d8104422f646c3e89d9b261b0507dc664bd6764baaea0ff0a5718f83b94";
       pull = "missing";
       environments = {
         PUID = "1000";
