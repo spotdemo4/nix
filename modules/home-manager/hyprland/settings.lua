@@ -21,7 +21,7 @@ hl.monitor({
 
 hl.monitor({
     output = "desc:XXX Beyond TV 0x00010000",
-    mode = "3840x2160@120",
+    mode = "3840x2160@119.88",
     position = "auto",
     scale = 2,
 })
