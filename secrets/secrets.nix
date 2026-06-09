@@ -57,4 +57,5 @@ in
   "continue.age".publicKeys = keys.local;
   "gpg.age".publicKeys = keys.local;
   "mods.age".publicKeys = keys.local;
+  "kagi.age".publicKeys = keys.local;
 }
