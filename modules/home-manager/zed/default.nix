@@ -24,6 +24,7 @@
     mutableUserKeymaps = false;
     userSettings = builtins.fromJSON (builtins.readFile ./settings.json);
     userKeymaps = builtins.fromJSON (builtins.readFile ./keymap.json);
+    enableMcpIntegration = true;
   };
 
   home.packages = with pkgs; [

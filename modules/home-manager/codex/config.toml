@@ -4,7 +4,3 @@ model = "gpt-5.5"
 approval_policy = "on-request"
 model_reasoning_effort = "high"
 personality = "pragmatic"
-
-[mcp_servers.kagi]
-url = "https://mcp.kagi.com/mcp"
-bearer_token_env_var = "KAGI_TOKEN"

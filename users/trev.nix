@@ -30,6 +30,7 @@
     "hyprshutdown"
     "kitty"
     "mako"
+    "mcp"
     "mods"
     "mpv"
     "qt"
