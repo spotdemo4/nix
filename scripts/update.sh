@@ -105,5 +105,6 @@ while true; do
         fi
     else
         gprint "Update successful"
+        RETRY_COUNT=0
     fi
 done
