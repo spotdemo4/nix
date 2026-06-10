@@ -23,6 +23,7 @@ in
     servers = {
       kagi = {
         command = "${kagiWrapper}/bin/kagi-mcp-wrapper";
+        args = [ ];
       };
     };
   };
