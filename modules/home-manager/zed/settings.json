@@ -21,6 +21,10 @@
     "**/node_modules",
     "**/.direnv"
   ],
+  "log": {
+    "worktree": "debug",
+    "project": "debug"
+  },
   "agent": {
     "dock": "bottom",
     "tool_permissions": {
