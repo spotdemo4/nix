@@ -22,7 +22,19 @@
         "provider": "openrouter",
         "model": "anthropic/claude-opus-4.7"
       }
-    ]
+    ],
+    "profiles": {
+      "ask": {
+        "name": "Ask",
+        "tools": {
+          "read_file": true,
+          "grep": true,
+          "terminal": false,
+          "edit_file": false
+        },
+        "enable_all_context_servers": true
+      }
+    }
   },
   "agent_servers": {
     "codex-acp": {
