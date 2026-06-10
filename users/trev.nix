@@ -33,6 +33,7 @@
     "mcp"
     "mods"
     "mpv"
+    "opencode"
     "qt"
     "starship"
     "steam"

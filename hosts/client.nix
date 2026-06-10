@@ -66,7 +66,6 @@
     ncdu
     nix-tree
     nmap
-    opencode
     openconnect
     proton-vpn-cli
     ripgrep

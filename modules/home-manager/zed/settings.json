@@ -46,6 +46,9 @@
         "model": "gpt-5.5",
         "reasoning_effort": "xhigh"
       }
+    },
+    "opencode": {
+      "type": "registry"
     }
   }
 }
