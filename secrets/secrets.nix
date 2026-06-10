@@ -54,8 +54,10 @@ in
   "grafana.age".publicKeys = keys.local ++ [ keys.monitor ];
 
   # local only
+  "context7.age".publicKeys = keys.local;
   "continue.age".publicKeys = keys.local;
+  "github.age".publicKeys = keys.local;
   "gpg.age".publicKeys = keys.local;
-  "mods.age".publicKeys = keys.local;
   "kagi.age".publicKeys = keys.local;
+  "mods.age".publicKeys = keys.local;
 }
