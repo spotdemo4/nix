@@ -53,6 +53,13 @@ in
         command = "${context7Wrapper}/bin/context7-mcp-wrapper";
         args = [ ];
       };
+      chrome-devtools = {
+        command = "${pkgs.trev.chrome-devtools-mcp}/bin/chrome-devtools-mcp";
+        args = [
+          "--no-usage-statistics"
+          "--executable-path=${pkgs.chromium}/bin/chromium"
+        ];
+      };
     };
   };
 }
