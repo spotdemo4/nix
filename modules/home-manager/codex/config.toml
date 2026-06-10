@@ -4,3 +4,6 @@ model = "gpt-5.5"
 approval_policy = "on-request"
 model_reasoning_effort = "high"
 personality = "pragmatic"
+
+[projects."/home/trev/*"]
+trust_level = "trusted"
