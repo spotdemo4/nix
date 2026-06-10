@@ -20,7 +20,7 @@ let
     text = ''
       GITHUB_PERSONAL_ACCESS_TOKEN="$(cat "${config.age.secrets."github".path}")"
       export GITHUB_PERSONAL_ACCESS_TOKEN
-      exec github-mcp-server "$@"
+      exec github-mcp-server stdio "$@"
     '';
   };
   context7Wrapper = pkgs.writeShellApplication {
