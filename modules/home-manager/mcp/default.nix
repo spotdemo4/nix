@@ -11,7 +11,7 @@ let
     text = ''
       KAGI_API_KEY="$(cat "${config.age.secrets."kagi".path}")"
       export KAGI_API_KEY
-      kagimcp "$@"
+      exec kagimcp "$@"
     '';
   };
 in
