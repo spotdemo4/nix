@@ -3,7 +3,7 @@
   programs.opencode = {
     enable = true;
     enableMcpIntegration = true;
-    settings = builtins.fromJSON (builtins.readFile ./settings.json);
+    settings = builtins.fromJSON (builtins.readFile ./config.json);
   };
 
   catppuccin.opencode = {
