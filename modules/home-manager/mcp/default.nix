@@ -1,19 +1,29 @@
-{ self, config, ... }:
 {
+  self,
+  config,
+  pkgs,
+  ...
+}:
+let
+  kagiWrapper = pkgs.writeShellApplication {
+    name = "kagi-mcp-wrapper";
+    runtimeInputs = with pkgs; [ trev.kagimcp ];
+    text = ''
+      export KAGI_API_KEY="$(cat ${config.age.secrets."kagi".path})"
+      kagimcp "$@"
+    '';
+  };
+in
+{
+  age.secrets."kagi".file = self + /secrets/kagi.age;
+
   programs.mcp = {
     enable = true;
     servers = {
       kagi = {
-        url = "https://mcp.kagi.com/mcp";
-        headers = {
-          Authorization = "Bearer {env:KAGI_TOKEN}";
-        };
+        command = "${kagiWrapper}/bin/kagi-mcp-wrapper";
+        args = [ ];
       };
     };
-  };
-
-  age.secrets."kagi".file = self + /secrets/kagi.age;
-  home.sessionVariables = {
-    KAGI_TOKEN = "$(cat ${config.age.secrets."kagi".path})";
   };
 }
