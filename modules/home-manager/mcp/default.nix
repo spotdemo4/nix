@@ -9,7 +9,7 @@ let
     name = "kagi-mcp-wrapper";
     runtimeInputs = with pkgs; [ trev.kagimcp ];
     text = ''
-      KAGI_API_KEY="$(cat ${config.age.secrets."kagi".path})"
+      KAGI_API_KEY="$(cat "${config.age.secrets."kagi".path}")"
       export KAGI_API_KEY
       kagimcp "$@"
     '';
