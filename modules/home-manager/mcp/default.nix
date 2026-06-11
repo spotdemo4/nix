@@ -32,6 +32,15 @@ let
       exec context7-mcp "$@"
     '';
   };
+  chromeDevtoolsWrapper = pkgs.writeShellApplication {
+    name = "chrome-devtools-mcp-wrapper";
+    text = ''
+      exec ${pkgs.trev.chrome-devtools-mcp}/bin/chrome-devtools-mcp \
+        --no-usage-statistics \
+        --executable-path=${pkgs.chromium}/bin/chromium \
+        "$@"
+    '';
+  };
 in
 {
   age.secrets."kagi".file = self + /secrets/kagi.age;
@@ -61,5 +70,13 @@ in
         ];
       };
     };
+  };
+
+  home.file = {
+    ".local/bin/kagi-mcp-wrapper".source = "${kagiWrapper}/bin/kagi-mcp-wrapper";
+    ".local/bin/github-mcp-wrapper".source = "${githubWrapper}/bin/github-mcp-wrapper";
+    ".local/bin/context7-mcp-wrapper".source = "${context7Wrapper}/bin/context7-mcp-wrapper";
+    ".local/bin/chrome-devtools-mcp-wrapper".source =
+      "${chromeDevtoolsWrapper}/bin/chrome-devtools-mcp-wrapper";
   };
 }

@@ -1,23 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  mcpServers = lib.mapAttrs (
-    _name: server:
-    {
-      command = server.command;
-    }
-    // lib.optionalAttrs (server.args != [ ]) {
-      args = server.args;
-    }
-    // lib.optionalAttrs (server ? env && server.env != { }) {
-      env = server.env;
-    }
-  ) config.programs.mcp.servers;
-in
+{ lib, ... }:
 {
   programs.zed-editor = {
     enable = true;
@@ -41,16 +22,11 @@ in
     ];
     mutableUserSettings = false;
     mutableUserKeymaps = false;
-    userSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // {
-      context_servers = mcpServers;
-    };
     userKeymaps = builtins.fromJSON (builtins.readFile ./keymap.json);
     enableMcpIntegration = false;
   };
 
-  home.packages = with pkgs; [
-    claude-code
-  ];
+  xdg.configFile."zed/settings.json".source = lib.mkForce ./settings.json;
 
   # Zed Theme
   catppuccin.zed = {

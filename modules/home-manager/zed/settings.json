@@ -1,6 +1,30 @@
 {
   "buffer_font_family": "Fira Code",
   "cli_default_open_behavior": "new_window",
+  "auto_install_extensions": {
+    "bash": true,
+    "catppuccin-icons": true,
+    "git-firefly": true,
+    "gleam": true,
+    "html": true,
+    "lua": true,
+    "neocmake": true,
+    "nix": true,
+    "oxc": true,
+    "proto": true,
+    "ruff": true,
+    "sql": true,
+    "svelte": true,
+    "tombi": true,
+    "toml": true,
+    "tsgo": true,
+    "zig": true
+  },
+  "theme": {
+    "dark": "Catppuccin Mocha (sky) - No Italics",
+    "light": "Catppuccin Mocha (sky) - No Italics"
+  },
+  "icon_theme": "Catppuccin Mocha",
   "project_panel": {
     "sort_mode": "files_first",
     "dock": "left"
@@ -74,6 +98,24 @@
       "favorite_config_option_values": {
         "model": ["openai/gpt-5.5", "openai/gpt-5.5-pro", "openai/gpt-5.3-codex-spark"]
       }
+    }
+  },
+  "context_servers": {
+    "chrome-devtools": {
+      "command": "/home/trev/.local/bin/chrome-devtools-mcp-wrapper",
+      "args": []
+    },
+    "context7": {
+      "command": "/home/trev/.local/bin/context7-mcp-wrapper",
+      "args": []
+    },
+    "github": {
+      "command": "/home/trev/.local/bin/github-mcp-wrapper",
+      "args": ["stdio"]
+    },
+    "kagi": {
+      "command": "/home/trev/.local/bin/kagi-mcp-wrapper",
+      "args": []
     }
   }
 }
