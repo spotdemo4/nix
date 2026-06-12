@@ -1,16 +1,19 @@
 { ... }:
 {
-  programs.ssh.settings = {
-    "trev" = {
-      HostName = "://trev.xyz";
-      User = "trev";
-      IdentityFile = "~/.ssh/id_ed25519";
-    };
-    "build" = {
-      HostName = "10.10.10.108";
-      User = "trev";
-      IdentityFile = "~/.ssh/id_ed25519";
-      ProxyJump = "trev";
+  programs.ssh = {
+    enable = true;
+    settings = {
+      "trev" = {
+        HostName = "://trev.xyz";
+        User = "trev";
+        IdentityFile = "~/.ssh/id_ed25519";
+      };
+      "build" = {
+        HostName = "10.10.10.108";
+        User = "trev";
+        IdentityFile = "~/.ssh/id_ed25519";
+        ProxyJump = "trev";
+      };
     };
   };
 }
