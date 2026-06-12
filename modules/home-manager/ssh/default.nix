@@ -5,7 +5,7 @@
     enableDefaultConfig = false;
     settings = {
       "trev" = {
-        HostName = "://trev.xyz";
+        HostName = "trev.xyz";
         User = "trev";
         IdentityFile = "~/.ssh/id_ed25519";
       };
