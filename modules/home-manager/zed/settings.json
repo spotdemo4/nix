@@ -100,7 +100,10 @@
           "openai/gpt-5.5",
           "openai/gpt-5.5-fast",
           "openai/gpt-5.5-pro",
-          "openai/gpt-5.3-codex-spark"
+          "anthropic/claude-fable-5",
+          "anthropic/claude-opus-4-8",
+          "openrouter/minimax/minimax-m3",
+          "openrouter/google/gemini-3.1-pro-preview"
         ]
       }
     }
