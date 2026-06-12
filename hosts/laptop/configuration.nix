@@ -42,6 +42,7 @@
       inherit inputs self;
     };
     users = {
+      root.imports = [ (self + /users/root.nix) ];
       trev.imports = [ (self + /users/trev.nix) ];
     };
   };
