@@ -35,6 +35,7 @@
     "mpv"
     "opencode"
     "qt"
+    "ssh"
     "starship"
     "steam"
     "vscode"
