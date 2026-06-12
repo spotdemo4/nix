@@ -2,7 +2,7 @@
 { self, ... }:
 {
   imports = [
-    (self + /hosts/server.nix)
+    (self + /templates/server)
     ./hardware-configuration.nix
   ];
 

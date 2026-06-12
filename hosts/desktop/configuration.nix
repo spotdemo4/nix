@@ -7,7 +7,7 @@
 }:
 {
   imports = [
-    (self + /hosts/client.nix)
+    (self + /templates/client)
     ./hardware-configuration.nix
   ];
 
