@@ -12,6 +12,7 @@
     "git"
     "gnome-auth-agent"
     "hyprland"
+    "niks3"
     "openssh"
     "pipewire"
     "postgres"
@@ -76,7 +77,6 @@
     yt-dlp
     zip
     inputs.agenix.packages."${stdenv.hostPlatform.system}".default
-    inputs.niks3.packages."${stdenv.hostPlatform.system}".default
 
     # Applets
     networkmanagerapplet
