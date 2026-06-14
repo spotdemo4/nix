@@ -142,13 +142,13 @@
         protocol = "ssh-ng";
         maxJobs = 5;
       }
-      {
-        hostName = "nixaws";
-        sshUser = "root";
-        system = "x86_64-linux";
-        protocol = "ssh-ng";
-        maxJobs = 200;
-      }
+      # {
+      #   hostName = "nixaws";
+      #   sshUser = "root";
+      #   system = "x86_64-linux";
+      #   protocol = "ssh-ng";
+      #   maxJobs = 200;
+      # }
     ];
 
     gc = {
