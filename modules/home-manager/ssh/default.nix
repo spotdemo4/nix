@@ -51,6 +51,14 @@
         IdentityFile = "/home/trev/.ssh/id_ed25519";
         ProxyJump = "gateway";
       };
+      "nixaws" = {
+        HostName = "localhost";
+        Port = 2222;
+        User = "root";
+        StrictHostKeyChecking = "no";
+        UserKnownHostsFile = "/dev/null";
+        CheckHostIP = "no";
+      };
     };
   };
 }
