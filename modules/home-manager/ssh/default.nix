@@ -55,6 +55,7 @@
         HostName = "localhost";
         Port = 2222;
         User = "root";
+        IdentityFile = "/home/trev/.ssh/id_ed25519";
         StrictHostKeyChecking = "no";
         UserKnownHostsFile = "/dev/null";
         CheckHostIP = "no";
