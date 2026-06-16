@@ -8,7 +8,7 @@ in
 {
   virtualisation.quadlet = {
     containers.p2pool.containerConfig = {
-      image = "ghcr.io/sethforprivacy/p2pool:v4.15@sha256:c2bac3cb3b81e58508ec482074d51acca5c067aba8157d80d645f7a87c2f652b";
+      image = "ghcr.io/sethforprivacy/p2pool:v4.16@sha256:c8cd3f2e4fc4be1f117c9c9bf3a6141b9f40082565323b1a09767f061b84bdc5";
       pull = "missing";
       volumes = [
         "${volumes."p2pool".ref}:/home/p2pool"
