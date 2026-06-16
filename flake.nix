@@ -149,8 +149,8 @@
               agenix.nixosModules.default
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
-              nur.modules.nixos.default
               niks3.nixosModules.niks3-auto-upload
+              nur.nixosModules.default
               trevpkgs.nixosModules.overlay
               ./hosts/laptop/configuration.nix
             ];
@@ -166,8 +166,8 @@
               agenix.nixosModules.default
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
-              nur.modules.nixos.default
               niks3.nixosModules.niks3-auto-upload
+              nur.nixosModules.default
               trevpkgs.nixosModules.overlay
               ./hosts/desktop/configuration.nix
             ];
@@ -183,8 +183,8 @@
               agenix.nixosModules.default
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
-              nur.modules.nixos.default
               niks3.nixosModules.niks3-auto-upload
+              nur.nixosModules.default
               trevpkgs.nixosModules.overlay
               ./hosts/htpc/configuration.nix
             ];
