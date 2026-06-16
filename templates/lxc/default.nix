@@ -3,7 +3,6 @@
 {
   imports = [
     (self + /templates/server)
-    ./hardware-configuration.nix
   ];
 
   # Hostname mapping

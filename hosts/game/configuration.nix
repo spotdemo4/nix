@@ -1,20 +1,18 @@
 { self, ... }:
 {
   imports = [
-    (self + /hosts/lxc/configuration.nix)
+    (self + /templates/lxc)
+    ./hardware-configuration.nix
   ]
   ++ map (c: self + /modules/container/${c}) [
-    "cobalt"
-    "crowdsec"
-    "discord-openrouter"
+    "minecraft"
     "portainer/agent.nix"
-    "shlink"
     "traefik-kop"
   ];
 
   # mapping to gateway
   traefik-kop = {
     enable = true;
-    ip = "10.10.10.114";
+    ip = "10.10.10.111";
   };
 }

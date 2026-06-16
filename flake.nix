@@ -113,84 +113,30 @@
       agenix,
       ...
     }@inputs:
+
     trevpkgs.libs.mkFlake (
-      system: pkgs:
-      let
-        servers = nixpkgs.lib.mapAttrs' (
-          name: value:
-          nixpkgs.lib.nameValuePair (nixpkgs.lib.removeSuffix ".nix" name) (
-            nixpkgs.lib.nixosSystem {
-              specialArgs = {
-                inherit inputs self;
-                hostname = nixpkgs.lib.removeSuffix ".nix" name;
-              };
-              modules = [
-                determinate.nixosModules.default
-                agenix.nixosModules.default
-                catppuccin.nixosModules.catppuccin
-                niks3.nixosModules.default
-                home-manager.nixosModules.home-manager
-                quadlet-nix.nixosModules.quadlet
-                ./servers/${name}
-              ];
-            }
-          )
-        ) (builtins.readDir ./servers);
-      in
-      {
-        nixosConfigurations = {
-          laptop = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              inherit inputs self;
-              hostname = "laptop";
-            };
-            modules = [
-              determinate.nixosModules.default
-              agenix.nixosModules.default
-              catppuccin.nixosModules.catppuccin
-              home-manager.nixosModules.home-manager
-              niks3.nixosModules.niks3-auto-upload
-              nur.nixosModules.default
-              trevpkgs.nixosModules.overlay
-              ./hosts/laptop/configuration.nix
-            ];
-          };
+      system: pkgs: {
 
-          desktop = nixpkgs.lib.nixosSystem {
+        nixosConfigurations = nixpkgs.lib.mapAttrs (
+          hostname: _:
+          nixpkgs.lib.nixosSystem {
             specialArgs = {
-              inherit inputs self;
-              hostname = "desktop";
+              inherit inputs self hostname;
             };
             modules = [
               determinate.nixosModules.default
               agenix.nixosModules.default
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
+              quadlet-nix.nixosModules.quadlet
+              niks3.nixosModules.default
               niks3.nixosModules.niks3-auto-upload
-              nur.nixosModules.default
+              nur.modules.nixos.default
               trevpkgs.nixosModules.overlay
-              ./hosts/desktop/configuration.nix
+              ./hosts/${hostname}/configuration.nix
             ];
-          };
-
-          htpc = nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              inherit inputs self;
-              hostname = "htpc";
-            };
-            modules = [
-              determinate.nixosModules.default
-              agenix.nixosModules.default
-              catppuccin.nixosModules.catppuccin
-              home-manager.nixosModules.home-manager
-              niks3.nixosModules.niks3-auto-upload
-              nur.nixosModules.default
-              trevpkgs.nixosModules.overlay
-              ./hosts/htpc/configuration.nix
-            ];
-          };
-        }
-        // servers;
+          }
+        ) (nixpkgs.lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./hosts));
 
         devShells = {
           default = pkgs.mkShell {

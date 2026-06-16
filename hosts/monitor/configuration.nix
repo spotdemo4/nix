@@ -1,7 +1,8 @@
 { self, ... }:
 {
   imports = [
-    (self + /hosts/lxc/configuration.nix)
+    (self + /templates/lxc)
+    ./hardware-configuration.nix
   ]
   ++ map (c: self + /modules/container/${c}) [
     "grafana"

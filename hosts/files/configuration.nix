@@ -1,10 +1,15 @@
 { self, ... }:
 {
   imports = [
-    (self + /hosts/lxc/configuration.nix)
+    (self + /templates/lxc)
+    ./hardware-configuration.nix
   ]
   ++ map (c: self + /modules/container/${c}) [
-    "minecraft"
+    "copyparty"
+    "forgejo"
+    "garage"
+    "immich"
+    "niks3"
     "portainer/agent.nix"
     "traefik-kop"
   ];
@@ -12,6 +17,6 @@
   # mapping to gateway
   traefik-kop = {
     enable = true;
-    ip = "10.10.10.111";
+    ip = "10.10.10.113";
   };
 }
