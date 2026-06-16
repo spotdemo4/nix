@@ -150,6 +150,7 @@
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
               nur.modules.nixos.default
+              niks3.nixosModules.niks3-auto-upload
               trevpkgs.nixosModules.overlay
               ./hosts/laptop/configuration.nix
             ];
@@ -166,6 +167,7 @@
               catppuccin.nixosModules.catppuccin
               home-manager.nixosModules.home-manager
               nur.modules.nixos.default
+              niks3.nixosModules.niks3-auto-upload
               trevpkgs.nixosModules.overlay
               ./hosts/desktop/configuration.nix
             ];
