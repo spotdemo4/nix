@@ -23,4 +23,10 @@ in
   environment.systemPackages = [
     niks3Wrapper
   ];
+
+  services.niks3-auto-upload = {
+    enable = true;
+    serverUrl = "https://niks3.trev.zip";
+    authTokenFile = config.age.secrets."niks3".path;
+  };
 }
