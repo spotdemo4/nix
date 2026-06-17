@@ -13,6 +13,7 @@
     "oxc": true,
     "proto": true,
     "ruff": true,
+    "scss": true,
     "sql": true,
     "svelte": true,
     "tombi": true,

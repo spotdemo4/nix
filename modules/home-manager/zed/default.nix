@@ -13,6 +13,7 @@
       "oxc"
       "proto"
       "ruff"
+      "scss"
       "sql"
       "svelte"
       "tombi"
