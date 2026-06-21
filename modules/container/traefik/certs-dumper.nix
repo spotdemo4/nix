@@ -8,7 +8,7 @@ in
 {
   virtualisation.quadlet.containers.traefik-certs-dumper = {
     containerConfig = {
-      image = "ghcr.io/kereis/traefik-certs-dumper:1.8.20@sha256:c9477262e74924a48e10f71178cbd73c1b0274207464ac11f6e34eb42ed99f4e";
+      image = "ghcr.io/kereis/traefik-certs-dumper:1.8.21@sha256:de77fe83f31e74fc2910083813c7d2418eedaebdbfb8a0b90df285721d253421";
       pull = "missing";
       user = "1000";
       group = "1000";
