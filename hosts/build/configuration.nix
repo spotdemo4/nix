@@ -9,6 +9,9 @@
     (self + /templates/lxc)
     ./hardware-configuration.nix
   ]
+  ++ map (c: self + /modules/nixos/${c}) [
+    "niks3"
+  ]
   ++ map (c: self + /modules/container/${c}) [
     "portainer/agent.nix"
   ];

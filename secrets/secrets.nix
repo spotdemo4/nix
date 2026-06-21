@@ -26,7 +26,6 @@ in
   "garage-nix-secret.age".publicKeys = keys.local ++ [ keys.files ];
   "garage-rpc.age".publicKeys = keys.local ++ [ keys.files ];
   "niks3-signing-key.age".publicKeys = keys.local ++ [ keys.files ];
-  "niks3.age".publicKeys = keys.local ++ [ keys.files ];
 
   # game server
   "curseforge.age".publicKeys = keys.local ++ [ keys.game ];
@@ -52,6 +51,12 @@ in
 
   # monitor server
   "grafana.age".publicKeys = keys.local ++ [ keys.monitor ];
+
+  # builds
+  "niks3.age".publicKeys = keys.local ++ [
+    keys.files
+    keys.build
+  ];
 
   # local only
   "context7.age".publicKeys = keys.local;
