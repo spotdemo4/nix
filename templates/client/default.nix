@@ -140,7 +140,7 @@
         sshKey = config.age.secrets."builder-key".path;
         system = "x86_64-linux";
         protocol = "ssh-ng";
-        maxJobs = 5;
+        maxJobs = 20;
       }
       # {
       #   hostName = "nixaws";
