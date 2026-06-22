@@ -51,6 +51,12 @@
         IdentityFile = "/home/trev/.ssh/id_ed25519";
         ProxyJump = "gateway";
       };
+      "debian" = {
+        HostName = "10.10.10.106";
+        User = "root";
+        IdentityFile = "/home/trev/.ssh/id_ed25519";
+        ProxyJump = "gateway";
+      };
       "nixaws" = {
         HostName = "localhost";
         Port = 2222;
