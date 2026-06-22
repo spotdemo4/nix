@@ -94,7 +94,7 @@
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
-        trev.follows = "trevpkgs";
+        trevpkgs.follows = "trevpkgs";
       };
     };
   };
