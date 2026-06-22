@@ -38,7 +38,7 @@ in
   virtualisation.quadlet = {
     containers.qbittorrent = {
       containerConfig = {
-        image = "lscr.io/linuxserver/qbittorrent:latest@sha256:bca2cf536c00900f0b8fb62ca3dcbed8ee64293165d41c8240d2cc952d4ef048";
+        image = "lscr.io/linuxserver/qbittorrent:latest@sha256:abbf2aeeb58b641977a012d0ab69939eb277cb827078450b142f782b1cd6893c";
         pull = "missing";
         environments = {
           PUID = "1000";
