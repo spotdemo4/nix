@@ -9,6 +9,12 @@
         User = "trev";
         IdentityFile = "/home/trev/.ssh/id_ed25519";
       };
+      "bench" = {
+        HostName = "10.10.10.110";
+        User = "trev";
+        IdentityFile = "/home/trev/.ssh/id_ed25519";
+        ProxyJump = "gateway";
+      };
       "build" = {
         HostName = "10.10.10.108";
         User = "trev";
