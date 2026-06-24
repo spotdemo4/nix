@@ -13,7 +13,6 @@
       "cadvisor"
       "git"
       "openssh"
-      "tailscale"
       "update"
       "zsh"
     ]

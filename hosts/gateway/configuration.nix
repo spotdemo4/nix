@@ -7,6 +7,7 @@
   ++ map (c: self + /modules/container/${c}) [
     "monero"
     "portainer"
+    "tailscale"
     "tor"
     "traefik"
   ];
