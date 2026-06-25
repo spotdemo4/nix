@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.tmail.containerConfig = {
-      image = "ghcr.io/linagora/tmail-web:v0.29.8@sha256:31aaa0313deb516581250a37a1f2131e142887f9ed439d5341ab2868918d3407";
+      image = "ghcr.io/linagora/tmail-web:v0.29.9@sha256:f6e838c87ebb33a85eb83d3c8dade52b17193b3394c8679298f8709581d7bcd7";
       pull = "missing";
       environments = {
         SERVER_URL = "https://mail.trev.xyz";
