@@ -41,6 +41,16 @@ let
         "$@"
     '';
   };
+  forgejoWrapper = pkgs.writeShellApplication {
+    name = "forgejo-mcp-wrapper";
+    runtimeInputs = with pkgs; [ forgejo-mcp ];
+    text = ''
+      FORGEJO_ACCESS_TOKEN="$(cat "${config.age.secrets."forgejo-mcp".path}")"
+      FORGEJO_URL="https://trev.zip"
+      export FORGEJO_ACCESS_TOKEN FORGEJO_URL
+      exec forgejo-mcp "$@"
+    '';
+  };
 in
 {
   age.secrets."kagi".file = self + /secrets/kagi.age;
@@ -69,6 +79,10 @@ in
           "--executable-path=${pkgs.chromium}/bin/chromium"
         ];
       };
+      forgejo = {
+        command = "${forgejoWrapper}/bin/forgejo-mcp-wrapper";
+        args = [ "--transport=stdio" ];
+      };
     };
   };
 
@@ -78,5 +92,6 @@ in
     ".local/bin/context7-mcp-wrapper".source = "${context7Wrapper}/bin/context7-mcp-wrapper";
     ".local/bin/chrome-devtools-mcp-wrapper".source =
       "${chromeDevtoolsWrapper}/bin/chrome-devtools-mcp-wrapper";
+    ".local/bin/forgejo-mcp-wrapper".source = "${forgejoWrapper}/bin/forgejo-mcp-wrapper";
   };
 }

@@ -116,6 +116,10 @@
     "kagi": {
       "command": "/home/trev/.local/bin/kagi-mcp-wrapper",
       "args": []
+    },
+    "forgejo": {
+      "command": "/home/trev/.local/bin/forgejo-mcp-wrapper",
+      "args": ["--transport=stdio"]
     }
   }
 }
