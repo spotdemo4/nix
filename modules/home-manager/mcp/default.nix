@@ -56,6 +56,7 @@ in
   age.secrets."kagi".file = self + /secrets/kagi.age;
   age.secrets."github".file = self + /secrets/github.age;
   age.secrets."context7".file = self + /secrets/context7.age;
+  age.secrets."forgejo-mcp".file = self + /secrets/forgejo-mcp.age;
 
   programs.mcp = {
     enable = true;
