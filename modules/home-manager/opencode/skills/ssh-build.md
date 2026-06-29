@@ -1,6 +1,6 @@
 ---
 name: ssh-build
-description: Use when the user asks for ssh build, the build server, remote builds, CPU-intensive build tasks, large tests, compile-heavy work, or expensive Nix builds.
+description: Use when the user asks for ssh build, the build server, remote builds, CPU-intensive build tasks, large tests, or compile-heavy work.
 ---
 
 # SSH Build Server
@@ -9,7 +9,7 @@ Use `ssh build` to run CPU-intensive work on the build server instead of the loc
 
 ## When To Use
 
-- Expensive builds, especially Nix builds, `nix flake check`, or `nix-fast-build`.
+- Expensive builds that are not already handled by local tooling.
 - Large test suites, compile-heavy tasks, code generation, compression, or indexing.
 
 ## Workflow
@@ -31,7 +31,7 @@ Use `ssh build` to run CPU-intensive work on the build server instead of the loc
 
    ```sh
    remote_dir=$(printf '%q' "$PWD")
-   ssh build "cd $remote_dir && nix flake check"
+   ssh build "cd $remote_dir && make test"
    ```
 
 4. If the user asks for benchmarks or performance comparisons, use the `ssh-bench` skill instead. Keep builds and benchmark measurements separate.
