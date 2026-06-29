@@ -28,7 +28,7 @@ hl.monitor({
 
 hl.monitor({
     output = "desc:Dell Inc. DELL S2725QS 4TYKT84",
-    mode = "3840x2160@60",
+    mode = "3840x2160@120",
     position = "auto",
     scale = "auto",
 })
