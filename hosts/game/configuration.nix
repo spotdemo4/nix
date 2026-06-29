@@ -5,7 +5,6 @@
     ./hardware-configuration.nix
   ]
   ++ map (c: self + /modules/container/${c}) [
-    "minecraft"
     "portainer/agent.nix"
     "traefik-kop"
   ];
