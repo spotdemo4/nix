@@ -18,7 +18,7 @@
           label = "codex";
           path = "/home/trev/.codex";
           ignorePatterns = [
-            "!/home/trev/.codex/auth.json"
+            "!auth.json"
             "**"
           ];
         };
