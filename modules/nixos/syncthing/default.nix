@@ -10,6 +10,10 @@
         "server" = {
           id = "6Y5HP4G-VVTITOU-AXUS3T7-NCM33QB-3GRVWVE-PKD6BEG-NS5L2HV-X4FDGA2";
           name = "server";
+          addresses = [
+            "quic://192.96.218.133:22000"
+            "tcp://192.96.218.133:22000"
+          ];
         };
       };
       folders = {
