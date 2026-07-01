@@ -68,6 +68,8 @@ in
             "8080:8080" # metrics
             "32400:32400" # plex
             "25565:25565" # minecraft
+            "22000:22000/tcp" # syncthing-tcp
+            "22000:22000/udp" # syncthing-udp
           ];
           networks = [
             networks."traefik".ref
