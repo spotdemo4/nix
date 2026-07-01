@@ -38,7 +38,7 @@ in
               rule = "HostSNI(`trev.zip`)";
               entryPoints = "rsyncd-tls";
               service = "rsyncd";
-              tls = true;
+              tls = "true";
               "tls.certresolver" = "letsencrypt";
             };
             services.rsyncd.loadbalancer.server.port = 873;
