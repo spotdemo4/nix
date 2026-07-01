@@ -17,7 +17,7 @@
           id = "7g6xq-7j2k4";
           devices = [ "server" ];
           label = "codex";
-          path = "/home/trev/.codex";
+          path = "~/.codex";
           ignorePatterns = [
             "!auth.json"
             "**"
