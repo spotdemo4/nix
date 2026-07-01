@@ -36,7 +36,7 @@ in
             };
             routers."rsyncd-tls" = {
               rule = "HostSNI(`trev.zip`)";
-              entryPoints = "rsyncd";
+              entryPoints = "rsyncd-tls";
               service = "rsyncd";
               tls = true;
               "tls.certresolver" = "letsencrypt";
