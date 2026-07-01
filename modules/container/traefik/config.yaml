@@ -93,6 +93,9 @@ entryPoints:
             sans:
               - "*.trev.コム"
 
+  rsyncd:
+    address: ":873"
+
   minecraft:
     address: ":25565"
 

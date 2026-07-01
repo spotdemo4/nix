@@ -65,6 +65,7 @@ in
           publishPorts = [
             "80:80" # http
             "443:443" # https
+            "873:873" # rsyncd
             "8080:8080" # metrics
             "32400:32400" # plex
             "25565:25565" # minecraft

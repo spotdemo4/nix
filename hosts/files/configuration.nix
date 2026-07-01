@@ -11,6 +11,7 @@
     "immich"
     "niks3"
     "portainer/agent.nix"
+    "rsyncd"
     "syncthing"
     "traefik-kop"
   ];
