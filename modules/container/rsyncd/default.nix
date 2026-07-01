@@ -23,7 +23,7 @@ in
         "${volumes.codex.ref}:/codex"
       ];
       publishPorts = [
-        "873"
+        "873:873"
       ];
       labels = toLabel {
         attrs.traefik = {
