@@ -31,7 +31,7 @@
     "dock": "left"
   },
   "edit_predictions": {
-    "provider": "copilot"
+    "provider": "zed"
   },
   "file_scan_exclusions": [
     "**/.git",
