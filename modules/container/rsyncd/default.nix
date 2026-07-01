@@ -34,6 +34,13 @@ in
               entryPoints = "rsyncd";
               service = "rsyncd";
             };
+            routers."rsyncd-tls" = {
+              rule = "HostSNI(`trev.zip`)";
+              entryPoints = "rsyncd";
+              service = "rsyncd";
+              tls = true;
+              "tls.certresolver" = "letsencrypt";
+            };
             services.rsyncd.loadbalancer.server.port = 873;
           };
         };
