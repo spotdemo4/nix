@@ -20,7 +20,7 @@ in
       ];
       volumes = [
         "${./rsyncd.conf}:/etc/rsyncd.conf"
-        "${volumes.rsyncd.ref}:/share"
+        "${volumes.codex.ref}:/codex"
       ];
       publishPorts = [
         "873"
@@ -40,6 +40,6 @@ in
       };
     };
 
-    volumes.rsyncd = { };
+    volumes.codex = { };
   };
 }
