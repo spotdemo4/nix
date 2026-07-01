@@ -68,8 +68,10 @@
     nix-tree
     nmap
     openconnect
+    openssl
     proton-vpn-cli
     ripgrep
+    stunnel
     trev.codex-commit
     unzip
     wget
