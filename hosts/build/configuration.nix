@@ -85,6 +85,7 @@
       extraPackages = with pkgs; [
         curl
         gh
+        hostname-debian
         nodejs_24
         openssl
         wget
