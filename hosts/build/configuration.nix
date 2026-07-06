@@ -68,6 +68,7 @@
         curl
         docker
         docker-compose
+        gawk
         gh
         hostname-debian
         nodejs_24
@@ -93,6 +94,7 @@
         curl
         docker
         docker-compose
+        gawk
         gh
         hostname-debian
         nodejs_24
