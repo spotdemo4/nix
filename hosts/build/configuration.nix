@@ -178,6 +178,12 @@
     };
   };
 
-  # Enable docker
-  virtualisation.docker.enable = true;
+  # Docker
+  virtualisation.docker = {
+    enable = true;
+    autoPrune = {
+      enable = true;
+      flags = [ "--all" ];
+    };
+  };
 }
