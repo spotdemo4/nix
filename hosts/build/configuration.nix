@@ -82,13 +82,13 @@
     chromium-android-desktop = {
       enable = true;
       url = "https://github.com/spotdemo4/chromium-android-desktop";
-      workDir = "/home/github-runner/chromium";
       tokenFile = config.age.secrets."github-runner".path;
       name = "builder";
       replace = true;
       extraLabels = [ "builder" ];
       noDefaultLabels = true;
       user = "github-runner";
+      workDir = "/chromium";
       extraPackages = with pkgs; [
         curl
         docker
