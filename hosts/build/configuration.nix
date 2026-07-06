@@ -82,6 +82,7 @@
     chromium-android-desktop = {
       enable = true;
       url = "https://github.com/spotdemo4/chromium-android-desktop";
+      workDir = "/home/github-runner/chromium";
       tokenFile = config.age.secrets."github-runner".path;
       name = "builder";
       replace = true;
