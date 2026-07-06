@@ -57,13 +57,30 @@
       enable = true;
       url = "https://github.com/spotdemo4/zig-template";
       tokenFile = config.age.secrets."github-runner".path;
-
       name = "builder";
       replace = true;
-
       extraLabels = [ "builder" ];
       noDefaultLabels = true;
-
+      user = "github-runner";
+      extraPackages = with pkgs; [
+        curl
+        gh
+        nodejs_24
+        openssl
+        wget
+      ];
+      nodeRuntimes = [
+        "node24"
+      ];
+    };
+    chromium-android-desktop = {
+      enable = true;
+      url = "https://github.com/spotdemo4/chromium-android-desktop";
+      tokenFile = config.age.secrets."github-runner".path;
+      name = "builder";
+      replace = true;
+      extraLabels = [ "builder" ];
+      noDefaultLabels = true;
       user = "github-runner";
       extraPackages = with pkgs; [
         curl
@@ -89,14 +106,12 @@
         enable = true;
         url = "https://trev.zip/";
         tokenFile = config.age.secrets."forgejo".path;
-
         name = "builder";
         labels = [
           "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest@sha256:fe8d1cc3bad5e07f5859aae1f8ece47521f14417bb184480bfba84e80299b3be"
           "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04@sha256:fe8d1cc3bad5e07f5859aae1f8ece47521f14417bb184480bfba84e80299b3be"
           "nixos-latest:docker://nixos/nix:2.32.8@sha256:080e6df285c98b2ea34080bf3762308288e73d7f4012e3bcf96bb98911a24311"
         ];
-
         settings = {
           runner = {
             capacity = 2;
@@ -113,14 +128,12 @@
         enable = true;
         url = "https://trev.zip/";
         tokenFile = config.age.secrets."forgejo-org".path;
-
         name = "builder";
         labels = [
           "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest@sha256:fe8d1cc3bad5e07f5859aae1f8ece47521f14417bb184480bfba84e80299b3be"
           "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04@sha256:fe8d1cc3bad5e07f5859aae1f8ece47521f14417bb184480bfba84e80299b3be"
           "nixos-latest:docker://nixos/nix:2.32.8@sha256:080e6df285c98b2ea34080bf3762308288e73d7f4012e3bcf96bb98911a24311"
         ];
-
         settings = {
           runner = {
             capacity = 2;
@@ -137,14 +150,12 @@
         enable = true;
         url = "https://trev.zip/";
         tokenFile = config.age.secrets."forgejo-template".path;
-
         name = "builder";
         labels = [
           "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest@sha256:fe8d1cc3bad5e07f5859aae1f8ece47521f14417bb184480bfba84e80299b3be"
           "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04@sha256:fe8d1cc3bad5e07f5859aae1f8ece47521f14417bb184480bfba84e80299b3be"
           "nixos-latest:docker://nixos/nix:2.32.8@sha256:080e6df285c98b2ea34080bf3762308288e73d7f4012e3bcf96bb98911a24311"
         ];
-
         settings = {
           runner = {
             capacity = 2;
