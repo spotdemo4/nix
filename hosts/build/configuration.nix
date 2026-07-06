@@ -68,6 +68,7 @@
         hostname-debian
         nodejs_24
         openssl
+        procps
         wget
       ];
       nodeRuntimes = [
@@ -89,6 +90,7 @@
         hostname-debian
         nodejs_24
         openssl
+        procps
         wget
       ];
       nodeRuntimes = [
