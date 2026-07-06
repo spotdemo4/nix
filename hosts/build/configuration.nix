@@ -16,25 +16,27 @@
     "portainer/agent.nix"
   ];
 
+  # Add build users
   users.users = {
     builder = {
       isNormalUser = true;
       description = "remote build user";
+      extraGroups = [ "docker" ];
       openssh.authorizedKeys = {
         keys = (import (self + /secrets/keys.nix)).local ++ [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJPQ+mXNZQNbbFOQhk8t1uwgFk0FOgPRd70PL4mBjdml"
         ];
       };
     };
-
     github-runner = {
       isNormalUser = true;
       description = "github runner user";
+      extraGroups = [ "docker" ];
     };
-
     gitea-runner = {
       isNormalUser = true;
       description = "gitea runner user";
+      extraGroups = [ "docker" ];
     };
   };
 
@@ -64,6 +66,8 @@
       user = "github-runner";
       extraPackages = with pkgs; [
         curl
+        docker
+        docker-compose
         gh
         hostname-debian
         nodejs_24
@@ -86,6 +90,8 @@
       user = "github-runner";
       extraPackages = with pkgs; [
         curl
+        docker
+        docker-compose
         gh
         hostname-debian
         nodejs_24
@@ -127,7 +133,6 @@
           };
         };
       };
-
       org = {
         enable = true;
         url = "https://trev.zip/";
@@ -149,7 +154,6 @@
           };
         };
       };
-
       template = {
         enable = true;
         url = "https://trev.zip/";
@@ -173,4 +177,7 @@
       };
     };
   };
+
+  # Enable docker
+  virtualisation.docker.enable = true;
 }
