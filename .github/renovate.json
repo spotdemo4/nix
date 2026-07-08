@@ -28,6 +28,17 @@
       "autoReplaceStringTemplate": "image = \"{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
       "depTypeTemplate": "image",
       "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Forgejo runner label docker images",
+      "managerFilePatterns": ["/.*.nix$/"],
+      "matchStrings": [
+        "\"(?<runnerLabel>[^\"\\s:]+):docker://(?<depName>[^\\s:@\"]+):(?<currentValue>[^@\\s\"]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?\""
+      ],
+      "autoReplaceStringTemplate": "\"{{{runnerLabel}}}:docker://{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
+      "depTypeTemplate": "image",
+      "datasourceTemplate": "docker"
     }
   ],
   "packageRules": [
