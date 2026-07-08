@@ -25,7 +25,7 @@
       "matchStrings": [
         "image = \"?(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\"?"
       ],
-      "autoReplaceStringTemplate": "image = \"{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
+      "autoReplaceStringTemplate": "image = \"{{{depName}}}{{#if newValue}}:{{{newValue}}}{{else}}{{#if currentValue}}:{{{currentValue}}}{{/if}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
       "depTypeTemplate": "image",
       "datasourceTemplate": "docker"
     },
@@ -34,9 +34,9 @@
       "description": "Forgejo runner label docker images",
       "managerFilePatterns": ["/.*.nix$/"],
       "matchStrings": [
-        "\"(?<runnerLabel>[^\"\\s:]+):docker://(?<depName>[^\\s:@\"]+):(?<currentValue>[^@\\s\"]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?\""
+        "\"(?<depName>[^\"\\s:]+):docker://(?<packageName>[^\\s:@\"]+):(?<currentValue>[^@\\s\"]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?\""
       ],
-      "autoReplaceStringTemplate": "\"{{{runnerLabel}}}:docker://{{{depName}}}:{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
+      "autoReplaceStringTemplate": "\"{{{depName}}}:docker://{{{packageName}}}:{{#if newValue}}{{{newValue}}}{{else}}{{{currentValue}}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
       "depTypeTemplate": "image",
       "datasourceTemplate": "docker"
     }
