@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.syncthing.containerConfig = {
-      image = "docker.io/syncthing/syncthing:2.1.1@sha256:775c4aac486263ca8653055bba7d3061799281974b706695e17bc798da3f4e92";
+      image = "docker.io/syncthing/syncthing:2.1.2@sha256:4464f4161dd0251e20d46bb3aec83363db75d80cef1abdd5d5fd4054b04a004d";
       pull = "missing";
       hostname = "syncthing";
       environments = {
