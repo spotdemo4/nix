@@ -5,7 +5,11 @@
     accent = "dark";
     flavor = "mocha";
   };
-  home.pointerCursor.size = 22;
+
+  home.pointerCursor = {
+    enable = true;
+    size = 22;
+  };
 
   # for hyprland
   home.sessionVariables = {
