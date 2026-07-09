@@ -7,7 +7,7 @@
     "use_new_terminal": false,
     "allow_concurrent_runs": false,
     "reveal": "no_focus",
-    "hide": "on_success",
+    "hide": "never",
     "show_summary": false,
     "show_command": false,
     "save": "none"
