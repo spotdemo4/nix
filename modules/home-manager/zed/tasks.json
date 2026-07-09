@@ -1,0 +1,15 @@
+[
+  {
+    "label": "Refresh Git Index",
+    "command": "git",
+    "args": ["update-index", "--force-write-index"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "no_focus",
+    "hide": "on_success",
+    "show_summary": false,
+    "show_command": false,
+    "save": "none"
+  }
+]

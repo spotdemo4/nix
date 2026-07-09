@@ -3,5 +3,11 @@
     "bindings": {
       "cmd-alt-c": ["agent::NewExternalAgentThread", { "agent": "codex-acp" }]
     }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "cmd-alt-g": ["task::Spawn", { "task_name": "Refresh Git Index" }]
+    }
   }
 ]

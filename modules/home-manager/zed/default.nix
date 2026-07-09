@@ -23,7 +23,9 @@
     ];
     mutableUserSettings = false;
     mutableUserKeymaps = false;
+    mutableUserTasks = false;
     userKeymaps = builtins.fromJSON (builtins.readFile ./keymap.json);
+    userTasks = builtins.fromJSON (builtins.readFile ./tasks.json);
     enableMcpIntegration = false;
   };
 
