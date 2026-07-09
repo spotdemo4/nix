@@ -93,10 +93,10 @@
       "default_config_options": {
         "mode": "build",
         "effort": "xhigh",
-        "model": "openai/gpt-5.5-fast"
+        "model": "openai/gpt-5.6-sol-fast"
       },
       "favorite_config_option_values": {
-        "model": ["openai/gpt-5.5", "openai/gpt-5.5-fast", "openai/gpt-5.5-pro"]
+        "model": ["openai/gpt-5.6-sol-fast", "openai/gpt-5.5-fast"]
       }
     }
   },
