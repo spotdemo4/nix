@@ -6,7 +6,7 @@
     "cwd": "$ZED_WORKTREE_ROOT",
     "use_new_terminal": false,
     "allow_concurrent_runs": false,
-    "reveal": "no_focus",
+    "reveal": "never",
     "hide": "never",
     "show_summary": false,
     "show_command": false,
