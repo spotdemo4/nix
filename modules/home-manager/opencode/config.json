@@ -14,7 +14,7 @@
       "model": "openai/gpt-5.3-codex-spark"
     },
     "explore": {
-      "model": "openai/gpt-5.3-codex-spark"
+      "model": "openai/gpt-5.6-luna"
     },
     "review": {
       "description": "Reviews substantial code changes for bugs, regressions, security issues, and missing tests. Use after implementation.",
@@ -30,17 +30,6 @@
           "git log*": "allow",
           "git show*": "allow"
         }
-      }
-    },
-    "deep-explore": {
-      "description": "Investigates ambiguous bugs, architecture, and behavior spanning multiple subsystems. Use when the fast explore agent may miss cross-cutting relationships.",
-      "mode": "subagent",
-      "model": "openai/gpt-5.6-luna",
-      "variant": "medium",
-      "prompt": "Investigate the requested behavior without modifying files. Trace relevant code paths across subsystems, test competing explanations, and return a concise evidence-based summary with file and line references.",
-      "permission": {
-        "edit": "deny",
-        "bash": "deny"
       }
     }
   }
