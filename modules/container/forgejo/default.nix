@@ -10,7 +10,7 @@ in
 {
   virtualisation.quadlet = {
     containers.forgejo.containerConfig = {
-      image = "codeberg.org/forgejo/forgejo:15.0.3@sha256:55bb42bec9abef5223744804f164e37d37b20df7e8b8b4807ba213ad4f071d6d";
+      image = "codeberg.org/forgejo/forgejo:15.0.4@sha256:9e14382433760127c87cb78c4dbc44b45abbb0c09c8479812c8e99b3dc893429";
       pull = "missing";
       volumes = [
         "${volumes."forgejo".ref}:/data"
