@@ -14,7 +14,7 @@
       "model": "openai/gpt-5.3-codex-spark"
     },
     "explore": {
-      "model": "openai/gpt-5.6-luna"
+      "model": "openai/gpt-5.6-terra-fast"
     },
     "review": {
       "description": "Reviews substantial code changes for bugs, regressions, security issues, and missing tests. Use after implementation.",
