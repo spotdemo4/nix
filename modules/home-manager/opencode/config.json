@@ -15,6 +15,33 @@
     },
     "explore": {
       "model": "openai/gpt-5.3-codex-spark"
+    },
+    "review": {
+      "description": "Reviews substantial code changes for bugs, regressions, security issues, and missing tests. Use after implementation.",
+      "mode": "subagent",
+      "model": "openai/gpt-5.6-sol-fast",
+      "prompt": "Review the relevant changes without modifying files. Report concrete findings first, ordered by severity, with file and line references. Focus on correctness, behavioral regressions, security, unnecessary complexity, and missing tests. If there are no findings, state that and identify any residual testing risks.",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow",
+          "git show*": "allow"
+        }
+      }
+    },
+    "deep-explore": {
+      "description": "Investigates ambiguous bugs, architecture, and behavior spanning multiple subsystems. Use when the fast explore agent may miss cross-cutting relationships.",
+      "mode": "subagent",
+      "model": "openai/gpt-5.6-luna",
+      "variant": "medium",
+      "prompt": "Investigate the requested behavior without modifying files. Trace relevant code paths across subsystems, test competing explanations, and return a concise evidence-based summary with file and line references.",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
     }
   }
 }
