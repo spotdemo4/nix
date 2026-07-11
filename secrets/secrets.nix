@@ -67,10 +67,10 @@ in
   "context7.age".publicKeys = keys.development;
   "forgejo-mcp.age".publicKeys = keys.development;
   "github.age".publicKeys = keys.development;
+  "gpg.age".publicKeys = keys.development;
   "kagi.age".publicKeys = keys.development;
 
   # local only
   "continue.age".publicKeys = keys.local;
-  "gpg.age".publicKeys = keys.local;
   "mods.age".publicKeys = keys.local;
 }
