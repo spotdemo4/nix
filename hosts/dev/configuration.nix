@@ -127,6 +127,7 @@ in
         safe.directory = "/etc/nixos";
       };
     };
+    gnupg.agent.enable = true;
     nix-ld.enable = true;
     zsh.enable = true;
   };
@@ -169,12 +170,23 @@ in
     };
   };
 
-  age.secrets = lib.mapAttrs (_: file: {
-    inherit file;
-    owner = "trev";
-    group = "trev";
-    mode = "0400";
-  }) mcpSecretFiles;
+  age.secrets =
+    lib.mapAttrs (_: file: {
+      inherit file;
+      owner = "trev";
+      group = "trev";
+      mode = "0400";
+    }) mcpSecretFiles
+    // {
+      gpg = {
+        file = self + /secrets/gpg.age;
+        path = "/home/trev/.gnupg/private-keys-v1.d/02F9D60E16452DC74C0FBFC2ECA9E20D1D75C89C.key";
+        owner = "trev";
+        group = "trev";
+        mode = "0600";
+        symlink = false;
+      };
+    };
 
   home-manager = {
     useGlobalPkgs = true;
