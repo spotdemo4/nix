@@ -6,6 +6,9 @@
   pkgs,
   ...
 }:
+let
+  keys = import (self + /secrets/keys.nix);
+in
 {
   imports = [
     ./hardware.nix
@@ -136,14 +139,14 @@
         "render"
       ];
       shell = pkgs.zsh;
-      openssh.authorizedKeys.keys = (import (self + /secrets/keys.nix)).sshClients;
+      openssh.authorizedKeys.keys = keys.sshClients ++ [ keys.devTrev ];
     };
     builder = {
       isNormalUser = true;
       description = "remote build user";
       extraGroups = [ "docker" ];
       openssh.authorizedKeys = {
-        keys = (import (self + /secrets/keys.nix)).local ++ [
+        keys = keys.local ++ [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJPQ+mXNZQNbbFOQhk8t1uwgFk0FOgPRd70PL4mBjdml"
         ];
       };

@@ -5,6 +5,9 @@
   self,
   ...
 }:
+let
+  keys = import (self + /secrets/keys.nix);
+in
 {
   imports = [
     ./hardware.nix
@@ -144,7 +147,7 @@
         "render"
       ];
       shell = pkgs.zsh;
-      openssh.authorizedKeys.keys = (import (self + /secrets/keys.nix)).sshClients;
+      openssh.authorizedKeys.keys = keys.sshClients ++ [ keys.devTrev ];
     };
   };
 

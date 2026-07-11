@@ -1,6 +1,7 @@
 rec {
   # Keys for personal devices
   desktop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILhbWUnHfLabigfXHSpkVv1YdrGSAoB0KXp23BsW+cZs trev@desktop";
+  devTrev = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL7fyuGseUD8qEJtAWJYTHJNBoP8qp4zlrGHpsFHuIvN trev@dev";
   htpc = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9scZbR7KIVfWlZkBlXDAK4ZEwy7BXy3mnvQKushd2P trev@htpc";
   laptop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINYjEopsO508BUVU2wu/RUP97psEdxzUhqH+kvvj2M8x trev@laptop";
   local = [
