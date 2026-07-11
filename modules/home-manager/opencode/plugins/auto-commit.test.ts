@@ -43,9 +43,10 @@ async function waitFor(predicate: () => boolean, timeoutMs = 5000) {
   }
 }
 
-async function createLifecycleHarness(options: { dirty?: boolean } = {}) {
+async function createLifecycleHarness(options: { dirty?: boolean; parentID?: string } = {}) {
   const root = await createRepository();
   if (options.dirty !== false) await writeFile(join(root, "tracked.txt"), "after\n");
+  const logs: Array<{ level: string; message: string }> = [];
   const toasts: Array<{ message: string; variant: string }> = [];
   let aborts = 0;
   let creates = 0;
@@ -61,7 +62,10 @@ async function createLifecycleHarness(options: { dirty?: boolean } = {}) {
 
   const client = {
     app: {
-      log: async () => ({ data: true }),
+      log: async ({ body }: { body: { level: string; message: string } }) => {
+        logs.push(body);
+        return { data: true };
+      },
     },
     tui: {
       showToast: async ({ body }: { body: { message: string; variant: string } }) => {
@@ -72,7 +76,13 @@ async function createLifecycleHarness(options: { dirty?: boolean } = {}) {
     session: {
       get: async () => {
         gets += 1;
-        return { data: { id: "parent", directory: root } };
+        return {
+          data: {
+            id: "parent",
+            directory: root,
+            ...(options.parentID ? { parentID: options.parentID } : {}),
+          },
+        };
       },
       status: async () => {
         statusCalls += 1;
@@ -135,6 +145,7 @@ async function createLifecycleHarness(options: { dirty?: boolean } = {}) {
       return gets;
     },
     hooks,
+    logs,
     releasePrompt,
     root,
     setBusy(value: boolean) {
@@ -321,6 +332,23 @@ test("skips sparse checkouts", async () => {
   await writeFile(join(root, "tracked.txt"), "after\n");
 
   await expect(captureSnapshot(root)).rejects.toThrow("sparse checkouts are not supported");
+});
+
+test("ignores child sessions before accessing a removed worktree", async () => {
+  const harness = await createLifecycleHarness({ parentID: "top-level" });
+  const { hooks, logs, root } = harness;
+  await rm(root, { recursive: true });
+  directories.splice(directories.indexOf(root), 1);
+
+  await hooks.event?.({
+    event: { type: "session.idle", properties: { sessionID: "parent" } },
+  });
+  await waitFor(() => harness.gets === 1 || logs.length > 0);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  expect(harness.gets).toBe(1);
+  expect(logs).toHaveLength(0);
+  await hooks.dispose?.();
 });
 
 test("backfills resumed work from duplicate direct idle events", async () => {

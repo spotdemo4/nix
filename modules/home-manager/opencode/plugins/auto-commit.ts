@@ -674,9 +674,9 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
     const resumed = resumedSessions.delete(sessionID);
     let retryPending = false;
     try {
-      await recoverIntegration(worktree);
       const session = await client.session.get({ path: { id: sessionID } });
       if (!session.data || session.data.parentID || worker.cancelled || disposed) return;
+      await recoverIntegration(worktree);
 
       const first = await captureSnapshot(worktree);
       const secondTree = await writeWorktreeTree(worktree, first.head);
