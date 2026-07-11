@@ -386,6 +386,7 @@ function resetLabel(timestamp: number | null | undefined, now: number) {
   if (seconds > 86_400) return `resets in ${hours}h`;
 
   const minutes = Math.floor((seconds % 3_600) / 60);
+  if (seconds < 3_600) return `resets in ${minutes}m ${seconds % 60}s`;
   return `resets in ${hours}h ${minutes}m ${seconds % 60}s`;
 }
 
@@ -419,6 +420,7 @@ function WindowView(props: {
 function SnapshotView(props: {
   snapshot: RateLimitSnapshot;
   showName: boolean;
+  addSpacing: boolean;
   now: () => number;
   theme: () => TuiThemeCurrent;
 }) {
@@ -442,7 +444,7 @@ function SnapshotView(props: {
   };
 
   return (
-    <box marginTop={props.showName ? 1 : 0}>
+    <box marginTop={props.addSpacing ? 1 : 0}>
       <Show when={props.showName}>
         <text fg={props.theme().text}>
           <b>{snapshotName(props.snapshot)}</b>
@@ -525,10 +527,11 @@ function View(props: { api: TuiPluginApi; client: CodexUsageClient }) {
         </Match>
         <Match when={snapshots().length > 0}>
           <For each={snapshots()}>
-            {(snapshot) => (
+            {(snapshot, index) => (
               <SnapshotView
                 snapshot={snapshot}
                 showName={snapshots().length > 1 || snapshotName(snapshot) !== "Codex"}
+                addSpacing={index() > 0}
                 now={now}
                 theme={theme}
               />
