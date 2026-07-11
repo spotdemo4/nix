@@ -68,7 +68,7 @@ in
   "context7.age".publicKeys = keys.development;
   "forgejo-mcp.age".publicKeys = keys.development;
   "github.age".publicKeys = keys.development;
-  "gpg.age".publicKeys = keys.development;
+  "gpg.age".publicKeys = keys.local ++ [ keys.devTrev ];
   "kagi.age".publicKeys = keys.development;
 
   # local only
