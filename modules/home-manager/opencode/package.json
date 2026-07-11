@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "check": "tsc --noEmit",
-    "test": "bun test plugins/auto-commit.test.ts"
+    "test": "bun test plugins/*.test.ts"
   },
   "dependencies": {
     "@opencode-ai/plugin": "1.17.12",
