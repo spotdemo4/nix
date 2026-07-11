@@ -23,7 +23,6 @@
 
   xdg.configFile."opencode/plugins/auto-commit.ts".source = ./plugins/auto-commit.ts;
   xdg.configFile."opencode/plugins/direnv.ts".source = ./plugins/direnv.ts;
-  xdg.configFile."opencode/plugins/codex-usage.LICENSE".source = ./plugins/codex-usage.LICENSE;
   xdg.configFile."opencode/plugins/codex-usage.tsx".source = ./plugins/codex-usage.tsx;
   xdg.configFile."opencode/package.json" = {
     force = true;
