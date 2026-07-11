@@ -43,13 +43,17 @@ async function waitFor(predicate: () => boolean, timeoutMs = 5000) {
   }
 }
 
-async function createLifecycleHarness() {
+async function createLifecycleHarness(options: { dirty?: boolean } = {}) {
   const root = await createRepository();
-  await writeFile(join(root, "tracked.txt"), "after\n");
+  if (options.dirty !== false) await writeFile(join(root, "tracked.txt"), "after\n");
   const toasts: Array<{ message: string; variant: string }> = [];
   let aborts = 0;
   let creates = 0;
+  let gets = 0;
   let promptCalls = 0;
+  let sessionBusy = false;
+  let statusCalls = 0;
+  let statusFailures = 0;
   let releasePrompt: () => void = () => {};
   const promptGate = new Promise<void>((resolve) => {
     releasePrompt = resolve;
@@ -66,8 +70,20 @@ async function createLifecycleHarness() {
       },
     },
     session: {
-      get: async () => ({ data: { id: "parent", directory: root } }),
-      status: async () => ({ data: {} }),
+      get: async () => {
+        gets += 1;
+        return { data: { id: "parent", directory: root } };
+      },
+      status: async () => {
+        statusCalls += 1;
+        if (statusFailures > 0) {
+          statusFailures -= 1;
+          throw new Error("status unavailable");
+        }
+        return {
+          data: sessionBusy ? { parent: { type: "busy" as const } } : {},
+        };
+      },
       messages: async () => ({ data: [], response: { headers: new Headers() } }),
       create: async () => {
         creates += 1;
@@ -112,9 +128,21 @@ async function createLifecycleHarness() {
     get creates() {
       return creates;
     },
+    failStatusOnce() {
+      statusFailures += 1;
+    },
+    get gets() {
+      return gets;
+    },
     hooks,
     releasePrompt,
     root,
+    setBusy(value: boolean) {
+      sessionBusy = value;
+    },
+    get statusCalls() {
+      return statusCalls;
+    },
     toasts,
   };
 }
@@ -346,6 +374,167 @@ test("restarts a cancelled worker once after the session becomes idle", async ()
   expect(harness.creates).toBe(2);
   expect(toasts.filter((toast) => toast.variant === "success")).toHaveLength(1);
   expect(toasts.filter((toast) => toast.variant === "warning")).toHaveLength(0);
+
+  await hooks.dispose?.();
+});
+
+test("uses text completion to commit mutations without an idle event", async () => {
+  const harness = await createLifecycleHarness();
+  const { hooks, root, toasts } = harness;
+  harness.releasePrompt();
+
+  await hooks["tool.execute.after"]?.({
+    args: {},
+    callID: "call",
+    sessionID: "parent",
+    tool: "apply_patch",
+  });
+  await hooks["experimental.text.complete"]?.({
+    messageID: "message",
+    partID: "part",
+    sessionID: "parent",
+  });
+
+  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
+  expect(harness.creates).toBe(1);
+  expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
+
+  await hooks.dispose?.();
+});
+
+test("does not schedule completion fallback for read-only tools", async () => {
+  const harness = await createLifecycleHarness();
+  const { hooks } = harness;
+
+  await hooks["tool.execute.after"]?.({
+    args: {},
+    callID: "call",
+    sessionID: "parent",
+    tool: "read",
+  });
+  await hooks["experimental.text.complete"]?.({
+    messageID: "message",
+    partID: "part",
+    sessionID: "parent",
+  });
+  await new Promise((resolve) => setTimeout(resolve, 1250));
+
+  expect(harness.creates).toBe(0);
+  await hooks.dispose?.();
+});
+
+test("retries a mutation completed while a worker is running", async () => {
+  const harness = await createLifecycleHarness();
+  const { hooks, root, toasts } = harness;
+
+  await hooks.event?.({
+    event: { type: "session.idle", properties: { sessionID: "parent" } },
+  });
+  await waitFor(() => harness.creates === 1);
+  await writeFile(join(root, "tracked.txt"), "after again\n");
+  await hooks["tool.execute.after"]?.({
+    args: {},
+    callID: "call",
+    sessionID: "parent",
+    tool: "apply_patch",
+  });
+  await hooks["experimental.text.complete"]?.({
+    messageID: "message",
+    partID: "part",
+    sessionID: "parent",
+  });
+  harness.releasePrompt();
+
+  await waitFor(() => harness.creates === 2);
+  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
+  expect(git(root, "show", "HEAD:tracked.txt")).toBe("after again");
+
+  await hooks.dispose?.();
+});
+
+test("polls a busy session until completion without an idle event", async () => {
+  const harness = await createLifecycleHarness();
+  const { hooks, toasts } = harness;
+  harness.setBusy(true);
+
+  await hooks["tool.execute.after"]?.({
+    args: {},
+    callID: "call",
+    sessionID: "parent",
+    tool: "apply_patch",
+  });
+  await hooks["experimental.text.complete"]?.({
+    messageID: "message",
+    partID: "part",
+    sessionID: "parent",
+  });
+  await hooks.event?.({
+    event: {
+      type: "session.status",
+      properties: { sessionID: "parent", status: { type: "busy" } },
+    },
+  });
+  await new Promise((resolve) => setTimeout(resolve, 1250));
+  expect(harness.creates).toBe(0);
+
+  harness.releasePrompt();
+  harness.setBusy(false);
+  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
+  expect(harness.creates).toBe(1);
+
+  await hooks.dispose?.();
+});
+
+test("clears fallback state after a no-op mutating tool", async () => {
+  const harness = await createLifecycleHarness({ dirty: false });
+  const { hooks } = harness;
+
+  await hooks["tool.execute.after"]?.({
+    args: {},
+    callID: "call",
+    sessionID: "parent",
+    tool: "apply_patch",
+  });
+  await hooks["experimental.text.complete"]?.({
+    messageID: "message",
+    partID: "part",
+    sessionID: "parent",
+  });
+  await waitFor(() => harness.gets === 1);
+  await new Promise((resolve) => setTimeout(resolve, 1250));
+
+  await hooks["experimental.text.complete"]?.({
+    messageID: "message-2",
+    partID: "part-2",
+    sessionID: "parent",
+  });
+  await new Promise((resolve) => setTimeout(resolve, 1250));
+  expect(harness.gets).toBe(1);
+
+  await hooks.dispose?.();
+});
+
+test("retries completion fallback after a transient status failure", async () => {
+  const harness = await createLifecycleHarness();
+  const { hooks, toasts } = harness;
+  harness.failStatusOnce();
+  harness.releasePrompt();
+
+  await hooks["tool.execute.after"]?.({
+    args: {},
+    callID: "call",
+    sessionID: "parent",
+    tool: "apply_patch",
+  });
+  await hooks["experimental.text.complete"]?.({
+    messageID: "message",
+    partID: "part",
+    sessionID: "parent",
+  });
+
+  await waitFor(() => toasts.some((toast) => toast.variant === "success"), 15_000);
+  expect(harness.statusCalls).toBeGreaterThanOrEqual(2);
+  expect(harness.creates).toBe(1);
 
   await hooks.dispose?.();
 });

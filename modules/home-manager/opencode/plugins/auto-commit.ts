@@ -8,6 +8,8 @@ import { isAbsolute, join, resolve } from "node:path";
 const AGENT = "auto-committer";
 const GIT_TIMEOUT_MS = 120_000;
 const IDLE_DELAY_MS = 500;
+const COMPLETION_DELAY_MS = 1000;
+const MAX_STATUS_RETRIES = 5;
 const SESSION_TIMEOUT_MS = 15 * 60_000;
 const SHUTDOWN_TIMEOUT_MS = 10_000;
 const MAX_HISTORY_LENGTH = 80_000;
@@ -602,10 +604,13 @@ function renderedLength(messages: SessionMessage[]) {
 
 export default (async ({ client, directory, worktree }) => {
   const busySessions = new Set<string>();
+  const mutationGenerations = new Map<string, number>();
   const resumedSessions = new Set<string>();
+  const statusFailures = new Map<string, number>();
   const timers = new Map<string, NodeJS.Timeout>();
   const workers = new Map<string, Worker>();
   let disposed = false;
+  let mutationSequence = 0;
 
   const log = async (level: "debug" | "info" | "warn" | "error", message: string) => {
     await client.app
@@ -654,14 +659,20 @@ export default (async ({ client, directory, worktree }) => {
   };
 
   const sessionIsIdle = async (sessionID: string) => {
-    if (busySessions.has(sessionID)) return false;
     const response = await client.session.status({ query: { directory } });
+    statusFailures.delete(sessionID);
     const status = response.data?.[sessionID];
-    return !status || status.type === "idle";
+    if (!status || status.type === "idle") {
+      busySessions.delete(sessionID);
+      return true;
+    }
+    return false;
   };
 
   const runWorker = async (sessionID: string, worker: Worker) => {
+    const mutationGeneration = mutationGenerations.get(sessionID);
     const resumed = resumedSessions.delete(sessionID);
+    let retryPending = false;
     try {
       await recoverIntegration(worktree);
       const session = await client.session.get({ path: { id: sessionID } });
@@ -670,7 +681,11 @@ export default (async ({ client, directory, worktree }) => {
       const first = await captureSnapshot(worktree);
       const secondTree = await writeWorktreeTree(worktree, first.head);
       if (secondTree !== first.snapshotTree || !(await sessionIsIdle(sessionID))) {
+        retryPending = true;
         throw new AutoCommitSkipped("the worktree or session changed during capture");
+      }
+      if (mutationGenerations.get(sessionID) === mutationGeneration) {
+        mutationGenerations.delete(sessionID);
       }
 
       await notify(
@@ -737,6 +752,12 @@ export default (async ({ client, directory, worktree }) => {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       if (error instanceof AutoCommitSkipped) {
+        if (
+          error.message === "there are no changes to commit" &&
+          mutationGenerations.get(sessionID) === mutationGeneration
+        ) {
+          mutationGenerations.delete(sessionID);
+        }
         await log("info", `Auto commit deferred for session ${sessionID}: ${message}`);
         if (error.visible) await notify("warning", `Deferred: ${message}`);
       } else {
@@ -761,35 +782,80 @@ export default (async ({ client, directory, worktree }) => {
         });
       }
       workers.delete(sessionID);
-      if (worker.rerun && !disposed && !busySessions.has(sessionID)) schedule(sessionID);
+      const pendingGeneration = mutationGenerations.get(sessionID);
+      const newerMutation =
+        pendingGeneration !== undefined && pendingGeneration !== mutationGeneration;
+      if ((worker.rerun || retryPending || newerMutation) && !disposed) {
+        schedule(sessionID, COMPLETION_DELAY_MS);
+      }
     }
   };
 
-  const schedule = (sessionID: string) => {
+  const schedule = (sessionID: string, delay = IDLE_DELAY_MS) => {
     if (workers.has(sessionID)) return;
     const existing = timers.get(sessionID);
     if (existing) clearTimeout(existing);
     timers.set(
       sessionID,
       setTimeout(() => {
-        timers.delete(sessionID);
-        if (disposed || busySessions.has(sessionID)) return;
-        const existingWorker = workers.get(sessionID);
-        if (existingWorker) return;
-        const worker: Worker = { cancelled: false, rerun: false };
-        workers.set(sessionID, worker);
-        worker.promise = runWorker(sessionID, worker).catch(async (error) => {
+        void (async () => {
+          timers.delete(sessionID);
+          if (disposed) return;
+          if (!(await sessionIsIdle(sessionID))) {
+            if (mutationGenerations.has(sessionID)) {
+              schedule(sessionID, COMPLETION_DELAY_MS);
+            }
+            return;
+          }
+          const existingWorker = workers.get(sessionID);
+          if (existingWorker) return;
+          const worker: Worker = { cancelled: false, rerun: false };
+          workers.set(sessionID, worker);
+          worker.promise = runWorker(sessionID, worker).catch(async (error) => {
+            const message = error instanceof Error ? error.message : String(error);
+            await log("error", `Auto-commit worker cleanup failed: ${message}`);
+          });
+        })().catch(async (error) => {
           const message = error instanceof Error ? error.message : String(error);
-          await log("error", `Auto-commit worker cleanup failed: ${message}`);
+          await log("error", `Auto-commit scheduling failed: ${message}`);
+          if (!mutationGenerations.has(sessionID) || disposed) return;
+          const failures = (statusFailures.get(sessionID) ?? 0) + 1;
+          statusFailures.set(sessionID, failures);
+          if (failures > MAX_STATUS_RETRIES) {
+            await notify("warning", "Deferred: unable to read the session status");
+            return;
+          }
+          schedule(sessionID, Math.min(COMPLETION_DELAY_MS * 2 ** failures, 10_000));
         });
-      }, IDLE_DELAY_MS),
+      }, delay),
     );
+  };
+
+  const markMutation = (sessionID: string) => {
+    mutationSequence += 1;
+    mutationGenerations.set(sessionID, mutationSequence);
   };
 
   return {
     "chat.message": async ({ sessionID }) => {
       const status = await gitOutput(worktree, ["status", "--porcelain=v1"]).catch(() => "");
-      if (status) resumedSessions.add(sessionID);
+      if (status) {
+        markMutation(sessionID);
+        resumedSessions.add(sessionID);
+      }
+    },
+    "tool.execute.after": async ({ sessionID, tool }) => {
+      const name = tool.split(".").at(-1) ?? tool;
+      if (MUTATION_TOOLS.has(name)) markMutation(sessionID);
+    },
+    "experimental.text.complete": async ({ sessionID }) => {
+      if (!mutationGenerations.has(sessionID)) return;
+      const worker = workers.get(sessionID);
+      if (worker) {
+        worker.rerun = true;
+        return;
+      }
+      schedule(sessionID, COMPLETION_DELAY_MS);
     },
     event: async ({ event }) => {
       if (event.type === "session.idle") {
@@ -811,7 +877,10 @@ export default (async ({ client, directory, worktree }) => {
       if (timer) clearTimeout(timer);
       timers.delete(sessionID);
       const worker = workers.get(sessionID);
-      if (!worker) return;
+      if (!worker) {
+        if (mutationGenerations.has(sessionID)) schedule(sessionID, COMPLETION_DELAY_MS);
+        return;
+      }
       worker.cancelled = true;
       worker.rerun = true;
       if (worker.child) {
