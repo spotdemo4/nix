@@ -9,9 +9,13 @@ rec {
     laptop
   ];
 
+  # Login keys accepted by the trev account on each host.
+  sshClients = local;
+
   # Keys for servers
   bench = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII4DjeXkDXdEEe0vAHXf43Mf/VRTqmURJbAGcDUmIOZP root@bench";
   build = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAxD3eccbwfEkahm6zLR+JIVnshwSBFO3dX3roFHndgp root@build";
+  dev = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIwyDBj9JupkwRRNAgwOpAYpQ4CoDnz4YuSYCNF73c18 root@dev";
   etc = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOZQ2A2h0VZLdBFb8XwgaBCuHryIFq8CWHE3r+H/fo1Q root@etc";
   files = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE+Y5auXXHIgssGrfbUWRhtseilFnhHxsC8/s8AI+Uw7 root@files";
   game = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHU2UCuSMdo2GYPU4R0pkPse5efZEAjOSuuf+nJYpeVd root@game";
@@ -31,5 +35,7 @@ rec {
     monitor
   ];
 
-  all = local ++ remote;
+  development = local ++ [ dev ];
+
+  all = sshClients ++ remote;
 }

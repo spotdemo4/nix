@@ -21,6 +21,12 @@
         IdentityFile = "/home/trev/.ssh/id_ed25519";
         ProxyJump = "gateway";
       };
+      "dev" = {
+        HostName = "10.10.10.115";
+        User = "trev";
+        IdentityFile = "/home/trev/.ssh/id_ed25519";
+        ProxyJump = "gateway";
+      };
       "etc" = {
         HostName = "10.10.10.114";
         User = "trev";

@@ -59,12 +59,14 @@ in
     keys.build
   ];
 
+  # development machines
+  "context7.age".publicKeys = keys.development;
+  "forgejo-mcp.age".publicKeys = keys.development;
+  "github.age".publicKeys = keys.development;
+  "kagi.age".publicKeys = keys.development;
+
   # local only
-  "context7.age".publicKeys = keys.local;
   "continue.age".publicKeys = keys.local;
-  "forgejo-mcp.age".publicKeys = keys.local;
-  "github.age".publicKeys = keys.local;
   "gpg.age".publicKeys = keys.local;
-  "kagi.age".publicKeys = keys.local;
   "mods.age".publicKeys = keys.local;
 }
