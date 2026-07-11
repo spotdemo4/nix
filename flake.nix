@@ -175,6 +175,8 @@
           update = pkgs.mkShell {
             packages = with pkgs; [
               renovate
+              nodejs_24
+              bun
             ];
           };
 
