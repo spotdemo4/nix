@@ -1,8 +1,7 @@
 { self, ... }:
 {
   imports = [
-    (self + /templates/lxc)
-    ./hardware-configuration.nix
+    (self + /modules/nixos/profiles/homelab-lxc.nix)
   ]
   ++ map (c: self + /modules/container/${c}) [
     "grafana"
@@ -11,6 +10,10 @@
     "victoria-logs"
     "victoria-metrics"
     "victoria-traces"
+  ];
+
+  home-manager.users.trev.imports = [
+    (self + /modules/home-manager/profiles/trev/server.nix)
   ];
 
   # mapping to gateway

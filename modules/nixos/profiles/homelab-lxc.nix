@@ -1,11 +1,13 @@
-# Config for every LXC server
-{ self, ... }:
+{
+  self,
+  ...
+}:
 {
   imports = [
-    (self + /templates/server)
+    ./server.nix
+    ../platforms/proxmox-lxc.nix
   ];
 
-  # Hostname mapping
   networking.hosts = {
     "10.10.10.105" = [
       "trev.xyz"
@@ -19,7 +21,6 @@
     ];
   };
 
-  # Upload journal to victoria logs
   services.journald.upload = {
     enable = true;
     settings.Upload.URL = "http://10.10.10.109:9428/insert/journald";

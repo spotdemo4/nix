@@ -1,6 +1,5 @@
 # HTPC config
 {
-  inputs,
   lib,
   self,
   pkgs,
@@ -8,7 +7,7 @@
 }:
 {
   imports = [
-    (self + /templates/client)
+    (self + /modules/nixos/profiles/workstation.nix)
     ./hardware-configuration.nix
   ];
 
@@ -32,15 +31,10 @@
 
   # Home manager
   home-manager = {
-    backupFileExtension = "backup";
-    useGlobalPkgs = true;
-    extraSpecialArgs = {
-      inherit inputs self;
-    };
     users = {
-      root.imports = [ (self + /users/root.nix) ];
+      root.imports = [ (self + /modules/home-manager/profiles/root.nix) ];
       trev = {
-        imports = [ (self + /users/trev.nix) ];
+        imports = [ (self + /modules/home-manager/profiles/trev/workstation.nix) ];
         wayland.windowManager.hyprland.extraConfig = lib.mkAfter ''
           hl.on("hyprland.start", function()
               hl.exec_cmd("steam")

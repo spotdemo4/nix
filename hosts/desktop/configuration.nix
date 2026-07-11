@@ -1,13 +1,12 @@
 # Desktop config
 {
-  inputs,
   self,
   pkgs,
   ...
 }:
 {
   imports = [
-    (self + /templates/client)
+    (self + /modules/nixos/profiles/workstation.nix)
     ./hardware-configuration.nix
   ];
 
@@ -26,14 +25,9 @@
   };
 
   home-manager = {
-    backupFileExtension = "backup";
-    useGlobalPkgs = true;
-    extraSpecialArgs = {
-      inherit inputs self;
-    };
     users = {
-      root.imports = [ (self + /users/root.nix) ];
-      trev.imports = [ (self + /users/trev.nix) ];
+      root.imports = [ (self + /modules/home-manager/profiles/root.nix) ];
+      trev.imports = [ (self + /modules/home-manager/profiles/trev/workstation.nix) ];
     };
   };
 

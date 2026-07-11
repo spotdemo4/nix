@@ -6,14 +6,17 @@
 }:
 {
   imports = [
-    (self + /templates/lxc)
-    ./hardware-configuration.nix
+    (self + /modules/nixos/profiles/homelab-lxc.nix)
   ]
   ++ map (c: self + /modules/nixos/${c}) [
     "niks3"
   ]
   ++ map (c: self + /modules/container/${c}) [
     "portainer/agent.nix"
+  ];
+
+  home-manager.users.trev.imports = [
+    (self + /modules/home-manager/profiles/trev/server.nix)
   ];
 
   # Add build users

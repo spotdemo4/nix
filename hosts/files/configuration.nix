@@ -1,8 +1,7 @@
 { self, ... }:
 {
   imports = [
-    (self + /templates/lxc)
-    ./hardware-configuration.nix
+    (self + /modules/nixos/profiles/homelab-lxc.nix)
   ]
   ++ map (c: self + /modules/container/${c}) [
     "copyparty"
@@ -14,6 +13,10 @@
     "rsyncd"
     "syncthing"
     "traefik-kop"
+  ];
+
+  home-manager.users.trev.imports = [
+    (self + /modules/home-manager/profiles/trev/server.nix)
   ];
 
   # mapping to gateway
