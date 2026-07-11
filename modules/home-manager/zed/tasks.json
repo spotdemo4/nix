@@ -1,11 +1,7 @@
 [
   {
     "label": "Refresh Git Index",
-    "command": "sh",
-    "args": [
-      "-c",
-      "git submodule foreach --recursive 'git update-index --force-write-index' && git update-index --force-write-index"
-    ],
+    "command": "git update-index --force-write-index && git submodule foreach --recursive 'git update-index --force-write-index'",
     "cwd": "$ZED_WORKTREE_ROOT",
     "use_new_terminal": false,
     "allow_concurrent_runs": false,
