@@ -62,6 +62,17 @@
     zsh = {
       enable = true;
       autosuggestion.enable = true;
+      loginExtra = ''
+        if [[ -n "$SSH_CONNECTION" && -t 0 ]]; then
+          export GPG_TTY="$(tty)"
+          gpg-connect-agent updatestartuptty /bye >/dev/null
+
+          if ! gpg-connect-agent "KEYINFO 02F9D60E16452DC74C0FBFC2ECA9E20D1D75C89C" /bye 2>/dev/null \
+            | grep -q '^S KEYINFO 02F9D60E16452DC74C0FBFC2ECA9E20D1D75C89C [^ ]* [^ ]* [^ ]* 1 '; then
+            print -n | gpg --quiet --yes --local-user 3AAF87E0B1A2AC36 --detach-sign --output /dev/null
+          fi
+        fi
+      '';
       syntaxHighlighting.enable = true;
     };
   };
