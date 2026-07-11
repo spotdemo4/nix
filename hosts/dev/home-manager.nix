@@ -8,6 +8,7 @@
     inputs.catppuccin.homeModules.catppuccin
     inputs.agenix.homeManagerModules.default
     (self + /modules/home-manager/codex)
+    (self + /modules/home-manager/gpg)
     (self + /modules/home-manager/mcp)
     (self + /modules/home-manager/opencode)
     (self + /modules/home-manager/ssh)
@@ -93,6 +94,7 @@
     };
     programs = {
       codex.enable = true;
+      gpg.enable = true;
       opencode.enable = true;
       ssh.enable = true;
     };
