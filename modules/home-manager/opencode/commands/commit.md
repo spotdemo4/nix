@@ -1,5 +1,7 @@
 ---
 description: Stage thread changes, then generate and confirm a Conventional Commit
+model: openai/gpt-5.3-codex-spark
+subtask: true
 ---
 
 Write a short, clear commit message following the Conventional Commits specification.
@@ -7,7 +9,7 @@ Write a short, clear commit message following the Conventional Commits specifica
 Before writing the message:
 
 1. Inspect the Git status and both staged and unstaged changes, including untracked files.
-2. Review the thread history to identify the files and hunks changed as part of the work performed in this thread.
+2. Review the parent thread history supplied at the end of this prompt to identify the files and hunks changed as part of the work performed in this thread.
 3. Stage only those changes. Do not use `git add -A`, `git add .`, or another command that could stage unrelated changes. If a file contains both thread-related and unrelated changes, stage only the relevant hunks with a non-interactive patch.
 4. Inspect the resulting staged Git diff and verify that every staged change belongs to this thread. Preserve unrelated worktree changes.
 5. Use the thread history to understand the user's intent, relevant decisions, and why the staged changes were made.
@@ -51,5 +53,6 @@ After generating the message:
 1. Use the question tool to show the complete proposed commit message and ask the user to choose `Accept` or `Reject`.
 2. If the user rejects it, do not create a commit or unstage the changes. Report that the commit was cancelled and stop.
 3. If the user accepts it, check whether there are new or modified changes attributable to this thread since the message was generated. Ignore unrelated changes made concurrently by the user or another agent. Only if related changes appeared, repeat the thread-scoped staging process for those changes, generate a new message, and ask for confirmation again.
-4. Commit the staged changes using the exact accepted message. Do not amend an existing commit, bypass hooks, or push.
-5. Report whether the commit succeeded. If it failed, include the relevant Git error and do not retry with hooks disabled.
+4. Immediately before committing, inspect the complete staged diff again and verify that every staged change was part of the accepted proposal. If unrelated staged content appeared, do not commit or repeat the staging process; ask the user how to proceed.
+5. Commit the staged changes using the exact accepted message. Do not amend an existing commit, bypass hooks, or push.
+6. Report whether the commit succeeded. If it failed, include the relevant Git error and do not retry with hooks disabled.

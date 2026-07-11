@@ -11,6 +11,8 @@
     };
   };
 
+  xdg.configFile."opencode/plugins/commit-context.ts".source = ./plugins/commit-context.ts;
+
   catppuccin.opencode = {
     enable = true;
     flavor = "mocha";
