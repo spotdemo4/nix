@@ -1,9 +1,18 @@
-{ ... }:
+{ config, lib, ... }:
 {
   programs.opencode = {
     enable = true;
     enableMcpIntegration = true;
     settings = builtins.fromJSON (builtins.readFile ./config.json);
+    tui.plugin = [
+      [
+        "./plugins/codex-usage.tsx"
+        {
+          codexBinary = lib.getExe config.programs.codex.package;
+          refreshMs = 30000;
+        }
+      ]
+    ];
     commands.commit = ./commands/commit.md;
     skills = {
       ssh-bench = ./skills/ssh-bench.md;
@@ -12,6 +21,12 @@
   };
 
   xdg.configFile."opencode/plugins/commit-context.ts".source = ./plugins/commit-context.ts;
+  xdg.configFile."opencode/plugins/codex-usage.LICENSE".source = ./plugins/codex-usage.LICENSE;
+  xdg.configFile."opencode/plugins/codex-usage.tsx".source = ./plugins/codex-usage.tsx;
+  xdg.configFile."opencode/package.json" = {
+    force = true;
+    source = ./package.json;
+  };
 
   catppuccin.opencode = {
     enable = true;
