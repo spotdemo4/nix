@@ -18,6 +18,7 @@ in
 {
   imports = [
     ./hardware.nix
+    (self + /modules/nixos/niks3)
     (self + /modules/nixos/podman-secrets)
     (self + /modules/nixos/update)
   ];
@@ -214,6 +215,7 @@ in
   };
 
   trev = {
+    niks3.enable = true;
     podman-secrets.enable = true;
     update = {
       enable = true;
