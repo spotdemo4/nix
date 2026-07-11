@@ -1,57 +1,82 @@
 {
   config,
+  lib,
   self,
   ...
 }:
 let
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.stalwart;
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /modules/util/label);
+  toLabel = import (self + /lib/label);
 in
 {
-  virtualisation.quadlet = {
-    containers.stalwart.containerConfig = {
-      image = "docker.io/stalwartlabs/stalwart:v0.15.5-alpine@sha256:0620ceba9165c104789d5cacb0aa209e7f16295f54edead631b1925b1ccc1ccf";
-      pull = "missing";
-      volumes = [
-        "${volumes.stalwart.ref}:/opt/stalwart"
-        "${volumes.stalwart-conf.ref}:/etc/stalwart"
-        "${volumes.stalwart-data.ref}:/var/lib/stalwart"
-        "/mnt/certs:/data/certs:ro"
-      ];
-      publishPorts = [
-        "25:25" # smtp
-        "443:443" # https
-        "465:465" # smtps
-        "993:993" # imaps
-        "8080:8080" # http
-      ];
-      networks = [
-        networks."stalwart".ref
-      ];
-      labels = toLabel {
-        attrs.traefik = {
-          enable = true;
-          http = {
-            routers.stalwart = {
-              rule = "Host(`stalwart.trev.xyz`)";
-              service = "stalwart";
-            };
-            services.stalwart.loadbalancer.server = {
-              port = 8080;
+  options.trev.containers.stalwart = {
+    enable = mkEnableOption "Stalwart mail server container";
+
+    image = containerOptions.mkImageOption "docker.io/stalwartlabs/stalwart:v0.15.5-alpine@sha256:0620ceba9165c104789d5cacb0aa209e7f16295f54edead631b1925b1ccc1ccf";
+
+    certificatesPath = mkOption {
+      type = types.str;
+      default = "/mnt/certs";
+      description = "Host path containing Stalwart certificates.";
+    };
+
+    domain = mkOption {
+      type = types.str;
+      default = "stalwart.trev.xyz";
+      description = "Domain routed to the Stalwart web interface.";
+    };
+  };
+
+  config = mkIf cfg.enable {
+    virtualisation.quadlet = {
+      containers.stalwart.containerConfig = {
+        image = cfg.image;
+        pull = "missing";
+        volumes = [
+          "${volumes.stalwart.ref}:/opt/stalwart"
+          "${volumes.stalwart-conf.ref}:/etc/stalwart"
+          "${volumes.stalwart-data.ref}:/var/lib/stalwart"
+          "${cfg.certificatesPath}:/data/certs:ro"
+        ];
+        publishPorts = [
+          "25:25" # smtp
+          "443:443" # https
+          "465:465" # smtps
+          "993:993" # imaps
+          "8080:8080" # http
+        ];
+        networks = [
+          networks.stalwart.ref
+        ];
+        labels = toLabel {
+          attrs.traefik = {
+            enable = true;
+            http = {
+              routers.stalwart = {
+                rule = "Host(`${cfg.domain}`)";
+                service = "stalwart";
+              };
+              services.stalwart.loadbalancer.server.port = 8080;
             };
           };
         };
       };
-    };
 
-    volumes = {
-      stalwart = { };
-      stalwart-conf = { };
-      stalwart-data = { };
-    };
+      volumes = {
+        stalwart = { };
+        stalwart-conf = { };
+        stalwart-data = { };
+      };
 
-    networks = {
-      stalwart = { };
+      networks.stalwart = { };
     };
   };
 }

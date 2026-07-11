@@ -1,29 +1,28 @@
 {
-  lib,
   config,
+  lib,
   pkgs,
   self,
-  hostname,
   ...
 }:
+let
+  cfg = config.trev.update;
+in
 {
-  options.update = {
-    enable = lib.mkEnableOption "enable update script";
+  options.trev.update = {
+    enable = lib.mkEnableOption "host update script";
 
     hostname = lib.mkOption {
       type = lib.types.str;
-      default = "localhost";
-      description = ''
-        The hostname of the client.
-      '';
+      default = config.networking.hostName;
+      defaultText = lib.literalExpression "config.networking.hostName";
+      description = "Hostname passed to nixos-rebuild.";
     };
 
     user = lib.mkOption {
       type = lib.types.str;
       default = "trev";
-      description = ''
-        The user of the script.
-      '';
+      description = "User that owns the NixOS checkout.";
     };
   };
 
@@ -45,16 +44,14 @@
 
         text = builtins.readFile (
           pkgs.replaceVars (self + /scripts/update.sh) {
-            hostname = "${hostname}";
-            user = "${config.update.user}";
+            hostname = cfg.hostname;
+            user = cfg.user;
           }
         );
       };
     in
-    lib.mkIf config.update.enable {
-      environment.systemPackages = [
-        updater
-      ];
+    lib.mkIf cfg.enable {
+      environment.systemPackages = [ updater ];
 
       systemd.services.update = {
         description = "Update nixos in the background";

@@ -1,93 +1,158 @@
 {
   config,
+  lib,
   self,
   pkgs,
   ...
 }:
 let
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    replaceStrings
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.garage;
   inherit (config.virtualisation.quadlet) volumes;
   inherit (config) secrets;
-  toLabel = import (self + /modules/util/label);
+  toLabel = import (self + /lib/label);
 
-  cfg = pkgs.replaceVars ./garage.toml {
+  configFile = pkgs.replaceVars ./garage.toml {
     metadata_dir = "/meta";
     data_dir = "/data";
     rpc_secret_file = "/secrets/rpc-secret";
     admin_token_file = "/secrets/admin-token";
     metrics_token_file = "/secrets/metrics-token";
   };
+  s3DomainPattern = replaceStrings [ "." ] [ "\\." ] cfg.s3Domain;
+  webDomainPattern = replaceStrings [ "." ] [ "\\." ] cfg.webDomain;
 in
 {
-  secrets = {
-    "garage-rpc".file = self + /secrets/garage-rpc.age;
-    "garage-admin".file = self + /secrets/garage-admin.age;
-    "garage-metrics".file = self + /secrets/garage-metrics.age;
+  options.trev.containers.garage = {
+    enable = mkEnableOption "Garage container";
+    image = containerOptions.mkImageOption "docker.io/dxflrs/garage:v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690";
+
+    dataPath = mkOption {
+      type = types.str;
+      default = "/mnt/garage";
+      description = "Host path containing Garage object data.";
+    };
+
+    s3Domain = mkOption {
+      type = types.str;
+      default = "s3.trev.zip";
+      description = "Root domain routed to the Garage S3 API.";
+    };
+
+    webDomain = mkOption {
+      type = types.str;
+      default = "web.trev.zip";
+      description = "Root domain routed to Garage website buckets.";
+    };
+
+    adminDomain = mkOption {
+      type = types.str;
+      default = "admin.trev.zip";
+      description = "Domain routed to the Garage admin API.";
+    };
+
+    cacheDomain = mkOption {
+      type = types.str;
+      default = "nix.trev.zip";
+      description = "Domain routed to the Nix binary cache bucket.";
+    };
+
+    rpcSecretFile = mkOption {
+      type = types.either types.path types.str;
+      default = self + /secrets/garage-rpc.age;
+      description = "Age-encrypted Garage RPC secret.";
+    };
+
+    adminSecretFile = mkOption {
+      type = types.either types.path types.str;
+      default = self + /secrets/garage-admin.age;
+      description = "Age-encrypted Garage admin token.";
+    };
+
+    metricsSecretFile = mkOption {
+      type = types.either types.path types.str;
+      default = self + /secrets/garage-metrics.age;
+      description = "Age-encrypted Garage metrics token.";
+    };
   };
 
-  virtualisation.quadlet = {
-    containers."garage".containerConfig = {
-      image = "docker.io/dxflrs/garage:v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690";
-      pull = "missing";
-      volumes = [
-        "${cfg}:/etc/garage.toml"
-        "${volumes."garage".ref}:/meta"
-        "/mnt/garage:/data"
-      ];
-      secrets = [
-        "${secrets."garage-rpc".mount},target=/secrets/rpc-secret,mode=0400"
-        "${secrets."garage-admin".mount},target=/secrets/admin-token,mode=0400"
-        "${secrets."garage-metrics".mount},target=/secrets/metrics-token,mode=0400"
-      ];
-      publishPorts = [
-        "3900:3900" # s3
-        "3901:3901" # web
-        "3902:3902" # admin
-      ];
-      labels = toLabel {
-        attrs.traefik = {
-          enable = true;
-          http = {
-            middlewares = {
-              nix-cache = {
-                headers.customrequestheaders = {
-                  "Host" = "nix.web.trev.zip";
-                  "X-Forwarded-Host" = "nix.web.trev.zip";
+  config = mkIf cfg.enable {
+    secrets = {
+      garage-rpc.file = cfg.rpcSecretFile;
+      garage-admin.file = cfg.adminSecretFile;
+      garage-metrics.file = cfg.metricsSecretFile;
+    };
+
+    virtualisation.quadlet = {
+      containers.garage.containerConfig = {
+        image = cfg.image;
+        pull = "missing";
+        volumes = [
+          "${configFile}:/etc/garage.toml"
+          "${volumes.garage.ref}:/meta"
+          "${cfg.dataPath}:/data"
+        ];
+        secrets = [
+          "${secrets.garage-rpc.mount},target=/secrets/rpc-secret,mode=0400"
+          "${secrets.garage-admin.mount},target=/secrets/admin-token,mode=0400"
+          "${secrets.garage-metrics.mount},target=/secrets/metrics-token,mode=0400"
+        ];
+        publishPorts = [
+          "3900:3900" # s3
+          "3901:3901" # web
+          "3902:3902" # admin
+        ];
+        labels = toLabel {
+          attrs.traefik = {
+            enable = true;
+            http = {
+              middlewares = {
+                nix-cache = {
+                  headers.customrequestheaders = {
+                    Host = "nix.${cfg.webDomain}";
+                    X-Forwarded-Host = "nix.${cfg.webDomain}";
+                  };
                 };
               };
-            };
-            routers = {
-              garage-s3 = {
-                rule = "Host(`s3.trev.zip`) || HostRegexp(`^.+\\.s3\\.trev\\.zip$`)";
-                service = "garage-s3";
+              routers = {
+                garage-s3 = {
+                  rule = "Host(`${cfg.s3Domain}`) || HostRegexp(`^.+\\.${s3DomainPattern}$`)";
+                  service = "garage-s3";
+                };
+                garage-web = {
+                  rule = "Host(`${cfg.webDomain}`) || HostRegexp(`^.+\\.${webDomainPattern}$`)";
+                  service = "garage-web";
+                  middlewares = "secure@file";
+                };
+                garage-admin = {
+                  rule = "Host(`${cfg.adminDomain}`)";
+                  service = "garage-admin";
+                  middlewares = "secure@file";
+                };
+                nix-cache = {
+                  rule = "Host(`${cfg.cacheDomain}`)";
+                  service = "garage-web";
+                  middlewares = "nix-cache@redis";
+                };
               };
-              garage-web = {
-                rule = "Host(`web.trev.zip`) || HostRegexp(`^.+\\.web\\.trev\\.zip$`)";
-                service = "garage-web";
-                middlewares = "secure@file";
+              services = {
+                garage-s3.loadbalancer.server.port = 3900;
+                garage-web.loadbalancer.server.port = 3901;
+                garage-admin.loadbalancer.server.port = 3902;
               };
-              garage-admin = {
-                rule = "Host(`admin.trev.zip`)";
-                service = "garage-admin";
-                middlewares = "secure@file";
-              };
-              nix-cache = {
-                rule = "Host(`nix.trev.zip`)";
-                service = "garage-web";
-                middlewares = "nix-cache@redis";
-              };
-            };
-            services = {
-              garage-s3.loadbalancer.server.port = 3900;
-              garage-web.loadbalancer.server.port = 3901;
-              garage-admin.loadbalancer.server.port = 3902;
             };
           };
         };
       };
-    };
 
-    volumes = {
-      garage = { };
+      volumes.garage = { };
     };
   };
 }

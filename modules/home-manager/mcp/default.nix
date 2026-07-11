@@ -64,6 +64,8 @@ let
 in
 {
   options.trev.mcp = {
+    enable = lib.mkEnableOption "Trev's MCP server configuration";
+
     secretPaths = lib.mkOption {
       type = lib.types.attrsOf lib.types.str;
       default = { };
@@ -73,7 +75,7 @@ in
     chromeHeadless = lib.mkEnableOption "headless Chrome for the Chrome DevTools MCP server";
   };
 
-  config = {
+  config = lib.mkIf config.trev.mcp.enable {
     age.secrets = lib.mapAttrs (_: file: { inherit file; }) (
       lib.filterAttrs (name: _: !(builtins.hasAttr name config.trev.mcp.secretPaths)) secretFiles
     );

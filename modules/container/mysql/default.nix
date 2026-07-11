@@ -1,85 +1,104 @@
 {
   lib,
   config,
-  self,
   ...
 }:
-with lib;
 let
+  inherit (lib)
+    filterAttrs
+    mapAttrs'
+    mkEnableOption
+    mkIf
+    mkOption
+    nameValuePair
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.mysql;
+  enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
   inherit (config.virtualisation.quadlet) volumes;
 in
 {
-  options.mysql = mkOption {
-    default = { };
-    description = "mysql container configuration";
+  options.trev.containers.mysql = {
+    enable = mkEnableOption "MySQL container instances";
 
-    type = types.attrsOf (
-      types.submodule (
-        { name, ... }:
-        {
-          options = {
-            database = mkOption {
-              type = types.str;
-              description = "Database name to create";
-            };
+    instances = mkOption {
+      default = { };
+      description = "MySQL container instances.";
+      type = types.attrsOf (
+        types.submodule (
+          { name, ... }:
+          {
+            options = {
+              enable = mkEnableOption "the ${name} MySQL container";
 
-            username = mkOption {
-              type = types.str;
-              description = "Username to create";
-              default = "root";
-            };
+              image = containerOptions.mkImageOption "docker.io/mysql:9.7.1@sha256:ae269281abffe401d65f04cb54d45a069a495b8174b9c0a815e502fed7fa0370";
 
-            password = mkOption {
-              type = types.submodule (import (self + /modules/util/secrets/secret.nix));
-              description = "Password secret";
-            };
+              database = mkOption {
+                type = types.str;
+                description = "Database name to create.";
+              };
 
-            networks = mkOption {
-              type = types.listOf types.str;
-              default = [ ];
-              description = ''
-                Networks to connect mysql to
-              '';
-            };
+              username = mkOption {
+                type = types.str;
+                default = "root";
+                description = "Database user to create.";
+              };
 
-            ref = mkOption {
-              type = types.str;
-              description = "Reference name for the mysql container";
-              default = "mysql-${name}";
+              password = mkOption {
+                type = containerOptions.secretReferenceType;
+                description = "Podman secret reference containing the database password.";
+              };
+
+              networks = containerOptions.networks;
+              publishPorts = containerOptions.publishPorts;
+
+              volumeName = mkOption {
+                type = types.str;
+                default = "mysql-${name}";
+                description = "Name of the generated persistent data volume.";
+              };
+
+              ref = mkOption {
+                type = types.str;
+                default = "mysql-${name}";
+                description = "Reference name for the MySQL container.";
+              };
             };
-          };
-        }
-      )
-    );
+          }
+        )
+      );
+    };
   };
 
-  config = mkIf (config.mysql != { }) {
+  config = mkIf (cfg.enable && enabledInstances != { }) {
     virtualisation.quadlet = {
       containers = mapAttrs' (
-        name: opts:
-        nameValuePair "mysql-${name}" {
+        _: instance:
+        nameValuePair instance.ref {
           containerConfig = {
-            image = "docker.io/mysql:9.7.1@sha256:ae269281abffe401d65f04cb54d45a069a495b8174b9c0a815e502fed7fa0370";
+            image = instance.image;
             pull = "missing";
             healthCmd = "mysqladmin ping -h localhost";
             notify = "healthy";
             volumes = [
-              "${volumes."mysql-${name}".ref}:/var/lib/mysql"
+              "${volumes.${instance.volumeName}.ref}:/var/lib/mysql"
             ];
             environments = {
-              MYSQL_DATABASE = opts.database;
-              MYSQL_USER = opts.username;
+              MYSQL_DATABASE = instance.database;
+              MYSQL_USER = instance.username;
             };
             secrets = [
-              "${opts.password.env},target=MYSQL_PASSWORD"
-              "${opts.password.env},target=MYSQL_ROOT_PASSWORD"
+              "${instance.password.env},target=MYSQL_PASSWORD"
+              "${instance.password.env},target=MYSQL_ROOT_PASSWORD"
             ];
-            networks = opts.networks;
+            networks = instance.networks;
+            publishPorts = instance.publishPorts;
           };
         }
-      ) config.mysql;
+      ) enabledInstances;
 
-      volumes = mapAttrs' (name: _: nameValuePair "mysql-${name}" { }) config.mysql;
+      volumes = mapAttrs' (_: instance: nameValuePair instance.volumeName { }) enabledInstances;
     };
   };
 }

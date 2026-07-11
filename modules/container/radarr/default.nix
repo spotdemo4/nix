@@ -1,49 +1,86 @@
 {
+  lib,
   config,
   self,
   ...
 }:
 let
-  inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /modules/util/label);
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.radarr;
+  inherit (config.virtualisation.quadlet) volumes;
+  toLabel = import (self + /lib/label);
 in
 {
-  virtualisation.quadlet = {
-    containers.radarr.containerConfig = {
-      image = "lscr.io/linuxserver/radarr:6.2.1@sha256:28852d0eacababc206762af48fe86d78594a4f434cc46b358f9764a857098662";
-      pull = "missing";
-      environments = {
-        PUID = "1000";
-        PGID = "1000";
-        TZ = "America/Detroit";
-      };
-      volumes = [
-        "${volumes.radarr.ref}:/config"
-        "/mnt/pool:/pool"
-      ];
-      publishPorts = [
-        "7878"
-      ];
-      networks = [
-        networks."radarr".ref
-      ];
-      labels = toLabel {
-        attrs.traefik = {
-          enable = true;
-          http.routers.radarr = {
-            rule = "HostRegexp(`radarr.trev.(zip|kiwi)`)";
-            middlewares = "secure-admin@file";
+  options.trev.containers.radarr = {
+    enable = mkEnableOption "Radarr container";
+    image = containerOptions.mkImageOption "lscr.io/linuxserver/radarr:6.2.1@sha256:28852d0eacababc206762af48fe86d78594a4f434cc46b358f9764a857098662";
+    uid = mkOption {
+      type = types.int;
+      default = 1000;
+      description = "UID used by Radarr.";
+    };
+    gid = mkOption {
+      type = types.int;
+      default = 1000;
+      description = "GID used by Radarr.";
+    };
+    timeZone = mkOption {
+      type = types.str;
+      default = "America/Detroit";
+      description = "Time zone used by Radarr.";
+    };
+    poolPath = mkOption {
+      type = types.str;
+      default = "/mnt/pool";
+      description = "Host media pool path.";
+    };
+    domainPattern = mkOption {
+      type = types.str;
+      default = "radarr.trev.(zip|kiwi)";
+      description = "Traefik HostRegexp pattern for Radarr.";
+    };
+    port = mkOption {
+      type = types.port;
+      default = 7878;
+      description = "Radarr port published on the host.";
+    };
+  };
+
+  config = mkIf cfg.enable {
+    virtualisation.quadlet = {
+      containers.radarr.containerConfig = {
+        image = cfg.image;
+        pull = "missing";
+        environments = {
+          PUID = toString cfg.uid;
+          PGID = toString cfg.gid;
+          TZ = cfg.timeZone;
+        };
+        volumes = [
+          "${volumes.radarr.ref}:/config"
+          "${cfg.poolPath}:/pool"
+        ];
+        publishPorts = [ (toString cfg.port) ];
+        networks = [ config.virtualisation.quadlet.networks.radarr.ref ];
+        labels = toLabel {
+          attrs.traefik = {
+            enable = true;
+            http.routers.radarr = {
+              rule = "HostRegexp(`${cfg.domainPattern}`)";
+              middlewares = "secure-admin@file";
+            };
           };
         };
       };
-    };
 
-    volumes = {
-      radarr = { };
-    };
-
-    networks = {
-      radarr = { };
+      volumes.radarr = { };
+      networks.radarr = { };
     };
   };
 }

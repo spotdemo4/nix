@@ -3,20 +3,37 @@
   config,
   ...
 }:
+let
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.intel-gpu-exporter;
+in
 {
-  options.intel-gpu-exporter = {
-    enable = lib.mkEnableOption "enable intel gpu exporter";
+  options.trev.containers.intel-gpu-exporter = {
+    enable = mkEnableOption "the Intel GPU Exporter container";
+    image = containerOptions.mkImageOption "ghcr.io/spotdemo4/intel-gpu-exporter:latest@sha256:79b14da50f7db1e4143c10298fb234e55989f643180ee4a0d6b330f8f48b27f6";
 
-    card = lib.mkOption {
-      type = lib.types.str;
+    publishPorts = mkOption {
+      type = types.listOf types.str;
+      default = [ "8080:8080" ];
+      description = "Ports to publish from Intel GPU Exporter.";
+    };
+
+    card = mkOption {
+      type = types.str;
       default = "card0";
       description = ''
         The /dev/dri name for the card
       '';
     };
 
-    render = lib.mkOption {
-      type = lib.types.str;
+    render = mkOption {
+      type = types.str;
       default = "renderD128";
       description = ''
         The /dev/dri render file for the card
@@ -24,28 +41,25 @@
     };
   };
 
-  config = lib.mkIf config.update.enable {
-    virtualisation.quadlet.containers."intel-gpu-exporter-${config.intel-gpu-exporter.card}".containerConfig =
-      {
-        image = "ghcr.io/spotdemo4/intel-gpu-exporter:latest@sha256:79b14da50f7db1e4143c10298fb234e55989f643180ee4a0d6b330f8f48b27f6";
-        pull = "missing";
-        environments = {
-          DEVICE = "drm:/dev/dri/${config.intel-gpu-exporter.card}";
-        };
-        publishPorts = [
-          "8080:8080"
-        ];
-        devices = [
-          "/dev/dri/${config.intel-gpu-exporter.card}:/dev/dri/${config.intel-gpu-exporter.card}"
-          "/dev/dri/${config.intel-gpu-exporter.render}:/dev/dri/${config.intel-gpu-exporter.render}"
-        ];
-        addCapabilities = [
-          "CAP_PERFMON"
-        ];
-        podmanArgs = [
-          "--privileged"
-        ];
+  config = mkIf cfg.enable {
+    virtualisation.quadlet.containers."intel-gpu-exporter-${cfg.card}".containerConfig = {
+      image = cfg.image;
+      pull = "missing";
+      environments = {
+        DEVICE = "drm:/dev/dri/${cfg.card}";
       };
+      publishPorts = cfg.publishPorts;
+      devices = [
+        "/dev/dri/${cfg.card}:/dev/dri/${cfg.card}"
+        "/dev/dri/${cfg.render}:/dev/dri/${cfg.render}"
+      ];
+      addCapabilities = [
+        "CAP_PERFMON"
+      ];
+      podmanArgs = [
+        "--privileged"
+      ];
+    };
   };
 }
 # This was a pain in the ass figuring out. Here are some crumbs for my future self

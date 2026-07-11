@@ -1,64 +1,70 @@
 {
+  config,
+  lib,
   pkgs,
   inputs,
   ...
 }:
 {
-  programs.vscode = {
-    enable = true;
-    package = pkgs.vscode;
-    mutableExtensionsDir = false;
-    profiles.default = {
-      extensions =
-        inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion pkgs.vscode.version
-          [
-            "a-h.templ"
-            "anthropic.claude-code"
-            "biomejs.biome"
-            "bradlc.vscode-tailwindcss"
-            "bufbuild.vscode-buf"
-            "charliermarsh.ruff"
-            "dbaeumer.vscode-eslint"
-            "esbenp.prettier-vscode"
-            "github.copilot-chat"
-            "gleam.gleam"
-            "golang.Go"
-            "jnoortheen.nix-ide"
-            "llvm-vs-code-extensions.vscode-clangd"
-            "mkhl.direnv"
-            "ms-python.python"
-            "openai.chatgpt"
-            "oxc.oxc-vscode"
-            "redhat.vscode-yaml"
-            "ReneSaarsoo.sql-formatter-vsc"
-            "rust-lang.rust-analyzer"
-            "sqlfluff.vscode-sqlfluff"
-            "svelte.svelte-vscode"
-            "timonwong.shellcheck"
-            "tombi-toml.tombi"
-            "usernamehw.errorlens"
-            "ziglang.vscode-zig"
-          ];
-      userSettings = pkgs.lib.importJSON ./settings.json;
-    };
-  };
+  options.trev.programs.vscode.enable = lib.mkEnableOption "Trev's VS Code configuration";
 
-  catppuccin.vscode.profiles.default = {
-    enable = true;
-    accent = "sky";
-    flavor = "mocha";
-
-    icons = {
+  config = lib.mkIf config.trev.programs.vscode.enable {
+    programs.vscode = {
       enable = true;
-      flavor = "mocha";
+      package = pkgs.vscode;
+      mutableExtensionsDir = false;
+      profiles.default = {
+        extensions =
+          inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion pkgs.vscode.version
+            [
+              "a-h.templ"
+              "anthropic.claude-code"
+              "biomejs.biome"
+              "bradlc.vscode-tailwindcss"
+              "bufbuild.vscode-buf"
+              "charliermarsh.ruff"
+              "dbaeumer.vscode-eslint"
+              "esbenp.prettier-vscode"
+              "github.copilot-chat"
+              "gleam.gleam"
+              "golang.Go"
+              "jnoortheen.nix-ide"
+              "llvm-vs-code-extensions.vscode-clangd"
+              "mkhl.direnv"
+              "ms-python.python"
+              "openai.chatgpt"
+              "oxc.oxc-vscode"
+              "redhat.vscode-yaml"
+              "ReneSaarsoo.sql-formatter-vsc"
+              "rust-lang.rust-analyzer"
+              "sqlfluff.vscode-sqlfluff"
+              "svelte.svelte-vscode"
+              "timonwong.shellcheck"
+              "tombi-toml.tombi"
+              "usernamehw.errorlens"
+              "ziglang.vscode-zig"
+            ];
+        userSettings = pkgs.lib.importJSON ./settings.json;
+      };
     };
-  };
 
-  # Required packages
-  home.packages = with pkgs; [
-    biome
-    nixd
-    nixfmt
-    sqlfluff
-  ];
+    catppuccin.vscode.profiles.default = {
+      enable = true;
+      accent = "sky";
+      flavor = "mocha";
+
+      icons = {
+        enable = true;
+        flavor = "mocha";
+      };
+    };
+
+    # Required packages
+    home.packages = with pkgs; [
+      biome
+      nixd
+      nixfmt
+      sqlfluff
+    ];
+  };
 }

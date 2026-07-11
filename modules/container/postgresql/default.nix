@@ -1,85 +1,117 @@
 {
   lib,
   config,
-  self,
   ...
 }:
-with lib;
 let
+  inherit (lib)
+    filterAttrs
+    mapAttrs'
+    mapAttrsToList
+    mkEnableOption
+    mkIf
+    mkMerge
+    mkOption
+    nameValuePair
+    optional
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.postgresql;
+  enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
   inherit (config.virtualisation.quadlet) volumes;
 in
 {
-  options.postgresql = mkOption {
-    default = { };
-    description = "postgresql container configuration";
+  options.trev.containers.postgresql = {
+    enable = mkEnableOption "PostgreSQL container instances";
 
-    type = types.attrsOf (
-      types.submodule (
-        { name, ... }:
-        {
-          options = {
-            database = mkOption {
-              type = types.str;
+    instances = mkOption {
+      default = { };
+      description = "PostgreSQL container instances.";
+      type = types.attrsOf (
+        types.submodule (
+          { name, ... }:
+          {
+            options = {
+              enable = mkEnableOption "the ${name} PostgreSQL container";
+
+              image = containerOptions.mkImageOption "docker.io/postgres:18.4-alpine@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15";
+
+              database = mkOption {
+                type = types.str;
+                description = "Database name to create.";
+              };
+
+              username = mkOption {
+                type = types.str;
+                default = "root";
+                description = "Database user to create.";
+              };
+
+              passwordSecret = mkOption {
+                type = types.nullOr containerOptions.secretReferenceType;
+                default = null;
+                description = "Podman secret reference containing the database password.";
+              };
+
+              networks = containerOptions.networks;
+              publishPorts = containerOptions.publishPorts;
+
+              volumeName = mkOption {
+                type = types.str;
+                default = "postgresql-${name}";
+                description = "Name of the generated persistent data volume.";
+              };
+
+              ref = mkOption {
+                type = types.str;
+                default = "postgresql-${name}";
+                description = "Reference name for the PostgreSQL container.";
+              };
             };
-
-            username = mkOption {
-              type = types.str;
-              default = "root";
-            };
-
-            password = mkOption {
-              type = types.nullOr types.str;
-              default = null;
-            };
-
-            passwordSecret = mkOption {
-              type = types.nullOr (types.submodule (import (self + /modules/util/secrets/secret.nix)));
-              default = null;
-            };
-
-            networks = mkOption {
-              type = types.listOf types.str;
-              default = [ ];
-            };
-
-            ref = mkOption {
-              type = types.str;
-              default = "postgresql-${name}";
-            };
-          };
-        }
-      )
-    );
-  };
-
-  config = mkIf (config.postgresql != { }) {
-    virtualisation.quadlet = {
-      containers = mapAttrs' (
-        name: opts:
-        nameValuePair "postgresql-${name}" {
-          containerConfig = {
-            image = "docker.io/postgres:18.4-alpine@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15";
-            pull = "missing";
-            healthCmd = "pg_isready -U ${opts.username} -d ${opts.database}";
-            notify = "healthy";
-            volumes = [
-              "${volumes."postgresql-${name}".ref}:/var/lib/postgresql"
-            ];
-            environments = {
-              POSTGRES_DB = opts.database;
-              POSTGRES_USER = opts.username;
-              POSTGRES_PASSWORD = mkIf (opts.password != null) opts.password;
-              PGDATA = "/var/lib/postgresql/18/docker";
-            };
-            secrets = mkIf (opts.passwordSecret != null) [
-              "${opts.passwordSecret.env},target=POSTGRES_PASSWORD"
-            ];
-            networks = opts.networks;
-          };
-        }
-      ) config.postgresql;
-
-      volumes = mapAttrs' (name: _: nameValuePair "postgresql-${name}" { }) config.postgresql;
+          }
+        )
+      );
     };
   };
+
+  config = mkIf cfg.enable (mkMerge [
+    {
+      assertions = mapAttrsToList (name: instance: {
+        assertion = instance.passwordSecret != null;
+        message = "trev.containers.postgresql.instances.${name}.passwordSecret must reference a Podman secret";
+      }) enabledInstances;
+    }
+
+    (mkIf (enabledInstances != { }) {
+      virtualisation.quadlet = {
+        containers = mapAttrs' (
+          _: instance:
+          nameValuePair instance.ref {
+            containerConfig = {
+              image = instance.image;
+              pull = "missing";
+              healthCmd = "pg_isready -U ${instance.username} -d ${instance.database}";
+              notify = "healthy";
+              volumes = [
+                "${volumes.${instance.volumeName}.ref}:/var/lib/postgresql"
+              ];
+              environments = {
+                POSTGRES_DB = instance.database;
+                POSTGRES_USER = instance.username;
+                PGDATA = "/var/lib/postgresql/18/docker";
+              };
+              secrets = optional (
+                instance.passwordSecret != null
+              ) "${instance.passwordSecret.env},target=POSTGRES_PASSWORD";
+              networks = instance.networks;
+              publishPorts = instance.publishPorts;
+            };
+          }
+        ) enabledInstances;
+
+        volumes = mapAttrs' (_: instance: nameValuePair instance.volumeName { }) enabledInstances;
+      };
+    })
+  ]);
 }

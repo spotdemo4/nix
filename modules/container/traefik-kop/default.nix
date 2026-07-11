@@ -3,38 +3,51 @@
   config,
   ...
 }:
+let
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.traefik-kop;
+in
 {
-  options.traefik-kop = {
-    enable = lib.mkEnableOption "enable traefik kop";
+  options.trev.containers.traefik-kop = {
+    enable = mkEnableOption "the Traefik Kop container";
+    image = containerOptions.mkImageOption "ghcr.io/jittering/traefik-kop:0.20.1@sha256:f4919330407ae93f6d966cff7d7352198c09ed5e788c959a1bfd9d0eaf7e1091";
 
-    ip = lib.mkOption {
-      type = lib.types.str;
-      default = "localhost";
-      description = ''
-        The IP address of the client
-      '';
+    podmanSocket = mkOption {
+      type = types.str;
+      default = "/run/podman/podman.sock";
+      description = "Host Podman socket exposed to Traefik Kop.";
     };
 
-    server_ip = lib.mkOption {
-      type = lib.types.str;
+    ip = mkOption {
+      type = types.str;
+      default = "localhost";
+      description = "IP address advertised for this Podman host.";
+    };
+
+    serverIp = mkOption {
+      type = types.str;
       default = "10.10.10.105:6379";
-      description = ''
-        The IP address of the server
-      '';
+      description = "Address of the Traefik Redis server.";
     };
   };
 
-  config = lib.mkIf config.update.enable {
+  config = mkIf cfg.enable {
     virtualisation.quadlet.containers.traefik-kop = {
       containerConfig = {
-        image = "ghcr.io/jittering/traefik-kop:0.20.1@sha256:f4919330407ae93f6d966cff7d7352198c09ed5e788c959a1bfd9d0eaf7e1091";
+        image = cfg.image;
         pull = "missing";
         volumes = [
-          "/run/podman/podman.sock:/var/run/docker.sock"
+          "${cfg.podmanSocket}:/var/run/docker.sock"
         ];
         environments = {
-          REDIS_ADDR = "${config.traefik-kop.server_ip}";
-          BIND_IP = "${config.traefik-kop.ip}";
+          REDIS_ADDR = cfg.serverIp;
+          BIND_IP = cfg.ip;
         };
       };
 

@@ -3,61 +3,69 @@
   config,
   ...
 }:
-with lib;
+let
+  inherit (lib)
+    filterAttrs
+    mapAttrs'
+    mkEnableOption
+    mkIf
+    mkOption
+    nameValuePair
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.valkey;
+  enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
+in
 {
-  options.valkey = mkOption {
-    default = { };
-    description = "valkey container configuration";
+  options.trev.containers.valkey = {
+    enable = mkEnableOption "Valkey container instances";
 
-    type = types.attrsOf (
-      types.submodule (
-        { name, ... }:
-        {
-          options = {
-            publishPorts = mkOption {
-              type = types.listOf types.str;
-              default = [ ];
-              description = "Ports to publish from the Valkey container.";
-            };
+    instances = mkOption {
+      default = { };
+      description = "Valkey container instances.";
+      type = types.attrsOf (
+        types.submodule (
+          { name, ... }:
+          {
+            options = {
+              enable = mkEnableOption "the ${name} Valkey container";
 
-            networks = mkOption {
-              type = types.listOf types.str;
-              default = [ ];
-            };
+              image = containerOptions.mkImageOption "docker.io/valkey/valkey:9.1.0-alpine@sha256:a35428eba9043cc0b79dbe54100f0c92784f2de00ad09b01182bfb1c5c83d1bd";
+              publishPorts = containerOptions.publishPorts;
+              networks = containerOptions.networks;
+              args = containerOptions.args;
 
-            args = mkOption {
-              type = types.listOf types.str;
-              default = [ ];
+              ref = mkOption {
+                type = types.str;
+                default = "valkey-${name}";
+                description = "Reference name for the Valkey container.";
+              };
             };
-
-            ref = mkOption {
-              type = types.str;
-              default = "valkey-${name}";
-            };
-          };
-        }
-      )
-    );
+          }
+        )
+      );
+    };
   };
 
-  config = mkIf (config.valkey != { }) {
+  config = mkIf (cfg.enable && enabledInstances != { }) {
     virtualisation.quadlet = {
       containers = mapAttrs' (
-        name: opts:
-        nameValuePair "valkey-${name}" {
+        _: instance:
+        nameValuePair instance.ref {
           containerConfig = {
-            image = "docker.io/valkey/valkey:9.1.0-alpine@sha256:a35428eba9043cc0b79dbe54100f0c92784f2de00ad09b01182bfb1c5c83d1bd";
+            image = instance.image;
             pull = "missing";
             healthCmd = "valkey-cli PING";
             notify = "healthy";
-            publishPorts = opts.publishPorts;
-            networks = opts.networks;
+            publishPorts = instance.publishPorts;
+            networks = instance.networks;
             environments = {
-              VALKEY_EXTRA_FLAGS = builtins.concatStringsSep " " opts.args;
+              VALKEY_EXTRA_FLAGS = builtins.concatStringsSep " " instance.args;
             };
           };
         }
-      ) config.valkey;
+      ) enabledInstances;
     };
   };
 }

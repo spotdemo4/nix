@@ -1,7 +1,17 @@
-{ pkgs, ... }:
 {
-  systemd = {
-    user.services.polkit-gnome-authentication-agent-1 = {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  cfg = config.trev.gnome-auth-agent;
+in
+{
+  options.trev.gnome-auth-agent.enable = lib.mkEnableOption "GNOME polkit authentication agent";
+
+  config = lib.mkIf cfg.enable {
+    systemd.user.services.polkit-gnome-authentication-agent-1 = {
       description = "polkit-gnome-authentication-agent-1";
       wantedBy = [ "graphical-session.target" ];
       wants = [ "graphical-session.target" ];

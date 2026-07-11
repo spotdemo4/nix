@@ -1,76 +1,126 @@
 {
   config,
+  lib,
   self,
   ...
 }:
 let
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    optional
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.shlink;
+  postgresql = lib.attrByPath [ "trev" "containers" "postgresql" ] {
+    enable = false;
+    instances = { };
+  } config;
+  database = lib.attrByPath [ "instances" "shlink" ] {
+    enable = false;
+    database = "";
+    username = "";
+    passwordSecret = null;
+    ref = "postgresql-shlink";
+  } postgresql;
   inherit (config.virtualisation.quadlet) containers networks;
-  inherit (config) secrets postgresql;
-  toLabel = import (self + /modules/util/label);
+  databaseContainer = lib.attrByPath [ "postgresql-shlink" ] {
+    ref = "postgresql-shlink";
+  } containers;
+  toLabel = import (self + /lib/label);
 in
 {
-  imports = [
-    (self + /modules/container/postgresql)
-    ./web.nix
-  ];
+  options.trev.containers.shlink = {
+    enable = mkEnableOption "Shlink container";
 
-  secrets = {
-    "geolite".file = self + /secrets/geolite.age;
-    "shlink".file = self + /secrets/shlink.age;
+    image = containerOptions.mkImageOption "ghcr.io/shlinkio/shlink:5.1.5@sha256:77b8eb87bcb1a56bd0ecc590398d415545e5ba83414f28d37dc565a91c3c50b2";
+
+    domain = mkOption {
+      type = types.str;
+      default = "trev.rs";
+      description = "Public Shlink domain.";
+    };
+
+    geoliteSecret = mkOption {
+      type = containerOptions.secretReferenceType;
+      default = {
+        ref = "geolite";
+        file = self + /secrets/geolite.age;
+      };
+      description = "GeoLite license key secret.";
+    };
+
+    apiSecret = mkOption {
+      type = containerOptions.secretReferenceType;
+      default = {
+        ref = "shlink";
+        file = self + /secrets/shlink.age;
+      };
+      description = "Initial Shlink API key secret.";
+    };
   };
 
-  postgresql."shlink" = {
-    database = "shlink";
-    username = "shlink";
-    password = "shlink";
-    networks = [
-      networks."shlink".ref
+  config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = postgresql.enable;
+        message = "trev.containers.shlink requires trev.containers.postgresql.enable = true";
+      }
+      {
+        assertion = database.enable;
+        message = "trev.containers.shlink requires trev.containers.postgresql.instances.shlink.enable = true";
+      }
+      {
+        assertion = database.passwordSecret != null;
+        message = "trev.containers.shlink requires trev.containers.postgresql.instances.shlink.passwordSecret to reference a Podman secret";
+      }
     ];
-  };
 
-  virtualisation.quadlet = {
-    containers.shlink = {
-      containerConfig = {
-        image = "ghcr.io/shlinkio/shlink:5.1.5@sha256:77b8eb87bcb1a56bd0ecc590398d415545e5ba83414f28d37dc565a91c3c50b2";
-        pull = "missing";
-        secrets = [
-          "${secrets."geolite".env},target=GEOLITE_LICENSE_KEY"
-          "${secrets."shlink".env},target=INITIAL_API_KEY"
-        ];
-        environments = {
-          DEFAULT_DOMAIN = "trev.rs";
-          IS_HTTPS_ENABLED = "true";
+    secrets = {
+      ${cfg.geoliteSecret.ref}.file = toString cfg.geoliteSecret.file;
+      ${cfg.apiSecret.ref}.file = toString cfg.apiSecret.file;
+    };
 
-          DB_DRIVER = "postgres";
-          DB_NAME = postgresql."shlink".database;
-          DB_USER = postgresql."shlink".username;
-          DB_PASSWORD = postgresql."shlink".password;
-          DB_HOST = postgresql."shlink".ref;
-        };
-        networks = [
-          networks."shlink".ref
-        ];
-        publishPorts = [
-          "8080"
-        ];
-        labels = toLabel {
-          attrs.traefik = {
-            enable = true;
-            http.routers.shlink = {
-              rule = "Host(`trev.rs`)";
+    virtualisation.quadlet = {
+      containers.shlink = {
+        containerConfig = {
+          image = cfg.image;
+          pull = "missing";
+          secrets = [
+            "${cfg.geoliteSecret.env},target=GEOLITE_LICENSE_KEY"
+            "${cfg.apiSecret.env},target=INITIAL_API_KEY"
+          ]
+          ++ optional (database.passwordSecret != null) "${database.passwordSecret.env},target=DB_PASSWORD";
+          environments = {
+            DEFAULT_DOMAIN = cfg.domain;
+            IS_HTTPS_ENABLED = "true";
+
+            DB_DRIVER = "postgres";
+            DB_NAME = database.database;
+            DB_USER = database.username;
+            DB_HOST = database.ref;
+          };
+          networks = [
+            networks.shlink.ref
+          ];
+          publishPorts = [ "8080" ];
+          labels = toLabel {
+            attrs.traefik = {
+              enable = true;
+              http.routers.shlink.rule = "Host(`${cfg.domain}`)";
             };
           };
         };
+
+        unitConfig = {
+          After = databaseContainer.ref;
+          BindsTo = databaseContainer.ref;
+        };
       };
 
-      unitConfig = {
-        After = containers."postgresql-shlink".ref;
-        BindsTo = containers."postgresql-shlink".ref;
-      };
-    };
-
-    networks = {
-      shlink = { };
+      networks.shlink = { };
     };
   };
 }

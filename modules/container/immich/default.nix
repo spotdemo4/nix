@@ -1,79 +1,156 @@
 {
   config,
+  lib,
   self,
   ...
 }:
 let
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    optional
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.immich;
+  database = lib.attrByPath [ "trev" "containers" "immich-postgresql" ] {
+    enable = false;
+    containerName = "postgresql-immich";
+    username = "";
+    passwordSecret = null;
+    database = "";
+  } config;
+  valkeyConfig = lib.attrByPath [ "trev" "containers" "valkey" ] {
+    enable = false;
+    instances = { };
+  } config;
+  valkey = lib.attrByPath [ "instances" "immich" ] {
+    enable = false;
+    ref = "valkey-immich";
+  } valkeyConfig;
   inherit (config.virtualisation.quadlet) containers networks volumes;
-  inherit (config) valkey;
-  toLabel = import (self + /modules/util/label);
+  databaseContainer = lib.attrByPath [ database.containerName ] {
+    ref = database.containerName;
+  } containers;
+  toLabel = import (self + /lib/label);
 in
 {
-  imports = [
-    (self + /modules/container/valkey)
-    ./postgres.nix
-  ];
+  options.trev.containers.immich = {
+    enable = mkEnableOption "Immich container";
+    image = containerOptions.mkImageOption "ghcr.io/imagegenius/immich:3.0.1@sha256:3f9d989c8ca54bff9104cb6a2e9b17df5982233a207b7abda2bb777bb9a4a29e";
 
-  valkey."immich" = {
-    networks = [
-      networks."immich".ref
-    ];
+    photosPath = mkOption {
+      type = types.str;
+      default = "/mnt/photos";
+      description = "Host path containing the photo library.";
+    };
+
+    domain = mkOption {
+      type = types.str;
+      default = "photos.trev.zip";
+      description = "Domain routed to Immich.";
+    };
+
+    devices = mkOption {
+      type = types.listOf types.str;
+      default = [
+        "/dev/dri/card0:/dev/dri/card0"
+        "/dev/dri/renderD128:/dev/dri/renderD128"
+      ];
+      description = "Host devices passed through to Immich.";
+    };
+
+    userId = mkOption {
+      type = types.int;
+      default = 1000;
+      description = "UID used by Immich.";
+    };
+
+    groupId = mkOption {
+      type = types.int;
+      default = 1000;
+      description = "GID used by Immich.";
+    };
+
+    timeZone = mkOption {
+      type = types.str;
+      default = "America/Detroit";
+      description = "Timezone used by Immich.";
+    };
+
+    port = mkOption {
+      type = types.port;
+      default = 8080;
+      description = "Immich HTTP port to publish.";
+    };
   };
 
-  virtualisation.quadlet = {
-    containers.immich = {
-      containerConfig = {
-        image = "ghcr.io/imagegenius/immich:3.0.1@sha256:3f9d989c8ca54bff9104cb6a2e9b17df5982233a207b7abda2bb777bb9a4a29e";
-        pull = "missing";
-        devices = [
-          "/dev/dri/card0:/dev/dri/card0"
-          "/dev/dri/renderD128:/dev/dri/renderD128"
-        ];
-        environments = {
-          PUID = "1000";
-          PGID = "1000";
-          TZ = "America/Detroit";
+  config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = database.enable;
+        message = "trev.containers.immich requires trev.containers.immich-postgresql.enable = true";
+      }
+      {
+        assertion = database.passwordSecret != null;
+        message = "trev.containers.immich requires trev.containers.immich-postgresql.passwordSecret to reference a Podman secret";
+      }
+      {
+        assertion = valkeyConfig.enable && valkey.enable;
+        message = "trev.containers.immich requires trev.containers.valkey.enable = true and trev.containers.valkey.instances.immich.enable = true";
+      }
+    ];
 
-          DB_HOSTNAME = containers."postgresql-immich".ref;
-          DB_USERNAME = "postgres";
-          DB_PASSWORD = "postgres";
-          DB_DATABASE_NAME = "immich";
+    virtualisation.quadlet = {
+      containers.immich = {
+        containerConfig = {
+          image = cfg.image;
+          pull = "missing";
+          devices = cfg.devices;
+          environments = {
+            PUID = toString cfg.userId;
+            PGID = toString cfg.groupId;
+            TZ = cfg.timeZone;
 
-          REDIS_HOSTNAME = valkey."immich".ref;
-        };
-        volumes = [
-          "${volumes."immich".ref}:/config"
-          "/mnt/photos:/photos"
-        ];
-        publishPorts = [
-          "8080"
-        ];
-        networks = [
-          networks."immich".ref
-        ];
-        labels = toLabel {
-          attrs.traefik = {
-            enable = true;
-            http.routers.immich = {
-              rule = "Host(`photos.trev.zip`)";
-              middlewares = "secure@file";
+            DB_HOSTNAME = databaseContainer.ref;
+            DB_USERNAME = database.username;
+            DB_DATABASE_NAME = database.database;
+
+            REDIS_HOSTNAME = valkey.ref;
+          };
+          secrets = optional (
+            database.passwordSecret != null
+          ) "${database.passwordSecret.env},target=DB_PASSWORD";
+          volumes = [
+            "${volumes.immich.ref}:/config"
+            "${cfg.photosPath}:/photos"
+          ];
+          publishPorts = [
+            (toString cfg.port)
+          ];
+          networks = [
+            networks.immich.ref
+          ];
+          labels = toLabel {
+            attrs.traefik = {
+              enable = true;
+              http.routers.immich = {
+                rule = "Host(`${cfg.domain}`)";
+                middlewares = "secure@file";
+              };
             };
           };
         };
+
+        unitConfig = {
+          After = databaseContainer.ref;
+          BindsTo = databaseContainer.ref;
+        };
       };
 
-      unitConfig = {
-        After = containers."postgresql-immich".ref;
-        BindsTo = containers."postgresql-immich".ref;
-      };
-    };
-
-    volumes = {
-      immich = { };
-    };
-
-    networks = {
-      immich = { };
+      volumes.immich = { };
+      networks.immich = { };
     };
   };
 }

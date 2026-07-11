@@ -1,82 +1,86 @@
-{ ... }:
+{ config, lib, ... }:
 {
-  programs.ssh = {
-    enable = true;
-    enableDefaultConfig = false;
-    settings = {
-      "gateway" = {
-        HostName = "trev.xyz";
-        User = "trev";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-      };
-      "bench" = {
-        HostName = "10.10.10.110";
-        User = "trev";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        ProxyJump = "gateway";
-      };
-      "build" = {
-        HostName = "10.10.10.108";
-        User = "trev";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        ProxyJump = "gateway";
-      };
-      "dev" = {
-        HostName = "10.10.10.115";
-        User = "trev";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        ProxyJump = "gateway";
-      };
-      "etc" = {
-        HostName = "10.10.10.114";
-        User = "trev";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        ProxyJump = "gateway";
-      };
-      "files" = {
-        HostName = "10.10.10.113";
-        User = "trev";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        ProxyJump = "gateway";
-      };
-      "game" = {
-        HostName = "10.10.10.111";
-        User = "trev";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        ProxyJump = "gateway";
-      };
-      "mail" = {
-        HostName = "10.10.10.112";
-        User = "trev";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        ProxyJump = "gateway";
-      };
-      "media" = {
-        HostName = "10.10.10.107";
-        User = "trev";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        ProxyJump = "gateway";
-      };
-      "monitor" = {
-        HostName = "10.10.10.109";
-        User = "trev";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        ProxyJump = "gateway";
-      };
-      "debian" = {
-        HostName = "10.10.10.106";
-        User = "root";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        ProxyJump = "gateway";
-      };
-      "nixaws" = {
-        HostName = "localhost";
-        Port = 2222;
-        User = "root";
-        IdentityFile = "/home/trev/.ssh/id_ed25519";
-        StrictHostKeyChecking = "no";
-        UserKnownHostsFile = "/dev/null";
-        CheckHostIP = "no";
+  options.trev.programs.ssh.enable = lib.mkEnableOption "Trev's SSH configuration";
+
+  config = lib.mkIf config.trev.programs.ssh.enable {
+    programs.ssh = {
+      enable = true;
+      enableDefaultConfig = false;
+      settings = {
+        "gateway" = {
+          HostName = "trev.xyz";
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+        };
+        "bench" = {
+          HostName = "10.10.10.110";
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          ProxyJump = "gateway";
+        };
+        "build" = {
+          HostName = "10.10.10.108";
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          ProxyJump = "gateway";
+        };
+        "dev" = {
+          HostName = "10.10.10.115";
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          ProxyJump = "gateway";
+        };
+        "etc" = {
+          HostName = "10.10.10.114";
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          ProxyJump = "gateway";
+        };
+        "files" = {
+          HostName = "10.10.10.113";
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          ProxyJump = "gateway";
+        };
+        "game" = {
+          HostName = "10.10.10.111";
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          ProxyJump = "gateway";
+        };
+        "mail" = {
+          HostName = "10.10.10.112";
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          ProxyJump = "gateway";
+        };
+        "media" = {
+          HostName = "10.10.10.107";
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          ProxyJump = "gateway";
+        };
+        "monitor" = {
+          HostName = "10.10.10.109";
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          ProxyJump = "gateway";
+        };
+        "debian" = {
+          HostName = "10.10.10.106";
+          User = "root";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          ProxyJump = "gateway";
+        };
+        "nixaws" = {
+          HostName = "localhost";
+          Port = 2222;
+          User = "root";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+          StrictHostKeyChecking = "no";
+          UserKnownHostsFile = "/dev/null";
+          CheckHostIP = "no";
+        };
       };
     };
   };

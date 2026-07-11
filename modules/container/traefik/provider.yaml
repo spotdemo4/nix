@@ -31,7 +31,7 @@ http:
           defaultDecisionSeconds: 60
           crowdsecMode: stream
           crowdsecLapiKeyFile: /secrets/crowdsec/lapi_key
-          crowdsecLapiHost: 10.10.10.114:6061
+          crowdsecLapiHost: "@crowdsecAddress@"
           crowdsecLapiScheme: http
           crowdsecLapiTLSInsecureVerify: false
           captchaProvider: turnstile
@@ -53,12 +53,12 @@ http:
     auth-trev:
       basicAuth:
         removeHeader: true
-        usersFile: "@user-trev@"
+        usersFile: "@userTrev@"
 
     auth-admin:
       basicAuth:
         removeHeader: true
-        usersFile: "@user-admin@"
+        usersFile: "@userAdmin@"
 
     secure:
       chain:

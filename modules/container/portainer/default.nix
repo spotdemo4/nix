@@ -1,53 +1,99 @@
 {
   config,
+  lib,
   self,
   ...
 }:
 let
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.portainer;
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /modules/util/label);
+  toLabel = import (self + /lib/label);
 in
 {
-  virtualisation.quadlet = {
-    containers.portainer = {
-      containerConfig = {
-        image = "docker.io/portainer/portainer-ce:2.43.0@sha256:707366c811956fe077135a6633af67e698529612869711cdb24896c892b28feb";
-        pull = "missing";
-        volumes = [
-          "/run/podman/podman.sock:/var/run/docker.sock"
-          "${volumes.portainer.ref}:/data"
-        ];
-        networks = [
-          networks."traefik".ref
-        ];
-        labels = toLabel {
-          attrs = {
-            traefik = {
-              enable = true;
-              http = {
-                routers.portainer = {
-                  rule = "HostRegexp(`portainer.trev.(zip|kiwi)`)";
-                  middlewares = "secure-trev@file";
-                };
-                services.portainer.loadbalancer.server = {
-                  scheme = "http";
-                  port = 9000;
+  options.trev.containers.portainer = {
+    enable = mkEnableOption "the Portainer container";
+
+    image = containerOptions.mkImageOption "docker.io/portainer/portainer-ce:2.43.0@sha256:707366c811956fe077135a6633af67e698529612869711cdb24896c892b28feb";
+
+    podmanSocket = mkOption {
+      type = types.str;
+      default = "/run/podman/podman.sock";
+      description = "Host Podman socket exposed to Portainer.";
+    };
+
+    routerRule = mkOption {
+      type = types.str;
+      default = "HostRegexp(`portainer.trev.(zip|kiwi)`)";
+      description = "Traefik routing rule for Portainer.";
+    };
+
+    servicePort = mkOption {
+      type = types.port;
+      default = 9000;
+      description = "Internal Portainer HTTP port routed by Traefik.";
+    };
+
+    volumeName = mkOption {
+      type = types.str;
+      default = "portainer";
+      description = "Quadlet volume containing Portainer data.";
+    };
+
+    networkName = mkOption {
+      type = types.str;
+      default = "traefik";
+      description = "Quadlet network shared with Traefik.";
+    };
+  };
+
+  config = mkIf cfg.enable {
+    virtualisation.quadlet = {
+      containers.portainer = {
+        containerConfig = {
+          image = cfg.image;
+          pull = "missing";
+          volumes = [
+            "${cfg.podmanSocket}:/var/run/docker.sock"
+            "${volumes.${cfg.volumeName}.ref}:/data"
+          ];
+          networks = [
+            networks.${cfg.networkName}.ref
+          ];
+          labels = toLabel {
+            attrs = {
+              traefik = {
+                enable = true;
+                http = {
+                  routers.portainer = {
+                    rule = cfg.routerRule;
+                    middlewares = "secure-trev@file";
+                  };
+                  services.portainer.loadbalancer.server = {
+                    scheme = "http";
+                    port = cfg.servicePort;
+                  };
                 };
               };
             };
           };
         };
+
+        unitConfig = {
+          After = "podman.socket";
+          BindsTo = "podman.socket";
+          ReloadPropagatedFrom = "podman.socket";
+        };
       };
 
-      unitConfig = {
-        After = "podman.socket";
-        BindsTo = "podman.socket";
-        ReloadPropagatedFrom = "podman.socket";
-      };
-    };
-
-    volumes = {
-      portainer = { };
+      volumes.${cfg.volumeName} = { };
+      networks.${cfg.networkName} = { };
     };
   };
 }

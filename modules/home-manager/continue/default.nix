@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   self,
   ...
@@ -46,8 +47,12 @@ let
   };
 in
 {
-  age.secrets."continue".file = self + /secrets/continue.age;
-  age.secrets."continue".path = config.home.homeDirectory + "/.continue/.env";
+  options.trev.programs.continue.enable = lib.mkEnableOption "Trev's Continue configuration";
 
-  home.file.".continue/assistants/config.yaml".source = configFile;
+  config = lib.mkIf config.trev.programs.continue.enable {
+    age.secrets."continue".file = self + /secrets/continue.age;
+    age.secrets."continue".path = config.home.homeDirectory + "/.continue/.env";
+
+    home.file.".continue/assistants/config.yaml".source = configFile;
+  };
 }

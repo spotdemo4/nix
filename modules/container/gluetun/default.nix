@@ -1,75 +1,89 @@
 {
   lib,
   config,
-  self,
   ...
 }:
-with lib;
 let
+  inherit (lib)
+    filterAttrs
+    mapAttrs'
+    mkEnableOption
+    mkIf
+    mkOption
+    nameValuePair
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.gluetun;
+  enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
   inherit (config.virtualisation.quadlet) volumes;
 in
 {
-  options.gluetun = mkOption {
-    default = { };
-    description = "Gluetun container configurations";
+  options.trev.containers.gluetun = {
+    enable = mkEnableOption "Gluetun container instances";
 
-    type = types.attrsOf (
-      types.submodule (
-        { name, ... }:
-        {
-          options = {
-            ports = mkOption {
-              type = types.listOf types.str;
-              default = [ "8080:8080" ];
-              description = ''
-                The ports to publish from the container
-              '';
-            };
+    instances = mkOption {
+      default = { };
+      description = "Gluetun container instances.";
+      type = types.attrsOf (
+        types.submodule (
+          { name, ... }:
+          {
+            options = {
+              enable = mkEnableOption "the ${name} Gluetun container";
 
-            environments = mkOption {
-              type = types.attrs;
-              example = {
-                VPN_SERVICE_PROVIDER = "protonvpn";
-                VPN_TYPE = "wireguard";
-                SERVER_CITIES = "Chicago,Toronto";
-                PORT_FORWARD_ONLY = "on";
-                VPN_PORT_FORWARDING = "on";
+              image = containerOptions.mkImageOption "docker.io/qmcgaw/gluetun:latest@sha256:b0ee2135e6ba52ad3f102aae9663707cd1c9531485117067a380d3b2b6dd991d";
+
+              ports = mkOption {
+                type = types.listOf types.str;
+                default = [ "8080:8080" ];
+                description = "Ports to publish from the container.";
+              };
+
+              environments = mkOption {
+                type = types.attrsOf types.str;
+                description = "Environment variables passed to Gluetun.";
+                example = {
+                  VPN_SERVICE_PROVIDER = "protonvpn";
+                  VPN_TYPE = "wireguard";
+                  SERVER_CITIES = "Chicago,Toronto";
+                  PORT_FORWARD_ONLY = "on";
+                  VPN_PORT_FORWARDING = "on";
+                };
+              };
+
+              networks = containerOptions.networks;
+
+              secret = mkOption {
+                type = containerOptions.secretReferenceType;
+                description = "Podman secret reference containing the WireGuard private key.";
+              };
+
+              volumeName = mkOption {
+                type = types.str;
+                default = "gluetun-${name}";
+                description = "Name of the generated shared state volume.";
+              };
+
+              ref = mkOption {
+                type = types.str;
+                default = "gluetun-${name}";
+                description = "Reference name for the Gluetun container.";
               };
             };
-
-            networks = mkOption {
-              type = types.listOf types.str;
-              default = [ ];
-              description = ''
-                Additional networks to connect the container to
-              '';
-            };
-
-            secret = mkOption {
-              type = types.submodule (import (self + /modules/util/secrets/secret.nix));
-              description = ''
-                Wireguard private key secret
-              '';
-            };
-
-            ref = mkOption {
-              type = types.str;
-              description = "Reference name for the mysql container";
-              default = "gluetun-${name}";
-            };
-          };
-        }
-      )
-    );
+          }
+        )
+      );
+    };
   };
 
-  config = mkIf (config.gluetun != { }) {
+  config = mkIf (cfg.enable && enabledInstances != { }) {
     virtualisation.quadlet = {
       containers = mapAttrs' (
-        name: opts:
-        nameValuePair "gluetun-${name}" {
+        _: instance:
+        nameValuePair instance.ref {
           containerConfig = {
-            image = "docker.io/qmcgaw/gluetun:latest@sha256:b0ee2135e6ba52ad3f102aae9663707cd1c9531485117067a380d3b2b6dd991d";
+            image = instance.image;
             pull = "missing";
             devices = [
               "/dev/net/tun:/dev/net/tun"
@@ -78,21 +92,21 @@ in
               "NET_ADMIN"
             ];
             volumes = [
-              "${volumes."gluetun-${name}".ref}:/tmp/gluetun"
+              "${volumes.${instance.volumeName}.ref}:/tmp/gluetun"
             ];
             healthCmd = "/gluetun-entrypoint healthcheck";
             notify = "healthy";
             secrets = [
-              "${opts.secret.env},target=WIREGUARD_PRIVATE_KEY"
+              "${instance.secret.env},target=WIREGUARD_PRIVATE_KEY"
             ];
-            networks = opts.networks;
-            environments = opts.environments;
-            publishPorts = opts.ports;
+            networks = instance.networks;
+            environments = instance.environments;
+            publishPorts = instance.ports;
           };
         }
-      ) config.gluetun;
+      ) enabledInstances;
 
-      volumes = mapAttrs' (name: _: nameValuePair "gluetun-${name}" { }) config.gluetun;
+      volumes = mapAttrs' (_: instance: nameValuePair instance.volumeName { }) enabledInstances;
     };
   };
 }

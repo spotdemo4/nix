@@ -1,6 +1,0 @@
-{ ... }:
-{
-  services.clickhouse = {
-    enable = true;
-  };
-}

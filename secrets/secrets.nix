@@ -17,6 +17,7 @@ in
   "openrouter.age".publicKeys = keys.local ++ [ keys.etc ];
   "protonvpn-cobalt.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink.age".publicKeys = keys.local ++ [ keys.etc ];
+  "shlink-postgresql.age".publicKeys = keys.local ++ [ keys.etc ];
 
   # file server
   "copyparty.age".publicKeys = keys.local ++ [ keys.files ];
@@ -25,6 +26,9 @@ in
   "garage-nix-key.age".publicKeys = keys.local ++ [ keys.files ];
   "garage-nix-secret.age".publicKeys = keys.local ++ [ keys.files ];
   "garage-rpc.age".publicKeys = keys.local ++ [ keys.files ];
+  "immich-postgresql.age".publicKeys = keys.local ++ [ keys.files ];
+  "niks3-database-url.age".publicKeys = keys.local ++ [ keys.files ];
+  "niks3-postgresql.age".publicKeys = keys.local ++ [ keys.files ];
   "niks3-signing-key.age".publicKeys = keys.local ++ [ keys.files ];
   "rsyncd.age".publicKeys = keys.local ++ [ keys.files ];
 

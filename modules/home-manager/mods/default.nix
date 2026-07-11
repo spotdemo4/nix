@@ -1,14 +1,19 @@
 {
   config,
+  lib,
   self,
   pkgs,
   ...
 }:
 {
-  age.secrets."mods".file = self + /secrets/mods.age;
-  age.secrets."mods".path = config.home.homeDirectory + "/.config/mods/mods.yml";
+  options.trev.programs.mods.enable = lib.mkEnableOption "Trev's mods configuration";
 
-  home.packages = with pkgs; [
-    mods
-  ];
+  config = lib.mkIf config.trev.programs.mods.enable {
+    age.secrets."mods".file = self + /secrets/mods.age;
+    age.secrets."mods".path = config.home.homeDirectory + "/.config/mods/mods.yml";
+
+    home.packages = with pkgs; [
+      mods
+    ];
+  };
 }

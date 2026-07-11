@@ -1,20 +1,38 @@
 {
+  lib,
   self,
   config,
   ...
 }:
 let
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    mkOption
+    types
+    ;
+  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  cfg = config.trev.containers.minecraft;
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = import (self + /modules/util/label);
+  toLabel = import (self + /lib/label);
 in
 {
-  secrets."curseforge".file = self + /secrets/curseforge.age;
+  options.trev.containers.minecraft = {
+    enable = mkEnableOption "the Minecraft container";
+    image = containerOptions.mkImageOption "docker.io/itzg/minecraft-server:latest@sha256:26eb3058a7c113a100c954e1ef34e6a68229bea502d4457db94eaf46ed14dc93";
 
-  virtualisation.quadlet = {
-    containers.minecraft.containerConfig = {
-      image = "docker.io/itzg/minecraft-server:latest@sha256:26eb3058a7c113a100c954e1ef34e6a68229bea502d4457db94eaf46ed14dc93";
-      pull = "missing";
-      environments = {
+    curseforgeSecret = mkOption {
+      type = containerOptions.secretReferenceType;
+      default = {
+        ref = "curseforge";
+        file = self + /secrets/curseforge.age;
+      };
+      description = "CurseForge API key secret.";
+    };
+
+    environments = mkOption {
+      type = types.attrsOf types.str;
+      default = {
         EULA = "TRUE";
         TYPE = "AUTO_CURSEFORGE";
         CF_PAGE_URL = "https://www.curseforge.com/minecraft/modpacks/all-the-mods-10";
@@ -22,28 +40,49 @@ in
         ALLOW_FLIGHT = "true";
         MOTD = "chicken jockey";
       };
-      secrets = [
-        "${config.secrets."curseforge".env},target=CF_API_KEY"
-      ];
-      volumes = [
-        "${volumes.allthemods10_2.ref}:/data"
-      ];
-      publishPorts = [
-        "25565"
-      ];
-      labels = toLabel {
-        attrs.traefik = {
-          enable = true;
-          tcp.routers.minecraft = {
-            rule = "HostSNI(`*`)";
-            entryPoints = "minecraft";
+      description = "Environment variables passed to the Minecraft server.";
+    };
+
+    publishPorts = mkOption {
+      type = types.listOf types.str;
+      default = [ "25565" ];
+      description = "Ports to publish from Minecraft.";
+    };
+
+    volumeName = mkOption {
+      type = types.str;
+      default = "allthemods10_2";
+      description = "Name of the persistent Minecraft data volume.";
+    };
+  };
+
+  config = mkIf cfg.enable {
+    secrets.${cfg.curseforgeSecret.ref}.file = toString cfg.curseforgeSecret.file;
+
+    virtualisation.quadlet = {
+      containers.minecraft.containerConfig = {
+        image = cfg.image;
+        pull = "missing";
+        environments = cfg.environments;
+        secrets = [
+          "${cfg.curseforgeSecret.env},target=CF_API_KEY"
+        ];
+        volumes = [
+          "${volumes.${cfg.volumeName}.ref}:/data"
+        ];
+        publishPorts = cfg.publishPorts;
+        labels = toLabel {
+          attrs.traefik = {
+            enable = true;
+            tcp.routers.minecraft = {
+              rule = "HostSNI(`*`)";
+              entryPoints = "minecraft";
+            };
           };
         };
       };
-    };
 
-    volumes = {
-      allthemods10_2 = { };
+      volumes.${cfg.volumeName} = { };
     };
   };
 }

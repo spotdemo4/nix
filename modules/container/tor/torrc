@@ -1,16 +1,16 @@
-Nickname trevrelay
-ContactInfo tor AT trev DOT kiwi
+Nickname @nickname@
+ContactInfo @contactInfo@
 DataDirectory /var/lib/tor
 SocksPort 0
 
 # relay
-ORPort 9090
-RelayBandwidthRate 20 MBytes
+ORPort @orPort@
+RelayBandwidthRate @bandwidthRate@
 
 # no exits allowed
 ExitRelay 0
 ExitPolicy reject *:*
 
 # metrics
-MetricsPort 0.0.0.0:9091
-MetricsPortPolicy accept 10.10.10.109
+MetricsPort 0.0.0.0:@metricsPort@
+MetricsPortPolicy accept @metricsAllowedIP@
