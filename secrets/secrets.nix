@@ -61,6 +61,7 @@ in
   "niks3.age".publicKeys = keys.local ++ [
     keys.files
     keys.build
+    keys.dev
   ];
 
   # development machines
