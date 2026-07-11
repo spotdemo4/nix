@@ -34,7 +34,7 @@
     {
       "host": "dev",
       "nickname": "dev",
-      "projects": [{ "paths": ["~/dev"] }]
+      "projects": [{ "paths": ["~/dev/nix", "~/dev/TrevRPC"] }]
     }
   ],
   "edit_predictions": {
