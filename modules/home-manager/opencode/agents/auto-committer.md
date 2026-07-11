@@ -17,7 +17,7 @@ permission:
     "git ls-files*": allow
     "git write-tree*": allow
     "git add*": allow
-    "git apply*": allow
+    "git apply --cached*": allow
     "git reset*": allow
     "git -c core.hooksPath=/dev/null commit*": allow
     "git add -A*": deny

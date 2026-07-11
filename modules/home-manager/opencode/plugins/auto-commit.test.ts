@@ -5,6 +5,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
+  default as autoCommitPlugin,
   captureSnapshot,
   isConventionalSubject,
   prepareTemporaryWorktree,
@@ -13,6 +14,7 @@ import {
   replayPreparedCommits,
   snapshotIsCurrent,
   validatePreparedCommits,
+  validatePreparedWorktree,
 } from "./auto-commit";
 
 const directories: string[] = [];
@@ -31,6 +33,90 @@ async function createRepository() {
   git(root, "add", "tracked.txt");
   git(root, "commit", "-m", "chore: initialize repository");
   return root;
+}
+
+async function waitFor(predicate: () => boolean, timeoutMs = 5000) {
+  const deadline = Date.now() + timeoutMs;
+  while (!predicate()) {
+    if (Date.now() >= deadline) throw new Error("timed out waiting for plugin worker");
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+}
+
+async function createLifecycleHarness() {
+  const root = await createRepository();
+  await writeFile(join(root, "tracked.txt"), "after\n");
+  const toasts: Array<{ message: string; variant: string }> = [];
+  let aborts = 0;
+  let creates = 0;
+  let promptCalls = 0;
+  let releasePrompt: () => void = () => {};
+  const promptGate = new Promise<void>((resolve) => {
+    releasePrompt = resolve;
+  });
+
+  const client = {
+    app: {
+      log: async () => ({ data: true }),
+    },
+    tui: {
+      showToast: async ({ body }: { body: { message: string; variant: string } }) => {
+        toasts.push(body);
+        return { data: true };
+      },
+    },
+    session: {
+      get: async () => ({ data: { id: "parent", directory: root } }),
+      status: async () => ({ data: {} }),
+      messages: async () => ({ data: [], response: { headers: new Headers() } }),
+      create: async () => {
+        creates += 1;
+        return { data: { id: `child-${creates}` } };
+      },
+      prompt: async ({ query }: { query: { directory: string } }) => {
+        promptCalls += 1;
+        if (promptCalls === 1) await promptGate;
+        git(query.directory, "add", "tracked.txt");
+        git(
+          query.directory,
+          "-c",
+          "core.hooksPath=/dev/null",
+          "commit",
+          "-m",
+          "fix: update tracked content",
+        );
+        return { data: { info: {}, parts: [] } };
+      },
+      delete: async () => ({ data: true }),
+      abort: async () => {
+        aborts += 1;
+        releasePrompt();
+        return { data: true };
+      },
+    },
+  };
+  const hooks = await autoCommitPlugin({
+    client: client as never,
+    directory: root,
+    experimental_workspace: { register() {} },
+    project: {} as never,
+    serverUrl: new URL("http://localhost"),
+    worktree: root,
+    $: undefined as never,
+  });
+
+  return {
+    get aborts() {
+      return aborts;
+    },
+    get creates() {
+      return creates;
+    },
+    hooks,
+    releasePrompt,
+    root,
+    toasts,
+  };
 }
 
 afterEach(async () => {
@@ -180,6 +266,25 @@ describe("prepared commits", () => {
     await removeTemporaryWorktree(root, temporary);
     directories.splice(directories.indexOf(temporary), 1);
   });
+
+  test("rejects working file edits made by the commit agent", async () => {
+    const root = await createRepository();
+    await writeFile(join(root, "tracked.txt"), "captured\n");
+    const snapshot = await captureSnapshot(root);
+    const temporary = await prepareTemporaryWorktree(root, snapshot);
+    directories.push(temporary);
+
+    git(temporary, "add", "tracked.txt");
+    git(temporary, "commit", "-m", "fix: update tracked content");
+    await writeFile(join(temporary, "tracked.txt"), "agent edit\n");
+
+    await expect(validatePreparedWorktree(temporary, snapshot)).rejects.toThrow(
+      "modified the captured worktree",
+    );
+
+    await removeTemporaryWorktree(root, temporary);
+    directories.splice(directories.indexOf(temporary), 1);
+  });
 });
 
 test("skips sparse checkouts", async () => {
@@ -188,4 +293,59 @@ test("skips sparse checkouts", async () => {
   await writeFile(join(root, "tracked.txt"), "after\n");
 
   await expect(captureSnapshot(root)).rejects.toThrow("sparse checkouts are not supported");
+});
+
+test("backfills resumed work from duplicate direct idle events", async () => {
+  const harness = await createLifecycleHarness();
+  const { hooks, root, toasts } = harness;
+
+  await hooks["chat.message"]?.({ sessionID: "parent" });
+  await hooks.event?.({
+    event: { type: "session.idle", properties: { sessionID: "parent" } },
+  });
+  await waitFor(() => harness.creates === 1);
+  await hooks.event?.({
+    event: { type: "session.idle", properties: { sessionID: "parent" } },
+  });
+  harness.releasePrompt();
+
+  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
+  await new Promise((resolve) => setTimeout(resolve, 750));
+  expect(harness.creates).toBe(1);
+  expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
+  expect(toasts.map((toast) => toast.message)).toContain(
+    "Preparing automatic commits for resumed work...",
+  );
+  expect(toasts.some((toast) => toast.variant === "success")).toBe(true);
+
+  await hooks.dispose?.();
+});
+
+test("restarts a cancelled worker once after the session becomes idle", async () => {
+  const harness = await createLifecycleHarness();
+  const { hooks, toasts } = harness;
+
+  await hooks["chat.message"]?.({ sessionID: "parent" });
+  await hooks.event?.({
+    event: { type: "session.idle", properties: { sessionID: "parent" } },
+  });
+  await waitFor(() => harness.creates === 1);
+  await hooks.event?.({
+    event: {
+      type: "session.status",
+      properties: { sessionID: "parent", status: { type: "busy" } },
+    },
+  });
+  expect(harness.aborts).toBe(1);
+  await hooks.event?.({
+    event: { type: "session.idle", properties: { sessionID: "parent" } },
+  });
+
+  await waitFor(() => harness.creates === 2);
+  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
+  expect(harness.creates).toBe(2);
+  expect(toasts.filter((toast) => toast.variant === "success")).toHaveLength(1);
+  expect(toasts.filter((toast) => toast.variant === "warning")).toHaveLength(0);
+
+  await hooks.dispose?.();
 });

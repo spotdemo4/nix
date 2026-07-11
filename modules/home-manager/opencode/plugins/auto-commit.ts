@@ -68,7 +68,14 @@ type IntegrationTransaction = {
   originalHead: string;
 };
 
-export class AutoCommitSkipped extends Error {}
+export class AutoCommitSkipped extends Error {
+  constructor(
+    message: string,
+    readonly visible = true,
+  ) {
+    super(message);
+  }
+}
 
 function runGit(cwd: string, args: string[], options: GitOptions = {}): Promise<GitResult> {
   return new Promise((resolve, reject) => {
@@ -187,7 +194,7 @@ export async function captureSnapshot(root: string): Promise<RepositorySnapshot>
     acceptedExitCodes: [0, 128],
   });
   if (repository.code !== 0 || repository.stdout.trim() !== "true") {
-    throw new AutoCommitSkipped("the session is not inside a Git worktree");
+    throw new AutoCommitSkipped("the session is not inside a Git worktree", false);
   }
 
   const branchResult = await runGit(root, ["symbolic-ref", "-q", "HEAD"], {
@@ -209,7 +216,9 @@ export async function captureSnapshot(root: string): Promise<RepositorySnapshot>
   }
 
   const snapshotTree = await writeWorktreeTree(root, head);
-  if (snapshotTree === headTree) throw new AutoCommitSkipped("there are no changes to commit");
+  if (snapshotTree === headTree) {
+    throw new AutoCommitSkipped("there are no changes to commit", false);
+  }
 
   const identity = {
     GIT_AUTHOR_EMAIL: "auto-commit@opencode.local",
@@ -312,6 +321,12 @@ export async function validatePreparedCommits(
   return prepared;
 }
 
+export async function validatePreparedWorktree(directory: string, snapshot: RepositorySnapshot) {
+  if ((await writeWorktreeTree(directory, snapshot.head)) !== snapshot.snapshotTree) {
+    throw new Error("the auto-commit agent modified the captured worktree");
+  }
+}
+
 async function buildIndex(root: string, tree: string) {
   const indexDirectory = await mkdtemp(join(tmpdir(), "opencode-auto-commit-final-index-"));
   const index = join(indexDirectory, "index");
@@ -391,7 +406,9 @@ export async function replayPreparedCommits(
     throw new AutoCommitSkipped("the repository changed while commits were prepared");
   }
   if (commits.length === 0) return [];
-  if (!(await shouldContinue())) throw new AutoCommitSkipped("the parent session resumed");
+  if (!(await shouldContinue())) {
+    throw new AutoCommitSkipped("the parent session resumed", false);
+  }
 
   const finalCommit = commits.at(-1)!;
   const finalIndex = await buildIndex(root, finalCommit.tree);
@@ -438,7 +455,9 @@ export async function replayPreparedCommits(
     if (!(await snapshotIsCurrent(root, snapshot))) {
       throw new AutoCommitSkipped("the repository changed before integration");
     }
-    if (!(await shouldContinue())) throw new AutoCommitSkipped("the parent session resumed");
+    if (!(await shouldContinue())) {
+      throw new AutoCommitSkipped("the parent session resumed", false);
+    }
 
     await lockHandle.writeFile(finalIndex);
     await lockHandle.sync();
@@ -583,6 +602,7 @@ function renderedLength(messages: SessionMessage[]) {
 
 export default (async ({ client, directory, worktree }) => {
   const busySessions = new Set<string>();
+  const resumedSessions = new Set<string>();
   const timers = new Map<string, NodeJS.Timeout>();
   const workers = new Map<string, Worker>();
   let disposed = false;
@@ -641,6 +661,7 @@ export default (async ({ client, directory, worktree }) => {
   };
 
   const runWorker = async (sessionID: string, worker: Worker) => {
+    const resumed = resumedSessions.delete(sessionID);
     try {
       await recoverIntegration(worktree);
       const session = await client.session.get({ path: { id: sessionID } });
@@ -651,6 +672,13 @@ export default (async ({ client, directory, worktree }) => {
       if (secondTree !== first.snapshotTree || !(await sessionIsIdle(sessionID))) {
         throw new AutoCommitSkipped("the worktree or session changed during capture");
       }
+
+      await notify(
+        "info",
+        resumed
+          ? "Preparing automatic commits for resumed work..."
+          : "Preparing automatic commits...",
+      );
 
       const history = await loadHistory(sessionID);
       worker.temporaryWorktree = await prepareTemporaryWorktree(worktree, first);
@@ -684,12 +712,14 @@ export default (async ({ client, directory, worktree }) => {
       );
       if (!prompt.data) throw new Error("the auto-commit agent did not complete");
       if (worker.cancelled || disposed || !(await sessionIsIdle(sessionID))) {
-        throw new AutoCommitSkipped("the parent session resumed");
+        throw new AutoCommitSkipped("the parent session resumed", false);
       }
 
+      await validatePreparedWorktree(worker.temporaryWorktree, first);
       const commits = await validatePreparedCommits(worker.temporaryWorktree, first);
       if (commits.length === 0) {
         await log("info", `No attributable changes to commit for session ${sessionID}`);
+        await notify("warning", "No attributable changes were committed");
         return;
       }
 
@@ -708,6 +738,7 @@ export default (async ({ client, directory, worktree }) => {
       const message = error instanceof Error ? error.message : String(error);
       if (error instanceof AutoCommitSkipped) {
         await log("info", `Auto commit deferred for session ${sessionID}: ${message}`);
+        if (error.visible) await notify("warning", `Deferred: ${message}`);
       } else {
         await log("error", `Auto commit failed for session ${sessionID}: ${message}`);
         await notify("error", message);
@@ -735,6 +766,7 @@ export default (async ({ client, directory, worktree }) => {
   };
 
   const schedule = (sessionID: string) => {
+    if (workers.has(sessionID)) return;
     const existing = timers.get(sessionID);
     if (existing) clearTimeout(existing);
     timers.set(
@@ -743,10 +775,7 @@ export default (async ({ client, directory, worktree }) => {
         timers.delete(sessionID);
         if (disposed || busySessions.has(sessionID)) return;
         const existingWorker = workers.get(sessionID);
-        if (existingWorker) {
-          existingWorker.rerun = true;
-          return;
-        }
+        if (existingWorker) return;
         const worker: Worker = { cancelled: false, rerun: false };
         workers.set(sessionID, worker);
         worker.promise = runWorker(sessionID, worker).catch(async (error) => {
@@ -758,7 +787,17 @@ export default (async ({ client, directory, worktree }) => {
   };
 
   return {
+    "chat.message": async ({ sessionID }) => {
+      const status = await gitOutput(worktree, ["status", "--porcelain=v1"]).catch(() => "");
+      if (status) resumedSessions.add(sessionID);
+    },
     event: async ({ event }) => {
+      if (event.type === "session.idle") {
+        const { sessionID } = event.properties;
+        busySessions.delete(sessionID);
+        schedule(sessionID);
+        return;
+      }
       if (event.type !== "session.status") return;
       const { sessionID, status } = event.properties;
       if (status.type === "idle") {
@@ -774,6 +813,7 @@ export default (async ({ client, directory, worktree }) => {
       const worker = workers.get(sessionID);
       if (!worker) return;
       worker.cancelled = true;
+      worker.rerun = true;
       if (worker.child) {
         await withTimeout(
           client.session.abort({
