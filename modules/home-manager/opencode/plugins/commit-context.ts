@@ -113,10 +113,13 @@ export default (async ({ client }) => {
       let before: string | undefined;
 
       do {
-        const response = await client.session.messages({
-          sessionID: input.sessionID,
+        const query = {
           limit: MESSAGE_PAGE_SIZE,
-          before,
+          ...(before ? { before } : {}),
+        };
+        const response = await client.session.messages({
+          path: { id: input.sessionID },
+          query,
         });
         messages.unshift(...((response.data ?? []) as SessionMessage[]));
 
