@@ -1,5 +1,7 @@
 {
   inputs,
+  lib,
+  pkgs,
   self,
   ...
 }:
@@ -26,6 +28,10 @@
       top = "btop";
     };
   };
+
+  home.activation.importGpgPublicKey = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run ${pkgs.gnupg}/bin/gpg --batch --import ${self + /secrets/gpg-public.asc}
+  '';
 
   programs = {
     bat.enable = true;

@@ -189,6 +189,15 @@ in
       };
     };
 
+  system.activationScripts.gnupgHome = {
+    deps = [ "agenix" ];
+    text = ''
+      ${lib.getExe' pkgs.coreutils "install"} -d -m 0700 -o trev -g trev \
+        /home/trev/.gnupg \
+        /home/trev/.gnupg/private-keys-v1.d
+    '';
+  };
+
   home-manager = {
     useGlobalPkgs = true;
     extraSpecialArgs = {
