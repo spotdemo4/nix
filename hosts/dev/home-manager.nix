@@ -1,7 +1,5 @@
 {
   inputs,
-  lib,
-  pkgs,
   self,
   ...
 }:
@@ -10,6 +8,7 @@
     inputs.catppuccin.homeModules.catppuccin
     inputs.agenix.homeManagerModules.default
     (self + /modules/home-manager/codex)
+    (self + /modules/home-manager/gpg)
     (self + /modules/home-manager/mcp)
     (self + /modules/home-manager/opencode)
     (self + /modules/home-manager/ssh)
@@ -28,10 +27,6 @@
       top = "btop";
     };
   };
-
-  home.activation.importGpgPublicKey = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    run ${pkgs.gnupg}/bin/gpg --batch --import ${self + /secrets/gpg-public.asc}
-  '';
 
   programs = {
     bat.enable = true;
@@ -99,6 +94,7 @@
     };
     programs = {
       codex.enable = true;
+      gpg.enable = true;
       opencode.enable = true;
       ssh.enable = true;
     };

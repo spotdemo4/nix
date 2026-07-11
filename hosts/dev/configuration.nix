@@ -171,32 +171,12 @@ in
     };
   };
 
-  age.secrets =
-    lib.mapAttrs (_: file: {
-      inherit file;
-      owner = "trev";
-      group = "trev";
-      mode = "0400";
-    }) mcpSecretFiles
-    // {
-      gpg = {
-        file = self + /secrets/gpg.age;
-        path = "/home/trev/.gnupg/private-keys-v1.d/02F9D60E16452DC74C0FBFC2ECA9E20D1D75C89C.key";
-        owner = "trev";
-        group = "trev";
-        mode = "0600";
-        symlink = false;
-      };
-    };
-
-  system.activationScripts.gnupgHome = {
-    deps = [ "agenix" ];
-    text = ''
-      ${lib.getExe' pkgs.coreutils "install"} -d -m 0700 -o trev -g trev \
-        /home/trev/.gnupg \
-        /home/trev/.gnupg/private-keys-v1.d
-    '';
-  };
+  age.secrets = lib.mapAttrs (_: file: {
+    inherit file;
+    owner = "trev";
+    group = "trev";
+    mode = "0400";
+  }) mcpSecretFiles;
 
   home-manager = {
     useGlobalPkgs = true;
