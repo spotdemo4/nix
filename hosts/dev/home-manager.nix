@@ -96,7 +96,10 @@
       codex.enable = true;
       gpg.enable = true;
       opencode.enable = true;
-      ssh.enable = true;
+      ssh = {
+        enable = true;
+        proxyJump = null;
+      };
     };
   };
 
