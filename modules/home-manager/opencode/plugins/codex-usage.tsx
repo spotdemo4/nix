@@ -376,22 +376,23 @@ function remainingColor(remaining: number, theme: TuiThemeCurrent) {
   return theme.success;
 }
 
-function resetLabel(timestamp: number | null | undefined) {
+function resetLabel(timestamp: number | null | undefined, now: number) {
   if (!timestamp) return "reset unavailable";
-  const date = new Date(timestamp * 1_000);
-  if (Number.isNaN(date.getTime())) return "reset unavailable";
+  const remaining = Math.ceil(timestamp - now / 1_000);
+  if (!Number.isFinite(remaining)) return "reset unavailable";
 
-  return `resets ${new Intl.DateTimeFormat(undefined, {
-    weekday: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(date)}`;
+  const seconds = Math.max(0, remaining);
+  const hours = Math.floor(seconds / 3_600);
+  if (seconds > 86_400) return `resets in ${hours}h`;
+
+  const minutes = Math.floor((seconds % 3_600) / 60);
+  return `resets in ${hours}h ${minutes}m ${seconds % 60}s`;
 }
 
 function WindowView(props: {
   label: string;
   window: RateLimitWindow;
+  now: () => number;
   theme: () => TuiThemeCurrent;
 }) {
   const remaining = () => percentLeft(props.window.usedPercent);
@@ -408,7 +409,9 @@ function WindowView(props: {
           {remaining() === undefined ? "unavailable" : `${remaining()}% left`}
         </text>
       </box>
-      <text fg={props.theme().textMuted}>{resetLabel(props.window.resetsAt)}</text>
+      <text fg={props.theme().textMuted}>
+        {resetLabel(props.window.resetsAt, props.now())}
+      </text>
     </box>
   );
 }
@@ -416,6 +419,7 @@ function WindowView(props: {
 function SnapshotView(props: {
   snapshot: RateLimitSnapshot;
   showName: boolean;
+  now: () => number;
   theme: () => TuiThemeCurrent;
 }) {
   const spend = () => props.snapshot.individualLimit;
@@ -446,7 +450,12 @@ function SnapshotView(props: {
       </Show>
       <Show when={props.snapshot.primary}>
         {(window) => (
-          <WindowView label={durationLabel(window(), "5h")} window={window()} theme={props.theme} />
+          <WindowView
+            label={durationLabel(window(), "5h")}
+            window={window()}
+            now={props.now}
+            theme={props.theme}
+          />
         )}
       </Show>
       <Show when={props.snapshot.secondary}>
@@ -454,6 +463,7 @@ function SnapshotView(props: {
           <WindowView
             label={durationLabel(window(), "Weekly")}
             window={window()}
+            now={props.now}
             theme={props.theme}
           />
         )}
@@ -475,7 +485,9 @@ function SnapshotView(props: {
                 {spendRemaining() === undefined ? "unavailable" : `${spendRemaining()}% left`}
               </text>
             </box>
-            <text fg={props.theme().textMuted}>{resetLabel(limit().resetsAt)}</text>
+            <text fg={props.theme().textMuted}>
+              {resetLabel(limit().resetsAt, props.now())}
+            </text>
           </box>
         )}
       </Show>
@@ -485,14 +497,19 @@ function SnapshotView(props: {
 
 function View(props: { api: TuiPluginApi; client: CodexUsageClient }) {
   const [state, setState] = createSignal<RateLimitState>({ status: "loading" });
+  const [now, setNow] = createSignal(Date.now());
   const unsubscribe = props.client.subscribe(setState);
+  const countdownTimer = setInterval(() => setNow(Date.now()), 1_000);
   const theme = () => props.api.theme.current;
   const snapshots = () => state().data?.snapshots ?? [];
   const error = () => {
     const value = state();
     return value.status === "error" ? value.message : "Unknown error";
   };
-  onCleanup(unsubscribe);
+  onCleanup(() => {
+    unsubscribe();
+    clearInterval(countdownTimer);
+  });
 
   return (
     <box>
@@ -515,6 +532,7 @@ function View(props: { api: TuiPluginApi; client: CodexUsageClient }) {
               <SnapshotView
                 snapshot={snapshot}
                 showName={snapshots().length > 1 || snapshotName(snapshot) !== "Codex"}
+                now={now}
                 theme={theme}
               />
             )}
