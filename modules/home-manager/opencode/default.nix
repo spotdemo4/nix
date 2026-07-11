@@ -13,14 +13,14 @@
         }
       ]
     ];
-    commands.commit = ./commands/commit.md;
+    agents.auto-committer = ./agents/auto-committer.md;
     skills = {
       ssh-bench = ./skills/ssh-bench.md;
       ssh-build = ./skills/ssh-build.md;
     };
   };
 
-  xdg.configFile."opencode/plugins/commit-context.ts".source = ./plugins/commit-context.ts;
+  xdg.configFile."opencode/plugins/auto-commit.ts".source = ./plugins/auto-commit.ts;
   xdg.configFile."opencode/plugins/codex-usage.LICENSE".source = ./plugins/codex-usage.LICENSE;
   xdg.configFile."opencode/plugins/codex-usage.tsx".source = ./plugins/codex-usage.tsx;
   xdg.configFile."opencode/package.json" = {
