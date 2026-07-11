@@ -28,6 +28,10 @@
     force = true;
     source = ./package.json;
   };
+  xdg.configFile."opencode/bun.lock" = {
+    force = true;
+    source = ./bun.lock;
+  };
 
   catppuccin.opencode = {
     enable = true;

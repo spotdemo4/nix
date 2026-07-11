@@ -5,7 +5,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  default as autoCommitPlugin,
+  default as autoCommitModule,
   captureSnapshot,
   isConventionalSubject,
   prepareTemporaryWorktree,
@@ -111,7 +111,7 @@ async function createLifecycleHarness(options: { dirty?: boolean } = {}) {
       },
     },
   };
-  const hooks = await autoCommitPlugin({
+  const hooks = await autoCommitModule.server({
     client: client as never,
     directory: root,
     experimental_workspace: { register() {} },

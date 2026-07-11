@@ -1,4 +1,4 @@
-import type { Plugin } from "@opencode-ai/plugin";
+import type { Plugin, PluginModule } from "@opencode-ai/plugin";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdtemp, open, readFile, rename, rm, unlink } from "node:fs/promises";
@@ -602,7 +602,7 @@ function renderedLength(messages: SessionMessage[]) {
   return messages.reduce((length, message) => length + renderMessage(message).length + 2, 0);
 }
 
-export default (async ({ client, directory, worktree }) => {
+const autoCommitPlugin = (async ({ client, directory, worktree }) => {
   const busySessions = new Set<string>();
   const mutationGenerations = new Map<string, number>();
   const resumedSessions = new Set<string>();
@@ -921,3 +921,8 @@ export default (async ({ client, directory, worktree }) => {
     },
   };
 }) satisfies Plugin;
+
+export default {
+  id: "auto-commit",
+  server: autoCommitPlugin,
+} satisfies PluginModule;
