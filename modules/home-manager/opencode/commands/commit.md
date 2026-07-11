@@ -50,6 +50,6 @@ After generating the message:
 
 1. Use the question tool to show the complete proposed commit message and ask the user to choose `Accept` or `Reject`.
 2. If the user rejects it, do not create a commit or unstage the changes. Report that the commit was cancelled and stop.
-3. If the user accepts it, verify that the worktree and staged changes have not materially changed since the message was generated. If they changed, repeat the thread-scoped staging process, generate a new message, and ask for confirmation again.
+3. If the user accepts it, check whether there are new or modified changes attributable to this thread since the message was generated. Ignore unrelated changes made concurrently by the user or another agent. Only if related changes appeared, repeat the thread-scoped staging process for those changes, generate a new message, and ask for confirmation again.
 4. Commit the staged changes using the exact accepted message. Do not amend an existing commit, bypass hooks, or push.
 5. Report whether the commit succeeded. If it failed, include the relevant Git error and do not retry with hooks disabled.
