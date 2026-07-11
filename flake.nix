@@ -188,7 +188,14 @@
         checks = pkgs.mkChecks {
           format = {
             root = ./.;
-            filter = file: file.hasExt "json" || file.hasExt "yaml" || file.hasExt "toml" || file.hasExt "md";
+            filter =
+              file:
+              file.hasExt "json"
+              || file.hasExt "yaml"
+              || file.hasExt "toml"
+              || file.hasExt "md"
+              || file.hasExt "ts"
+              || file.hasExt "tsx";
             packages = with pkgs; [
               oxfmt
             ];
