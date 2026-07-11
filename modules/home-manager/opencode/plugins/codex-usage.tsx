@@ -392,6 +392,7 @@ function resetLabel(timestamp: number | null | undefined, now: number) {
 function WindowView(props: {
   label: string;
   window: RateLimitWindow;
+  gapAfter: boolean;
   now: () => number;
   theme: () => TuiThemeCurrent;
 }) {
@@ -402,7 +403,7 @@ function WindowView(props: {
   };
 
   return (
-    <box>
+    <box marginBottom={props.gapAfter ? 1 : 0}>
       <box flexDirection="row" justifyContent="space-between">
         <text fg={props.theme().textMuted}>{props.label}</text>
         <text fg={color()}>
@@ -451,6 +452,7 @@ function SnapshotView(props: {
           <WindowView
             label={durationLabel(window(), "5h")}
             window={window()}
+            gapAfter={Boolean(props.snapshot.secondary || creditBalance() || spend())}
             now={props.now}
             theme={props.theme}
           />
@@ -461,6 +463,7 @@ function SnapshotView(props: {
           <WindowView
             label={durationLabel(window(), "Weekly")}
             window={window()}
+            gapAfter={Boolean(creditBalance() || spend())}
             now={props.now}
             theme={props.theme}
           />
@@ -509,9 +512,6 @@ function View(props: { api: TuiPluginApi; client: CodexUsageClient }) {
 
   return (
     <box>
-      <text fg={theme().text}>
-        <b>Codex Usage</b>
-      </text>
       <Switch>
         <Match when={state().status === "loading" && !state().data}>
           <text fg={theme().textMuted}>Loading usage limits...</text>

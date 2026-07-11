@@ -142,6 +142,7 @@
           default = pkgs.mkShell {
             shellHook = pkgs.shellhook.ref;
             packages = with pkgs; [
+              bun
               podlet
               (pkgs.writeShellApplication {
                 name = "secret";
