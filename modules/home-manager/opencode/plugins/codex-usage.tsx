@@ -81,7 +81,8 @@ function errorMessage(error: unknown) {
 
 function refreshInterval(options: PluginOptions | undefined) {
   const value = options?.refreshMs;
-  if (typeof value !== "number" || !Number.isFinite(value)) return DEFAULT_REFRESH_MS;
+  if (typeof value !== "number" || !Number.isFinite(value))
+    return DEFAULT_REFRESH_MS;
   return Math.max(MIN_REFRESH_MS, Math.floor(value));
 }
 
@@ -103,7 +104,8 @@ function snapshotName(snapshot: RateLimitSnapshot) {
 
 function normalizeSnapshots(result: RateLimitResponse) {
   const snapshots = Object.values(result.rateLimitsByLimitId ?? {});
-  if (snapshots.length === 0 && result.rateLimits) snapshots.push(result.rateLimits);
+  if (snapshots.length === 0 && result.rateLimits)
+    snapshots.push(result.rateLimits);
 
   return snapshots.sort((left, right) => {
     const leftID = left.limitId?.toLowerCase() ?? "codex";
@@ -206,7 +208,8 @@ class CodexUsageClient {
     child.on("exit", (code, signal) => {
       if (this.child !== child || this.disposed) return;
       const detail =
-        this.stderr.trim() || `Codex app-server exited (${signal ?? code ?? "unknown"}).`;
+        this.stderr.trim() ||
+        `Codex app-server exited (${signal ?? code ?? "unknown"}).`;
       this.restart(new Error(detail));
     });
 
@@ -332,7 +335,10 @@ class CodexUsageClient {
 
   private setRequestTimeout(message: string) {
     this.clearRequestTimeout();
-    this.requestTimer = setTimeout(() => this.restart(new Error(message)), REQUEST_TIMEOUT_MS);
+    this.requestTimer = setTimeout(
+      () => this.restart(new Error(message)),
+      REQUEST_TIMEOUT_MS,
+    );
   }
 
   private clearRequestTimeout() {
@@ -355,7 +361,10 @@ class CodexUsageClient {
   }
 }
 
-function durationLabel(window: RateLimitWindow | null | undefined, fallback: string) {
+function durationLabel(
+  window: RateLimitWindow | null | undefined,
+  fallback: string,
+) {
   const minutes = window?.windowDurationMins;
   if (!minutes) return fallback;
   if (minutes === 10_080) return "Weekly";
@@ -398,7 +407,9 @@ function WindowView(props: {
   const remaining = () => percentLeft(props.window.usedPercent);
   const color = () => {
     const value = remaining();
-    return value === undefined ? props.theme().textMuted : remainingColor(value, props.theme());
+    return value === undefined
+      ? props.theme().textMuted
+      : remainingColor(value, props.theme());
   };
 
   return (
@@ -431,14 +442,18 @@ function SnapshotView(props: {
   };
   const spendColor = () => {
     const value = spendRemaining();
-    return value === undefined ? props.theme().textMuted : remainingColor(value, props.theme());
+    return value === undefined
+      ? props.theme().textMuted
+      : remainingColor(value, props.theme());
   };
   const creditBalance = () => {
     const credits = props.snapshot.credits;
     if (!credits?.hasCredits) return undefined;
     if (credits.unlimited) return "Unlimited";
     const value = Number(credits.balance);
-    return Number.isFinite(value) ? `${Math.round(value).toLocaleString()} credits` : undefined;
+    return Number.isFinite(value)
+      ? `${Math.round(value).toLocaleString()} credits`
+      : undefined;
   };
 
   return (
@@ -482,7 +497,9 @@ function SnapshotView(props: {
             <box flexDirection="row" justifyContent="space-between">
               <text fg={props.theme().textMuted}>Monthly credits</text>
               <text fg={spendColor()}>
-                {spendRemaining() === undefined ? "unavailable" : `${spendRemaining()}% left`}
+                {spendRemaining() === undefined
+                  ? "unavailable"
+                  : `${spendRemaining()}% left`}
               </text>
             </box>
             <text fg={props.theme().textMuted}>
@@ -531,7 +548,9 @@ function View(props: { api: TuiPluginApi; client: CodexUsageClient }) {
             {(snapshot) => (
               <SnapshotView
                 snapshot={snapshot}
-                showName={snapshots().length > 1 || snapshotName(snapshot) !== "Codex"}
+                showName={
+                  snapshots().length > 1 || snapshotName(snapshot) !== "Codex"
+                }
                 now={now}
                 theme={theme}
               />
@@ -548,7 +567,10 @@ function View(props: { api: TuiPluginApi; client: CodexUsageClient }) {
 
 const tui: TuiPlugin = async (api, rawOptions) => {
   const options = rawOptions as PluginOptions | undefined;
-  const client = new CodexUsageClient(options?.codexBinary ?? "codex", refreshInterval(options));
+  const client = new CodexUsageClient(
+    options?.codexBinary ?? "codex",
+    refreshInterval(options),
+  );
 
   api.lifecycle.onDispose(() => client.dispose());
   api.event.on("session.idle", () => client.refresh());
