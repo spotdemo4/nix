@@ -392,7 +392,6 @@ function resetLabel(timestamp: number | null | undefined, now: number) {
 function WindowView(props: {
   label: string;
   window: RateLimitWindow;
-  gapAfter: boolean;
   now: () => number;
   theme: () => TuiThemeCurrent;
 }) {
@@ -403,14 +402,16 @@ function WindowView(props: {
   };
 
   return (
-    <box marginBottom={props.gapAfter ? 1 : 0}>
+    <box>
       <box flexDirection="row" justifyContent="space-between">
         <text fg={props.theme().textMuted}>{props.label}</text>
         <text fg={color()}>
           {remaining() === undefined ? "unavailable" : `${remaining()}% left`}
         </text>
       </box>
-      <text fg={props.theme().textMuted}>{resetLabel(props.window.resetsAt, props.now())}</text>
+      <box flexDirection="row" justifyContent="flex-end">
+        <text fg={props.theme().textMuted}>{resetLabel(props.window.resetsAt, props.now())}</text>
+      </box>
     </box>
   );
 }
@@ -452,7 +453,6 @@ function SnapshotView(props: {
           <WindowView
             label={durationLabel(window(), "5h")}
             window={window()}
-            gapAfter={Boolean(props.snapshot.secondary || creditBalance() || spend())}
             now={props.now}
             theme={props.theme}
           />
@@ -463,7 +463,6 @@ function SnapshotView(props: {
           <WindowView
             label={durationLabel(window(), "Weekly")}
             window={window()}
-            gapAfter={Boolean(creditBalance() || spend())}
             now={props.now}
             theme={props.theme}
           />
@@ -486,7 +485,9 @@ function SnapshotView(props: {
                 {spendRemaining() === undefined ? "unavailable" : `${spendRemaining()}% left`}
               </text>
             </box>
-            <text fg={props.theme().textMuted}>{resetLabel(limit().resetsAt, props.now())}</text>
+            <box flexDirection="row" justifyContent="flex-end">
+              <text fg={props.theme().textMuted}>{resetLabel(limit().resetsAt, props.now())}</text>
+            </box>
           </box>
         )}
       </Show>
