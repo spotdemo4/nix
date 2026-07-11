@@ -128,7 +128,13 @@ in
         safe.directory = "/etc/nixos";
       };
     };
-    gnupg.agent.enable = true;
+    gnupg.agent = {
+      enable = true;
+      settings = {
+        default-cache-ttl = 60 * 60 * 24 * 365;
+        max-cache-ttl = 60 * 60 * 24 * 365;
+      };
+    };
     nix-ld.enable = true;
     zsh.enable = true;
   };
