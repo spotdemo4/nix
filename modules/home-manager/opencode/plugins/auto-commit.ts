@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdtemp, open, readFile, rename, rm, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { isAbsolute, join, resolve } from "node:path";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 
 const AGENT = "auto-committer";
 const GIT_TIMEOUT_MS = 120_000;
@@ -42,10 +42,17 @@ type GitResult = {
 
 export type RepositorySnapshot = {
   branch: string;
+  gitlinks: GitlinkChange[];
   head: string;
   headTree: string;
   snapshotCommit: string;
   snapshotTree: string;
+};
+
+export type GitlinkChange = {
+  newHash?: string;
+  oldHash?: string;
+  path: string;
 };
 
 export type PreparedCommit = {
@@ -54,12 +61,36 @@ export type PreparedCommit = {
   tree: string;
 };
 
+export type InitializedSubmodule = {
+  directory: string;
+  path: string;
+};
+
 type Worker = {
   cancelled: boolean;
   child?: { directory: string; id: string };
   promise?: Promise<void>;
   rerun: boolean;
-  temporaryWorktree?: string;
+  temporaryWorktree?: { directory: string; repository: string };
+};
+
+type CreatedCommit = {
+  hash: string;
+  repository: string;
+  subject: string;
+};
+
+type RepositoryTreeResult = {
+  attempted: number;
+  created: CreatedCommit[];
+  skipped: string[];
+};
+
+type RepositoryInspection = {
+  branch: string;
+  indexClean: boolean;
+  ownChanges: boolean;
+  sparseCheckout: boolean;
 };
 
 type IntegrationTransaction = {
@@ -177,7 +208,80 @@ async function indexIsClean(root: string) {
   return result.code === 0;
 }
 
-export async function writeWorktreeTree(root: string, head: string) {
+async function inspectRepository(root: string): Promise<RepositoryInspection> {
+  const head = await gitOutput(root, ["rev-parse", "HEAD"]);
+  const [headTree, branchResult, sparseCheckout, indexClean, worktreeTree] = await Promise.all([
+    gitOutput(root, ["rev-parse", `${head}^{tree}`]),
+    runGit(root, ["symbolic-ref", "-q", "HEAD"], { acceptedExitCodes: [0, 1] }),
+    runGit(root, ["config", "--bool", "core.sparseCheckout"], {
+      acceptedExitCodes: [0, 1],
+    }),
+    indexIsClean(root),
+    writeWorktreeTree(root, head),
+  ]);
+  return {
+    branch: branchResult.stdout.trim(),
+    indexClean,
+    ownChanges: worktreeTree !== headTree,
+    sparseCheckout: sparseCheckout.stdout.trim() === "true",
+  };
+}
+
+async function listTreeGitlinks(root: string, tree: string) {
+  const entries = (await runGit(root, ["ls-tree", "-r", "-z", tree])).stdout.split("\0");
+  const gitlinks = new Map<string, string>();
+  for (const entry of entries) {
+    if (!entry) continue;
+    const match = /^160000 commit ([0-9a-f]+)\t([\s\S]+)$/.exec(entry);
+    if (match) gitlinks.set(match[2], match[1]);
+  }
+  return gitlinks;
+}
+
+function gitPathHasControlCharacters(path: string) {
+  return /[\u0000-\u001f\u007f]/.test(path);
+}
+
+async function findGitlinkChanges(root: string, oldTree: string, newTree: string) {
+  const [oldGitlinks, newGitlinks] = await Promise.all([
+    listTreeGitlinks(root, oldTree),
+    listTreeGitlinks(root, newTree),
+  ]);
+  return [...new Set([...oldGitlinks.keys(), ...newGitlinks.keys()])]
+    .sort()
+    .flatMap((path): GitlinkChange[] => {
+      if (gitPathHasControlCharacters(path)) {
+        throw new AutoCommitSkipped("gitlink paths containing control characters are not supported");
+      }
+      const oldHash = oldGitlinks.get(path);
+      const newHash = newGitlinks.get(path);
+      return oldHash === newHash ? [] : [{ path, oldHash, newHash }];
+    });
+}
+
+async function applyGitlinkChanges(
+  root: string,
+  changes: GitlinkChange[],
+  env: NodeJS.ProcessEnv,
+) {
+  for (const change of changes) {
+    if (change.newHash) {
+      await runGit(
+        root,
+        ["update-index", "--add", "--cacheinfo", "160000", change.newHash, change.path],
+        { env },
+      );
+    } else {
+      await runGit(root, ["update-index", "--force-remove", "--", change.path], { env });
+    }
+  }
+}
+
+export async function writeWorktreeTree(
+  root: string,
+  head: string,
+  gitlinks: GitlinkChange[] = [],
+) {
   const indexDirectory = await mkdtemp(join(tmpdir(), "opencode-auto-commit-index-"));
   const index = join(indexDirectory, "index");
   const env = { GIT_INDEX_FILE: index };
@@ -185,6 +289,7 @@ export async function writeWorktreeTree(root: string, head: string) {
   try {
     await runGit(root, ["read-tree", head], { env });
     await runGit(root, ["add", "-A", "--"], { env });
+    await applyGitlinkChanges(root, gitlinks, env);
     return await gitOutput(root, ["write-tree"], { env });
   } finally {
     await rm(indexDirectory, { force: true, recursive: true });
@@ -198,12 +303,6 @@ export async function captureSnapshot(root: string): Promise<RepositorySnapshot>
   if (repository.code !== 0 || repository.stdout.trim() !== "true") {
     throw new AutoCommitSkipped("the session is not inside a Git worktree", false);
   }
-
-  const branchResult = await runGit(root, ["symbolic-ref", "-q", "HEAD"], {
-    acceptedExitCodes: [0, 1],
-  });
-  const branch = branchResult.stdout.trim();
-  if (!branch.startsWith("refs/heads/")) throw new AutoCommitSkipped("HEAD is detached");
 
   const head = await gitOutput(root, ["rev-parse", "HEAD"]);
   const headTree = await gitOutput(root, ["rev-parse", `${head}^{tree}`]);
@@ -222,6 +321,14 @@ export async function captureSnapshot(root: string): Promise<RepositorySnapshot>
     throw new AutoCommitSkipped("there are no changes to commit", false);
   }
 
+  const branchResult = await runGit(root, ["symbolic-ref", "-q", "HEAD"], {
+    acceptedExitCodes: [0, 1],
+  });
+  const branch = branchResult.stdout.trim();
+  if (!branch.startsWith("refs/heads/")) throw new AutoCommitSkipped("HEAD is detached");
+
+  const gitlinks = await findGitlinkChanges(root, headTree, snapshotTree);
+
   const identity = {
     GIT_AUTHOR_EMAIL: "auto-commit@opencode.local",
     GIT_AUTHOR_NAME: "OpenCode Auto Commit",
@@ -234,7 +341,7 @@ export async function captureSnapshot(root: string): Promise<RepositorySnapshot>
     { env: identity },
   );
 
-  return { branch, head, headTree, snapshotCommit, snapshotTree };
+  return { branch, gitlinks, head, headTree, snapshotCommit, snapshotTree };
 }
 
 export async function snapshotIsCurrent(root: string, snapshot: RepositorySnapshot) {
@@ -269,6 +376,57 @@ export async function removeTemporaryWorktree(root: string, directory: string) {
     await runGit(root, ["worktree", "prune"]);
     throw error;
   }
+}
+
+export async function listInitializedSubmodules(root: string): Promise<InitializedSubmodule[]> {
+  const entries = (await runGit(root, ["ls-files", "--stage", "-z"])).stdout.split("\0");
+  const submodules: InitializedSubmodule[] = [];
+
+  for (const entry of entries) {
+    const match = /^160000 [0-9a-f]+ 0\t([\s\S]+)$/.exec(entry);
+    if (!match) continue;
+    const path = match[1];
+    const directory = resolve(root, path);
+    const fromRoot = relative(root, directory);
+    if (fromRoot === ".." || fromRoot.startsWith(`..${sep}`) || isAbsolute(fromRoot)) continue;
+
+    const [topLevel, superproject] = await Promise.all([
+      runGit(root, ["-C", directory, "rev-parse", "--show-toplevel"], {
+        acceptedExitCodes: [0, 128],
+      }),
+      runGit(root, ["-C", directory, "rev-parse", "--show-superproject-working-tree"], {
+        acceptedExitCodes: [0, 128],
+      }),
+    ]);
+    if (topLevel.code !== 0 || superproject.code !== 0) continue;
+    const topLevelPath = topLevel.stdout.endsWith("\n")
+      ? topLevel.stdout.slice(0, -1)
+      : topLevel.stdout;
+    const superprojectPath = superproject.stdout.endsWith("\n")
+      ? superproject.stdout.slice(0, -1)
+      : superproject.stdout;
+    if (resolve(topLevelPath) !== directory || resolve(superprojectPath) !== resolve(root)) {
+      continue;
+    }
+    submodules.push({ directory, path });
+  }
+
+  return submodules;
+}
+
+export async function recoverIntegrationTree(
+  root: string,
+  visited = new Set<string>(),
+): Promise<boolean> {
+  const gitDirectory = await gitOutput(root, ["rev-parse", "--absolute-git-dir"]);
+  if (visited.has(gitDirectory)) return false;
+  visited.add(gitDirectory);
+
+  let recovered = false;
+  for (const submodule of await listInitializedSubmodules(root)) {
+    recovered = (await recoverIntegrationTree(submodule.directory, visited)) || recovered;
+  }
+  return (await recoverIntegration(root)) || recovered;
 }
 
 export function isConventionalSubject(subject: string) {
@@ -324,7 +482,7 @@ export async function validatePreparedCommits(
 }
 
 export async function validatePreparedWorktree(directory: string, snapshot: RepositorySnapshot) {
-  if ((await writeWorktreeTree(directory, snapshot.head)) !== snapshot.snapshotTree) {
+  if ((await writeWorktreeTree(directory, snapshot.head, snapshot.gitlinks)) !== snapshot.snapshotTree) {
     throw new Error("the auto-commit agent modified the captured worktree");
   }
 }
@@ -602,6 +760,27 @@ function renderedLength(messages: SessionMessage[]) {
   return messages.reduce((length, message) => length + renderMessage(message).length + 2, 0);
 }
 
+function shellQuote(value: string) {
+  return `'${value.replaceAll("'", `'"'"'`)}'`;
+}
+
+function renderSnapshotContext(snapshot: RepositorySnapshot) {
+  if (snapshot.gitlinks.length === 0) return "";
+  const changes = snapshot.gitlinks.map((change) => {
+    const path = shellQuote(change.path);
+    const description = `${JSON.stringify(change.path)}: ${change.oldHash ?? "absent"} -> ${change.newHash ?? "absent"}`;
+    const command = change.newHash
+      ? `git update-index --add --cacheinfo 160000 ${change.newHash} ${path}`
+      : `git update-index --force-remove -- ${path}`;
+    return `- ${description}\n  Stage with: ${command}`;
+  });
+  return [
+    "The captured snapshot contains gitlink changes that are not materialized in this linked worktree.",
+    `Inspect them with \`git diff HEAD ${snapshot.snapshotCommit} --\` and stage only attributable entries using the exact commands below.`,
+    ...changes,
+  ].join("\n");
+}
+
 const autoCommitPlugin = (async ({ client, directory, worktree }) => {
   const busySessions = new Set<string>();
   const mutationGenerations = new Map<string, number>();
@@ -627,7 +806,7 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
       .catch(() => undefined);
   };
 
-  await recoverIntegration(worktree)
+  await recoverIntegrationTree(worktree)
     .then(async (recovered) => {
       if (recovered) await log("warn", "Recovered an interrupted auto-commit integration");
     })
@@ -673,82 +852,239 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
     const mutationGeneration = mutationGenerations.get(sessionID);
     const resumed = resumedSessions.delete(sessionID);
     let retryPending = false;
-    try {
-      const session = await client.session.get({ path: { id: sessionID } });
-      if (!session.data || session.data.parentID || worker.cancelled || disposed) return;
-      await recoverIntegration(worktree);
+    let history: Promise<string> | undefined;
+    let preparationNotified = false;
 
-      const first = await captureSnapshot(worktree);
-      const secondTree = await writeWorktreeTree(worktree, first.head);
-      if (secondTree !== first.snapshotTree || !(await sessionIsIdle(sessionID))) {
+    const shouldContinue = async () =>
+      !worker.cancelled && !disposed && (await sessionIsIdle(sessionID));
+
+    const mergeResult = (target: RepositoryTreeResult, source: RepositoryTreeResult) => {
+      target.attempted += source.attempted;
+      target.created.push(...source.created);
+      target.skipped.push(...source.skipped);
+    };
+
+    type RepositoryNode = {
+      children: RepositoryNode[];
+      issue?: string;
+      name: string;
+      needsProcessing: boolean;
+      repository: string;
+    };
+
+    const inspectRepositoryTree = async (
+      repository: string,
+      name: string,
+    ): Promise<RepositoryNode> => {
+      const [inspection, submodules] = await Promise.all([
+        inspectRepository(repository),
+        listInitializedSubmodules(repository),
+      ]);
+      const children: RepositoryNode[] = [];
+      for (const submodule of submodules) {
+        if (gitPathHasControlCharacters(submodule.path)) {
+          throw new AutoCommitSkipped(
+            "submodule paths containing control characters are not supported",
+          );
+        }
+        children.push(
+          await inspectRepositoryTree(
+            submodule.directory,
+            relative(worktree, submodule.directory) || submodule.path,
+          ),
+        );
+      }
+
+      const needsProcessing =
+        inspection.ownChanges || children.some((child) => child.needsProcessing);
+      let issue: string | undefined;
+      if (needsProcessing && inspection.sparseCheckout) {
+        issue = "sparse checkouts are not supported";
+      } else if (needsProcessing && !inspection.indexClean) {
+        issue = "the Git index contains staged changes";
+      } else if (needsProcessing && !inspection.branch.startsWith("refs/heads/")) {
+        issue = "HEAD is detached; check out a branch before committing";
+      }
+      return { children, issue, name, needsProcessing, repository };
+    };
+
+    const processRepositoryTree = async (
+      node: RepositoryNode,
+      root: boolean,
+    ): Promise<RepositoryTreeResult> => {
+      const { children, issue, name: repositoryName, repository } = node;
+      const result: RepositoryTreeResult = { attempted: 0, created: [], skipped: [] };
+      if (!(await shouldContinue())) {
+        throw new AutoCommitSkipped("the parent session resumed", false);
+      }
+
+      if (issue) {
+        if (root) throw new AutoCommitSkipped(issue);
+        result.skipped.push(`${repositoryName}: ${issue}`);
+        await log("warn", `Skipped recursive auto commit in ${repositoryName}: ${issue}`);
+        return result;
+      }
+      if (!node.needsProcessing) return result;
+
+      for (const child of children) {
+        mergeResult(result, await processRepositoryTree(child, false));
+      }
+
+      if (!(await shouldContinue())) {
+        throw new AutoCommitSkipped("the parent session resumed", false);
+      }
+
+      let snapshot: RepositorySnapshot;
+      try {
+        snapshot = await captureSnapshot(repository);
+      } catch (error) {
+        if (error instanceof AutoCommitSkipped && error.message === "there are no changes to commit") {
+          return result;
+        }
+        if (error instanceof AutoCommitSkipped && !root) {
+          const detail = error.message;
+          result.skipped.push(`${repositoryName}: ${detail}`);
+          await log("warn", `Skipped recursive auto commit in ${repositoryName}: ${detail}`);
+          return result;
+        }
+        throw error;
+      }
+
+      const secondTree = await writeWorktreeTree(repository, snapshot.head);
+      if (secondTree !== snapshot.snapshotTree || !(await shouldContinue())) {
         retryPending = true;
         throw new AutoCommitSkipped("the worktree or session changed during capture");
       }
+      result.attempted += 1;
+
+      if (!preparationNotified) {
+        preparationNotified = true;
+        await notify(
+          "info",
+          resumed
+            ? "Preparing automatic commits for resumed work..."
+            : "Preparing automatic commits...",
+        );
+      }
+      history ??= loadHistory(sessionID);
+
+      const temporary = await prepareTemporaryWorktree(repository, snapshot);
+      worker.temporaryWorktree = { directory: temporary, repository };
+      try {
+        const child = await client.session.create({
+          body: {
+            parentID: sessionID,
+            title: "Prepare automatic commits",
+          },
+          query: { directory: temporary },
+        });
+        if (!child.data) throw new Error("failed to create the auto-commit session");
+        worker.child = { directory: temporary, id: child.data.id };
+
+        const snapshotContext = renderSnapshotContext(snapshot);
+        const prompt = await withTimeout(
+          client.session.prompt({
+            body: {
+              agent: AGENT,
+              parts: [
+                {
+                  type: "text",
+                  text: [
+                    `Create atomic commits for repository ${JSON.stringify(repositoryName)} from the changes in the parent thread that are present in this detached worktree.`,
+                    "Do not ask questions. Leave ambiguous or unrelated changes uncommitted.",
+                    snapshotContext,
+                    await history,
+                  ]
+                    .filter(Boolean)
+                    .join("\n\n"),
+                },
+              ],
+            },
+            path: { id: child.data.id },
+            query: { directory: temporary },
+          }),
+          SESSION_TIMEOUT_MS,
+          "the auto-commit session",
+        );
+        if (!prompt.data) throw new Error("the auto-commit agent did not complete");
+        if (!(await shouldContinue())) {
+          throw new AutoCommitSkipped("the parent session resumed", false);
+        }
+
+        await validatePreparedWorktree(temporary, snapshot);
+        const commits = await validatePreparedCommits(temporary, snapshot);
+        if (commits.length === 0) {
+          await log(
+            "info",
+            `No attributable changes to commit in ${repositoryName} for session ${sessionID}`,
+          );
+          return result;
+        }
+
+        const created = await replayPreparedCommits(
+          repository,
+          snapshot,
+          commits,
+          shouldContinue,
+        );
+        result.created.push(
+          ...created.map(({ hash, subject }) => ({ hash, repository: repositoryName, subject })),
+        );
+        await log(
+          "info",
+          `Created ${created.length} automatic commit(s) in ${repositoryName} for session ${sessionID}`,
+        );
+        return result;
+      } finally {
+        const child = worker.child;
+        if (child?.directory === temporary) {
+          await withTimeout(
+            client.session.delete({
+              path: { id: child.id },
+              query: { directory: child.directory },
+            }),
+            SHUTDOWN_TIMEOUT_MS,
+            "deleting the auto-commit session",
+          ).catch(() => undefined);
+          worker.child = undefined;
+        }
+        await removeTemporaryWorktree(repository, temporary).catch(async (error) => {
+          const message = error instanceof Error ? error.message : String(error);
+          await log("warn", `Failed to clean temporary worktree for ${repositoryName}: ${message}`);
+        });
+        if (worker.temporaryWorktree?.directory === temporary) {
+          worker.temporaryWorktree = undefined;
+        }
+      }
+    };
+
+    try {
+      const session = await client.session.get({ path: { id: sessionID } });
+      if (!session.data || session.data.parentID || worker.cancelled || disposed) return;
+      await recoverIntegrationTree(worktree);
+
+      const repositoryTree = await inspectRepositoryTree(worktree, ".");
+      const result = await processRepositoryTree(repositoryTree, true);
       if (mutationGenerations.get(sessionID) === mutationGeneration) {
         mutationGenerations.delete(sessionID);
       }
 
-      await notify(
-        "info",
-        resumed
-          ? "Preparing automatic commits for resumed work..."
-          : "Preparing automatic commits...",
-      );
-
-      const history = await loadHistory(sessionID);
-      worker.temporaryWorktree = await prepareTemporaryWorktree(worktree, first);
-      const child = await client.session.create({
-        body: { parentID: sessionID, title: "Prepare automatic commits" },
-        query: { directory: worker.temporaryWorktree },
-      });
-      if (!child.data) throw new Error("failed to create the auto-commit session");
-      worker.child = { directory: worker.temporaryWorktree, id: child.data.id };
-
-      const prompt = await withTimeout(
-        client.session.prompt({
-          body: {
-            agent: AGENT,
-            parts: [
-              {
-                type: "text",
-                text: [
-                  "Create atomic commits for the changes from the parent thread that are present in this detached worktree.",
-                  "Do not ask questions. Leave ambiguous or unrelated changes uncommitted.",
-                  history,
-                ].join("\n\n"),
-              },
-            ],
-          },
-          path: { id: child.data.id },
-          query: { directory: worker.temporaryWorktree },
-        }),
-        SESSION_TIMEOUT_MS,
-        "the auto-commit session",
-      );
-      if (!prompt.data) throw new Error("the auto-commit agent did not complete");
-      if (worker.cancelled || disposed || !(await sessionIsIdle(sessionID))) {
-        throw new AutoCommitSkipped("the parent session resumed", false);
+      if (result.skipped.length > 0) {
+        await notify("warning", `Skipped:\n${result.skipped.join("\n")}`);
       }
-
-      await validatePreparedWorktree(worker.temporaryWorktree, first);
-      const commits = await validatePreparedCommits(worker.temporaryWorktree, first);
-      if (commits.length === 0) {
-        await log("info", `No attributable changes to commit for session ${sessionID}`);
+      if (result.created.length > 0) {
+        await notify(
+          "success",
+          result.created
+            .map(
+              ({ hash, repository, subject }) =>
+                `${repository}: ${hash.slice(0, 7)} ${subject}`,
+            )
+            .join("\n"),
+        );
+      } else if (result.attempted > 0) {
         await notify("warning", "No attributable changes were committed");
-        return;
       }
-
-      const created = await replayPreparedCommits(
-        worktree,
-        first,
-        commits,
-        async () => !worker.cancelled && !disposed && (await sessionIsIdle(sessionID)),
-      );
-      await notify(
-        "success",
-        created.map(({ hash, subject }) => `${hash.slice(0, 7)} ${subject}`).join("\n"),
-      );
-      await log("info", `Created ${created.length} automatic commit(s) for session ${sessionID}`);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       if (error instanceof AutoCommitSkipped) {
@@ -776,7 +1112,10 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
         ).catch(() => undefined);
       }
       if (worker.temporaryWorktree) {
-        await removeTemporaryWorktree(worktree, worker.temporaryWorktree).catch(async (error) => {
+        await removeTemporaryWorktree(
+          worker.temporaryWorktree.repository,
+          worker.temporaryWorktree.directory,
+        ).catch(async (error) => {
           const message = error instanceof Error ? error.message : String(error);
           await log("warn", `Failed to clean temporary worktree: ${message}`);
         });

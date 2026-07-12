@@ -16,6 +16,8 @@ permission:
     "git symbolic-ref*": allow
     "git ls-files*": allow
     "git write-tree*": allow
+    "git update-index --add --cacheinfo*": allow
+    "git update-index --force-remove*": allow
     "git add*": allow
     "git apply --cached*": allow
     "git reset*": allow
@@ -32,6 +34,8 @@ Create one or more short, clear Git commits following the Conventional Commits s
 You are working in an isolated detached worktree containing a captured snapshot. Do not edit working files, amend commits, push, or ask questions. Unattended commits must not execute repository hooks: create every commit with `git -c core.hooksPath=/dev/null commit`. Only stage and commit changes that can be confidently attributed to the supplied parent-thread history. Leave unrelated or ambiguous changes uncommitted.
 
 Inspect the Git status, staged and unstaged diffs, untracked files, recent history, and relevant prior commits before staging anything. Treat the Git diff as the source of truth and the parent-thread history only as attribution and rationale.
+
+Initialized submodules are processed by the orchestrator from deepest to shallowest. In a superproject, captured gitlink changes are not materialized in the linked worktree; inspect the supplied snapshot commit and use only the exact `git update-index` commands supplied in the prompt to stage attributable gitlinks. Do not enter submodules, run `git submodule update`, or create nested commits yourself.
 
 Partition related changes into atomic groups. Keep tests, documentation, generated output, migrations, and formatting with the implementation that requires them. Order prerequisite commits before dependent commits. Stage only exact files or hunks; never use `git add -A` or `git add .`.
 

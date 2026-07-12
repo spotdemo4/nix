@@ -8,6 +8,7 @@ import {
   default as autoCommitModule,
   captureSnapshot,
   isConventionalSubject,
+  listInitializedSubmodules,
   prepareTemporaryWorktree,
   recoverIntegration,
   removeTemporaryWorktree,
@@ -35,6 +36,25 @@ async function createRepository() {
   return root;
 }
 
+async function addSubmodule(root: string, path: string, name?: string) {
+  const source = await createRepository();
+  git(
+    root,
+    "-c",
+    "protocol.file.allow=always",
+    "submodule",
+    "add",
+    ...(name ? ["--name", name] : []),
+    source,
+    path,
+  );
+  const directory = join(root, path);
+  git(directory, "config", "user.name", "Test User");
+  git(directory, "config", "user.email", "test@example.com");
+  git(root, "commit", "-am", `chore: add ${path} submodule`);
+  return directory;
+}
+
 async function waitFor(predicate: () => boolean, timeoutMs = 5000) {
   const deadline = Date.now() + timeoutMs;
   while (!predicate()) {
@@ -43,8 +63,15 @@ async function waitFor(predicate: () => boolean, timeoutMs = 5000) {
   }
 }
 
-async function createLifecycleHarness(options: { dirty?: boolean; parentID?: string } = {}) {
-  const root = await createRepository();
+async function createLifecycleHarness(
+  options: {
+    dirty?: boolean;
+    parentID?: string;
+    prompt?: (directory: string, text: string) => Promise<void> | void;
+    root?: string;
+  } = {},
+) {
+  const root = options.root ?? (await createRepository());
   if (options.dirty !== false) await writeFile(join(root, "tracked.txt"), "after\n");
   const logs: Array<{ level: string; message: string }> = [];
   const toasts: Array<{ message: string; variant: string }> = [];
@@ -99,18 +126,22 @@ async function createLifecycleHarness(options: { dirty?: boolean; parentID?: str
         creates += 1;
         return { data: { id: `child-${creates}` } };
       },
-      prompt: async ({ query }: { query: { directory: string } }) => {
+      prompt: async ({ body, query }: { body: { parts: Array<{ text: string }> }; query: { directory: string } }) => {
         promptCalls += 1;
         if (promptCalls === 1) await promptGate;
-        git(query.directory, "add", "tracked.txt");
-        git(
-          query.directory,
-          "-c",
-          "core.hooksPath=/dev/null",
-          "commit",
-          "-m",
-          "fix: update tracked content",
-        );
+        if (options.prompt) {
+          await options.prompt(query.directory, body.parts.map((part) => part.text).join("\n"));
+        } else {
+          git(query.directory, "add", "tracked.txt");
+          git(
+            query.directory,
+            "-c",
+            "core.hooksPath=/dev/null",
+            "commit",
+            "-m",
+            "fix: update tracked content",
+          );
+        }
         return { data: { info: {}, parts: [] } };
       },
       delete: async () => ({ data: true }),
@@ -197,6 +228,184 @@ describe("repository snapshots", () => {
     expect(await snapshotIsCurrent(root, snapshot)).toBe(true);
     await writeFile(join(root, "tracked.txt"), "changed again\n");
     expect(await snapshotIsCurrent(root, snapshot)).toBe(false);
+  });
+});
+
+async function commitCapturedRepository(directory: string, text: string) {
+  const gitlinkCommands = [
+    ...text.matchAll(/git update-index --add --cacheinfo 160000 ([0-9a-f]+) '([^']+)'/g),
+  ];
+  if (gitlinkCommands.length > 0) {
+    for (const command of gitlinkCommands) {
+      git(directory, "update-index", "--add", "--cacheinfo", "160000", command[1], command[2]);
+    }
+    git(
+      directory,
+      "-c",
+      "core.hooksPath=/dev/null",
+      "commit",
+      "-m",
+      "chore: update submodule revision",
+    );
+    return;
+  }
+
+  git(directory, "add", "tracked.txt");
+  git(
+    directory,
+    "-c",
+    "core.hooksPath=/dev/null",
+    "commit",
+    "-m",
+    "fix: update tracked content",
+  );
+}
+
+async function triggerAutoCommit(
+  harness: Awaited<ReturnType<typeof createLifecycleHarness>>,
+) {
+  harness.releasePrompt();
+  await harness.hooks["tool.execute.after"]?.({
+    args: {},
+    callID: "call",
+    sessionID: "parent",
+    tool: "apply_patch",
+  });
+  await harness.hooks["experimental.text.complete"]?.({
+    messageID: "message",
+    partID: "part",
+    sessionID: "parent",
+  });
+}
+
+describe("recursive repositories", () => {
+  test("commits a dirty submodule before its parent gitlink", async () => {
+    const root = await createRepository();
+    const child = await addSubmodule(root, "modules/child");
+    await writeFile(join(child, "tracked.txt"), "after\n");
+    const childHead = git(child, "rev-parse", "HEAD");
+    const harness = await createLifecycleHarness({
+      dirty: false,
+      prompt: commitCapturedRepository,
+      root,
+    });
+
+    expect((await listInitializedSubmodules(root)).map(({ path }) => path)).toEqual([
+      "modules/child",
+    ]);
+    await triggerAutoCommit(harness);
+    await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 15_000);
+
+    expect(git(child, "rev-parse", "HEAD")).not.toBe(childHead);
+    expect(git(child, "show", "-s", "--format=%s", "HEAD")).toBe(
+      "fix: update tracked content",
+    );
+    expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe(
+      "chore: update submodule revision",
+    );
+    expect(git(root, "rev-parse", "HEAD:modules/child")).toBe(git(child, "rev-parse", "HEAD"));
+    expect(git(root, "status", "--porcelain=v1", "--ignore-submodules=none")).toBe("");
+    expect(harness.toasts.find((toast) => toast.variant === "success")?.message).toContain(
+      "modules/child:",
+    );
+    expect(harness.toasts.find((toast) => toast.variant === "success")?.message).toContain(".:");
+
+    await harness.hooks.dispose?.();
+  });
+
+  test("processes nested submodules from deepest to shallowest", async () => {
+    const root = await createRepository();
+    const child = await addSubmodule(root, "modules/child");
+    const grandchild = await addSubmodule(child, "nested/grandchild");
+    git(root, "add", "modules/child");
+    git(root, "commit", "-m", "chore: record nested submodule");
+    await writeFile(join(grandchild, "tracked.txt"), "after\n");
+    const harness = await createLifecycleHarness({
+      dirty: false,
+      prompt: commitCapturedRepository,
+      root,
+    });
+
+    await triggerAutoCommit(harness);
+    await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 20_000);
+
+    expect(harness.creates).toBe(3);
+    expect(git(child, "rev-parse", "HEAD:nested/grandchild")).toBe(
+      git(grandchild, "rev-parse", "HEAD"),
+    );
+    expect(git(root, "rev-parse", "HEAD:modules/child")).toBe(git(child, "rev-parse", "HEAD"));
+    expect(git(root, "status", "--porcelain=v1", "--ignore-submodules=none")).toBe("");
+    const success = harness.toasts.find((toast) => toast.variant === "success")?.message ?? "";
+    expect(success).toContain("modules/child/nested/grandchild:");
+    expect(success).toContain("modules/child:");
+    expect(success).toContain(".:");
+
+    await harness.hooks.dispose?.();
+  });
+
+  test("skips dirty detached submodules", async () => {
+    const root = await createRepository();
+    const child = await addSubmodule(root, "modules/child");
+    const childHead = git(child, "rev-parse", "HEAD");
+    git(child, "checkout", "--detach");
+    await writeFile(join(child, "tracked.txt"), "after\n");
+    const harness = await createLifecycleHarness({ dirty: false, root });
+
+    await triggerAutoCommit(harness);
+    await waitFor(
+      () => harness.toasts.some((toast) => toast.message.includes("HEAD is detached")),
+      15_000,
+    );
+
+    expect(harness.creates).toBe(0);
+    expect(git(child, "rev-parse", "HEAD")).toBe(childHead);
+    expect(git(child, "status", "--porcelain=v1")).toContain("M tracked.txt");
+    expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe(
+      "chore: add modules/child submodule",
+    );
+
+    await harness.hooks.dispose?.();
+  });
+
+  test("preflights ancestors before committing descendants", async () => {
+    const root = await createRepository();
+    const child = await addSubmodule(root, "modules/child");
+    const childHead = git(child, "rev-parse", "HEAD");
+    await writeFile(join(child, "tracked.txt"), "after\n");
+    await writeFile(join(root, "tracked.txt"), "staged\n");
+    git(root, "add", "tracked.txt");
+    const harness = await createLifecycleHarness({ dirty: false, root });
+
+    await triggerAutoCommit(harness);
+    await waitFor(
+      () => harness.toasts.some((toast) => toast.message.includes("staged changes")),
+      15_000,
+    );
+
+    expect(harness.creates).toBe(0);
+    expect(git(child, "rev-parse", "HEAD")).toBe(childHead);
+    expect(git(child, "status", "--porcelain=v1")).toContain("M tracked.txt");
+
+    await harness.hooks.dispose?.();
+  });
+
+  test("rejects control characters in submodule paths before processing", async () => {
+    const root = await createRepository();
+    const child = await addSubmodule(root, "modules/bad\nname", "bad-control-path");
+    const childHead = git(child, "rev-parse", "HEAD");
+    await writeFile(join(child, "tracked.txt"), "after\n");
+    const harness = await createLifecycleHarness({ dirty: false, root });
+
+    await triggerAutoCommit(harness);
+    await waitFor(
+      () => harness.toasts.some((toast) => toast.message.includes("control characters")),
+      15_000,
+    );
+
+    expect(harness.creates).toBe(0);
+    expect(git(child, "rev-parse", "HEAD")).toBe(childHead);
+
+    await harness.hooks.dispose?.();
   });
 });
 
