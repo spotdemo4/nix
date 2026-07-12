@@ -36,10 +36,22 @@
       };
     };
 
-    xdg.configFile."opencode/plugins/auto-commit".source = ./plugins/auto-commit;
-    xdg.configFile."opencode/plugins/codex-usage".source = ./plugins/codex-usage;
-    xdg.configFile."opencode/plugins/direnv".source = ./plugins/direnv;
-    xdg.configFile."opencode/plugins/git-status".source = ./plugins/git-status;
+    xdg.configFile."opencode/plugins/auto-commit" = {
+      source = ./plugins/auto-commit;
+      recursive = true;
+    };
+    xdg.configFile."opencode/plugins/codex-usage" = {
+      source = ./plugins/codex-usage;
+      recursive = true;
+    };
+    xdg.configFile."opencode/plugins/direnv" = {
+      source = ./plugins/direnv;
+      recursive = true;
+    };
+    xdg.configFile."opencode/plugins/git-status" = {
+      source = ./plugins/git-status;
+      recursive = true;
+    };
     xdg.configFile."opencode/package.json" = {
       force = true;
       source = ./package.json;
