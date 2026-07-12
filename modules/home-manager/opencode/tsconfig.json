@@ -11,5 +11,5 @@
     "target": "ES2023",
     "types": ["bun", "node"]
   },
-  "include": ["plugins/*.ts", "plugins/*.tsx"]
+  "include": ["plugins/**/*.ts", "plugins/**/*.tsx"]
 }

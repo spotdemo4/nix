@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   options.trev.programs.opencode.enable = lib.mkEnableOption "Trev's OpenCode configuration";
 
@@ -9,7 +14,14 @@
       settings = builtins.fromJSON (builtins.readFile ./config.json);
       tui.plugin = [
         [
-          "./plugins/codex-usage.tsx"
+          "./plugins/git-status/index.tsx"
+          {
+            gitBinary = lib.getExe pkgs.git;
+            fetchMs = 60000;
+          }
+        ]
+        [
+          "./plugins/codex-usage/index.tsx"
           {
             codexBinary = lib.getExe config.programs.codex.package;
             refreshMs = 30000;
@@ -24,9 +36,11 @@
       };
     };
 
-    xdg.configFile."opencode/plugins/auto-commit.ts".source = ./plugins/auto-commit.ts;
-    xdg.configFile."opencode/plugins/direnv.ts".source = ./plugins/direnv.ts;
-    xdg.configFile."opencode/plugins/codex-usage.tsx".source = ./plugins/codex-usage.tsx;
+    xdg.configFile."opencode/plugins/auto-commit/index.ts".source = ./plugins/auto-commit/index.ts;
+    xdg.configFile."opencode/plugins/direnv/index.ts".source = ./plugins/direnv/index.ts;
+    xdg.configFile."opencode/plugins/codex-usage/index.tsx".source = ./plugins/codex-usage/index.tsx;
+    xdg.configFile."opencode/plugins/git-status/core.ts".source = ./plugins/git-status/core.ts;
+    xdg.configFile."opencode/plugins/git-status/index.tsx".source = ./plugins/git-status/index.tsx;
     xdg.configFile."opencode/package.json" = {
       force = true;
       source = ./package.json;

@@ -16,7 +16,7 @@ import {
   snapshotIsCurrent,
   validatePreparedCommits,
   validatePreparedWorktree,
-} from "./auto-commit";
+} from "./index";
 
 const directories: string[] = [];
 
