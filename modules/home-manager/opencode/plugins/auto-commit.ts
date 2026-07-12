@@ -251,7 +251,9 @@ async function findGitlinkChanges(root: string, oldTree: string, newTree: string
     .sort()
     .flatMap((path): GitlinkChange[] => {
       if (gitPathHasControlCharacters(path)) {
-        throw new AutoCommitSkipped("gitlink paths containing control characters are not supported");
+        throw new AutoCommitSkipped(
+          "gitlink paths containing control characters are not supported",
+        );
       }
       const oldHash = oldGitlinks.get(path);
       const newHash = newGitlinks.get(path);
@@ -259,11 +261,7 @@ async function findGitlinkChanges(root: string, oldTree: string, newTree: string
     });
 }
 
-async function applyGitlinkChanges(
-  root: string,
-  changes: GitlinkChange[],
-  env: NodeJS.ProcessEnv,
-) {
+async function applyGitlinkChanges(root: string, changes: GitlinkChange[], env: NodeJS.ProcessEnv) {
   for (const change of changes) {
     if (change.newHash) {
       await runGit(
@@ -482,7 +480,9 @@ export async function validatePreparedCommits(
 }
 
 export async function validatePreparedWorktree(directory: string, snapshot: RepositorySnapshot) {
-  if ((await writeWorktreeTree(directory, snapshot.head, snapshot.gitlinks)) !== snapshot.snapshotTree) {
+  if (
+    (await writeWorktreeTree(directory, snapshot.head, snapshot.gitlinks)) !== snapshot.snapshotTree
+  ) {
     throw new Error("the auto-commit agent modified the captured worktree");
   }
 }
@@ -938,7 +938,10 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
       try {
         snapshot = await captureSnapshot(repository);
       } catch (error) {
-        if (error instanceof AutoCommitSkipped && error.message === "there are no changes to commit") {
+        if (
+          error instanceof AutoCommitSkipped &&
+          error.message === "there are no changes to commit"
+        ) {
           return result;
         }
         if (error instanceof AutoCommitSkipped && !root) {
@@ -1021,12 +1024,7 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
           return result;
         }
 
-        const created = await replayPreparedCommits(
-          repository,
-          snapshot,
-          commits,
-          shouldContinue,
-        );
+        const created = await replayPreparedCommits(repository, snapshot, commits, shouldContinue);
         result.created.push(
           ...created.map(({ hash, subject }) => ({ hash, repository: repositoryName, subject })),
         );
@@ -1076,10 +1074,7 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
         await notify(
           "success",
           result.created
-            .map(
-              ({ hash, repository, subject }) =>
-                `${repository}: ${hash.slice(0, 7)} ${subject}`,
-            )
+            .map(({ hash, repository, subject }) => `${repository}: ${hash.slice(0, 7)} ${subject}`)
             .join("\n"),
         );
       } else if (result.attempted > 0) {

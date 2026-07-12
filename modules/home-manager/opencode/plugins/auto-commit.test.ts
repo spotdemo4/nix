@@ -126,7 +126,13 @@ async function createLifecycleHarness(
         creates += 1;
         return { data: { id: `child-${creates}` } };
       },
-      prompt: async ({ body, query }: { body: { parts: Array<{ text: string }> }; query: { directory: string } }) => {
+      prompt: async ({
+        body,
+        query,
+      }: {
+        body: { parts: Array<{ text: string }> };
+        query: { directory: string };
+      }) => {
         promptCalls += 1;
         if (promptCalls === 1) await promptGate;
         if (options.prompt) {
@@ -251,19 +257,10 @@ async function commitCapturedRepository(directory: string, text: string) {
   }
 
   git(directory, "add", "tracked.txt");
-  git(
-    directory,
-    "-c",
-    "core.hooksPath=/dev/null",
-    "commit",
-    "-m",
-    "fix: update tracked content",
-  );
+  git(directory, "-c", "core.hooksPath=/dev/null", "commit", "-m", "fix: update tracked content");
 }
 
-async function triggerAutoCommit(
-  harness: Awaited<ReturnType<typeof createLifecycleHarness>>,
-) {
+async function triggerAutoCommit(harness: Awaited<ReturnType<typeof createLifecycleHarness>>) {
   harness.releasePrompt();
   await harness.hooks["tool.execute.after"]?.({
     args: {},
@@ -297,12 +294,8 @@ describe("recursive repositories", () => {
     await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 15_000);
 
     expect(git(child, "rev-parse", "HEAD")).not.toBe(childHead);
-    expect(git(child, "show", "-s", "--format=%s", "HEAD")).toBe(
-      "fix: update tracked content",
-    );
-    expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe(
-      "chore: update submodule revision",
-    );
+    expect(git(child, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
+    expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe("chore: update submodule revision");
     expect(git(root, "rev-parse", "HEAD:modules/child")).toBe(git(child, "rev-parse", "HEAD"));
     expect(git(root, "status", "--porcelain=v1", "--ignore-submodules=none")).toBe("");
     expect(harness.toasts.find((toast) => toast.variant === "success")?.message).toContain(
