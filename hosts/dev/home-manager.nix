@@ -1,8 +1,19 @@
 {
   inputs,
+  pkgs,
   self,
   ...
 }:
+let
+  tmuxSessionPicker = pkgs.writeShellApplication {
+    name = "tmux-session-picker";
+    runtimeInputs = [
+      pkgs.fzf
+      pkgs.tmux
+    ];
+    text = builtins.readFile ./tmux-session-picker.sh;
+  };
+in
 {
   imports = [
     inputs.catppuccin.homeModules.catppuccin
@@ -18,6 +29,7 @@
     username = "trev";
     homeDirectory = "/home/trev";
     stateVersion = "24.05";
+    packages = [ tmuxSessionPicker ];
     sessionVariables.NIX_PATH = "nixpkgs=${inputs.nixpkgs.outPath}";
     shellAliases = {
       cd = "z";
@@ -81,7 +93,7 @@
           fi
 
           if [[ -z "$TMUX" ]]; then
-            exec tmux new-session -A -s dev
+            "${tmuxSessionPicker}/bin/tmux-session-picker"
           fi
         fi
       '';
