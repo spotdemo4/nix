@@ -30,6 +30,9 @@
     "sort_mode": "files_first",
     "dock": "left"
   },
+  "git_panel": {
+    "dock": "left"
+  },
   "ssh_connections": [
     {
       "host": "dev",
