@@ -239,7 +239,11 @@ async function listTreeGitlinks(root: string, tree: string) {
 }
 
 function gitPathHasControlCharacters(path: string) {
-  return /[\u0000-\u001f\u007f]/.test(path);
+  for (let index = 0; index < path.length; index += 1) {
+    const codeUnit = path.charCodeAt(index);
+    if (codeUnit < 0x20 || codeUnit === 0x7f) return true;
+  }
+  return false;
 }
 
 async function findGitlinkChanges(root: string, oldTree: string, newTree: string) {
