@@ -63,6 +63,10 @@
       "groupName": "github actions"
     },
     {
+      "matchFileNames": ["modules/home-manager/opencode/package.json"],
+      "groupName": "opencode dependencies"
+    },
+    {
       "matchPackageNames": ["docker.io/stalwartlabs/stalwart"],
       "enabled": false
     }
