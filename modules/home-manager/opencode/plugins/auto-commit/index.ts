@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { mkdtemp, open, readFile, rename, rm, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
+import { AUTO_COMMIT_SESSION_TITLE } from "./constants";
 
 const AGENT = "auto-committer";
 const GIT_TIMEOUT_MS = 120_000;
@@ -981,7 +982,7 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
         const child = await client.session.create({
           body: {
             parentID: sessionID,
-            title: "Prepare automatic commits",
+            title: AUTO_COMMIT_SESSION_TITLE,
           },
           query: { directory: temporary },
         });
