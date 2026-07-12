@@ -36,11 +36,10 @@
       };
     };
 
-    xdg.configFile."opencode/plugins/auto-commit/index.ts".source = ./plugins/auto-commit/index.ts;
-    xdg.configFile."opencode/plugins/direnv/index.ts".source = ./plugins/direnv/index.ts;
-    xdg.configFile."opencode/plugins/codex-usage/index.tsx".source = ./plugins/codex-usage/index.tsx;
-    xdg.configFile."opencode/plugins/git-status/core.ts".source = ./plugins/git-status/core.ts;
-    xdg.configFile."opencode/plugins/git-status/index.tsx".source = ./plugins/git-status/index.tsx;
+    xdg.configFile."opencode/plugins/auto-commit".source = ./plugins/auto-commit;
+    xdg.configFile."opencode/plugins/codex-usage".source = ./plugins/codex-usage;
+    xdg.configFile."opencode/plugins/direnv".source = ./plugins/direnv;
+    xdg.configFile."opencode/plugins/git-status".source = ./plugins/git-status;
     xdg.configFile."opencode/package.json" = {
       force = true;
       source = ./package.json;
