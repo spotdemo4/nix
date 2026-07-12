@@ -55,6 +55,14 @@
         command_timeout = 3600000;
       };
     };
+    tmux = {
+      enable = true;
+      baseIndex = 1;
+      escapeTime = 0;
+      historyLimit = 100000;
+      mouse = true;
+      terminal = "tmux-256color";
+    };
     zoxide = {
       enable = true;
       enableZshIntegration = true;
@@ -70,6 +78,10 @@
           if ! gpg-connect-agent "KEYINFO 02F9D60E16452DC74C0FBFC2ECA9E20D1D75C89C" /bye 2>/dev/null \
             | grep -q '^S KEYINFO 02F9D60E16452DC74C0FBFC2ECA9E20D1D75C89C [^ ]* [^ ]* [^ ]* 1 '; then
             print -n | gpg --quiet --yes --local-user 3AAF87E0B1A2AC36 --detach-sign --output /dev/null
+          fi
+
+          if [[ -z "$TMUX" ]]; then
+            exec tmux new-session -A -s dev
           fi
         fi
       '';
