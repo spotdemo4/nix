@@ -101,6 +101,7 @@ hl.config({
         follow_mouse = 1,
     },
     group = {
+        auto_group = false,
         col = {
             border_active = {
                 colors = { "rgba(ff9900ee)", "rgba(ff1a00ee)" },
@@ -143,6 +144,7 @@ hl.bind(mod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mod .. " + G", hl.dsp.layout("swapwithmaster"))
 hl.bind(mod .. " + S", hl.dsp.exec_cmd(screenshot))
 hl.bind(mod .. " + T", hl.dsp.group.toggle())
+hl.bind(mod .. " + SHIFT + T", hl.dsp.group.lock_active())
 hl.bind(mod .. " + F", hl.dsp.window.fullscreen())
 
 for workspace = 1, 9 do
