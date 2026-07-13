@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   pkgs,
   self,
@@ -86,7 +87,8 @@ in
         set -g allow-passthrough on
         set -s extended-keys on
         set -s terminal-features[100] 'xterm*:extkeys'
-        bind-key -n -N "Search and run key bindings" C-S-p \
+        unbind-key -nq C-S-p
+        bind-key -n -N "Search and run key bindings (Ctrl-Shift-P)" C-F12 \
           set-environment -gF TMUX_COMMAND_PICKER_CLIENT "#{client_name}" \; \
           display-popup -E -w 80% -h 80% -T " tmux commands " \
           "${tmuxCommandPicker}/bin/tmux-command-picker" \; \
@@ -162,6 +164,13 @@ in
       };
     };
   };
+
+  xdg.configFile."tmux/tmux.conf".onChange = ''
+    export TMUX_TMPDIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+    if ${pkgs.tmux}/bin/tmux has-session 2>/dev/null; then
+      ${pkgs.tmux}/bin/tmux source-file "${config.xdg.configHome}/tmux/tmux.conf"
+    fi
+  '';
 
   # https://github.com/nix-community/home-manager/issues/7935
   manual.manpages.enable = false;

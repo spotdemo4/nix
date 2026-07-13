@@ -71,6 +71,7 @@
     home-manager.enable = true;
     kitty = {
       enable = true;
+      keybindings."--allow-fallback=shifted,ascii ctrl+shift+p" = "send_key ctrl+f12";
       shellIntegration.enableZshIntegration = true;
       settings.auto_reload_config = -1;
     };
