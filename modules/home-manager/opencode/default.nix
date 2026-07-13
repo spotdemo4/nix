@@ -28,9 +28,14 @@
             refreshMs = 30000;
           }
         ]
+        [
+          "./plugins/push/index.tsx"
+          {
+            gitBinary = lib.getExe pkgs.git;
+          }
+        ]
       ];
       agents.auto-committer = ./agents/auto-committer.md;
-      commands.push = ./commands/push.md;
       skills = {
         ssh-bench = ./skills/ssh-bench.md;
         ssh-build = ./skills/ssh-build.md;
@@ -51,6 +56,10 @@
     };
     xdg.configFile."opencode/plugins/git-status" = {
       source = ./plugins/git-status;
+      recursive = true;
+    };
+    xdg.configFile."opencode/plugins/push" = {
+      source = ./plugins/push;
       recursive = true;
     };
     xdg.configFile."opencode/package.json" = {

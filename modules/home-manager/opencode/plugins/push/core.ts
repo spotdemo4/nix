@@ -1,0 +1,203 @@
+import { spawn } from "node:child_process";
+
+const MAX_OUTPUT_BYTES = 1024 * 1024;
+const INSPECTION_TIMEOUT_MS = 10_000;
+const PUSH_TIMEOUT_MS = 120_000;
+
+export type GitResult = {
+  code: number | null;
+  error?: string;
+  stderr: string;
+  stdout: string;
+};
+
+export type GitRunner = (
+  cwd: string,
+  args: string[],
+  timeoutMs: number,
+  signal?: AbortSignal,
+) => Promise<GitResult>;
+
+export type PushOutcome =
+  | {
+      type: "pushed";
+      branch: string;
+      output: string;
+      upstream: string;
+    }
+  | {
+      type: "fallback";
+      reason: string;
+    };
+
+function output(result: GitResult) {
+  return [result.stdout.trim(), result.stderr.trim()].filter(Boolean).join("\n");
+}
+
+export function createGitRunner(binary = "git"): GitRunner {
+  return (cwd, args, timeoutMs, signal) =>
+    new Promise((resolve) => {
+      const child = spawn(binary, args, {
+        cwd,
+        detached: process.platform !== "win32",
+        env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+      const stdout: Buffer[] = [];
+      const stderr: Buffer[] = [];
+      let outputBytes = 0;
+      let problem: string | undefined;
+      let settled = false;
+      let killTimeout: NodeJS.Timeout | undefined;
+
+      const kill = (signal: NodeJS.Signals) => {
+        if (child.pid && process.platform !== "win32") {
+          try {
+            process.kill(-child.pid, signal);
+            return;
+          } catch {
+            // The process group may have exited before its direct child.
+          }
+        }
+        child.kill(signal);
+      };
+      const finish = (result: GitResult) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        if (killTimeout) clearTimeout(killTimeout);
+        signal?.removeEventListener("abort", abort);
+        resolve(result);
+      };
+      const collect = (chunks: Buffer[], chunk: Buffer) => {
+        outputBytes += chunk.length;
+        if (outputBytes > MAX_OUTPUT_BYTES) {
+          problem = "git output exceeded 1 MiB";
+          kill("SIGKILL");
+          return;
+        }
+        chunks.push(chunk);
+      };
+      const stop = (message: string) => {
+        if (settled) return;
+        problem = message;
+        kill("SIGTERM");
+        killTimeout = setTimeout(() => kill("SIGKILL"), 5000);
+      };
+      const abort = () => stop(`git ${args[0] ?? "command"} was cancelled`);
+      const timeout = setTimeout(
+        () => stop(`git ${args[0] ?? "command"} timed out after ${timeoutMs} ms`),
+        timeoutMs,
+      );
+
+      child.stdout.on("data", (chunk: Buffer) => collect(stdout, chunk));
+      child.stderr.on("data", (chunk: Buffer) => collect(stderr, chunk));
+      child.on("error", (error: NodeJS.ErrnoException) => {
+        finish({ code: null, error: error.message, stderr: "", stdout: "" });
+      });
+      child.on("close", (code) => {
+        finish({
+          code,
+          ...(problem ? { error: problem } : {}),
+          stderr: Buffer.concat(stderr).toString(),
+          stdout: Buffer.concat(stdout).toString(),
+        });
+      });
+      if (signal?.aborted) abort();
+      else signal?.addEventListener("abort", abort, { once: true });
+    });
+}
+
+export async function attemptPush(
+  cwd: string,
+  runGit: GitRunner,
+  signal?: AbortSignal,
+): Promise<PushOutcome> {
+  const branchResult = await runGit(
+    cwd,
+    ["symbolic-ref", "--quiet", "--short", "HEAD"],
+    INSPECTION_TIMEOUT_MS,
+    signal,
+  );
+  const branch = branchResult.code === 0 ? branchResult.stdout.trim() : undefined;
+  if (!branch) {
+    return { type: "fallback", reason: "the current branch could not be determined" };
+  }
+
+  const [status, upstreamResult, recentCommits] = await Promise.all([
+    runGit(cwd, ["status", "--short", "--branch"], INSPECTION_TIMEOUT_MS, signal),
+    runGit(
+      cwd,
+      [
+        "for-each-ref",
+        "--format=%(upstream:short)%00%(upstream:remotename)%00%(upstream:remoteref)",
+        "--",
+        `refs/heads/${branch}`,
+      ],
+      INSPECTION_TIMEOUT_MS,
+      signal,
+    ),
+    runGit(cwd, ["log", "--oneline", "-10"], INSPECTION_TIMEOUT_MS, signal),
+  ]);
+  const inspectionFailure = [status, recentCommits].find((result) => result.code !== 0);
+  if (inspectionFailure) {
+    return { type: "fallback", reason: "Git inspection failed" };
+  }
+
+  const [upstream, remote, remoteRef] = upstreamResult.stdout.trimEnd().split("\0");
+  if (
+    upstreamResult.code !== 0 ||
+    !upstream ||
+    !remote ||
+    remote === "." ||
+    !/^[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(remote) ||
+    !remoteRef?.startsWith("refs/heads/")
+  ) {
+    return { type: "fallback", reason: "the current branch has no supported configured upstream" };
+  }
+
+  const pushed = await runGit(
+    cwd,
+    [
+      "-c",
+      `remote.${remote}.mirror=false`,
+      "push",
+      "--no-force",
+      "--no-force-with-lease",
+      "--no-force-if-includes",
+      "--no-mirror",
+      "--no-follow-tags",
+      "--no-recurse-submodules",
+      "--porcelain",
+      "--",
+      remote,
+      `HEAD:${remoteRef}`,
+    ],
+    PUSH_TIMEOUT_MS,
+    signal,
+  );
+  if (pushed.code !== 0 || pushed.error) {
+    return { type: "fallback", reason: "the direct push failed" };
+  }
+
+  return { type: "pushed", branch, output: output(pushed), upstream };
+}
+
+export function renderFallbackPrompt(outcome: Extract<PushOutcome, { type: "fallback" }>) {
+  return `Push the current Git branch to its configured upstream.
+
+A direct, explicitly non-force push fast path stopped because ${outcome.reason}.
+
+1. Inspect the current branch, status, configured upstream, and recent commits again where needed.
+2. Resolve the current branch's configured upstream remote and \`refs/heads/...\` destination. If the fast-path failure warrants another push attempt, substitute those values into \`git -c remote.<remote>.mirror=false push --no-force --no-force-with-lease --no-force-if-includes --no-mirror --no-follow-tags --no-recurse-submodules -- <remote> HEAD:<upstream-ref>\`. Never use a bare \`git push\` or a plus-prefixed refspec.
+3. If the push was rejected because the remote branch has commits that are not local, fetch the upstream and rebase the current branch onto it. Do not merge.
+4. If the rebase has conflicts, inspect each conflict and the relevant surrounding changes, resolve it while preserving both sides' intent, stage the resolved files, and continue the rebase. Repeat until the rebase completes.
+5. Run relevant lightweight checks when conflict resolution changed files, then retry with the same explicit non-force remote, refspec, and disabled behaviors from step 2.
+
+Never use \`--force\`, \`--force-with-lease\`, destructive reset commands, or discard unrelated working-tree changes. Use \`--autostash\` when a rebase is blocked by pre-existing tracked changes. If the upstream is missing or checks fail after resolution, report the blocker instead of guessing or pushing broken changes. If a conflict cannot be resolved confidently, abort the rebase before reporting the blocker.`;
+}
+
+export const gitTimeouts = {
+  inspection: INSPECTION_TIMEOUT_MS,
+  push: PUSH_TIMEOUT_MS,
+};
