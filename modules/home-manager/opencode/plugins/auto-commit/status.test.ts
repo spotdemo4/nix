@@ -1,6 +1,29 @@
 import { expect, test } from "bun:test";
 import { AUTO_COMMIT_SESSION_TITLE } from "./constants";
-import { AutoCommitStatusClient } from "./status";
+import autoCommitStatusPlugin, { AutoCommitStatusClient } from "./status";
+
+test("registers in append-mode sidebar content rather than the single-winner footer", async () => {
+  const registrations: Array<{ slots: Record<string, unknown> }> = [];
+
+  await autoCommitStatusPlugin.tui(
+    {
+      event: { on: () => () => {} },
+      lifecycle: { onDispose: () => () => {} },
+      slots: {
+        register: (plugin: { slots: Record<string, unknown> }) => {
+          registrations.push(plugin);
+          return "auto-commit-status";
+        },
+      },
+    } as never,
+    undefined,
+    {} as never,
+  );
+
+  expect(registrations).toHaveLength(1);
+  expect(registrations[0]?.slots.sidebar_content).toBeFunction();
+  expect(registrations[0]?.slots.sidebar_footer).toBeUndefined();
+});
 
 test("tracks auto-commit generation for its parent session", () => {
   const client = new AutoCommitStatusClient();
