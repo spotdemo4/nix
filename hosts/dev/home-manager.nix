@@ -5,6 +5,14 @@
   ...
 }:
 let
+  tmuxCommandPicker = pkgs.writeShellApplication {
+    name = "tmux-command-picker";
+    runtimeInputs = [
+      pkgs.fzf
+      pkgs.tmux
+    ];
+    text = builtins.readFile ./tmux-command-picker.sh;
+  };
   tmuxSessionPicker = pkgs.writeShellApplication {
     name = "tmux-session-picker";
     runtimeInputs = [
@@ -29,7 +37,10 @@ in
     username = "trev";
     homeDirectory = "/home/trev";
     stateVersion = "24.05";
-    packages = [ tmuxSessionPicker ];
+    packages = [
+      tmuxCommandPicker
+      tmuxSessionPicker
+    ];
     sessionVariables.NIX_PATH = "nixpkgs=${inputs.nixpkgs.outPath}";
     shellAliases = {
       cd = "z";
@@ -71,7 +82,16 @@ in
       enable = true;
       baseIndex = 1;
       escapeTime = 0;
-      extraConfig = "set -g allow-passthrough on";
+      extraConfig = ''
+        set -g allow-passthrough on
+        set -s extended-keys on
+        set -s terminal-features[100] 'xterm*:extkeys'
+        bind-key -n -N "Search and run key bindings" C-S-p \
+          set-environment -gF TMUX_COMMAND_PICKER_CLIENT "#{client_name}" \; \
+          display-popup -E -w 80% -h 80% -T " tmux commands " \
+          "${tmuxCommandPicker}/bin/tmux-command-picker" \; \
+          set-environment -gu TMUX_COMMAND_PICKER_CLIENT
+      '';
       historyLimit = 100000;
       mouse = true;
       terminal = "tmux-256color";
