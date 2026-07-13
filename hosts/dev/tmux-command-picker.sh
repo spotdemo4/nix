@@ -44,7 +44,6 @@ if ! selection=$(
     | fzf \
       --delimiter="$separator" \
       --with-nth=3 \
-      --nth=3 \
       --prompt='tmux> ' \
       --header='Type to search | Enter: run | Esc: close' \
       --layout=reverse \
