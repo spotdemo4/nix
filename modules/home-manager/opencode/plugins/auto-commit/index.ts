@@ -5,10 +5,14 @@ import { mkdtemp, open, readFile, rename, rm, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { AUTO_COMMIT_SESSION_TITLE } from "./constants";
+import { discoverGitRepositories, selectGitWorkspace } from "../git-status/core";
 
 const AGENT = "auto-committer";
 const GIT_TIMEOUT_MS = 120_000;
 const STARTUP_GIT_TIMEOUT_MS = 5_000;
+const ROOT_DISCOVERY_TTL_MS = 30_000;
+const ROOT_STATUS_TIMEOUT_MS = 5_000;
+const MAX_CONCURRENT_ROOT_STATUS = 4;
 const IDLE_DELAY_MS = 500;
 const COMPLETION_DELAY_MS = 1000;
 const MAX_STATUS_RETRIES = 5;
@@ -86,6 +90,12 @@ type RepositoryTreeResult = {
   attempted: number;
   created: CreatedCommit[];
   skipped: string[];
+};
+
+type RepositoryRoot = {
+  directory: string;
+  issue?: string;
+  name: string;
 };
 
 type RepositoryInspection = {
@@ -201,6 +211,24 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, descriptio
   } finally {
     if (timeout) clearTimeout(timeout);
   }
+}
+
+async function someConcurrent<T>(
+  items: T[],
+  limit: number,
+  predicate: (item: T) => Promise<boolean>,
+) {
+  let found = false;
+  let next = 0;
+  const worker = async () => {
+    while (!found && next < items.length) {
+      const index = next;
+      next += 1;
+      if (await predicate(items[index])) found = true;
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => worker()));
+  return found;
 }
 
 async function indexIsClean(root: string) {
@@ -787,12 +815,16 @@ function renderSnapshotContext(snapshot: RepositorySnapshot) {
   ].join("\n");
 }
 
-const autoCommitPlugin = (async ({ client, directory, worktree }) => {
-  const repository = await runGit(worktree, ["rev-parse", "--is-inside-work-tree"], {
-    acceptedExitCodes: [0, 128],
-    timeoutMs: STARTUP_GIT_TIMEOUT_MS,
-  }).catch(() => undefined);
-  if (!repository || repository.code !== 0 || repository.stdout.trim() !== "true") return {};
+const autoCommitPlugin = (async ({ client, directory, project, worktree }) => {
+  const gitProject = project.vcs === "git";
+  const workspace = selectGitWorkspace(directory, worktree, gitProject);
+  if (gitProject) {
+    const repository = await runGit(workspace, ["rev-parse", "--is-inside-work-tree"], {
+      acceptedExitCodes: [0, 128],
+      timeoutMs: STARTUP_GIT_TIMEOUT_MS,
+    }).catch(() => undefined);
+    if (!repository || repository.code !== 0 || repository.stdout.trim() !== "true") return {};
+  }
 
   const busySessions = new Set<string>();
   const mutationGenerations = new Map<string, number>();
@@ -800,6 +832,9 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
   const statusFailures = new Map<string, number>();
   const timers = new Map<string, NodeJS.Timeout>();
   const workers = new Map<string, Worker>();
+  const discoveryController = new AbortController();
+  let repositoryRootCache: { expires: number; roots: RepositoryRoot[] } | undefined;
+  let repositoryRootPromise: Promise<RepositoryRoot[]> | undefined;
   let disposed = false;
   let mutationSequence = 0;
 
@@ -818,15 +853,50 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
       .catch(() => undefined);
   };
 
-  try {
-    if (await recoverIntegrationTree(worktree)) {
-      await log("warn", "Recovered an interrupted auto-commit integration");
+  if (gitProject) {
+    try {
+      if (await recoverIntegrationTree(workspace)) {
+        await log("warn", "Recovered an interrupted auto-commit integration");
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      await log("error", `Auto-commit recovery failed: ${message}`);
+      return {};
     }
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    await log("error", `Auto-commit recovery failed: ${message}`);
-    return {};
   }
+
+  const repositoryRoots = async (force = false) => {
+    if (gitProject) return [{ directory: workspace, name: "." }];
+    if (!force && repositoryRootCache && repositoryRootCache.expires > Date.now()) {
+      return repositoryRootCache.roots;
+    }
+    if (repositoryRootPromise) return repositoryRootPromise;
+
+    repositoryRootPromise = discoverGitRepositories(workspace, {
+      allowPartial: true,
+      signal: discoveryController.signal,
+      timeoutMs: STARTUP_GIT_TIMEOUT_MS,
+    })
+      .then((repositories) => {
+        const roots: RepositoryRoot[] = repositories
+          .filter((repository) => !repository.submodule)
+          .map((repository) => ({ directory: repository.directory, name: repository.label }));
+        for (const root of roots) {
+          const nested = roots.some((candidate) => {
+            if (candidate === root) return false;
+            const path = relative(root.directory, candidate.directory);
+            return path !== ".." && !path.startsWith(`..${sep}`) && !isAbsolute(path);
+          });
+          if (nested) root.issue = "contains an independent nested repository";
+        }
+        repositoryRootCache = { expires: Date.now() + ROOT_DISCOVERY_TTL_MS, roots };
+        return roots;
+      })
+      .finally(() => {
+        repositoryRootPromise = undefined;
+      });
+    return repositoryRootPromise;
+  };
 
   const loadHistory = async (sessionID: string) => {
     const messages: SessionMessage[] = [];
@@ -902,7 +972,7 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
         children.push(
           await inspectRepositoryTree(
             submodule.directory,
-            relative(worktree, submodule.directory) || submodule.path,
+            relative(workspace, submodule.directory) || submodule.path,
           ),
         );
       }
@@ -1071,10 +1141,33 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
     try {
       const session = await client.session.get({ path: { id: sessionID } });
       if (!session.data || session.data.parentID || worker.cancelled || disposed) return;
-      await recoverIntegrationTree(worktree);
-
-      const repositoryTree = await inspectRepositoryTree(worktree, ".");
-      const result = await processRepositoryTree(repositoryTree, true);
+      const result: RepositoryTreeResult = { attempted: 0, created: [], skipped: [] };
+      const roots = await repositoryRoots(true);
+      if (worker.cancelled || disposed) return;
+      for (const root of roots) {
+        if (worker.cancelled || disposed) return;
+        if (root.issue) {
+          result.skipped.push(`${root.name}: ${root.issue}`);
+          await log("warn", `Skipped automatic commits in ${root.name}: ${root.issue}`);
+          continue;
+        }
+        try {
+          await recoverIntegrationTree(root.directory);
+          const repositoryTree = await inspectRepositoryTree(root.directory, root.name);
+          mergeResult(result, await processRepositoryTree(repositoryTree, true));
+        } catch (error) {
+          if (
+            gitProject ||
+            retryPending ||
+            (error instanceof AutoCommitSkipped && !error.visible)
+          ) {
+            throw error;
+          }
+          const message = error instanceof Error ? error.message : String(error);
+          result.skipped.push(`${root.name}: ${message}`);
+          await log("warn", `Skipped automatic commits in ${root.name}: ${message}`);
+        }
+      }
       if (mutationGenerations.get(sessionID) === mutationGeneration) {
         mutationGenerations.delete(sessionID);
       }
@@ -1093,6 +1186,7 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
         await notify("warning", "No attributable changes were committed");
       }
     } catch (error) {
+      if (worker.cancelled || disposed) return;
       const message = error instanceof Error ? error.message : String(error);
       if (error instanceof AutoCommitSkipped) {
         if (
@@ -1184,8 +1278,17 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
 
   return {
     "chat.message": async ({ sessionID }) => {
-      const status = await gitOutput(worktree, ["status", "--porcelain=v1"]).catch(() => "");
-      if (status) {
+      const dirty = await someConcurrent(
+        await repositoryRoots().catch(() => []),
+        MAX_CONCURRENT_ROOT_STATUS,
+        async (root) =>
+          Boolean(
+            await gitOutput(root.directory, ["status", "--porcelain=v1"], {
+              timeoutMs: ROOT_STATUS_TIMEOUT_MS,
+            }).catch(() => ""),
+          ),
+      );
+      if (dirty) {
         markMutation(sessionID);
         resumedSessions.add(sessionID);
       }
@@ -1242,6 +1345,7 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
     },
     dispose: async () => {
       disposed = true;
+      discoveryController.abort();
       for (const timer of timers.values()) clearTimeout(timer);
       timers.clear();
       for (const worker of workers.values()) {

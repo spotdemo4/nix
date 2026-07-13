@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { chmod, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -24,15 +24,20 @@ function git(cwd: string, ...args: string[]) {
   return execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
 }
 
-async function createRepository() {
-  const root = await mkdtemp(join(tmpdir(), "opencode-auto-commit-test-"));
-  directories.push(root);
+async function initializeRepository(root: string) {
+  await mkdir(root, { recursive: true });
   git(root, "init", "-b", "main");
   git(root, "config", "user.name", "Test User");
   git(root, "config", "user.email", "test@example.com");
   await writeFile(join(root, "tracked.txt"), "before\n");
   git(root, "add", "tracked.txt");
   git(root, "commit", "-m", "chore: initialize repository");
+}
+
+async function createRepository() {
+  const root = await mkdtemp(join(tmpdir(), "opencode-auto-commit-test-"));
+  directories.push(root);
+  await initializeRepository(root);
   return root;
 }
 
@@ -66,9 +71,11 @@ async function waitFor(predicate: () => boolean, timeoutMs = 5000) {
 async function createLifecycleHarness(
   options: {
     dirty?: boolean;
+    globalProject?: boolean;
     parentID?: string;
     prompt?: (directory: string, text: string) => Promise<void> | void;
     root?: string;
+    worktree?: string;
   } = {},
 ) {
   const root = options.root ?? (await createRepository());
@@ -162,9 +169,9 @@ async function createLifecycleHarness(
     client: client as never,
     directory: root,
     experimental_workspace: { register() {} },
-    project: {} as never,
+    project: (options.globalProject ? {} : { vcs: "git" }) as never,
     serverUrl: new URL("http://localhost"),
-    worktree: root,
+    worktree: options.worktree ?? root,
     $: undefined as never,
   });
 
@@ -529,15 +536,114 @@ describe("prepared commits", () => {
 });
 
 describe("plugin startup", () => {
-  test("initializes as a no-op outside a Git worktree", async () => {
+  test("keeps hooks active for child repositories in a global project", async () => {
     const root = await mkdtemp(join(tmpdir(), "opencode-auto-commit-non-repository-"));
     directories.push(root);
 
-    const harness = await createLifecycleHarness({ dirty: false, root });
+    const harness = await createLifecycleHarness({
+      dirty: false,
+      globalProject: true,
+      root,
+      worktree: "/",
+    });
 
-    expect(harness.hooks).toEqual({});
+    expect(harness.hooks["tool.execute.after"]).toBeFunction();
     expect(harness.logs).toHaveLength(0);
     expect(harness.toasts).toHaveLength(0);
+  });
+
+  test("commits independent child repositories without leaving the workspace", async () => {
+    const outside = await createRepository();
+    const outsideHead = git(outside, "rev-parse", "HEAD");
+    await writeFile(join(outside, "tracked.txt"), "outside change\n");
+    const workspace = join(outside, "workspace");
+    const alpha = join(workspace, "alpha");
+    const beta = join(workspace, "nested", "beta");
+    await initializeRepository(alpha);
+    await initializeRepository(beta);
+    await writeFile(join(alpha, "tracked.txt"), "alpha change\n");
+    await writeFile(join(beta, "tracked.txt"), "beta change\n");
+
+    const harness = await createLifecycleHarness({
+      dirty: false,
+      globalProject: true,
+      root: workspace,
+      worktree: "/",
+    });
+
+    await triggerAutoCommit(harness);
+    await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 20_000);
+
+    expect(harness.creates).toBe(2);
+    expect(git(alpha, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
+    expect(git(beta, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
+    expect(git(outside, "rev-parse", "HEAD")).toBe(outsideHead);
+    expect(git(outside, "status", "--short")).toContain("M tracked.txt");
+    const success = harness.toasts.find((toast) => toast.variant === "success")?.message ?? "";
+    expect(success).toContain("alpha:");
+    expect(success).toContain("nested/beta:");
+
+    await harness.hooks.dispose?.();
+  });
+
+  test("skips repository containers while committing nested independent repositories", async () => {
+    const workspace = await mkdtemp(join(tmpdir(), "opencode-auto-commit-nested-workspace-"));
+    directories.push(workspace);
+    const parent = join(workspace, "parent");
+    const child = join(parent, "child");
+    await initializeRepository(parent);
+    await initializeRepository(child);
+    const parentHead = git(parent, "rev-parse", "HEAD");
+    await writeFile(join(parent, "tracked.txt"), "parent change\n");
+    await writeFile(join(child, "tracked.txt"), "child change\n");
+    const harness = await createLifecycleHarness({
+      dirty: false,
+      globalProject: true,
+      root: workspace,
+      worktree: "/",
+    });
+
+    await triggerAutoCommit(harness);
+    await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 20_000);
+
+    expect(harness.creates).toBe(1);
+    expect(git(parent, "rev-parse", "HEAD")).toBe(parentHead);
+    expect(git(parent, "status", "--short")).toContain("M tracked.txt");
+    expect(git(child, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
+    const warning = harness.toasts.find((toast) => toast.variant === "warning")?.message ?? "";
+    expect(warning).toContain("parent: contains an independent nested repository");
+
+    await harness.hooks.dispose?.();
+  });
+
+  test("processes valid repositories when another workspace directory is inaccessible", async () => {
+    const workspace = await mkdtemp(join(tmpdir(), "opencode-auto-commit-partial-workspace-"));
+    directories.push(workspace);
+    const repository = join(workspace, "repository");
+    const blocked = join(workspace, "blocked");
+    await initializeRepository(repository);
+    await mkdir(blocked);
+    await writeFile(join(repository, "tracked.txt"), "repository change\n");
+    await chmod(blocked, 0o000);
+
+    try {
+      const harness = await createLifecycleHarness({
+        dirty: false,
+        globalProject: true,
+        root: workspace,
+        worktree: "/",
+      });
+      await triggerAutoCommit(harness);
+      await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 20_000);
+
+      expect(harness.creates).toBe(1);
+      expect(git(repository, "show", "-s", "--format=%s", "HEAD")).toBe(
+        "fix: update tracked content",
+      );
+      await harness.hooks.dispose?.();
+    } finally {
+      await chmod(blocked, 0o700);
+    }
   });
 
   test("initializes as a no-op when the worktree is unavailable", async () => {
