@@ -1,6 +1,6 @@
 {
   hostname,
-  inputs,
+  lib,
   pkgs,
   self,
   ...
@@ -9,25 +9,19 @@ let
   keys = import (self + /secrets/keys.nix);
 in
 {
-  imports = [
-    ./hardware.nix
-    (self + /modules/nixos/podman-secrets)
-    (self + /modules/nixos/update)
-  ];
+  imports = [ ./hardware.nix ];
 
-  environment.systemPackages = with pkgs; [
-    fastfetch
-    ffmpeg
-    iperf
-    kitty
-    ncdu
-    nmap
-    traceroute
-    unzip
-    wget
-    yt-dlp
-    zip
-  ];
+  determinate.enable = false;
+  documentation.enable = false;
+
+  environment = {
+    defaultPackages = lib.mkForce [ ];
+    systemPackages = with pkgs; [
+      git
+      hyperfine
+      numactl
+    ];
+  };
 
   nix = {
     settings = {
@@ -45,15 +39,8 @@ in
       ];
       fallback = true;
     };
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
-    optimise = {
-      automatic = true;
-      dates = "05:00";
-    };
+    gc.automatic = false;
+    optimise.automatic = false;
     extraOptions = ''
       warn-dirty = false
     '';
@@ -61,64 +48,22 @@ in
 
   networking = {
     hostName = hostname;
-    firewall.enable = false;
-    hosts."10.10.10.105" = [
-      "trev.xyz"
-      "trev.zip"
-      "trev.kiwi"
-      "trev.rs"
-      "cache.trev.zip"
-      "s3.trev.zip"
-      "nix.trev.zip"
-      "niks3.trev.zip"
-    ];
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 22 ];
+    };
+    hosts."10.10.10.105" = [ "nix.trev.zip" ];
   };
 
   time.timeZone = "America/Detroit";
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-    extraLocaleSettings = {
-      LC_ADDRESS = "en_US.UTF-8";
-      LC_IDENTIFICATION = "en_US.UTF-8";
-      LC_MEASUREMENT = "en_US.UTF-8";
-      LC_MONETARY = "en_US.UTF-8";
-      LC_NAME = "en_US.UTF-8";
-      LC_NUMERIC = "en_US.UTF-8";
-      LC_PAPER = "en_US.UTF-8";
-      LC_TELEPHONE = "en_US.UTF-8";
-      LC_TIME = "en_US.UTF-8";
-    };
-  };
-
-  catppuccin = {
-    enable = true;
-    autoEnable = false;
-  };
-
-  programs = {
-    git = {
-      enable = true;
-      config = {
-        init.defaultBranch = "main";
-        user = {
-          name = "trev";
-          email = "me@trev.xyz";
-          signingkey = "3AAF87E0B1A2AC36";
-        };
-        commit.gpgsign = "true";
-        tag.gpgSign = "true";
-        safe.directory = "/etc/nixos";
-      };
-    };
-    zsh.enable = true;
-  };
+  i18n.defaultLocale = "en_US.UTF-8";
 
   services = {
-    cadvisor = {
-      enable = true;
-      port = 8069;
-      listenAddress = "0.0.0.0";
-    };
+    fstrim.enable = false;
+    journald.extraConfig = ''
+      Storage=volatile
+    '';
+    logrotate.enable = false;
     openssh = {
       enable = true;
       ports = [ 22 ];
@@ -127,10 +72,12 @@ in
         KbdInteractiveAuthentication = false;
       };
     };
-    journald.upload = {
-      enable = true;
-      settings.Upload.URL = "http://10.10.10.109:9428/insert/journald";
-    };
+  };
+
+  systemd = {
+    oomd.enable = false;
+    services."systemd-tmpfiles-clean".enable = false;
+    timers."systemd-tmpfiles-clean".enable = false;
   };
 
   users = {
@@ -140,48 +87,10 @@ in
       uid = 1000;
       description = "trev";
       group = "trev";
-      extraGroups = [
-        "wheel"
-        "podman"
-        "video"
-        "render"
-      ];
-      shell = pkgs.zsh;
+      extraGroups = [ "wheel" ];
       openssh.authorizedKeys.keys = keys.sshClients ++ [ keys.devTrev ];
     };
   };
 
-  home-manager = {
-    useGlobalPkgs = true;
-    extraSpecialArgs = {
-      inherit inputs self;
-    };
-    users.trev.imports = [ ./home-manager.nix ];
-  };
-
-  virtualisation = {
-    podman = {
-      enable = true;
-      autoPrune = {
-        enable = true;
-        flags = [ "--all" ];
-      };
-    };
-    quadlet = {
-      autoEscape = true;
-      autoUpdate.enable = true;
-    };
-  };
-
-  trev = {
-    podman-secrets.enable = true;
-    update = {
-      enable = true;
-      hostname = hostname;
-      user = "trev";
-    };
-  };
-
-  nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
 }
