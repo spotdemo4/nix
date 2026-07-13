@@ -121,6 +121,10 @@ in
       enable = true;
       flavor = "mocha";
     };
+    tmux = {
+      enable = true;
+      flavor = "mocha";
+    };
   };
 
   trev = {
