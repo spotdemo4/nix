@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { mkdtemp, open, readFile, rename, rm, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
-import { AUTO_COMMIT_SESSION_TITLE } from "./constants";
+import { AUTO_COMMIT_SESSION_TITLE, AUTO_COMMIT_TRIGGER } from "./constants";
 import { discoverGitRepositories, selectGitWorkspace } from "../git-status/core";
 
 const AGENT = "auto-committer";
@@ -26,6 +26,7 @@ const MUTATION_TOOLS = new Set(["apply_patch", "bash", "edit", "write"]);
 type SessionMessage = {
   info: { role: string };
   parts: Array<{
+    synthetic?: boolean;
     type: string;
     text?: string;
     tool?: string;
@@ -753,7 +754,13 @@ function renderToolInput(tool: string, input: unknown) {
 
 function renderMessage(message: SessionMessage) {
   const content = message.parts.flatMap((part) => {
-    if (part.type === "text" && part.text?.trim()) return [part.text.trim()];
+    if (
+      part.type === "text" &&
+      part.text?.trim() &&
+      !(part.synthetic && part.text === AUTO_COMMIT_TRIGGER)
+    ) {
+      return [part.text.trim()];
+    }
     if (part.type !== "tool" || part.state?.status !== "completed") return [];
     const tool = part.tool?.split(".").at(-1) ?? "";
     if (!MUTATION_TOOLS.has(tool)) return [];
@@ -1277,7 +1284,17 @@ const autoCommitPlugin = (async ({ client, directory, project, worktree }) => {
   };
 
   return {
-    "chat.message": async ({ sessionID }) => {
+    "chat.message": async ({ sessionID }, { parts }) => {
+      const manual = parts.some(
+        (part) =>
+          part.type === "text" && part.synthetic && part.text === AUTO_COMMIT_TRIGGER,
+      );
+      if (manual) {
+        markMutation(sessionID);
+        schedule(sessionID);
+        return;
+      }
+
       const dirty = await someConcurrent(
         await repositoryRoots().catch(() => []),
         MAX_CONCURRENT_ROOT_STATUS,

@@ -17,6 +17,7 @@ import {
   validatePreparedCommits,
   validatePreparedWorktree,
 } from "./index";
+import { AUTO_COMMIT_TRIGGER } from "./constants";
 
 const directories: string[] = [];
 
@@ -705,7 +706,10 @@ test("backfills resumed work from duplicate direct idle events", async () => {
   const harness = await createLifecycleHarness();
   const { hooks, root, toasts } = harness;
 
-  await hooks["chat.message"]?.({ sessionID: "parent" });
+  await hooks["chat.message"]?.(
+    { sessionID: "parent" },
+    { message: {} as never, parts: [] },
+  );
   await hooks.event?.({
     event: { type: "session.idle", properties: { sessionID: "parent" } },
   });
@@ -731,7 +735,10 @@ test("restarts a cancelled worker once after the session becomes idle", async ()
   const harness = await createLifecycleHarness();
   const { hooks, toasts } = harness;
 
-  await hooks["chat.message"]?.({ sessionID: "parent" });
+  await hooks["chat.message"]?.(
+    { sessionID: "parent" },
+    { message: {} as never, parts: [] },
+  );
   await hooks.event?.({
     event: { type: "session.idle", properties: { sessionID: "parent" } },
   });
@@ -776,6 +783,35 @@ test("uses text completion to commit mutations without an idle event", async () 
   await waitFor(() => toasts.some((toast) => toast.variant === "success"));
   expect(harness.creates).toBe(1);
   expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
+
+  await hooks.dispose?.();
+});
+
+test("runs a manually requested commit without a model response or idle event", async () => {
+  let context = "";
+  const harness = await createLifecycleHarness({
+    prompt: async (directory, text) => {
+      context = text;
+      await commitCapturedRepository(directory, text);
+    },
+  });
+  const { hooks, root, toasts } = harness;
+  harness.releasePrompt();
+
+  await hooks["chat.message"]?.(
+    { sessionID: "parent" },
+    {
+      message: {} as never,
+      parts: [{ synthetic: true, text: AUTO_COMMIT_TRIGGER, type: "text" }] as never,
+    },
+  );
+
+  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
+  expect(harness.creates).toBe(1);
+  expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe(
+    "fix: update tracked content",
+  );
+  expect(context).not.toContain(AUTO_COMMIT_TRIGGER);
 
   await hooks.dispose?.();
 });
