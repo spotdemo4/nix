@@ -38,7 +38,6 @@
       agents.auto-committer = ./agents/auto-committer.md;
       skills = {
         ssh-bench = ./skills/ssh-bench.md;
-        ssh-build = ./skills/ssh-build.md;
       };
     };
 
