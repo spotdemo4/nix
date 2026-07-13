@@ -155,6 +155,8 @@ end
 hl.bind(mod .. " + SHIFT + left", hl.dsp.focus({ workspace = "r-1" }))
 hl.bind(mod .. " + SHIFT + right", hl.dsp.focus({ workspace = "r+1" }))
 
+hl.bind(mod .. " + CTRL + left", hl.dsp.group.prev())
+hl.bind(mod .. " + CTRL + right", hl.dsp.group.next())
 hl.bind(mod .. " + mouse_down", hl.dsp.group.prev())
 hl.bind(mod .. " + mouse_up", hl.dsp.group.next())
 
