@@ -528,6 +528,48 @@ describe("prepared commits", () => {
   });
 });
 
+describe("plugin startup", () => {
+  test("initializes as a no-op outside a Git worktree", async () => {
+    const root = await mkdtemp(join(tmpdir(), "opencode-auto-commit-non-repository-"));
+    directories.push(root);
+
+    const harness = await createLifecycleHarness({ dirty: false, root });
+
+    expect(harness.hooks).toEqual({});
+    expect(harness.logs).toHaveLength(0);
+    expect(harness.toasts).toHaveLength(0);
+  });
+
+  test("initializes as a no-op when the worktree is unavailable", async () => {
+    const root = await mkdtemp(join(tmpdir(), "opencode-auto-commit-missing-worktree-"));
+    await rm(root, { recursive: true });
+
+    const harness = await createLifecycleHarness({ dirty: false, root });
+
+    expect(harness.hooks).toEqual({});
+    expect(harness.logs).toHaveLength(0);
+    expect(harness.toasts).toHaveLength(0);
+  });
+
+  test("logs recovery failures without calling the TUI during startup", async () => {
+    const root = await createRepository();
+    const transaction = git(
+      root,
+      "rev-parse",
+      "--git-path",
+      "opencode-auto-commit-transaction.json",
+    );
+    await writeFile(join(root, transaction), "invalid transaction\n");
+
+    const harness = await createLifecycleHarness({ dirty: false, root });
+
+    expect(harness.hooks).toEqual({});
+    expect(harness.logs).toHaveLength(1);
+    expect(harness.logs[0]?.message).toContain("Auto-commit recovery failed");
+    expect(harness.toasts).toHaveLength(0);
+  });
+});
+
 test("skips sparse checkouts", async () => {
   const root = await createRepository();
   git(root, "sparse-checkout", "init", "--cone");

@@ -8,6 +8,7 @@ import { AUTO_COMMIT_SESSION_TITLE } from "./constants";
 
 const AGENT = "auto-committer";
 const GIT_TIMEOUT_MS = 120_000;
+const STARTUP_GIT_TIMEOUT_MS = 5_000;
 const IDLE_DELAY_MS = 500;
 const COMPLETION_DELAY_MS = 1000;
 const MAX_STATUS_RETRIES = 5;
@@ -787,6 +788,12 @@ function renderSnapshotContext(snapshot: RepositorySnapshot) {
 }
 
 const autoCommitPlugin = (async ({ client, directory, worktree }) => {
+  const repository = await runGit(worktree, ["rev-parse", "--is-inside-work-tree"], {
+    acceptedExitCodes: [0, 128],
+    timeoutMs: STARTUP_GIT_TIMEOUT_MS,
+  }).catch(() => undefined);
+  if (!repository || repository.code !== 0 || repository.stdout.trim() !== "true") return {};
+
   const busySessions = new Set<string>();
   const mutationGenerations = new Map<string, number>();
   const resumedSessions = new Set<string>();
@@ -811,15 +818,15 @@ const autoCommitPlugin = (async ({ client, directory, worktree }) => {
       .catch(() => undefined);
   };
 
-  await recoverIntegrationTree(worktree)
-    .then(async (recovered) => {
-      if (recovered) await log("warn", "Recovered an interrupted auto-commit integration");
-    })
-    .catch(async (error) => {
-      const message = error instanceof Error ? error.message : String(error);
-      await log("error", `Auto-commit recovery failed: ${message}`);
-      await notify("error", `Recovery required: ${message}`);
-    });
+  try {
+    if (await recoverIntegrationTree(worktree)) {
+      await log("warn", "Recovered an interrupted auto-commit integration");
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    await log("error", `Auto-commit recovery failed: ${message}`);
+    return {};
+  }
 
   const loadHistory = async (sessionID: string) => {
     const messages: SessionMessage[] = [];
