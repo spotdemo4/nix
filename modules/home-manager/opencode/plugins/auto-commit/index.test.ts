@@ -706,10 +706,7 @@ test("backfills resumed work from duplicate direct idle events", async () => {
   const harness = await createLifecycleHarness();
   const { hooks, root, toasts } = harness;
 
-  await hooks["chat.message"]?.(
-    { sessionID: "parent" },
-    { message: {} as never, parts: [] },
-  );
+  await hooks["chat.message"]?.({ sessionID: "parent" }, { message: {} as never, parts: [] });
   await hooks.event?.({
     event: { type: "session.idle", properties: { sessionID: "parent" } },
   });
@@ -735,10 +732,7 @@ test("restarts a cancelled worker once after the session becomes idle", async ()
   const harness = await createLifecycleHarness();
   const { hooks, toasts } = harness;
 
-  await hooks["chat.message"]?.(
-    { sessionID: "parent" },
-    { message: {} as never, parts: [] },
-  );
+  await hooks["chat.message"]?.({ sessionID: "parent" }, { message: {} as never, parts: [] });
   await hooks.event?.({
     event: { type: "session.idle", properties: { sessionID: "parent" } },
   });
@@ -808,9 +802,7 @@ test("runs a manually requested commit without a model response or idle event", 
 
   await waitFor(() => toasts.some((toast) => toast.variant === "success"));
   expect(harness.creates).toBe(1);
-  expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe(
-    "fix: update tracked content",
-  );
+  expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
   expect(context).not.toContain(AUTO_COMMIT_TRIGGER);
 
   await hooks.dispose?.();

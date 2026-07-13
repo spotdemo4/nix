@@ -48,10 +48,7 @@ test("requests auto commit without starting a model response", async () => {
     {
       client: {
         session: {
-          promptAsync: async (
-            input: Record<string, unknown>,
-            options: Record<string, unknown>,
-          ) => {
+          promptAsync: async (input: Record<string, unknown>, options: Record<string, unknown>) => {
             prompts.push({ input, options });
           },
         },
@@ -93,9 +90,7 @@ test("requests auto commit without starting a model response", async () => {
         directory: "/workspace",
         model: { modelID: "model", providerID: "provider" },
         noReply: true,
-        parts: [
-          { ignored: true, synthetic: true, text: AUTO_COMMIT_TRIGGER, type: "text" },
-        ],
+        parts: [{ ignored: true, synthetic: true, text: AUTO_COMMIT_TRIGGER, type: "text" }],
         sessionID: "parent",
         variant: "high",
       },

@@ -1286,8 +1286,7 @@ const autoCommitPlugin = (async ({ client, directory, project, worktree }) => {
   return {
     "chat.message": async ({ sessionID }, { parts }) => {
       const manual = parts.some(
-        (part) =>
-          part.type === "text" && part.synthetic && part.text === AUTO_COMMIT_TRIGGER,
+        (part) => part.type === "text" && part.synthetic && part.text === AUTO_COMMIT_TRIGGER,
       );
       if (manual) {
         markMutation(sessionID);
