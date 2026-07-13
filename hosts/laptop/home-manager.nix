@@ -90,6 +90,11 @@
       enable = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
+      initContent = ''
+        zopen() {
+          zeditor "ssh://dev/~/dev/$1"
+        }
+      '';
     };
   };
 
