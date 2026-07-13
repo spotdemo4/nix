@@ -255,6 +255,14 @@ function gitPathHasControlCharacters(path: string) {
   return false;
 }
 
+function pathIsInside(root: string, path: string) {
+  const fromRoot = relative(root, resolve(root, path));
+  return (
+    fromRoot === "" ||
+    (fromRoot !== ".." && !fromRoot.startsWith(`..${sep}`) && !isAbsolute(fromRoot))
+  );
+}
+
 async function findGitlinkChanges(root: string, oldTree: string, newTree: string) {
   const [oldGitlinks, newGitlinks] = await Promise.all([
     listTreeGitlinks(root, oldTree),
@@ -578,7 +586,7 @@ export async function replayPreparedCommits(
   }
   if (commits.length === 0) return [];
   if (!(await shouldContinue())) {
-    throw new CommitSkipped("the parent session resumed", false);
+    throw new CommitSkipped("the commit was cancelled", false);
   }
 
   const finalCommit = commits.at(-1)!;
@@ -627,7 +635,7 @@ export async function replayPreparedCommits(
       throw new CommitSkipped("the repository changed before integration");
     }
     if (!(await shouldContinue())) {
-      throw new CommitSkipped("the parent session resumed", false);
+      throw new CommitSkipped("the commit was cancelled", false);
     }
 
     await lockHandle.writeFile(finalIndex);
@@ -635,7 +643,7 @@ export async function replayPreparedCommits(
     await lockHandle.close();
     lockHandle = undefined;
     if (!(await shouldContinue())) {
-      throw new CommitSkipped("the parent session resumed", false);
+      throw new CommitSkipped("the commit was cancelled", false);
     }
 
     await runGit(root, [
@@ -897,20 +905,12 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
     return renderHistory(messages);
   };
 
-  const sessionIsIdle = async (sessionID: string) => {
-    const response = await client.session.status({ query: { directory } });
-    const status = response.data?.[sessionID];
-    return !status || status.type === "idle";
-  };
-
   const runWorker = async (sessionID: string, worker: Worker) => {
     let history: Promise<string> | undefined;
     let preparationNotified = false;
 
     const shouldContinue = async () => {
-      if (worker.cancelled || disposed) return false;
-      const idle = await sessionIsIdle(sessionID);
-      return idle && !worker.cancelled && !disposed;
+      return !worker.cancelled && !disposed;
     };
 
     const mergeResult = (target: RepositoryTreeResult, source: RepositoryTreeResult) => {
@@ -970,7 +970,7 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
       const { children, issue, name: repositoryName, repository } = node;
       const result: RepositoryTreeResult = { attempted: 0, created: [], skipped: [] };
       if (!(await shouldContinue())) {
-        throw new CommitSkipped("the parent session resumed", false);
+        throw new CommitSkipped("the commit was cancelled", false);
       }
 
       if (issue) {
@@ -986,7 +986,7 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
       }
 
       if (!(await shouldContinue())) {
-        throw new CommitSkipped("the parent session resumed", false);
+        throw new CommitSkipped("the commit was cancelled", false);
       }
 
       let snapshot: RepositorySnapshot;
@@ -1007,7 +1007,7 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
 
       const secondTree = await writeWorktreeTree(repository, snapshot.head);
       if (secondTree !== snapshot.snapshotTree || !(await shouldContinue())) {
-        throw new CommitSkipped("the worktree or session changed during capture");
+        throw new CommitSkipped("the worktree changed during capture");
       }
       result.attempted += 1;
 
@@ -1020,6 +1020,9 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
       const temporary = await prepareTemporaryWorktree(repository, snapshot);
       worker.temporaryWorktree = { directory: temporary, repository };
       try {
+        if (!(await shouldContinue())) {
+          throw new CommitSkipped("the commit was cancelled", false);
+        }
         const child = await client.session.create({
           body: {
             parentID: sessionID,
@@ -1029,6 +1032,9 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
         });
         if (!child.data) throw new Error("failed to create the commit session");
         worker.child = { directory: temporary, id: child.data.id };
+        if (!(await shouldContinue())) {
+          throw new CommitSkipped("the commit was cancelled", false);
+        }
 
         const snapshotContext = renderSnapshotContext(snapshot);
         const prompt = await withTimeout(
@@ -1057,7 +1063,7 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
         );
         if (!prompt.data) throw new Error("the commit agent did not complete");
         if (!(await shouldContinue())) {
-          throw new CommitSkipped("the parent session resumed", false);
+          throw new CommitSkipped("the commit was cancelled", false);
         }
 
         await validatePreparedWorktree(temporary, snapshot);
@@ -1191,12 +1197,12 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
         workers.set(sessionID, worker);
         worker.promise = (async () => {
           try {
-            if (!(await sessionIsIdle(sessionID)) || worker.cancelled) return;
+            if (worker.cancelled) return;
             await runWorker(sessionID, worker);
           } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
             await log("error", `Commit worker cleanup failed: ${message}`);
-            await notify("warning", "Deferred: unable to read the session status");
+            await notify("warning", "Deferred: unable to run the commit worker");
           } finally {
             workers.delete(sessionID);
             if (worker.rerun && !disposed) schedule(sessionID);
@@ -1214,26 +1220,36 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
       if (manual) schedule(sessionID);
     },
     event: async ({ event }) => {
-      if (event.type !== "session.status") return;
-      const { sessionID, status } = event.properties;
-      if (status.type === "idle") return;
-
-      const timer = timers.get(sessionID);
-      if (timer) clearTimeout(timer);
-      timers.delete(sessionID);
-      const worker = workers.get(sessionID);
-      if (!worker) return;
-      worker.cancelled = true;
-      if (worker.child) {
-        await withTimeout(
-          client.session.abort({
-            path: { id: worker.child.id },
-            query: { directory: worker.child.directory },
-          }),
-          SHUTDOWN_TIMEOUT_MS,
-          "aborting the commit session",
-        ).catch(() => undefined);
+      if (event.type !== "file.edited" && event.type !== "file.watcher.updated") return;
+      if (!pathIsInside(workspace, event.properties.file)) return;
+      if (
+        [...workers.values()].some(
+          (worker) =>
+            worker.temporaryWorktree &&
+            pathIsInside(worker.temporaryWorktree.directory, event.properties.file),
+        )
+      ) {
+        return;
       }
+
+      for (const timer of timers.values()) clearTimeout(timer);
+      timers.clear();
+      await Promise.all(
+        [...workers.values()].map(async (worker) => {
+          if (worker.cancelled) return;
+          worker.cancelled = true;
+          worker.rerun = false;
+          if (!worker.child) return;
+          await withTimeout(
+            client.session.abort({
+              path: { id: worker.child.id },
+              query: { directory: worker.child.directory },
+            }),
+            SHUTDOWN_TIMEOUT_MS,
+            "aborting the commit session",
+          ).catch(() => undefined);
+        }),
+      );
     },
     dispose: async () => {
       disposed = true;

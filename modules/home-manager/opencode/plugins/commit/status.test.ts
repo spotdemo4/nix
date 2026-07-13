@@ -105,11 +105,11 @@ test("requests a commit without starting a model response", async () => {
 
   status = { type: "busy" };
   await run?.();
-  expect(prompts).toHaveLength(1);
+  expect(prompts).toHaveLength(2);
   expect(toasts).toContainEqual({
-    message: "Wait for the session to become idle before running commit",
+    message: "Commit requested",
     title: "Commit",
-    variant: "warning",
+    variant: "info",
   });
 });
 

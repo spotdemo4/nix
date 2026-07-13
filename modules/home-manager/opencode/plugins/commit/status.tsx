@@ -114,16 +114,6 @@ const tui: TuiPlugin = async (api) => {
               });
               return;
             }
-            const status = api.state.session.status(sessionID);
-            if (status && status.type !== "idle") {
-              api.ui.toast({
-                title: "Commit",
-                message: "Wait for the session to become idle before running commit",
-                variant: "warning",
-              });
-              return;
-            }
-
             try {
               await api.client.session.promptAsync(
                 {

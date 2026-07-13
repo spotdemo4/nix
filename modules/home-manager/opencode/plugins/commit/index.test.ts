@@ -84,6 +84,7 @@ async function createLifecycleHarness(
   const logs: Array<{ level: string; message: string }> = [];
   const toasts: Array<{ message: string; variant: string }> = [];
   let aborts = 0;
+  let childDirectory: string | undefined;
   let creates = 0;
   let gets = 0;
   let promptCalls = 0;
@@ -118,7 +119,8 @@ async function createLifecycleHarness(
       },
       status: async () => ({ data: {} }),
       messages: async () => ({ data: [], response: { headers: new Headers() } }),
-      create: async () => {
+      create: async ({ query }: { query: { directory: string } }) => {
+        childDirectory = query.directory;
         creates += 1;
         return { data: { id: `child-${creates}` } };
       },
@@ -167,6 +169,9 @@ async function createLifecycleHarness(
   return {
     get aborts() {
       return aborts;
+    },
+    get childDirectory() {
+      return childDirectory;
     },
     get creates() {
       return creates;
@@ -453,7 +458,7 @@ describe("prepared commits", () => {
         checks += 1;
         return checks < 3;
       }),
-    ).rejects.toThrow("parent session resumed");
+    ).rejects.toThrow("commit was cancelled");
 
     expect(git(root, "rev-parse", "HEAD")).toBe(originalHead);
     expect(git(root, "status", "--short")).toContain("M tracked.txt");
@@ -731,7 +736,35 @@ test("runs a manually requested commit without a model response or idle event", 
   await hooks.dispose?.();
 });
 
-test("cancels a requested commit when the parent session resumes", async () => {
+test("continues a requested commit when the parent session resumes", async () => {
+  const harness = await createLifecycleHarness();
+  const { hooks, root, toasts } = harness;
+
+  await requestCommit(harness);
+  await waitFor(() => harness.creates === 1);
+  await hooks.event?.({
+    event: {
+      type: "file.watcher.updated",
+      properties: { event: "change", file: join(harness.childDirectory!, "tracked.txt") },
+    },
+  });
+  expect(harness.aborts).toBe(0);
+  await hooks.event?.({
+    event: {
+      type: "session.status",
+      properties: { sessionID: "parent", status: { type: "busy" } },
+    },
+  });
+  harness.releasePrompt();
+  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
+
+  expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
+  expect(harness.creates).toBe(1);
+  expect(harness.aborts).toBe(0);
+  await hooks.dispose?.();
+});
+
+test("cancels a requested commit when a workspace file changes", async () => {
   const harness = await createLifecycleHarness();
   const { hooks, root, toasts } = harness;
   const originalHead = git(root, "rev-parse", "HEAD");
@@ -740,8 +773,16 @@ test("cancels a requested commit when the parent session resumes", async () => {
   await waitFor(() => harness.creates === 1);
   await hooks.event?.({
     event: {
-      type: "session.status",
-      properties: { sessionID: "parent", status: { type: "busy" } },
+      type: "file.watcher.updated",
+      properties: { event: "change", file: join(tmpdir(), "unrelated.txt") },
+    },
+  });
+  expect(harness.aborts).toBe(0);
+  await writeFile(join(root, "tracked.txt"), "changed while committing\n");
+  await hooks.event?.({
+    event: {
+      type: "file.watcher.updated",
+      properties: { event: "change", file: join(root, "tracked.txt") },
     },
   });
   await waitFor(() => harness.aborts === 1);
