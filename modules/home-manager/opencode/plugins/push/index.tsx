@@ -1,11 +1,6 @@
 import type { PluginOptions } from "@opencode-ai/plugin";
 import type { TuiPlugin, TuiPluginApi, TuiPluginModule } from "@opencode-ai/plugin/tui";
-import {
-  attemptPush,
-  createGitRunner,
-  renderFallbackPrompt,
-  type GitRunner,
-} from "./core";
+import { attemptPush, createGitRunner, renderFallbackPrompt, type GitRunner } from "./core";
 
 const PLUGIN_ID = "push";
 
@@ -60,7 +55,11 @@ export async function registerPushPlugin(
             return;
           }
           if (running.has(sessionID)) {
-            api.ui.toast({ title: "Push", message: "A push is already running", variant: "warning" });
+            api.ui.toast({
+              title: "Push",
+              message: "A push is already running",
+              variant: "warning",
+            });
             return;
           }
 

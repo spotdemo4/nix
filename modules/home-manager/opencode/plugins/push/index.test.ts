@@ -32,7 +32,10 @@ function createApi(options: { parentID?: string; status?: { type: string } } = {
   const api = {
     client: {
       session: {
-        promptAsync: async (input: Record<string, unknown>, requestOptions: Record<string, unknown>) => {
+        promptAsync: async (
+          input: Record<string, unknown>,
+          requestOptions: Record<string, unknown>,
+        ) => {
           prompts.push({ input, options: requestOptions });
         },
       },
@@ -214,8 +217,7 @@ describe("push TUI plugin", () => {
     const { api, commands, lifecycle, prompts, toasts } = createApi();
     const run: GitRunner = async (_cwd, _args, _timeoutMs, signal) =>
       new Promise((resolve) => {
-        const cancelled = () =>
-          resolve({ code: null, error: "cancelled", stderr: "", stdout: "" });
+        const cancelled = () => resolve({ code: null, error: "cancelled", stderr: "", stdout: "" });
         if (signal?.aborted) cancelled();
         else signal?.addEventListener("abort", cancelled, { once: true });
       });
