@@ -38,7 +38,11 @@
     {
       "host": "dev",
       "nickname": "dev",
-      "projects": [{ "paths": ["~/dev/nix"] }, { "paths": ["~/dev/TrevRPC"] }]
+      "projects": [
+        { "paths": ["~/dev/nix"] },
+        { "paths": ["~/dev/TrevRPC"] },
+        { "paths": ["~/dev/nix-fix-hash"] }
+      ]
     }
   ],
   "edit_predictions": {
