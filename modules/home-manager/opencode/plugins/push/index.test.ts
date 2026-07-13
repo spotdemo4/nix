@@ -25,6 +25,7 @@ function createRunner(overrides: Record<string, GitResult> = {}) {
 
 function createApi(options: { parentID?: string; status?: { type: string } } = {}) {
   const commands: Array<{ run: () => Promise<void>; [key: string]: unknown }> = [];
+  const eventHandlers = new Map<string, Set<(event: unknown) => void>>();
   const prompts: Array<{ input: Record<string, unknown>; options: Record<string, unknown> }> = [];
   const registrations: Array<{ order: number; slots: Record<string, unknown> }> = [];
   const toasts: Array<Record<string, unknown>> = [];
@@ -39,6 +40,14 @@ function createApi(options: { parentID?: string; status?: { type: string } } = {
         ) => {
           prompts.push({ input, options: requestOptions });
         },
+      },
+    },
+    event: {
+      on: (type: string, handler: (event: unknown) => void) => {
+        const handlers = eventHandlers.get(type) ?? new Set();
+        handlers.add(handler);
+        eventHandlers.set(type, handlers);
+        return () => handlers.delete(handler);
       },
     },
     keymap: {
@@ -72,7 +81,19 @@ function createApi(options: { parentID?: string; status?: { type: string } } = {
     },
     ui: { toast: (toast: Record<string, unknown>) => toasts.push(toast) },
   };
-  return { api, commands, disposals, lifecycle, prompts, registrations, toasts };
+  const emit = (type: string, properties: Record<string, unknown> = {}) => {
+    for (const handler of eventHandlers.get(type) ?? []) handler({ type, properties });
+  };
+  return {
+    api,
+    commands,
+    disposals,
+    emit,
+    lifecycle,
+    prompts,
+    registrations,
+    toasts,
+  };
 }
 
 describe("push TUI plugin", () => {
@@ -100,9 +121,9 @@ describe("push TUI plugin", () => {
     let notifications = 0;
     client.subscribe(() => notifications++);
 
-    expect(client.start("parent-1")).toBe(true);
-    expect(client.start("parent-1")).toBe(false);
-    expect(client.start("parent-2")).toBe(true);
+    expect(client.start("parent-1", "/workspace-1")).toBe(true);
+    expect(client.start("parent-1", "/workspace-1")).toBe(false);
+    expect(client.start("parent-2", "/workspace-2")).toBe(true);
     expect(client.isRunning("parent-1")).toBe(true);
     expect(client.isRunning("parent-2")).toBe(true);
 
@@ -110,6 +131,17 @@ describe("push TUI plugin", () => {
     expect(client.isRunning("parent-1")).toBe(false);
     expect(client.isRunning("parent-2")).toBe(true);
     expect(notifications).toBe(4);
+  });
+
+  test("cancels pushes only for files inside their workspace", () => {
+    const client = new PushStatusClient();
+    client.start("parent", "/workspace");
+
+    client.cancelFile("/other/tracked.txt");
+    expect(client.signal("parent")?.aborted).toBe(false);
+
+    client.cancelFile("/workspace/tracked.txt");
+    expect(client.signal("parent")?.aborted).toBe(true);
   });
 
   test("pushes directly without starting an agent", async () => {
@@ -218,7 +250,7 @@ describe("push TUI plugin", () => {
     expect(parts[0]?.prompt).toContain("no supported configured upstream");
   });
 
-  test("does not submit a fallback if the session became busy", async () => {
+  test("submits a fallback if the session became busy", async () => {
     const options: { status?: { type: string } } = {};
     const { api, commands, prompts, toasts } = createApi(options);
     const { run: baseRunner } = createRunner({
@@ -233,9 +265,67 @@ describe("push TUI plugin", () => {
 
     await commands[0]?.run();
 
+    expect(prompts).toHaveLength(1);
+    expect(toasts.at(-1)).toEqual({
+      message: "the direct push failed; handed off to the build agent",
+      title: "Push",
+      variant: "info",
+    });
+  });
+
+  test("cancels an active push when a workspace file changes", async () => {
+    const { api, commands, emit, prompts, toasts } = createApi({ status: { type: "busy" } });
+    const run: GitRunner = async (_cwd, _args, _timeoutMs, signal) =>
+      new Promise((resolve) => {
+        const cancelled = () => resolve({ code: null, error: "cancelled", stderr: "", stdout: "" });
+        if (signal?.aborted) cancelled();
+        else signal?.addEventListener("abort", cancelled, { once: true });
+      });
+    await registerPushPlugin(api as never, undefined, run);
+
+    const execution = commands[0]?.run();
+    emit("file.watcher.updated", { event: "change", file: "/workspace/tracked.txt" });
+    await execution;
+
     expect(prompts).toHaveLength(0);
     expect(toasts.at(-1)).toEqual({
-      message: "the direct push failed; retry when the session is idle",
+      message: "Push cancelled because workspace files changed",
+      title: "Push",
+      variant: "warning",
+    });
+  });
+
+  test("cancels before reporting a pending fallback handoff", async () => {
+    const { api, commands, emit, prompts, toasts } = createApi();
+    let releasePrompt = () => {};
+    let promptStarted = () => {};
+    const promptGate = new Promise<void>((resolve) => {
+      releasePrompt = resolve;
+    });
+    const started = new Promise<void>((resolve) => {
+      promptStarted = resolve;
+    });
+    api.client.session.promptAsync = async (
+      input: Record<string, unknown>,
+      requestOptions: Record<string, unknown>,
+    ) => {
+      prompts.push({ input, options: requestOptions });
+      promptStarted();
+      await promptGate;
+    };
+    const { run } = createRunner({
+      push: { code: 1, stderr: "rejected\n", stdout: "" },
+    });
+    await registerPushPlugin(api as never, undefined, run);
+
+    const execution = commands[0]?.run();
+    await started;
+    emit("file.edited", { file: "/workspace/tracked.txt" });
+    releasePrompt();
+    await execution;
+
+    expect(toasts.at(-1)).toEqual({
+      message: "Push cancelled because workspace files changed",
       title: "Push",
       variant: "warning",
     });
@@ -259,17 +349,44 @@ describe("push TUI plugin", () => {
     expect(toasts).toHaveLength(0);
   });
 
-  test("refuses child or busy sessions before running Git", async () => {
-    for (const options of [{ parentID: "root" }, { status: { type: "busy" } }]) {
-      const { api, commands, prompts, toasts } = createApi(options);
-      const { calls, run } = createRunner();
-      await registerPushPlugin(api as never, undefined, run);
+  test("stops quietly when the plugin is disposed", async () => {
+    const { api, commands, disposals, prompts, toasts } = createApi();
+    const run: GitRunner = async (_cwd, _args, _timeoutMs, signal) =>
+      new Promise((resolve) => {
+        const cancelled = () => resolve({ code: null, error: "cancelled", stderr: "", stdout: "" });
+        if (signal?.aborted) cancelled();
+        else signal?.addEventListener("abort", cancelled, { once: true });
+      });
+    await registerPushPlugin(api as never, undefined, run);
 
-      await commands[0]?.run();
+    const execution = commands[0]?.run();
+    await disposals[0]?.();
+    await execution;
 
-      expect(calls).toHaveLength(0);
-      expect(prompts).toHaveLength(0);
-      expect(toasts.at(-1)?.variant).toBe("warning");
-    }
+    expect(prompts).toHaveLength(0);
+    expect(toasts).toHaveLength(0);
+  });
+
+  test("refuses child sessions before running Git", async () => {
+    const { api, commands, prompts, toasts } = createApi({ parentID: "root" });
+    const { calls, run } = createRunner();
+    await registerPushPlugin(api as never, undefined, run);
+
+    await commands[0]?.run();
+
+    expect(calls).toHaveLength(0);
+    expect(prompts).toHaveLength(0);
+    expect(toasts.at(-1)?.variant).toBe("warning");
+  });
+
+  test("pushes while the parent session is busy", async () => {
+    const { api, commands, toasts } = createApi({ status: { type: "busy" } });
+    const { calls, run } = createRunner();
+    await registerPushPlugin(api as never, undefined, run);
+
+    await commands[0]?.run();
+
+    expect(calls.some((call) => call.args.includes("push"))).toBe(true);
+    expect(toasts.at(-1)?.variant).toBe("success");
   });
 });
