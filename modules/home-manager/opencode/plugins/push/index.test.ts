@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { GitResult, GitRunner } from "./core";
 import { gitTimeouts } from "./core";
-import { registerPushPlugin } from "./index";
+import { PushStatusClient, registerPushPlugin } from "./index";
 
 const ok = (stdout = "", stderr = ""): GitResult => ({ code: 0, stderr, stdout });
 
@@ -26,6 +26,7 @@ function createRunner(overrides: Record<string, GitResult> = {}) {
 function createApi(options: { parentID?: string; status?: { type: string } } = {}) {
   const commands: Array<{ run: () => Promise<void>; [key: string]: unknown }> = [];
   const prompts: Array<{ input: Record<string, unknown>; options: Record<string, unknown> }> = [];
+  const registrations: Array<{ order: number; slots: Record<string, unknown> }> = [];
   const toasts: Array<Record<string, unknown>> = [];
   const disposals: Array<() => void> = [];
   const lifecycle = new AbortController();
@@ -51,6 +52,12 @@ function createApi(options: { parentID?: string; status?: { type: string } } = {
       onDispose: (dispose: () => void) => disposals.push(dispose),
     },
     route: { current: { name: "session", params: { sessionID: "parent" } } },
+    slots: {
+      register: (plugin: { order: number; slots: Record<string, unknown> }) => {
+        registrations.push(plugin);
+        return "push-status";
+      },
+    },
     state: {
       session: {
         get: () => ({
@@ -65,12 +72,12 @@ function createApi(options: { parentID?: string; status?: { type: string } } = {
     },
     ui: { toast: (toast: Record<string, unknown>) => toasts.push(toast) },
   };
-  return { api, commands, disposals, lifecycle, prompts, toasts };
+  return { api, commands, disposals, lifecycle, prompts, registrations, toasts };
 }
 
 describe("push TUI plugin", () => {
-  test("registers the push slash command", async () => {
-    const { api, commands, disposals } = createApi();
+  test("registers the push slash command and status slot", async () => {
+    const { api, commands, disposals, registrations } = createApi();
     const { run } = createRunner();
 
     await registerPushPlugin(api as never, undefined, run);
@@ -82,6 +89,27 @@ describe("push TUI plugin", () => {
       slashName: "push",
     });
     expect(disposals).toHaveLength(1);
+    expect(registrations).toHaveLength(1);
+    expect(registrations[0]?.order).toBe(45);
+    expect(registrations[0]?.slots.sidebar_content).toBeFunction();
+    expect(registrations[0]?.slots.sidebar_footer).toBeUndefined();
+  });
+
+  test("tracks running pushes by session", () => {
+    const client = new PushStatusClient();
+    let notifications = 0;
+    client.subscribe(() => notifications++);
+
+    expect(client.start("parent-1")).toBe(true);
+    expect(client.start("parent-1")).toBe(false);
+    expect(client.start("parent-2")).toBe(true);
+    expect(client.isRunning("parent-1")).toBe(true);
+    expect(client.isRunning("parent-2")).toBe(true);
+
+    client.finish("parent-1");
+    expect(client.isRunning("parent-1")).toBe(false);
+    expect(client.isRunning("parent-2")).toBe(true);
+    expect(notifications).toBe(4);
   });
 
   test("pushes directly without starting an agent", async () => {

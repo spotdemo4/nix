@@ -1,8 +1,64 @@
+/** @jsxImportSource @opentui/solid */
 import type { PluginOptions } from "@opencode-ai/plugin";
 import type { TuiPlugin, TuiPluginApi, TuiPluginModule } from "@opencode-ai/plugin/tui";
+import { createSignal, onCleanup, Show } from "solid-js";
 import { attemptPush, createGitRunner, renderFallbackPrompt, type GitRunner } from "./core";
 
 const PLUGIN_ID = "push";
+
+export class PushStatusClient {
+  private readonly listeners = new Set<() => void>();
+  private readonly running = new Set<string>();
+
+  subscribe(listener: () => void) {
+    this.listeners.add(listener);
+    listener();
+    return () => this.listeners.delete(listener);
+  }
+
+  isRunning(sessionID: string) {
+    return this.running.has(sessionID);
+  }
+
+  start(sessionID: string) {
+    if (this.running.has(sessionID)) return false;
+    this.running.add(sessionID);
+    this.emit();
+    return true;
+  }
+
+  finish(sessionID: string) {
+    if (!this.running.delete(sessionID)) return;
+    this.emit();
+  }
+
+  dispose() {
+    this.running.clear();
+    this.listeners.clear();
+  }
+
+  private emit() {
+    for (const listener of this.listeners) listener();
+  }
+}
+
+function View(props: { api: TuiPluginApi; client: PushStatusClient; sessionID: string }) {
+  const [running, setRunning] = createSignal(false);
+  const unsubscribe = props.client.subscribe(() => {
+    setRunning(props.client.isRunning(props.sessionID));
+  });
+  const theme = () => props.api.theme.current;
+  onCleanup(unsubscribe);
+
+  return (
+    <Show when={running()}>
+      <text>
+        <span style={{ fg: theme().textMuted }}>Push </span>
+        <span style={{ fg: theme().info }}>Pushing...</span>
+      </text>
+    </Show>
+  );
+}
 
 export async function registerPushPlugin(
   api: TuiPluginApi,
@@ -11,7 +67,7 @@ export async function registerPushPlugin(
 ) {
   const binary = typeof options?.gitBinary === "string" ? options.gitBinary : "git";
   const runGit = runner ?? createGitRunner(binary);
-  const running = new Set<string>();
+  const client = new PushStatusClient();
 
   const unregister = api.keymap.registerLayer({
     commands: [
@@ -54,7 +110,7 @@ export async function registerPushPlugin(
             });
             return;
           }
-          if (running.has(sessionID)) {
+          if (!client.start(sessionID)) {
             api.ui.toast({
               title: "Push",
               message: "A push is already running",
@@ -63,7 +119,6 @@ export async function registerPushPlugin(
             return;
           }
 
-          running.add(sessionID);
           try {
             const outcome = await attemptPush(session.directory, runGit, api.lifecycle.signal);
             if (api.lifecycle.signal.aborted) return;
@@ -121,14 +176,25 @@ export async function registerPushPlugin(
               variant: "error",
             });
           } finally {
-            running.delete(sessionID);
+            client.finish(sessionID);
           }
         },
       },
     ],
   });
 
-  api.lifecycle.onDispose(unregister);
+  api.lifecycle.onDispose(() => {
+    unregister();
+    client.dispose();
+  });
+  api.slots.register({
+    order: 45,
+    slots: {
+      sidebar_content(_context, props) {
+        return <View api={api} client={client} sessionID={props.session_id} />;
+      },
+    },
+  });
 }
 
 const tui: TuiPlugin = async (api, options) => registerPushPlugin(api, options);
