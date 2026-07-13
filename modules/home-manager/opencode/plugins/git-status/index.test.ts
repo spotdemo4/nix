@@ -9,6 +9,7 @@ import {
   inspectGitRepository,
   parseGitStatus,
   refreshGitRepository,
+  selectGitWorkspace,
 } from "./core";
 import gitStatusPlugin from "./index";
 
@@ -95,6 +96,13 @@ test("registers in append-mode sidebar content rather than the single-winner foo
   expect(registrations[0]?.slots.sidebar_content).toBeFunction();
   expect(registrations[0]?.slots.sidebar_footer).toBeUndefined();
   for (const dispose of disposers) dispose();
+});
+
+test("uses the launch directory for global non-VCS projects", () => {
+  expect(selectGitWorkspace("/home/user/workspace", "/", false)).toBe("/home/user/workspace");
+  expect(selectGitWorkspace("/home/user/workspace/src", "/home/user/workspace", true)).toBe(
+    "/home/user/workspace",
+  );
 });
 
 describe("Git porcelain parsing", () => {
@@ -226,6 +234,15 @@ describe("Git repository inspection", () => {
 });
 
 describe("Git repository discovery", () => {
+  test("does not treat cancellation as a partial discovery result", async () => {
+    const controller = new AbortController();
+    controller.abort();
+
+    await expect(
+      discoverGitRepositories("/", { allowPartial: true, signal: controller.signal }),
+    ).rejects.toMatchObject({ name: "AbortError" });
+  });
+
   test("discovers independent repositories recursively", async () => {
     const workspace = await mkdtemp(join(tmpdir(), "opencode-git-status-workspace-"));
     directories.push(workspace);
@@ -240,6 +257,16 @@ describe("Git repository discovery", () => {
       { depth: 0, label: "alpha", submodule: false },
       { depth: 0, label: "groups/beta", submodule: false },
     ]);
+  });
+
+  test("does not include a repository containing the workspace", async () => {
+    const { root } = await createRepository();
+    const workspace = join(root, "workspace");
+    await initializeRepository(join(workspace, "child"));
+
+    const repositories = await discoverGitRepositories(workspace);
+
+    expect(repositories.map(({ label }) => label)).toEqual(["child"]);
   });
 
   test("applies default and configurable scan exclusions", async () => {

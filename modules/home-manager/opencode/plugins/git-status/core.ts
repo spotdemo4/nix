@@ -28,11 +28,16 @@ export type GitRepository = {
 };
 
 export type RepositoryDiscoveryOptions = GitCommandOptions & {
+  allowPartial?: boolean;
   scanExclusions?: {
     add?: string[];
     remove?: string[];
   };
 };
+
+export function selectGitWorkspace(directory: string, worktree: string, hasVcs: boolean) {
+  return hasVcs && worktree ? worktree : directory;
+}
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_GIT_OUTPUT_BYTES = 16 * 1024 * 1024;
@@ -56,6 +61,11 @@ class GitCommandError extends Error {
   ) {
     super(message);
   }
+}
+
+function isAbortError(error: unknown) {
+  const value = error as { code?: unknown; name?: unknown } | undefined;
+  return value?.name === "AbortError" || value?.code === "ABORT_ERR";
 }
 
 type RunGitOptions = GitCommandOptions & {
@@ -86,7 +96,9 @@ function runGit(
       },
       (error, stdout, stderr) => {
         if (error) {
-          reject(new GitCommandError(error.message, stderr));
+          const wrapped = new GitCommandError(error.message, stderr);
+          if (isAbortError(error)) wrapped.name = "AbortError";
+          reject(wrapped);
           return;
         }
         resolve(stdout);
@@ -146,7 +158,12 @@ async function repositoryIdentity(
   }
 }
 
-async function findRepositoryCandidates(root: string, excluded: Set<string>, signal?: AbortSignal) {
+async function findRepositoryCandidates(
+  root: string,
+  excluded: Set<string>,
+  allowPartial: boolean,
+  signal?: AbortSignal,
+) {
   const candidates = new Set<string>([root]);
   const pending = [root];
 
@@ -159,7 +176,7 @@ async function findRepositoryCandidates(root: string, excluded: Set<string>, sig
     try {
       entries = await readdir(directory, { withFileTypes: true });
     } catch (error) {
-      if (directory === root || !isMissingPath(error)) throw error;
+      if (directory === root || (!allowPartial && !isMissingPath(error))) throw error;
       continue;
     }
 
@@ -242,16 +259,26 @@ export async function discoverGitRepositories(
 
   const identities = new Map<string, RepositoryIdentity>();
   const discoveryErrors: unknown[] = [];
-  for (const candidate of await findRepositoryCandidates(root, excluded, options.signal)) {
+  for (const candidate of await findRepositoryCandidates(
+    root,
+    excluded,
+    options.allowPartial ?? false,
+    options.signal,
+  )) {
     options.signal?.throwIfAborted();
     try {
       const identity = await repositoryIdentity(candidate, options);
-      if (identity) identities.set(identity.gitDirectory, identity);
+      if (identity && pathIsWithin(root, identity.directory)) {
+        identities.set(identity.gitDirectory, identity);
+      }
     } catch (error) {
+      if (isAbortError(error)) throw error;
       discoveryErrors.push(error);
     }
   }
-  if (discoveryErrors.length > 0) throw discoveryErrors[0];
+  if (discoveryErrors.length > 0 && (!options.allowPartial || identities.size === 0)) {
+    throw discoveryErrors[0];
+  }
 
   const parents = new Map<string, string>();
   const inspected = new Set<string>();
@@ -260,7 +287,14 @@ export async function discoverGitRepositories(
     if (inspected.has(repository.gitDirectory)) return;
     inspected.add(repository.gitDirectory);
 
-    const submodules = await listInitializedSubmodules(repository, options);
+    let submodules: Awaited<ReturnType<typeof listInitializedSubmodules>>;
+    try {
+      submodules = await listInitializedSubmodules(repository, options);
+    } catch (error) {
+      if (isAbortError(error)) throw error;
+      if (!options.allowPartial) throw error;
+      return;
+    }
     for (const submodule of submodules) {
       identities.set(submodule.gitDirectory, submodule);
       parents.set(submodule.gitDirectory, repository.gitDirectory);

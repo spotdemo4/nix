@@ -11,6 +11,7 @@ import {
   gitStatusLabel,
   inspectGitRepository,
   refreshGitRepository,
+  selectGitWorkspace,
   type GitRepository,
   type GitStatus,
   type RepositoryDiscoveryOptions,
@@ -310,7 +311,11 @@ function View(props: { api: TuiPluginApi; client: GitStatusClient }) {
 const tui: TuiPlugin = async (api, rawOptions) => {
   const options = rawOptions as PluginOptions | undefined;
   const client = new GitStatusClient(
-    api.state.path.worktree || api.state.path.directory,
+    selectGitWorkspace(
+      api.state.path.directory,
+      api.state.path.worktree,
+      api.state.vcs !== undefined,
+    ),
     {
       gitBinary: options?.gitBinary,
       scanExclusions: options?.scanExclusions,
