@@ -155,6 +155,7 @@
               # lint
               nixd
               nil
+              lua
               shellcheck
               action-validator
               zizmor
@@ -238,6 +239,17 @@
             ];
             script = ''
               nixfmt --check "$file"
+            '';
+          };
+
+          lua = {
+            root = ./.;
+            filter = file: file.hasExt "lua";
+            packages = with pkgs; [
+              lua
+            ];
+            script = ''
+              luac -p "$file"
             '';
           };
 
