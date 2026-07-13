@@ -71,6 +71,7 @@ in
       enable = true;
       baseIndex = 1;
       escapeTime = 0;
+      extraConfig = "set -g allow-passthrough on";
       historyLimit = 100000;
       mouse = true;
       terminal = "tmux-256color";
