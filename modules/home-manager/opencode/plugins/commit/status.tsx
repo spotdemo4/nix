@@ -1,7 +1,7 @@
 /** @jsxImportSource @opentui/solid */
 import type { TuiPlugin, TuiPluginApi, TuiPluginModule } from "@opencode-ai/plugin/tui";
 import { createSignal, onCleanup, Show } from "solid-js";
-import { AUTO_COMMIT_SESSION_TITLE, AUTO_COMMIT_TRIGGER } from "./constants";
+import { COMMIT_SESSION_TITLE, COMMIT_TRIGGER } from "./constants";
 
 type SessionInfo = {
   id: string;
@@ -9,9 +9,9 @@ type SessionInfo = {
   title?: string;
 };
 
-const PLUGIN_ID = "trev.auto-commit-status";
+const PLUGIN_ID = "trev.commit-status";
 
-export class AutoCommitStatusClient {
+export class CommitStatusClient {
   private readonly parentsByChild = new Map<string, string>();
   private readonly childCounts = new Map<string, number>();
   private readonly listeners = new Set<() => void>();
@@ -27,7 +27,7 @@ export class AutoCommitStatusClient {
   }
 
   sessionCreated(session: SessionInfo) {
-    if (session.title !== AUTO_COMMIT_SESSION_TITLE || !session.parentID) return;
+    if (session.title !== COMMIT_SESSION_TITLE || !session.parentID) return;
     if (this.parentsByChild.has(session.id)) return;
 
     this.parentsByChild.set(session.id, session.parentID);
@@ -61,7 +61,7 @@ export class AutoCommitStatusClient {
   }
 }
 
-function View(props: { api: TuiPluginApi; client: AutoCommitStatusClient; sessionID: string }) {
+function View(props: { api: TuiPluginApi; client: CommitStatusClient; sessionID: string }) {
   const [generating, setGenerating] = createSignal(false);
   const unsubscribe = props.client.subscribe(() => {
     setGenerating(props.client.isGenerating(props.sessionID));
@@ -72,7 +72,7 @@ function View(props: { api: TuiPluginApi; client: AutoCommitStatusClient; sessio
   return (
     <Show when={generating()}>
       <text>
-        <span style={{ fg: theme().textMuted }}>Auto commit </span>
+        <span style={{ fg: theme().textMuted }}>Commit </span>
         <span style={{ fg: theme().info }}>Generating...</span>
       </text>
     </Show>
@@ -80,17 +80,17 @@ function View(props: { api: TuiPluginApi; client: AutoCommitStatusClient; sessio
 }
 
 const tui: TuiPlugin = async (api) => {
-  const client = new AutoCommitStatusClient();
+  const client = new CommitStatusClient();
   const unsubscribe = [
     api.keymap.registerLayer({
       commands: [
         {
           category: "VCS",
           desc: "Create atomic commits for attributable working tree changes",
-          name: "auto-commit.run",
+          name: "commit.run",
           namespace: "palette",
           slashName: "commit",
-          title: "Run auto commit",
+          title: "Run commit",
           async run() {
             const sessionID =
               api.route.current.name === "session" && "params" in api.route.current
@@ -98,8 +98,8 @@ const tui: TuiPlugin = async (api) => {
                 : undefined;
             if (typeof sessionID !== "string") {
               api.ui.toast({
-                title: "Auto commit",
-                message: "Open a session before running auto commit",
+                title: "Commit",
+                message: "Open a session before running commit",
                 variant: "warning",
               });
               return;
@@ -108,8 +108,8 @@ const tui: TuiPlugin = async (api) => {
             const session = api.state.session.get(sessionID);
             if (!session || session.parentID) {
               api.ui.toast({
-                title: "Auto commit",
-                message: "Auto commit can only run from a top-level session",
+                title: "Commit",
+                message: "Commit can only run from a top-level session",
                 variant: "warning",
               });
               return;
@@ -117,8 +117,8 @@ const tui: TuiPlugin = async (api) => {
             const status = api.state.session.status(sessionID);
             if (status && status.type !== "idle") {
               api.ui.toast({
-                title: "Auto commit",
-                message: "Wait for the session to become idle before running auto commit",
+                title: "Commit",
+                message: "Wait for the session to become idle before running commit",
                 variant: "warning",
               });
               return;
@@ -138,7 +138,7 @@ const tui: TuiPlugin = async (api) => {
                   parts: [
                     {
                       type: "text",
-                      text: AUTO_COMMIT_TRIGGER,
+                      text: COMMIT_TRIGGER,
                       synthetic: true,
                       ignored: true,
                     },
@@ -147,13 +147,13 @@ const tui: TuiPlugin = async (api) => {
                 { throwOnError: true },
               );
               api.ui.toast({
-                title: "Auto commit",
-                message: "Automatic commit requested",
+                title: "Commit",
+                message: "Commit requested",
                 variant: "info",
               });
             } catch (error) {
               api.ui.toast({
-                title: "Auto commit",
+                title: "Commit",
                 message: error instanceof Error ? error.message : String(error),
                 variant: "error",
               });

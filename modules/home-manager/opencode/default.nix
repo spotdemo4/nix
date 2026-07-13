@@ -13,7 +13,7 @@
       enableMcpIntegration = true;
       settings = builtins.fromJSON (builtins.readFile ./config.json);
       tui.plugin = [
-        "./plugins/auto-commit/status.tsx"
+        "./plugins/commit/status.tsx"
         [
           "./plugins/git-status/index.tsx"
           {

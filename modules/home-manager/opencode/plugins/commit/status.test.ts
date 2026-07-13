@@ -1,12 +1,12 @@
 import { expect, test } from "bun:test";
-import { AUTO_COMMIT_SESSION_TITLE, AUTO_COMMIT_TRIGGER } from "./constants";
-import autoCommitStatusPlugin, { AutoCommitStatusClient } from "./status";
+import { COMMIT_SESSION_TITLE, COMMIT_TRIGGER } from "./constants";
+import commitStatusPlugin, { CommitStatusClient } from "./status";
 
 test("registers the status slot and commit command", async () => {
   const commands: Array<Record<string, unknown>> = [];
   const registrations: Array<{ slots: Record<string, unknown> }> = [];
 
-  await autoCommitStatusPlugin.tui(
+  await commitStatusPlugin.tui(
     {
       event: { on: () => () => {} },
       keymap: {
@@ -19,7 +19,7 @@ test("registers the status slot and commit command", async () => {
       slots: {
         register: (plugin: { slots: Record<string, unknown> }) => {
           registrations.push(plugin);
-          return "auto-commit-status";
+          return "commit-status";
         },
       },
     } as never,
@@ -32,19 +32,19 @@ test("registers the status slot and commit command", async () => {
   expect(registrations[0]?.slots.sidebar_footer).toBeUndefined();
   expect(commands).toHaveLength(1);
   expect(commands[0]).toMatchObject({
-    name: "auto-commit.run",
+    name: "commit.run",
     namespace: "palette",
     slashName: "commit",
   });
 });
 
-test("requests auto commit without starting a model response", async () => {
+test("requests a commit without starting a model response", async () => {
   const prompts: Array<{ input: Record<string, unknown>; options: Record<string, unknown> }> = [];
   const toasts: Array<Record<string, unknown>> = [];
   let status: { type: string } | undefined;
   let run: (() => Promise<void>) | undefined;
 
-  await autoCommitStatusPlugin.tui(
+  await commitStatusPlugin.tui(
     {
       client: {
         session: {
@@ -62,7 +62,7 @@ test("requests auto commit without starting a model response", async () => {
       },
       lifecycle: { onDispose: () => () => {} },
       route: { current: { name: "session", params: { sessionID: "parent" } } },
-      slots: { register: () => "auto-commit-status" },
+      slots: { register: () => "commit-status" },
       state: {
         session: {
           get: () => ({
@@ -90,7 +90,7 @@ test("requests auto commit without starting a model response", async () => {
         directory: "/workspace",
         model: { modelID: "model", providerID: "provider" },
         noReply: true,
-        parts: [{ ignored: true, synthetic: true, text: AUTO_COMMIT_TRIGGER, type: "text" }],
+        parts: [{ ignored: true, synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
         sessionID: "parent",
         variant: "high",
       },
@@ -98,8 +98,8 @@ test("requests auto commit without starting a model response", async () => {
     },
   ]);
   expect(toasts).toContainEqual({
-    message: "Automatic commit requested",
-    title: "Auto commit",
+    message: "Commit requested",
+    title: "Commit",
     variant: "info",
   });
 
@@ -107,19 +107,19 @@ test("requests auto commit without starting a model response", async () => {
   await run?.();
   expect(prompts).toHaveLength(1);
   expect(toasts).toContainEqual({
-    message: "Wait for the session to become idle before running auto commit",
-    title: "Auto commit",
+    message: "Wait for the session to become idle before running commit",
+    title: "Commit",
     variant: "warning",
   });
 });
 
-test("tracks auto-commit generation for its parent session", () => {
-  const client = new AutoCommitStatusClient();
+test("tracks commit generation for its parent session", () => {
+  const client = new CommitStatusClient();
 
   client.sessionCreated({
     id: "child",
     parentID: "parent",
-    title: AUTO_COMMIT_SESSION_TITLE,
+    title: COMMIT_SESSION_TITLE,
   });
   expect(client.isGenerating("parent")).toBe(true);
   expect(client.isGenerating("other-parent")).toBe(false);
@@ -129,20 +129,20 @@ test("tracks auto-commit generation for its parent session", () => {
 });
 
 test("ignores unrelated and top-level sessions", () => {
-  const client = new AutoCommitStatusClient();
+  const client = new CommitStatusClient();
 
   client.sessionCreated({ id: "unrelated", parentID: "parent", title: "Other work" });
-  client.sessionCreated({ id: "top-level", title: AUTO_COMMIT_SESSION_TITLE });
+  client.sessionCreated({ id: "top-level", title: COMMIT_SESSION_TITLE });
 
   expect(client.isGenerating("parent")).toBe(false);
 });
 
-test("keeps each parent active until all of its auto-commit children finish", () => {
-  const client = new AutoCommitStatusClient();
+test("keeps each parent active until all of its commit children finish", () => {
+  const client = new CommitStatusClient();
 
-  client.sessionCreated({ id: "child-1", parentID: "parent-1", title: AUTO_COMMIT_SESSION_TITLE });
-  client.sessionCreated({ id: "child-2", parentID: "parent-1", title: AUTO_COMMIT_SESSION_TITLE });
-  client.sessionCreated({ id: "child-3", parentID: "parent-2", title: AUTO_COMMIT_SESSION_TITLE });
+  client.sessionCreated({ id: "child-1", parentID: "parent-1", title: COMMIT_SESSION_TITLE });
+  client.sessionCreated({ id: "child-2", parentID: "parent-1", title: COMMIT_SESSION_TITLE });
+  client.sessionCreated({ id: "child-3", parentID: "parent-2", title: COMMIT_SESSION_TITLE });
 
   client.sessionDeleted({ id: "child-1" });
   expect(client.isGenerating("parent-1")).toBe(true);
@@ -157,9 +157,9 @@ test("keeps each parent active until all of its auto-commit children finish", ()
 });
 
 test("clears completed generation without requiring child deletion", () => {
-  const client = new AutoCommitStatusClient();
+  const client = new CommitStatusClient();
 
-  client.sessionCreated({ id: "child", parentID: "parent", title: AUTO_COMMIT_SESSION_TITLE });
+  client.sessionCreated({ id: "child", parentID: "parent", title: COMMIT_SESSION_TITLE });
   client.sessionFinished("child");
 
   expect(client.isGenerating("parent")).toBe(false);

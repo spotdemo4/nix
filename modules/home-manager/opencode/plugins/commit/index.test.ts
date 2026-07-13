@@ -5,7 +5,7 @@ import { chmod, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  default as autoCommitModule,
+  default as commitModule,
   captureSnapshot,
   isConventionalSubject,
   listInitializedSubmodules,
@@ -17,7 +17,7 @@ import {
   validatePreparedCommits,
   validatePreparedWorktree,
 } from "./index";
-import { AUTO_COMMIT_TRIGGER } from "./constants";
+import { COMMIT_TRIGGER } from "./constants";
 
 const directories: string[] = [];
 
@@ -36,7 +36,7 @@ async function initializeRepository(root: string) {
 }
 
 async function createRepository() {
-  const root = await mkdtemp(join(tmpdir(), "opencode-auto-commit-test-"));
+  const root = await mkdtemp(join(tmpdir(), "opencode-commit-test-"));
   directories.push(root);
   await initializeRepository(root);
   return root;
@@ -87,9 +87,6 @@ async function createLifecycleHarness(
   let creates = 0;
   let gets = 0;
   let promptCalls = 0;
-  let sessionBusy = false;
-  let statusCalls = 0;
-  let statusFailures = 0;
   let releasePrompt: () => void = () => {};
   const promptGate = new Promise<void>((resolve) => {
     releasePrompt = resolve;
@@ -119,16 +116,7 @@ async function createLifecycleHarness(
           },
         };
       },
-      status: async () => {
-        statusCalls += 1;
-        if (statusFailures > 0) {
-          statusFailures -= 1;
-          throw new Error("status unavailable");
-        }
-        return {
-          data: sessionBusy ? { parent: { type: "busy" as const } } : {},
-        };
-      },
+      status: async () => ({ data: {} }),
       messages: async () => ({ data: [], response: { headers: new Headers() } }),
       create: async () => {
         creates += 1;
@@ -166,7 +154,7 @@ async function createLifecycleHarness(
       },
     },
   };
-  const hooks = await autoCommitModule.server({
+  const hooks = await commitModule.server({
     client: client as never,
     directory: root,
     experimental_workspace: { register() {} },
@@ -183,9 +171,6 @@ async function createLifecycleHarness(
     get creates() {
       return creates;
     },
-    failStatusOnce() {
-      statusFailures += 1;
-    },
     get gets() {
       return gets;
     },
@@ -193,12 +178,6 @@ async function createLifecycleHarness(
     logs,
     releasePrompt,
     root,
-    setBusy(value: boolean) {
-      sessionBusy = value;
-    },
-    get statusCalls() {
-      return statusCalls;
-    },
     toasts,
   };
 }
@@ -268,19 +247,19 @@ async function commitCapturedRepository(directory: string, text: string) {
   git(directory, "-c", "core.hooksPath=/dev/null", "commit", "-m", "fix: update tracked content");
 }
 
-async function triggerAutoCommit(harness: Awaited<ReturnType<typeof createLifecycleHarness>>) {
+async function triggerCommit(harness: Awaited<ReturnType<typeof createLifecycleHarness>>) {
   harness.releasePrompt();
-  await harness.hooks["tool.execute.after"]?.({
-    args: {},
-    callID: "call",
-    sessionID: "parent",
-    tool: "apply_patch",
-  });
-  await harness.hooks["experimental.text.complete"]?.({
-    messageID: "message",
-    partID: "part",
-    sessionID: "parent",
-  });
+  await requestCommit(harness);
+}
+
+async function requestCommit(harness: Awaited<ReturnType<typeof createLifecycleHarness>>) {
+  await harness.hooks["chat.message"]?.(
+    { sessionID: "parent" },
+    {
+      message: {} as never,
+      parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }] as never,
+    },
+  );
 }
 
 describe("recursive repositories", () => {
@@ -298,7 +277,7 @@ describe("recursive repositories", () => {
     expect((await listInitializedSubmodules(root)).map(({ path }) => path)).toEqual([
       "modules/child",
     ]);
-    await triggerAutoCommit(harness);
+    await triggerCommit(harness);
     await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 15_000);
 
     expect(git(child, "rev-parse", "HEAD")).not.toBe(childHead);
@@ -327,7 +306,7 @@ describe("recursive repositories", () => {
       root,
     });
 
-    await triggerAutoCommit(harness);
+    await triggerCommit(harness);
     await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 20_000);
 
     expect(harness.creates).toBe(3);
@@ -352,7 +331,7 @@ describe("recursive repositories", () => {
     await writeFile(join(child, "tracked.txt"), "after\n");
     const harness = await createLifecycleHarness({ dirty: false, root });
 
-    await triggerAutoCommit(harness);
+    await triggerCommit(harness);
     await waitFor(
       () => harness.toasts.some((toast) => toast.message.includes("HEAD is detached")),
       15_000,
@@ -377,7 +356,7 @@ describe("recursive repositories", () => {
     git(root, "add", "tracked.txt");
     const harness = await createLifecycleHarness({ dirty: false, root });
 
-    await triggerAutoCommit(harness);
+    await triggerCommit(harness);
     await waitFor(
       () => harness.toasts.some((toast) => toast.message.includes("staged changes")),
       15_000,
@@ -397,7 +376,7 @@ describe("recursive repositories", () => {
     await writeFile(join(child, "tracked.txt"), "after\n");
     const harness = await createLifecycleHarness({ dirty: false, root });
 
-    await triggerAutoCommit(harness);
+    await triggerCommit(harness);
     await waitFor(
       () => harness.toasts.some((toast) => toast.message.includes("control characters")),
       15_000,
@@ -457,6 +436,31 @@ describe("prepared commits", () => {
     directories.splice(directories.indexOf(temporary), 1);
   });
 
+  test("checks cancellation immediately before advancing the branch", async () => {
+    const root = await createRepository();
+    await writeFile(join(root, "tracked.txt"), "after\n");
+    const originalHead = git(root, "rev-parse", "HEAD");
+    const snapshot = await captureSnapshot(root);
+    const temporary = await prepareTemporaryWorktree(root, snapshot);
+    directories.push(temporary);
+    git(temporary, "add", "tracked.txt");
+    git(temporary, "commit", "-m", "fix: update tracked content");
+    const prepared = await validatePreparedCommits(temporary, snapshot);
+    let checks = 0;
+
+    await expect(
+      replayPreparedCommits(root, snapshot, prepared, () => {
+        checks += 1;
+        return checks < 3;
+      }),
+    ).rejects.toThrow("parent session resumed");
+
+    expect(git(root, "rev-parse", "HEAD")).toBe(originalHead);
+    expect(git(root, "status", "--short")).toContain("M tracked.txt");
+    await removeTemporaryWorktree(root, temporary);
+    directories.splice(directories.indexOf(temporary), 1);
+  });
+
   test("recovers an interrupted integration after the branch advances", async () => {
     const root = await createRepository();
     await writeFile(join(root, "tracked.txt"), "after\n");
@@ -468,7 +472,7 @@ describe("prepared commits", () => {
     git(temporary, "commit", "-m", "fix: update tracked content");
     const prepared = await validatePreparedCommits(temporary, snapshot);
     const finalCommit = prepared.at(-1)!;
-    const indexDirectory = await mkdtemp(join(tmpdir(), "opencode-auto-commit-index-test-"));
+    const indexDirectory = await mkdtemp(join(tmpdir(), "opencode-commit-index-test-"));
     directories.push(indexDirectory);
     const finalIndexPath = join(indexDirectory, "index");
     execFileSync("git", ["read-tree", finalCommit.tree], {
@@ -538,7 +542,7 @@ describe("prepared commits", () => {
 
 describe("plugin startup", () => {
   test("keeps hooks active for child repositories in a global project", async () => {
-    const root = await mkdtemp(join(tmpdir(), "opencode-auto-commit-non-repository-"));
+    const root = await mkdtemp(join(tmpdir(), "opencode-commit-non-repository-"));
     directories.push(root);
 
     const harness = await createLifecycleHarness({
@@ -548,7 +552,7 @@ describe("plugin startup", () => {
       worktree: "/",
     });
 
-    expect(harness.hooks["tool.execute.after"]).toBeFunction();
+    expect(harness.hooks["chat.message"]).toBeFunction();
     expect(harness.logs).toHaveLength(0);
     expect(harness.toasts).toHaveLength(0);
   });
@@ -572,7 +576,7 @@ describe("plugin startup", () => {
       worktree: "/",
     });
 
-    await triggerAutoCommit(harness);
+    await triggerCommit(harness);
     await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 20_000);
 
     expect(harness.creates).toBe(2);
@@ -588,7 +592,7 @@ describe("plugin startup", () => {
   });
 
   test("skips repository containers while committing nested independent repositories", async () => {
-    const workspace = await mkdtemp(join(tmpdir(), "opencode-auto-commit-nested-workspace-"));
+    const workspace = await mkdtemp(join(tmpdir(), "opencode-commit-nested-workspace-"));
     directories.push(workspace);
     const parent = join(workspace, "parent");
     const child = join(parent, "child");
@@ -604,7 +608,7 @@ describe("plugin startup", () => {
       worktree: "/",
     });
 
-    await triggerAutoCommit(harness);
+    await triggerCommit(harness);
     await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 20_000);
 
     expect(harness.creates).toBe(1);
@@ -618,7 +622,7 @@ describe("plugin startup", () => {
   });
 
   test("processes valid repositories when another workspace directory is inaccessible", async () => {
-    const workspace = await mkdtemp(join(tmpdir(), "opencode-auto-commit-partial-workspace-"));
+    const workspace = await mkdtemp(join(tmpdir(), "opencode-commit-partial-workspace-"));
     directories.push(workspace);
     const repository = join(workspace, "repository");
     const blocked = join(workspace, "blocked");
@@ -634,7 +638,7 @@ describe("plugin startup", () => {
         root: workspace,
         worktree: "/",
       });
-      await triggerAutoCommit(harness);
+      await triggerCommit(harness);
       await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 20_000);
 
       expect(harness.creates).toBe(1);
@@ -648,7 +652,7 @@ describe("plugin startup", () => {
   });
 
   test("initializes as a no-op when the worktree is unavailable", async () => {
-    const root = await mkdtemp(join(tmpdir(), "opencode-auto-commit-missing-worktree-"));
+    const root = await mkdtemp(join(tmpdir(), "opencode-commit-missing-worktree-"));
     await rm(root, { recursive: true });
 
     const harness = await createLifecycleHarness({ dirty: false, root });
@@ -672,7 +676,7 @@ describe("plugin startup", () => {
 
     expect(harness.hooks).toEqual({});
     expect(harness.logs).toHaveLength(1);
-    expect(harness.logs[0]?.message).toContain("Auto-commit recovery failed");
+    expect(harness.logs[0]?.message).toContain("Commit recovery failed");
     expect(harness.toasts).toHaveLength(0);
   });
 });
@@ -691,93 +695,12 @@ test("ignores child sessions before accessing a removed worktree", async () => {
   await rm(root, { recursive: true });
   directories.splice(directories.indexOf(root), 1);
 
-  await hooks.event?.({
-    event: { type: "session.idle", properties: { sessionID: "parent" } },
-  });
+  await triggerCommit(harness);
   await waitFor(() => harness.gets === 1 || logs.length > 0);
   await new Promise((resolve) => setTimeout(resolve, 100));
 
   expect(harness.gets).toBe(1);
   expect(logs).toHaveLength(0);
-  await hooks.dispose?.();
-});
-
-test("backfills resumed work from duplicate direct idle events", async () => {
-  const harness = await createLifecycleHarness();
-  const { hooks, root, toasts } = harness;
-
-  await hooks["chat.message"]?.({ sessionID: "parent" }, { message: {} as never, parts: [] });
-  await hooks.event?.({
-    event: { type: "session.idle", properties: { sessionID: "parent" } },
-  });
-  await waitFor(() => harness.creates === 1);
-  await hooks.event?.({
-    event: { type: "session.idle", properties: { sessionID: "parent" } },
-  });
-  harness.releasePrompt();
-
-  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
-  await new Promise((resolve) => setTimeout(resolve, 750));
-  expect(harness.creates).toBe(1);
-  expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
-  expect(toasts.map((toast) => toast.message)).toContain(
-    "Preparing automatic commits for resumed work...",
-  );
-  expect(toasts.some((toast) => toast.variant === "success")).toBe(true);
-
-  await hooks.dispose?.();
-});
-
-test("restarts a cancelled worker once after the session becomes idle", async () => {
-  const harness = await createLifecycleHarness();
-  const { hooks, toasts } = harness;
-
-  await hooks["chat.message"]?.({ sessionID: "parent" }, { message: {} as never, parts: [] });
-  await hooks.event?.({
-    event: { type: "session.idle", properties: { sessionID: "parent" } },
-  });
-  await waitFor(() => harness.creates === 1);
-  await hooks.event?.({
-    event: {
-      type: "session.status",
-      properties: { sessionID: "parent", status: { type: "busy" } },
-    },
-  });
-  expect(harness.aborts).toBe(1);
-  await hooks.event?.({
-    event: { type: "session.idle", properties: { sessionID: "parent" } },
-  });
-
-  await waitFor(() => harness.creates === 2);
-  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
-  expect(harness.creates).toBe(2);
-  expect(toasts.filter((toast) => toast.variant === "success")).toHaveLength(1);
-  expect(toasts.filter((toast) => toast.variant === "warning")).toHaveLength(0);
-
-  await hooks.dispose?.();
-});
-
-test("uses text completion to commit mutations without an idle event", async () => {
-  const harness = await createLifecycleHarness();
-  const { hooks, root, toasts } = harness;
-  harness.releasePrompt();
-
-  await hooks["tool.execute.after"]?.({
-    args: {},
-    callID: "call",
-    sessionID: "parent",
-    tool: "apply_patch",
-  });
-  await hooks["experimental.text.complete"]?.({
-    messageID: "message",
-    partID: "part",
-    sessionID: "parent",
-  });
-
-  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
-  expect(harness.creates).toBe(1);
-  expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
-
   await hooks.dispose?.();
 });
 
@@ -796,151 +719,52 @@ test("runs a manually requested commit without a model response or idle event", 
     { sessionID: "parent" },
     {
       message: {} as never,
-      parts: [{ synthetic: true, text: AUTO_COMMIT_TRIGGER, type: "text" }] as never,
+      parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }] as never,
     },
   );
 
   await waitFor(() => toasts.some((toast) => toast.variant === "success"));
   expect(harness.creates).toBe(1);
   expect(git(root, "show", "-s", "--format=%s", "HEAD")).toBe("fix: update tracked content");
-  expect(context).not.toContain(AUTO_COMMIT_TRIGGER);
+  expect(context).not.toContain(COMMIT_TRIGGER);
 
   await hooks.dispose?.();
 });
 
-test("does not schedule completion fallback for read-only tools", async () => {
-  const harness = await createLifecycleHarness();
-  const { hooks } = harness;
-
-  await hooks["tool.execute.after"]?.({
-    args: {},
-    callID: "call",
-    sessionID: "parent",
-    tool: "read",
-  });
-  await hooks["experimental.text.complete"]?.({
-    messageID: "message",
-    partID: "part",
-    sessionID: "parent",
-  });
-  await new Promise((resolve) => setTimeout(resolve, 1250));
-
-  expect(harness.creates).toBe(0);
-  await hooks.dispose?.();
-});
-
-test("retries a mutation completed while a worker is running", async () => {
+test("cancels a requested commit when the parent session resumes", async () => {
   const harness = await createLifecycleHarness();
   const { hooks, root, toasts } = harness;
+  const originalHead = git(root, "rev-parse", "HEAD");
 
-  await hooks.event?.({
-    event: { type: "session.idle", properties: { sessionID: "parent" } },
-  });
+  await requestCommit(harness);
   await waitFor(() => harness.creates === 1);
-  await writeFile(join(root, "tracked.txt"), "after again\n");
-  await hooks["tool.execute.after"]?.({
-    args: {},
-    callID: "call",
-    sessionID: "parent",
-    tool: "apply_patch",
-  });
-  await hooks["experimental.text.complete"]?.({
-    messageID: "message",
-    partID: "part",
-    sessionID: "parent",
-  });
-  harness.releasePrompt();
-
-  await waitFor(() => harness.creates === 2);
-  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
-  expect(git(root, "show", "HEAD:tracked.txt")).toBe("after again");
-
-  await hooks.dispose?.();
-});
-
-test("polls a busy session until completion without an idle event", async () => {
-  const harness = await createLifecycleHarness();
-  const { hooks, toasts } = harness;
-  harness.setBusy(true);
-
-  await hooks["tool.execute.after"]?.({
-    args: {},
-    callID: "call",
-    sessionID: "parent",
-    tool: "apply_patch",
-  });
-  await hooks["experimental.text.complete"]?.({
-    messageID: "message",
-    partID: "part",
-    sessionID: "parent",
-  });
   await hooks.event?.({
     event: {
       type: "session.status",
       properties: { sessionID: "parent", status: { type: "busy" } },
     },
   });
-  await new Promise((resolve) => setTimeout(resolve, 1250));
-  expect(harness.creates).toBe(0);
+  await waitFor(() => harness.aborts === 1);
+  await new Promise((resolve) => setTimeout(resolve, 750));
 
-  harness.releasePrompt();
-  harness.setBusy(false);
-  await waitFor(() => toasts.some((toast) => toast.variant === "success"));
+  expect(git(root, "rev-parse", "HEAD")).toBe(originalHead);
   expect(harness.creates).toBe(1);
-
+  expect(toasts.some((toast) => toast.variant === "success")).toBe(false);
   await hooks.dispose?.();
 });
 
-test("clears fallback state after a no-op mutating tool", async () => {
-  const harness = await createLifecycleHarness({ dirty: false });
+test("does not expose automatic hooks or commit from messages and idle events", async () => {
+  const harness = await createLifecycleHarness();
   const { hooks } = harness;
 
-  await hooks["tool.execute.after"]?.({
-    args: {},
-    callID: "call",
-    sessionID: "parent",
-    tool: "apply_patch",
+  expect("tool.execute.after" in hooks).toBe(false);
+  expect("experimental.text.complete" in hooks).toBe(false);
+  await hooks["chat.message"]?.({ sessionID: "parent" }, { message: {} as never, parts: [] });
+  await hooks.event?.({
+    event: { type: "session.idle", properties: { sessionID: "parent" } },
   });
-  await hooks["experimental.text.complete"]?.({
-    messageID: "message",
-    partID: "part",
-    sessionID: "parent",
-  });
-  await waitFor(() => harness.gets === 1);
-  await new Promise((resolve) => setTimeout(resolve, 1250));
+  await new Promise((resolve) => setTimeout(resolve, 750));
 
-  await hooks["experimental.text.complete"]?.({
-    messageID: "message-2",
-    partID: "part-2",
-    sessionID: "parent",
-  });
-  await new Promise((resolve) => setTimeout(resolve, 1250));
-  expect(harness.gets).toBe(1);
-
-  await hooks.dispose?.();
-});
-
-test("retries completion fallback after a transient status failure", async () => {
-  const harness = await createLifecycleHarness();
-  const { hooks, toasts } = harness;
-  harness.failStatusOnce();
-  harness.releasePrompt();
-
-  await hooks["tool.execute.after"]?.({
-    args: {},
-    callID: "call",
-    sessionID: "parent",
-    tool: "apply_patch",
-  });
-  await hooks["experimental.text.complete"]?.({
-    messageID: "message",
-    partID: "part",
-    sessionID: "parent",
-  });
-
-  await waitFor(() => toasts.some((toast) => toast.variant === "success"), 15_000);
-  expect(harness.statusCalls).toBeGreaterThanOrEqual(2);
-  expect(harness.creates).toBe(1);
-
+  expect(harness.creates).toBe(0);
   await hooks.dispose?.();
 });
