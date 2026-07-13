@@ -110,7 +110,10 @@ function withoutTrailingNewline(output: string) {
 
 function pathIsWithin(root: string, path: string) {
   const fromRoot = relative(root, path);
-  return fromRoot === "" || (!isAbsolute(fromRoot) && fromRoot !== ".." && !fromRoot.startsWith(`..${sep}`));
+  return (
+    fromRoot === "" ||
+    (!isAbsolute(fromRoot) && fromRoot !== ".." && !fromRoot.startsWith(`..${sep}`))
+  );
 }
 
 function displayPath(value: string) {
@@ -143,11 +146,7 @@ async function repositoryIdentity(
   }
 }
 
-async function findRepositoryCandidates(
-  root: string,
-  excluded: Set<string>,
-  signal?: AbortSignal,
-) {
+async function findRepositoryCandidates(root: string, excluded: Set<string>, signal?: AbortSignal) {
   const candidates = new Set<string>([root]);
   const pending = [root];
 
@@ -171,7 +170,9 @@ async function findRepositoryCandidates(
     }
   }
 
-  return [...candidates].sort((left, right) => left.length - right.length || left.localeCompare(right));
+  return [...candidates].sort(
+    (left, right) => left.length - right.length || left.localeCompare(right),
+  );
 }
 
 async function listInitializedSubmodules(
@@ -211,9 +212,7 @@ async function listInitializedSubmodules(
       options,
     );
 
-    if (
-      resolve(withoutTrailingNewline(superproject)) !== repository.directory
-    ) {
+    if (resolve(withoutTrailingNewline(superproject)) !== repository.directory) {
       continue;
     }
     submodules.push(identity);

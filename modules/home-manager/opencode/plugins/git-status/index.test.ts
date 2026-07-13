@@ -234,7 +234,9 @@ describe("Git repository discovery", () => {
 
     const repositories = await discoverGitRepositories(workspace);
 
-    expect(repositories.map(({ depth, label, submodule }) => ({ depth, label, submodule }))).toEqual([
+    expect(
+      repositories.map(({ depth, label, submodule }) => ({ depth, label, submodule })),
+    ).toEqual([
       { depth: 0, label: "alpha", submodule: false },
       { depth: 0, label: "groups/beta", submodule: false },
     ]);
@@ -267,7 +269,9 @@ describe("Git repository discovery", () => {
 
     const repositories = await discoverGitRepositories(root);
 
-    expect(repositories.map(({ depth, label, submodule }) => ({ depth, label, submodule }))).toEqual([
+    expect(
+      repositories.map(({ depth, label, submodule }) => ({ depth, label, submodule })),
+    ).toEqual([
       { depth: 0, label: basename(root), submodule: false },
       { depth: 1, label: "node_modules/child", submodule: true },
       { depth: 2, label: "node_modules/child/nested/grandchild", submodule: true },
@@ -288,7 +292,9 @@ describe("Git repository discovery", () => {
 
     const repositories = await discoverGitRepositories(root);
 
-    expect(repositories.map(({ depth, label, submodule }) => ({ depth, label, submodule }))).toEqual([
+    expect(
+      repositories.map(({ depth, label, submodule }) => ({ depth, label, submodule })),
+    ).toEqual([
       { depth: 0, label: basename(root), submodule: false },
       { depth: 1, label: "node_modules/child", submodule: true },
     ]);
