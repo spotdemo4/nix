@@ -144,10 +144,24 @@ function View(props: { api: TuiPluginApi; client: GitStatusClient }) {
   return (
     <Switch>
       <Match when={state().status === "loading"}>
-        <text fg={theme().textMuted}>Git Checking...</text>
+        <box>
+          <text fg={theme().text}>
+            <b>Git</b>
+          </text>
+          <box flexDirection="row" justifyContent="flex-end">
+            <text fg={theme().textMuted}>Checking...</text>
+          </box>
+        </box>
       </Match>
       <Match when={state().status === "error"}>
-        <text fg={theme().error}>Git unavailable</text>
+        <box>
+          <text fg={theme().text}>
+            <b>Git</b>
+          </text>
+          <box flexDirection="row" justifyContent="flex-end">
+            <text fg={theme().error}>Unavailable</text>
+          </box>
+        </box>
       </Match>
       <Match when={state().status === "absent"}>{null}</Match>
       <Match when={state().status === "ready" && state()}>
@@ -155,15 +169,13 @@ function View(props: { api: TuiPluginApi; client: GitStatusClient }) {
           const ready = () => current() as Extract<GitStatusState, { status: "ready" }>;
           return (
             <box>
-              <text>
-                <span style={{ fg: theme().textMuted }}>Git </span>
-                <span style={{ fg: theme().text }}>
-                  <b>{ready().data.branch}</b>
-                </span>
-                <span style={{ fg: statusColor(ready().data, theme()) }}>
-                  {` ${gitStatusLabel(ready().data)}`}
-                </span>
+              <text fg={theme().text}>
+                <b>Git</b>
               </text>
+              <box flexDirection="row" justifyContent="space-between">
+                <text fg={theme().textMuted}>{ready().data.branch}</text>
+                <text fg={statusColor(ready().data, theme())}>{gitStatusLabel(ready().data)}</text>
+              </box>
               <Show when={ready().fetchFailed}>
                 <text fg={theme().warning}>Remote refresh failed; showing cached refs</text>
               </Show>
@@ -199,7 +211,7 @@ const tui: TuiPlugin = async (api, rawOptions) => {
   api.slots.register({
     order: 50,
     slots: {
-      sidebar_footer() {
+      sidebar_content() {
         return <View api={api} client={client} />;
       },
     },

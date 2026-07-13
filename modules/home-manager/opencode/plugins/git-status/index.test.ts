@@ -4,6 +4,7 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { gitStatusLabel, inspectGitRepository, parseGitStatus, refreshGitRepository } from "./core";
+import gitStatusPlugin from "./index";
 
 const directories: string[] = [];
 
@@ -38,6 +39,39 @@ async function createRepository(withRemote = false) {
 
 afterEach(async () => {
   await Promise.all(directories.splice(0).map((directory) => rm(directory, { recursive: true })));
+});
+
+test("registers in append-mode sidebar content rather than the single-winner footer", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "opencode-git-status-slot-test-"));
+  directories.push(directory);
+  const registrations: Array<{ slots: Record<string, unknown> }> = [];
+  const disposers: Array<() => void> = [];
+
+  await gitStatusPlugin.tui(
+    {
+      event: { on: () => () => {} },
+      lifecycle: {
+        onDispose: (dispose: () => void) => {
+          disposers.push(dispose);
+          return () => {};
+        },
+      },
+      slots: {
+        register: (plugin: { slots: Record<string, unknown> }) => {
+          registrations.push(plugin);
+          return "git-status";
+        },
+      },
+      state: { path: { directory, worktree: directory } },
+    } as never,
+    undefined,
+    {} as never,
+  );
+
+  expect(registrations).toHaveLength(1);
+  expect(registrations[0]?.slots.sidebar_content).toBeFunction();
+  expect(registrations[0]?.slots.sidebar_footer).toBeUndefined();
+  for (const dispose of disposers) dispose();
 });
 
 describe("Git porcelain parsing", () => {
