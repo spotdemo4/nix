@@ -83,7 +83,7 @@ async function mapConcurrent<Item, Result>(
   return results;
 }
 
-class GitStatusClient {
+export class GitStatusClient {
   private readonly abortController = new AbortController();
   private state: GitStatusState = { status: "loading" };
   private repositories: GitRepository[] = [];
@@ -97,6 +97,7 @@ class GitStatusClient {
   private queued = false;
   private fetchQueued = false;
   private discoveryQueued = false;
+  private discovered = false;
   private disposed = false;
 
   constructor(
@@ -150,12 +151,13 @@ class GitStatusClient {
 
     this.running = true;
     try {
-      if (discoverRepositories) {
+      if (discoverRepositories || !this.discovered) {
         try {
           this.repositories = await discoverGitRepositories(this.workspace, this.options);
+          this.discovered = true;
         } catch {
           if (this.disposed) return;
-          if (this.repositories.length === 0) {
+          if (!this.discovered) {
             this.setState({ status: "error" });
             return;
           }
@@ -311,11 +313,7 @@ function View(props: { api: TuiPluginApi; client: GitStatusClient }) {
 const tui: TuiPlugin = async (api, rawOptions) => {
   const options = rawOptions as PluginOptions | undefined;
   const client = new GitStatusClient(
-    selectGitWorkspace(
-      api.state.path.directory,
-      api.state.path.worktree,
-      api.state.vcs !== undefined,
-    ),
+    selectGitWorkspace(api.state.path.directory, api.state.path.worktree),
     {
       gitBinary: options?.gitBinary,
       scanExclusions: options?.scanExclusions,

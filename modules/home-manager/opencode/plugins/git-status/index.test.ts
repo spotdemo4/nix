@@ -11,9 +11,28 @@ import {
   refreshGitRepository,
   selectGitWorkspace,
 } from "./core";
-import gitStatusPlugin from "./index";
+import gitStatusPlugin, { GitStatusClient } from "./index";
 
 const directories: string[] = [];
+
+function waitForClientStatus(client: GitStatusClient, status: string, occurrence = 1) {
+  return new Promise<void>((resolve, reject) => {
+    let seen = 0;
+    let unsubscribe = () => {};
+    const timeout = setTimeout(() => {
+      unsubscribe();
+      reject(new Error(`Timed out waiting for Git status ${status}`));
+    }, 2_000);
+    unsubscribe = client.subscribe((state) => {
+      if (state.status !== status) return;
+      seen += 1;
+      if (seen < occurrence) return;
+      clearTimeout(timeout);
+      queueMicrotask(unsubscribe);
+      resolve();
+    });
+  });
+}
 
 function git(cwd: string, ...args: string[]) {
   return execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
@@ -99,10 +118,38 @@ test("registers in append-mode sidebar content rather than the single-winner foo
 });
 
 test("uses the launch directory for global non-VCS projects", () => {
-  expect(selectGitWorkspace("/home/user/workspace", "/", false)).toBe("/home/user/workspace");
-  expect(selectGitWorkspace("/home/user/workspace/src", "/home/user/workspace", true)).toBe(
+  expect(selectGitWorkspace("/home/user/workspace", "/")).toBe("/home/user/workspace");
+  expect(selectGitWorkspace("/home/user/workspace/src", "/home/user/workspace")).toBe(
     "/home/user/workspace",
   );
+});
+
+test("retains discovery errors until a retry succeeds", async () => {
+  const base = await mkdtemp(join(tmpdir(), "opencode-git-status-retry-test-"));
+  directories.push(base);
+  const workspace = join(base, "missing");
+  const client = new GitStatusClient(
+    workspace,
+    { timeoutMs: 1_000 },
+    60_000,
+    60_000,
+    60_000,
+    false,
+  );
+
+  try {
+    await waitForClientStatus(client, "error");
+    const retried = waitForClientStatus(client, "error", 2);
+    client.scheduleRefresh();
+    await retried;
+
+    await mkdir(workspace);
+    const recovered = waitForClientStatus(client, "absent");
+    client.scheduleRefresh();
+    await recovered;
+  } finally {
+    client.dispose();
+  }
 });
 
 describe("Git porcelain parsing", () => {

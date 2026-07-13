@@ -817,7 +817,7 @@ function renderSnapshotContext(snapshot: RepositorySnapshot) {
 
 const autoCommitPlugin = (async ({ client, directory, project, worktree }) => {
   const gitProject = project.vcs === "git";
-  const workspace = selectGitWorkspace(directory, worktree, gitProject);
+  const workspace = selectGitWorkspace(directory, worktree);
   if (gitProject) {
     const repository = await runGit(workspace, ["rev-parse", "--is-inside-work-tree"], {
       acceptedExitCodes: [0, 128],

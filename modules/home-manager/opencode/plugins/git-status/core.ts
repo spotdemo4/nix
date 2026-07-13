@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { readdir, stat } from "node:fs/promises";
-import { basename, isAbsolute, relative, resolve, sep } from "node:path";
+import { basename, dirname, isAbsolute, relative, resolve, sep } from "node:path";
 
 export type GitStatus = {
   ahead: number;
@@ -35,8 +35,10 @@ export type RepositoryDiscoveryOptions = GitCommandOptions & {
   };
 };
 
-export function selectGitWorkspace(directory: string, worktree: string, hasVcs: boolean) {
-  return hasVcs && worktree ? worktree : directory;
+export function selectGitWorkspace(directory: string, worktree: string) {
+  if (!worktree) return directory;
+  const resolved = resolve(worktree);
+  return dirname(resolved) === resolved ? directory : worktree;
 }
 
 const DEFAULT_TIMEOUT_MS = 15_000;
