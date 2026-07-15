@@ -3,9 +3,25 @@ import type { PluginOptions } from "@opencode-ai/plugin";
 import type { TuiPlugin, TuiPluginApi, TuiPluginModule } from "@opencode-ai/plugin/tui";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 import { createSignal, onCleanup, Show } from "solid-js";
-import { attemptPush, createGitRunner, renderFallbackPrompt, type GitRunner } from "./core";
+import {
+  discoverGitRepositories,
+  selectGitWorkspace,
+  type RepositoryDiscoveryOptions,
+} from "../git-status/core";
+import {
+  attemptRepositoryPushes,
+  createGitRunner,
+  renderFallbackPrompt,
+  type GitRunner,
+  type RepositoryPushOutcome,
+} from "./core";
 
 const PLUGIN_ID = "push";
+
+type RepositoryDiscoverer = (
+  workspace: string,
+  options: RepositoryDiscoveryOptions,
+) => ReturnType<typeof discoverGitRepositories>;
 
 function pathIsInside(root: string, path: string) {
   const fromRoot = relative(root, resolve(root, path));
@@ -90,25 +106,112 @@ function View(props: { api: TuiPluginApi; client: PushStatusClient; sessionID: s
   );
 }
 
+function isUpToDate(result: RepositoryPushOutcome) {
+  return result.outcome.type === "pushed" && result.outcome.output.includes("[up to date]");
+}
+
+function renderSuccess(results: RepositoryPushOutcome[]) {
+  const skipped = results.filter((result) => result.outcome.type === "skipped");
+  if (results.every((result) => isUpToDate(result) || result.outcome.type === "skipped")) {
+    if (skipped.length > 0) {
+      return [
+        "Everything up-to-date",
+        ...skipped.map(({ outcome, repository }) =>
+          outcome.type === "skipped"
+            ? `${repository.label}: skipped (${outcome.reason})`
+            : `${repository.label}: up-to-date`,
+        ),
+      ].join("\n");
+    }
+    return results.length === 1
+      ? "Everything up-to-date"
+      : `Everything up-to-date in ${results.length} repositories`;
+  }
+  if (results.length === 1) {
+    const result = results[0];
+    if (result.outcome.type !== "pushed") return "Push did not complete";
+    return `Pushed ${result.outcome.branch} to ${result.outcome.upstream}`;
+  }
+
+  return [
+    "Push results:",
+    ...results.map((result) => {
+      if (result.outcome.type === "skipped") {
+        return `${result.repository.label}: skipped (${result.outcome.reason})`;
+      }
+      if (result.outcome.type !== "pushed") return `${result.repository.label}: incomplete`;
+      return isUpToDate(result)
+        ? `${result.repository.label}: up-to-date`
+        : `${result.repository.label}: ${result.outcome.branch} -> ${result.outcome.upstream}`;
+    }),
+  ].join("\n");
+}
+
+function renderHandoff(results: RepositoryPushOutcome[]) {
+  const fallback = results.filter(
+    (
+      result,
+    ): result is RepositoryPushOutcome & {
+      outcome: Extract<RepositoryPushOutcome["outcome"], { type: "fallback" }>;
+    } => result.outcome.type === "fallback",
+  );
+  if (results.length === 1 && fallback.length === 1) {
+    return `${fallback[0].outcome.reason}; handed off to the build agent`;
+  }
+
+  const direct = results.filter((result) => result.outcome.type === "pushed");
+  const skipped = results.filter((result) => result.outcome.type === "skipped");
+  return [
+    ...(direct.length > 0
+      ? [
+          `${direct.length} ${direct.length === 1 ? "repository" : "repositories"} completed directly.`,
+        ]
+      : []),
+    ...skipped.map(({ outcome, repository }) =>
+      outcome.type === "skipped"
+        ? `${repository.label}: skipped (${outcome.reason})`
+        : `${repository.label}: skipped`,
+    ),
+    "Handed off to the build agent:",
+    ...fallback.map(({ outcome, repository }) => `${repository.label}: ${outcome.reason}`),
+  ].join("\n");
+}
+
+function renderCancellation(results: RepositoryPushOutcome[]) {
+  const completed = results.filter((result) => result.outcome.type === "pushed");
+  if (completed.length === 0) return "Push cancelled because workspace files changed";
+  return [
+    "Push cancelled because workspace files changed",
+    "Completed before cancellation:",
+    ...completed.map(({ outcome, repository }) =>
+      outcome.type === "pushed"
+        ? `${repository.label}: ${outcome.branch} -> ${outcome.upstream}`
+        : repository.label,
+    ),
+  ].join("\n");
+}
+
 export async function registerPushPlugin(
   api: TuiPluginApi,
   options?: PluginOptions,
   runner?: GitRunner,
+  discover: RepositoryDiscoverer = discoverGitRepositories,
 ) {
   const binary = typeof options?.gitBinary === "string" ? options.gitBinary : "git";
   const runGit = runner ?? createGitRunner(binary);
   const client = new PushStatusClient();
+  const workspace = selectGitWorkspace(api.state.path.directory, api.state.path.worktree);
 
   const unregister = [
     api.keymap.registerLayer({
       commands: [
         {
           category: "VCS",
-          desc: "Push the current branch, using an agent only when Git needs intervention",
+          desc: "Push workspace repositories, using an agent only when Git needs intervention",
           name: "push.run",
           namespace: "palette",
           slashName: "push",
-          title: "Push current branch",
+          title: "Push workspace repositories",
           async run() {
             const sessionID =
               api.route.current.name === "session" && "params" in api.route.current
@@ -132,7 +235,7 @@ export async function registerPushPlugin(
               });
               return;
             }
-            if (!client.start(sessionID, session.directory)) {
+            if (!client.start(sessionID, workspace)) {
               api.ui.toast({
                 title: "Push",
                 message: "A push is already running",
@@ -142,8 +245,13 @@ export async function registerPushPlugin(
             }
 
             const signal = AbortSignal.any([api.lifecycle.signal, client.signal(sessionID)!]);
+            let results: RepositoryPushOutcome[] = [];
             try {
-              const outcome = await attemptPush(session.directory, runGit, signal);
+              const repositories = await discover(workspace, {
+                allowPartial: false,
+                gitBinary: binary,
+                signal,
+              });
               if (api.lifecycle.signal.aborted || client.isDisposed()) return;
               if (signal.aborted) {
                 api.ui.toast({
@@ -153,12 +261,37 @@ export async function registerPushPlugin(
                 });
                 return;
               }
-              if (outcome.type === "pushed") {
+              if (repositories.length === 0) {
                 api.ui.toast({
                   title: "Push",
-                  message: outcome.output.includes("[up to date]")
-                    ? "Everything up-to-date"
-                    : `Pushed ${outcome.branch} to ${outcome.upstream}`,
+                  message: "No Git repositories found in the workspace",
+                  variant: "warning",
+                });
+                return;
+              }
+
+              const push = await attemptRepositoryPushes(repositories, runGit, signal);
+              results = push.outcomes;
+              if (api.lifecycle.signal.aborted || client.isDisposed()) return;
+              if (push.cancelled || signal.aborted) {
+                api.ui.toast({
+                  title: "Push",
+                  message: renderCancellation(results),
+                  variant: "warning",
+                });
+                return;
+              }
+              const fallback = results.filter(
+                (
+                  result,
+                ): result is RepositoryPushOutcome & {
+                  outcome: Extract<RepositoryPushOutcome["outcome"], { type: "fallback" }>;
+                } => result.outcome.type === "fallback",
+              );
+              if (fallback.length === 0) {
+                api.ui.toast({
+                  title: "Push",
+                  message: renderSuccess(results),
                   variant: "success",
                 });
                 return;
@@ -177,25 +310,25 @@ export async function registerPushPlugin(
                     {
                       type: "subtask",
                       agent: "build",
-                      description: "Rebase and push current branch",
-                      prompt: renderFallbackPrompt(outcome),
+                      description: "Rebase and push workspace repositories",
+                      prompt: renderFallbackPrompt(fallback),
                     },
                   ],
                 },
-                { throwOnError: true },
+                { signal, throwOnError: true },
               );
               if (api.lifecycle.signal.aborted || client.isDisposed()) return;
               if (signal.aborted) {
                 api.ui.toast({
                   title: "Push",
-                  message: "Push cancelled because workspace files changed",
+                  message: renderCancellation(results),
                   variant: "warning",
                 });
                 return;
               }
               api.ui.toast({
                 title: "Push",
-                message: `${outcome.reason}; handed off to the build agent`,
+                message: renderHandoff(results),
                 variant: "info",
               });
             } catch (error) {
@@ -203,7 +336,7 @@ export async function registerPushPlugin(
               if (signal.aborted) {
                 api.ui.toast({
                   title: "Push",
-                  message: "Push cancelled because workspace files changed",
+                  message: renderCancellation(results),
                   variant: "warning",
                 });
                 return;
