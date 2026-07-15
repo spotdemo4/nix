@@ -162,6 +162,10 @@
   };
 
   programs = {
+    appimage = {
+      enable = true;
+      binfmt = true;
+    };
     dconf.enable = true;
     git = {
       enable = true;
