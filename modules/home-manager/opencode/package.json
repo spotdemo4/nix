@@ -8,10 +8,10 @@
     "test": "bun test plugins/*/*.test.ts"
   },
   "dependencies": {
-    "@opencode-ai/plugin": "1.18.2",
-    "@opentui/core": "0.4.3",
-    "@opentui/keymap": "0.4.3",
-    "@opentui/solid": "0.4.3",
+    "@opencode-ai/plugin": "1.18.3",
+    "@opentui/core": "0.4.4",
+    "@opentui/keymap": "0.4.4",
+    "@opentui/solid": "0.4.4",
     "solid-js": "1.9.14"
   },
   "devDependencies": {
