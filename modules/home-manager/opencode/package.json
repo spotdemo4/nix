@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@opencode-ai/plugin": "1.18.3",
-    "@opentui/core": "0.4.4",
-    "@opentui/keymap": "0.4.4",
-    "@opentui/solid": "0.4.4",
+    "@opentui/core": "0.4.5",
+    "@opentui/keymap": "0.4.5",
+    "@opentui/solid": "0.4.5",
     "solid-js": "1.9.14"
   },
   "devDependencies": {
