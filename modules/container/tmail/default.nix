@@ -22,7 +22,7 @@ in
   options.trev.containers.tmail = {
     enable = mkEnableOption "TMail web client container";
 
-    image = containerOptions.mkImageOption "ghcr.io/linagora/tmail-web:v0.30.1@sha256:4b69b883f59f35061ba25d4f5a72d3340e3ac2a16af5e1b900e03ab63ce86f6f";
+    image = containerOptions.mkImageOption "ghcr.io/linagora/tmail-web:v0.30.3@sha256:83c31fe1fdec6a9360a50d0e5440d7937aa705f66067d581e76f05d64397ad5d";
 
     serverUrl = mkOption {
       type = types.str;
