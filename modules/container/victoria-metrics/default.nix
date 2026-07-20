@@ -23,7 +23,7 @@ in
 {
   options.trev.containers.victoria-metrics = {
     enable = mkEnableOption "the VictoriaMetrics container";
-    image = containerOptions.mkImageOption "docker.io/victoriametrics/victoria-metrics:v1.147.0@sha256:40ea45a6d14b6ad9f2f1fff597309d456ff9885d77d8d1da5fd559b251db9987";
+    image = containerOptions.mkImageOption "docker.io/victoriametrics/victoria-metrics:v1.148.0@sha256:407013e902f9a0ba1d4b2d4c077c47bbaf917c893c52ff39b19efe83a654afda";
 
     domain = mkOption {
       type = types.str;

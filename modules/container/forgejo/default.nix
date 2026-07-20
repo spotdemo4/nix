@@ -19,7 +19,7 @@ in
 {
   options.trev.containers.forgejo = {
     enable = mkEnableOption "Forgejo container";
-    image = containerOptions.mkImageOption "codeberg.org/forgejo/forgejo:15.0.4@sha256:9e14382433760127c87cb78c4dbc44b45abbb0c09c8479812c8e99b3dc893429";
+    image = containerOptions.mkImageOption "codeberg.org/forgejo/forgejo:15.0.5@sha256:eda2e378442d2f18cfa563994f8ad66e71f04ac9c3bb4259cc57bdd641890f5c";
 
     domain = mkOption {
       type = types.str;
