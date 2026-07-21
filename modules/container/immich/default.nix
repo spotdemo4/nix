@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  self,
   ...
 }:
 let
@@ -13,6 +12,7 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.immich;
   database = lib.attrByPath [ "trev" "containers" "immich-postgresql" ] {
     enable = false;
@@ -33,7 +33,6 @@ let
   databaseContainer = lib.attrByPath [ database.containerName ] {
     ref = database.containerName;
   } containers;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.immich = {
@@ -104,7 +103,7 @@ in
 
     virtualisation.quadlet = {
       containers.immich = {
-        containerConfig = {
+        containerConfig = mkContainer {
           image = cfg.image;
           pull = "missing";
           devices = cfg.devices;
@@ -132,8 +131,8 @@ in
           networks = [
             networks.immich.ref
           ];
-          labels = toLabel {
-            attrs.traefik = {
+          labels = {
+            traefik = {
               enable = true;
               http.routers.immich = {
                 rule = "Host(`${cfg.domain}`)";

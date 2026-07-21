@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  self,
   ...
 }:
 let
@@ -12,6 +11,7 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.cobalt;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
     enable = false;
@@ -21,7 +21,6 @@ let
     enable = false;
     ref = "gluetun-cobalt";
   } gluetunConfig;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.cobalt = {
@@ -51,15 +50,15 @@ in
     ];
 
     virtualisation.quadlet.containers.cobalt = {
-      containerConfig = {
+      containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         environments.API_URL = cfg.apiUrl;
         networks = [
           "container:${gluetun.ref}"
         ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http.routers.cobalt.rule = "Host(`${cfg.domain}`)";
           };

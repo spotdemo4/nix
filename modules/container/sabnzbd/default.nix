@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  self,
   ...
 }:
 let
@@ -12,6 +11,7 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.sabnzbd;
   sonarr = lib.attrByPath [ "trev" "containers" "sonarr" ] { enable = false; } config;
   radarr = lib.attrByPath [ "trev" "containers" "radarr" ] { enable = false; } config;
@@ -19,7 +19,6 @@ let
   networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
   sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } networks;
   radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } networks;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.sabnzbd = {
@@ -76,7 +75,7 @@ in
     ];
 
     virtualisation.quadlet = {
-      containers.sabnzbd.containerConfig = {
+      containers.sabnzbd.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         environments = {
@@ -90,8 +89,8 @@ in
         ];
         publishPorts = [ (toString cfg.port) ];
         networks = cfg.networks;
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http.routers.sabnzbd = {
               rule = "HostRegexp(`${cfg.domainPattern}`)";

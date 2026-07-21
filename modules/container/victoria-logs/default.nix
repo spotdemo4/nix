@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.victoria-logs;
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.victoria-logs = {
@@ -48,7 +47,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      containers.victoria-logs.containerConfig = {
+      containers.victoria-logs.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         volumes = [
@@ -58,8 +57,8 @@ in
         networks = [
           networks.${cfg.networkName}.ref
         ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http = {
               routers.victoria-logs = {

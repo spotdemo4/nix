@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  self,
   ...
 }:
 let
@@ -12,13 +11,13 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.victoria-metrics;
   jsonExporter = lib.attrByPath [ "trev" "containers" "json-exporter" ] {
     enable = false;
     networkName = "victoria-metrics";
   } config;
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.victoria-metrics = {
@@ -70,7 +69,7 @@ in
     ];
 
     virtualisation.quadlet = {
-      containers.victoria-metrics.containerConfig = {
+      containers.victoria-metrics.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         volumes = [
@@ -86,8 +85,8 @@ in
           "-storageDataPath=victoria-metrics-data"
           "-promscrape.config=prometheus.yaml"
         ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http.routers.victoria-metrics = {
               rule = "Host(`${cfg.domain}`)";

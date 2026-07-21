@@ -13,6 +13,7 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.shlink;
   postgresql = lib.attrByPath [ "trev" "containers" "postgresql" ] {
     enable = false;
@@ -29,7 +30,6 @@ let
   databaseContainer = lib.attrByPath [ "postgresql-shlink" ] {
     ref = "postgresql-shlink";
   } containers;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.shlink = {
@@ -85,7 +85,7 @@ in
 
     virtualisation.quadlet = {
       containers.shlink = {
-        containerConfig = {
+        containerConfig = mkContainer {
           image = cfg.image;
           pull = "missing";
           secrets = [
@@ -106,8 +106,8 @@ in
             networks.shlink.ref
           ];
           publishPorts = [ "8080" ];
-          labels = toLabel {
-            attrs.traefik = {
+          labels = {
+            traefik = {
               enable = true;
               http.routers.shlink.rule = "Host(`${cfg.domain}`)";
             };

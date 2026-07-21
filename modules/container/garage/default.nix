@@ -14,10 +14,10 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.garage;
   inherit (config.virtualisation.quadlet) volumes;
   inherit (config) secrets;
-  toLabel = import (self + /lib/label);
 
   configFile = pkgs.replaceVars ./garage.toml {
     metadata_dir = "/meta";
@@ -91,7 +91,7 @@ in
     };
 
     virtualisation.quadlet = {
-      containers.garage.containerConfig = {
+      containers.garage.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         volumes = [
@@ -109,8 +109,8 @@ in
           "3901:3901" # web
           "3902:3902" # admin
         ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http = {
               middlewares = {

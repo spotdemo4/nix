@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  self,
   ...
 }:
 let
@@ -12,11 +11,11 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.tmail;
   stalwart = lib.attrByPath [ "trev" "containers" "stalwart" ] { enable = false; } config;
   networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
   stalwartNetwork = lib.attrByPath [ "stalwart" ] { ref = "stalwart"; } networks;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.tmail = {
@@ -45,7 +44,7 @@ in
       }
     ];
 
-    virtualisation.quadlet.containers.tmail.containerConfig = {
+    virtualisation.quadlet.containers.tmail.containerConfig = mkContainer {
       image = cfg.image;
       pull = "missing";
       environments.SERVER_URL = cfg.serverUrl;
@@ -53,8 +52,8 @@ in
       networks = [
         stalwartNetwork.ref
       ];
-      labels = toLabel {
-        attrs.traefik = {
+      labels = {
+        traefik = {
           enable = true;
           http.routers.tmail = {
             rule = "Host(`${cfg.domain}`)";

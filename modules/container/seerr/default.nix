@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  self,
   ...
 }:
 let
@@ -13,6 +12,7 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.seerr;
   sonarr = lib.attrByPath [ "trev" "containers" "sonarr" ] { enable = false; } config;
   radarr = lib.attrByPath [ "trev" "containers" "radarr" ] { enable = false; } config;
@@ -22,7 +22,6 @@ let
   sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } networks;
   radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } networks;
   plexNetwork = lib.attrByPath [ "plex" ] { ref = "plex"; } networks;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.seerr = {
@@ -77,7 +76,7 @@ in
     ];
 
     virtualisation.quadlet = {
-      containers.seerr.containerConfig = {
+      containers.seerr.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         environments = {
@@ -87,8 +86,8 @@ in
         volumes = [ "${volumes.seerr.ref}:/app/config" ];
         publishPorts = [ (toString cfg.port) ];
         networks = cfg.networks;
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http.routers.seerr = {
               rule = concatMapStringsSep " || " (domain: "Host(`${domain}`)") cfg.domains;

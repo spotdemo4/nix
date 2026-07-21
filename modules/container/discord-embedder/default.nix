@@ -12,9 +12,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.discord-embedder;
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = import (self + /lib/label);
   secretFileType = types.either types.path types.str;
 in
 {
@@ -106,7 +106,7 @@ in
     };
 
     virtualisation.quadlet = {
-      containers.discord-embedder.containerConfig = {
+      containers.discord-embedder.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         user = "${toString cfg.uid}:${toString cfg.gid}";
@@ -136,8 +136,8 @@ in
           "${volumes.discord-embedder.ref}:/tmp"
         ];
         publishPorts = [ (toString cfg.port) ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http.routers.embed.rule = "HostRegexp(`${cfg.domainPattern}`)";
           };

@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  self,
   ...
 }:
 let
@@ -12,12 +11,12 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.tautulli;
   plex = lib.attrByPath [ "trev" "containers" "plex" ] { enable = false; } config;
   inherit (config.virtualisation.quadlet) volumes;
   networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
   plexNetwork = lib.attrByPath [ "plex" ] { ref = "plex"; } networks;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.tautulli = {
@@ -62,7 +61,7 @@ in
     ];
 
     virtualisation.quadlet = {
-      containers.tautulli.containerConfig = {
+      containers.tautulli.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         environments = {
@@ -73,8 +72,8 @@ in
         volumes = [ "${volumes.tautulli.ref}:/config" ];
         publishPorts = [ (toString cfg.port) ];
         networks = cfg.networks;
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http.routers.tautulli = {
               rule = "HostRegexp(`${cfg.domainPattern}`)";

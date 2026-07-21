@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  self,
   ...
 }:
 let
@@ -15,6 +14,7 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.traefik;
   valkeyConfig = lib.attrByPath [ "trev" "containers" "valkey" ] {
     enable = false;
@@ -25,7 +25,6 @@ let
     ref = "valkey-traefik";
   } valkeyConfig;
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /lib/label);
 
   acmeDomains = concatStringsSep "\n" (
     mapAttrsToList (
@@ -197,7 +196,7 @@ in
 
     virtualisation.quadlet = {
       containers.traefik = {
-        containerConfig = {
+        containerConfig = mkContainer {
           image = cfg.image;
           pull = "missing";
           secrets = [
@@ -229,8 +228,8 @@ in
           networks = [
             networks.${cfg.networkName}.ref
           ];
-          labels = toLabel {
-            attrs.traefik = {
+          labels = {
+            traefik = {
               enable = true;
               http.routers.api = {
                 rule = "Host(`${cfg.dashboardDomain}`)";

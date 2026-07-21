@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.stalwart;
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.stalwart = {
@@ -37,7 +36,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      containers.stalwart.containerConfig = {
+      containers.stalwart.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         volumes = [
@@ -56,8 +55,8 @@ in
         networks = [
           networks.stalwart.ref
         ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http = {
               routers.stalwart = {

@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.syncthing;
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.syncthing = {
@@ -48,7 +47,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      containers.syncthing.containerConfig = {
+      containers.syncthing.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         hostname = cfg.hostname;
@@ -72,8 +71,8 @@ in
         healthInterval = "1m";
         healthTimeout = "10s";
         healthRetries = 3;
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http = {
               routers.syncthing = {

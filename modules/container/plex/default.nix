@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.plex;
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.plex = {
@@ -77,7 +76,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      containers.plex.containerConfig = {
+      containers.plex.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         devices = cfg.devices;
@@ -96,8 +95,8 @@ in
         ];
         publishPorts = [ (toString cfg.port) ];
         networks = [ config.virtualisation.quadlet.networks.plex.ref ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             tcp.routers.plex = {
               rule = "HostSNI(`*`)";

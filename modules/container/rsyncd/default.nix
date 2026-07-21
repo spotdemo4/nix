@@ -12,10 +12,10 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.rsyncd;
   inherit (config.virtualisation.quadlet) volumes;
   inherit (config) secrets;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.rsyncd = {
@@ -51,7 +51,7 @@ in
     secrets.rsyncd.file = cfg.secretFile;
 
     virtualisation.quadlet = {
-      containers.rsyncd.containerConfig = {
+      containers.rsyncd.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         secrets = [
@@ -64,8 +64,8 @@ in
         publishPorts = [
           "${toString cfg.port}:${toString cfg.port}"
         ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             tcp = {
               routers.rsyncd = {

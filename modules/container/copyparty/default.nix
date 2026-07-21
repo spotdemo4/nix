@@ -13,10 +13,10 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.copyparty;
   inherit (config.virtualisation.quadlet) volumes;
   inherit (config) secrets;
-  toLabel = import (self + /lib/label);
 
   accounts = "/accounts.conf";
   configFile = pkgs.replaceVars ./copyparty.conf {
@@ -69,7 +69,7 @@ in
     secrets.copyparty.file = cfg.accountsSecretFile;
 
     virtualisation.quadlet = {
-      containers.copyparty.containerConfig = {
+      containers.copyparty.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         user = "${toString cfg.userId}:${toString cfg.groupId}";
@@ -84,14 +84,12 @@ in
         publishPorts = [
           (toString cfg.port)
         ];
-        labels = toLabel {
-          attrs = {
-            traefik = {
-              enable = true;
-              http.routers.copyparty = {
-                rule = "Host(`${cfg.domain}`)";
-                middlewares = "secure@file";
-              };
+        labels = {
+          traefik = {
+            enable = true;
+            http.routers.copyparty = {
+              rule = "Host(`${cfg.domain}`)";
+              middlewares = "secure@file";
             };
           };
         };

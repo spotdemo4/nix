@@ -13,6 +13,7 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.niks3;
   postgresql = lib.attrByPath [ "trev" "containers" "postgresql" ] {
     enable = false;
@@ -28,7 +29,6 @@ let
   inherit (config.virtualisation.quadlet) containers networks;
   databaseContainer = lib.attrByPath [ "postgresql-niks3" ] { ref = "postgresql-niks3"; } containers;
   inherit (config) secrets;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.niks3 = {
@@ -131,7 +131,7 @@ in
 
     virtualisation.quadlet = {
       containers.niks3 = {
-        containerConfig = {
+        containerConfig = mkContainer {
           image = cfg.image;
           pull = "missing";
           environments = {
@@ -157,8 +157,8 @@ in
           publishPorts = [
             (toString cfg.port)
           ];
-          labels = toLabel {
-            attrs.traefik = {
+          labels = {
+            traefik = {
               enable = true;
               http.routers.niks3.rule = "Host(`${cfg.domain}`)";
             };

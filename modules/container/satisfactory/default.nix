@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.satisfactory;
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.satisfactory = {
@@ -51,7 +50,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      containers.satisfactory.containerConfig = {
+      containers.satisfactory.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         environments = cfg.environments;
@@ -59,8 +58,8 @@ in
           "${volumes.${cfg.volumeName}.ref}:/config"
         ];
         publishPorts = cfg.publishPorts;
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             tcp = {
               services = {

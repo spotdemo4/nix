@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.portainer;
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.portainer = {
@@ -56,7 +55,7 @@ in
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
       containers.portainer = {
-        containerConfig = {
+        containerConfig = mkContainer {
           image = cfg.image;
           pull = "missing";
           volumes = [
@@ -66,19 +65,17 @@ in
           networks = [
             networks.${cfg.networkName}.ref
           ];
-          labels = toLabel {
-            attrs = {
-              traefik = {
-                enable = true;
-                http = {
-                  routers.portainer = {
-                    rule = cfg.routerRule;
-                    middlewares = "secure-trev@file";
-                  };
-                  services.portainer.loadbalancer.server = {
-                    scheme = "http";
-                    port = cfg.servicePort;
-                  };
+          labels = {
+            traefik = {
+              enable = true;
+              http = {
+                routers.portainer = {
+                  rule = cfg.routerRule;
+                  middlewares = "secure-trev@file";
+                };
+                services.portainer.loadbalancer.server = {
+                  scheme = "http";
+                  port = cfg.servicePort;
                 };
               };
             };

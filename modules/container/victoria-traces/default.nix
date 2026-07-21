@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.victoria-traces;
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.victoria-traces = {
@@ -57,7 +56,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      containers.victoria-traces.containerConfig = {
+      containers.victoria-traces.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         volumes = [
@@ -71,8 +70,8 @@ in
           "-otlpGRPCListenAddr=:4317"
           "-otlpGRPC.tls=false"
         ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http = {
               services.victoria-traces.loadbalancer.server.port = cfg.servicePort;

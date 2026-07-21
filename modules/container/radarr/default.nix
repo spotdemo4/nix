@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.radarr;
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.radarr = {
@@ -54,7 +53,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      containers.radarr.containerConfig = {
+      containers.radarr.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         environments = {
@@ -68,8 +67,8 @@ in
         ];
         publishPorts = [ (toString cfg.port) ];
         networks = [ config.virtualisation.quadlet.networks.radarr.ref ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http.routers.radarr = {
               rule = "HostRegexp(`${cfg.domainPattern}`)";

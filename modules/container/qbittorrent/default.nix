@@ -12,6 +12,7 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.qbittorrent;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
     enable = false;
@@ -82,7 +83,7 @@ in
 
     virtualisation.quadlet = {
       containers.qbittorrent = {
-        containerConfig = {
+        containerConfig = mkContainer {
           image = cfg.image;
           pull = "missing";
           environments = {
@@ -97,8 +98,8 @@ in
             "${cfg.downloadPath}:/pool/download/qbittorrent"
           ];
           networks = [ "container:${gluetun.ref}" ];
-          labels = (import (self + /lib/label)) {
-            attrs.traefik = {
+          labels = {
+            traefik = {
               enable = true;
               http.routers.qbittorrent = {
                 rule = "HostRegexp(`${cfg.domainPattern}`)";

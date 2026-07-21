@@ -1,8 +1,16 @@
 { lib }:
 let
   inherit (lib) mkOption types;
+  toLabel = import ./label;
 in
 {
+  mkContainer =
+    config:
+    config
+    // lib.optionalAttrs ((config ? labels) && builtins.isAttrs config.labels) {
+      labels = toLabel { attrs = config.labels; };
+    };
+
   mkImageOption =
     default:
     mkOption {

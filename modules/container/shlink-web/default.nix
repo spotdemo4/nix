@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  self,
   ...
 }:
 let
@@ -12,11 +11,11 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.shlink-web;
   shlink = lib.attrByPath [ "trev" "containers" "shlink" ] { enable = false; } config;
   inherit (config.virtualisation.quadlet) containers;
   shlinkContainer = lib.attrByPath [ "shlink" ] { ref = "shlink"; } containers;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.shlink-web = {
@@ -58,7 +57,7 @@ in
     ];
 
     virtualisation.quadlet.containers.shlink-web = {
-      containerConfig = {
+      containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         secrets = [
@@ -66,8 +65,8 @@ in
         ];
         environments.SHLINK_SERVER_URL = cfg.serverUrl;
         publishPorts = [ "8080" ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http = {
               middlewares.shlink-web-redirect.redirectRegex = {

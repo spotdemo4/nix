@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.monerod;
   inherit (config.virtualisation.quadlet) networks;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.monerod = {
@@ -67,7 +66,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      containers.monerod.containerConfig = {
+      containers.monerod.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         volumes = [
@@ -94,8 +93,8 @@ in
           "--in-peers=50"
           "--out-peers=50"
         ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http = {
               services.monero.loadbalancer.server.port = cfg.rpcPort;

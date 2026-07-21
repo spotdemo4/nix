@@ -12,9 +12,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.forgejo;
   inherit (config.virtualisation.quadlet) networks volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.forgejo = {
@@ -64,7 +64,7 @@ in
     };
 
     virtualisation.quadlet = {
-      containers.forgejo.containerConfig = {
+      containers.forgejo.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         volumes = [
@@ -83,8 +83,8 @@ in
         networks = [
           networks.forgejo.ref
         ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http.routers.forgejo = {
               rule = "Host(`${cfg.domain}`)";

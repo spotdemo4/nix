@@ -12,9 +12,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.minecraft;
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.minecraft = {
@@ -60,7 +60,7 @@ in
     secrets.${cfg.curseforgeSecret.ref}.file = toString cfg.curseforgeSecret.file;
 
     virtualisation.quadlet = {
-      containers.minecraft.containerConfig = {
+      containers.minecraft.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         environments = cfg.environments;
@@ -71,8 +71,8 @@ in
           "${volumes.${cfg.volumeName}.ref}:/data"
         ];
         publishPorts = cfg.publishPorts;
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             tcp.routers.minecraft = {
               rule = "HostSNI(`*`)";

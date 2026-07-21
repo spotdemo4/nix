@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.sonarr;
   inherit (config.virtualisation.quadlet) volumes;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.sonarr = {
@@ -54,7 +53,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      containers.sonarr.containerConfig = {
+      containers.sonarr.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         environments = {
@@ -68,8 +67,8 @@ in
         ];
         publishPorts = [ (toString cfg.port) ];
         networks = [ config.virtualisation.quadlet.networks.sonarr.ref ];
-        labels = toLabel {
-          attrs.traefik = {
+        labels = {
+          traefik = {
             enable = true;
             http.routers.sonarr = {
               rule = "HostRegexp(`${cfg.domainPattern}`)";

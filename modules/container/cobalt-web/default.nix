@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  self,
   ...
 }:
 let
@@ -12,9 +11,9 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.cobalt-web;
   cobalt = lib.attrByPath [ "trev" "containers" "cobalt" ] { enable = false; } config;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.cobalt-web = {
@@ -49,7 +48,7 @@ in
       }
     ];
 
-    virtualisation.quadlet.containers.cobalt-web.containerConfig = {
+    virtualisation.quadlet.containers.cobalt-web.containerConfig = mkContainer {
       image = cfg.image;
       pull = "missing";
       environments = {
@@ -57,8 +56,8 @@ in
         WEB_HOST = cfg.webHost;
       };
       publishPorts = [ "8787" ];
-      labels = toLabel {
-        attrs.traefik = {
+      labels = {
+        traefik = {
           enable = true;
           http.routers.cobalt-web = {
             rule = "Host(`${cfg.domain}`)";

@@ -12,6 +12,7 @@ let
     types
     ;
   containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (containerOptions) mkContainer;
   cfg = config.trev.containers.grafana;
   victoriaLogs = lib.attrByPath [ "trev" "containers" "victoria-logs" ] { enable = false; } config;
   victoriaMetrics = lib.attrByPath [ "trev" "containers" "victoria-metrics" ] {
@@ -24,7 +25,6 @@ let
   networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
   networkRef = name: (lib.attrByPath [ name ] { ref = name; } networks).ref;
   missingNetworks = builtins.filter (name: !(builtins.hasAttr name networks)) cfg.networkNames;
-  toLabel = import (self + /lib/label);
 in
 {
   options.trev.containers.grafana = {
@@ -92,7 +92,7 @@ in
     secrets.${cfg.secret.ref}.file = toString cfg.secret.file;
 
     virtualisation.quadlet = {
-      containers.grafana.containerConfig = {
+      containers.grafana.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         user = "root";
@@ -104,14 +104,12 @@ in
         secrets = [
           "${cfg.secret.mount},target=/etc/secrets/client"
         ];
-        labels = toLabel {
-          attrs = {
-            traefik = {
-              enable = true;
-              http.routers.grafana = {
-                rule = "Host(`${cfg.domain}`)";
-                middlewares = "secure-admin@file";
-              };
+        labels = {
+          traefik = {
+            enable = true;
+            http.routers.grafana = {
+              rule = "Host(`${cfg.domain}`)";
+              middlewares = "secure-admin@file";
             };
           };
         };
