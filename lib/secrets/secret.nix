@@ -6,20 +6,15 @@
 {
   options = {
     file = lib.mkOption {
-      type = lib.types.str;
-      description = "File path to the encrypted secret.";
+      type = lib.types.nullOr (lib.types.either lib.types.path lib.types.str);
+      default = null;
+      description = "Optional source file for the secret.";
     };
 
     ref = lib.mkOption {
       type = lib.types.str;
       description = "Podman secret reference name.";
       default = name;
-    };
-
-    path = lib.mkOption {
-      type = lib.types.str;
-      description = "Path where the decrypted secret is mounted.";
-      default = "/run/agenix/${name}";
     };
   };
 }

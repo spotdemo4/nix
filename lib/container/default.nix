@@ -82,28 +82,5 @@ in
     description = "Additional arguments passed to the container application.";
   };
 
-  secretReferenceType = types.submodule (
-    { config, name, ... }:
-    {
-      options = {
-        ref = mkOption {
-          type = types.str;
-          default = name;
-          description = "Podman secret name.";
-        };
-
-        file = mkOption {
-          type = types.nullOr (types.either types.path types.str);
-          default = null;
-          description = "Optional source file carried by an existing secret configuration.";
-        };
-
-        path = mkOption {
-          type = types.str;
-          default = "/run/agenix/${config.ref}";
-          description = "Optional decrypted path carried by an existing secret configuration.";
-        };
-      };
-    }
-  );
+  secretReferenceType = types.submodule (import ../secrets/secret.nix);
 }
