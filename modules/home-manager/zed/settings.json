@@ -7,6 +7,7 @@
     "git-firefly": true,
     "gleam": true,
     "html": true,
+    "ini": true,
     "kotlin": true,
     "lua": true,
     "neocmake": true,

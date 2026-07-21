@@ -10,6 +10,7 @@
         "git-firefly"
         "gleam"
         "html"
+        "ini"
         "kotlin"
         "lua"
         "neocmake"
