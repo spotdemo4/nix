@@ -16,18 +16,6 @@
       default = name;
     };
 
-    env = lib.mkOption {
-      type = lib.types.str;
-      description = "Environment variable mapping for the Podman secret.";
-      default = "${name},type=env";
-    };
-
-    mount = lib.mkOption {
-      type = lib.types.str;
-      description = "Mount mapping for the Podman secret.";
-      default = "${name},type=mount";
-    };
-
     path = lib.mkOption {
       type = lib.types.str;
       description = "Path where the decrypted secret is mounted.";
