@@ -79,19 +79,16 @@ in
             inherit (config.virtualisation.quadlet.secrets.forgejo-lfs) ref;
             type = "mount";
             target = "/secrets/forgejo-lfs";
-            mode = "0400";
           }
           {
             inherit (config.virtualisation.quadlet.secrets.forgejo-jwt) ref;
             type = "mount";
             target = "/secrets/forgejo-jwt";
-            mode = "0400";
           }
           {
             inherit (config.virtualisation.quadlet.secrets.forgejo-token) ref;
             type = "mount";
             target = "/secrets/forgejo-token";
-            mode = "0400";
           }
         ];
         publishPorts = [
