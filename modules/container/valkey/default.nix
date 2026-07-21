@@ -13,7 +13,12 @@ let
     nameValuePair
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    args
+    mkImageOption
+    networks
+    publishPorts
+    ;
   cfg = config.trev.containers.valkey;
   enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
 in
@@ -31,10 +36,10 @@ in
             options = {
               enable = mkEnableOption "the ${name} Valkey container";
 
-              image = containerOptions.mkImageOption "docker.io/valkey/valkey:9.1.0-alpine@sha256:c9b77919daeba2c02ad954d0c844cc4e7142069d177b89c5fd771f405daf9e02";
-              publishPorts = containerOptions.publishPorts;
-              networks = containerOptions.networks;
-              args = containerOptions.args;
+              image = mkImageOption "docker.io/valkey/valkey:9.1.0-alpine@sha256:c9b77919daeba2c02ad954d0c844cc4e7142069d177b89c5fd771f405daf9e02";
+              publishPorts = publishPorts;
+              networks = networks;
+              args = args;
 
               ref = mkOption {
                 type = types.str;

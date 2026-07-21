@@ -13,7 +13,11 @@ let
     nameValuePair
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    networks
+    secretReferenceType
+    ;
   cfg = config.trev.containers.gluetun;
   enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
   inherit (config.virtualisation.quadlet) volumes;
@@ -32,7 +36,7 @@ in
             options = {
               enable = mkEnableOption "the ${name} Gluetun container";
 
-              image = containerOptions.mkImageOption "docker.io/qmcgaw/gluetun:latest@sha256:ad6b604e0cecc917a5cb6a8de55cd167ba415da8b7ec13456abb871a84be3c30";
+              image = mkImageOption "docker.io/qmcgaw/gluetun:latest@sha256:ad6b604e0cecc917a5cb6a8de55cd167ba415da8b7ec13456abb871a84be3c30";
 
               ports = mkOption {
                 type = types.listOf types.str;
@@ -52,10 +56,10 @@ in
                 };
               };
 
-              networks = containerOptions.networks;
+              networks = networks;
 
               secret = mkOption {
-                type = containerOptions.secretReferenceType;
+                type = secretReferenceType;
                 description = "Podman secret reference containing the WireGuard private key.";
               };
 

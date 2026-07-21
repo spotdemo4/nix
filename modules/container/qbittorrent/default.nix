@@ -11,8 +11,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.qbittorrent;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
     enable = false;
@@ -28,7 +30,7 @@ in
 {
   options.trev.containers.qbittorrent = {
     enable = mkEnableOption "qBittorrent container";
-    image = containerOptions.mkImageOption "lscr.io/linuxserver/qbittorrent:latest@sha256:b024436f8ca665d16d9a997d26fd27fdf867ee5566ba09f32764e7b2976d3e02";
+    image = mkImageOption "lscr.io/linuxserver/qbittorrent:latest@sha256:b024436f8ca665d16d9a997d26fd27fdf867ee5566ba09f32764e7b2976d3e02";
     uid = mkOption {
       type = types.int;
       default = 1000;

@@ -10,8 +10,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.tmail;
   stalwart = lib.attrByPath [ "trev" "containers" "stalwart" ] { enable = false; } config;
   networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
@@ -21,7 +23,7 @@ in
   options.trev.containers.tmail = {
     enable = mkEnableOption "TMail web client container";
 
-    image = containerOptions.mkImageOption "ghcr.io/linagora/tmail-web:v0.30.3@sha256:83c31fe1fdec6a9360a50d0e5440d7937aa705f66067d581e76f05d64397ad5d";
+    image = mkImageOption "ghcr.io/linagora/tmail-web:v0.30.3@sha256:83c31fe1fdec6a9360a50d0e5440d7937aa705f66067d581e76f05d64397ad5d";
 
     serverUrl = mkOption {
       type = types.str;

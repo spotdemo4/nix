@@ -10,18 +10,21 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    networks
+    ;
   cfg = config.trev.containers.tautulli;
   plex = lib.attrByPath [ "trev" "containers" "plex" ] { enable = false; } config;
   inherit (config.virtualisation.quadlet) volumes;
-  networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
-  plexNetwork = lib.attrByPath [ "plex" ] { ref = "plex"; } networks;
+  quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
+  plexNetwork = lib.attrByPath [ "plex" ] { ref = "plex"; } quadletNetworks;
 in
 {
   options.trev.containers.tautulli = {
     enable = mkEnableOption "Tautulli container";
-    image = containerOptions.mkImageOption "lscr.io/linuxserver/tautulli:latest@sha256:ef7f4329e5029f83bc93a6fef9a06e67b97652573ce3d62402645ba0d933a0be";
+    image = mkImageOption "lscr.io/linuxserver/tautulli:latest@sha256:ef7f4329e5029f83bc93a6fef9a06e67b97652573ce3d62402645ba0d933a0be";
     uid = mkOption {
       type = types.int;
       default = 1000;
@@ -47,7 +50,7 @@ in
       default = 8181;
       description = "Tautulli port published on the host.";
     };
-    networks = containerOptions.networks // {
+    networks = networks // {
       default = [ plexNetwork.ref ];
     };
   };

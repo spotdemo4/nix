@@ -10,8 +10,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.portainer;
   inherit (config.virtualisation.quadlet) networks volumes;
 in
@@ -19,7 +21,7 @@ in
   options.trev.containers.portainer = {
     enable = mkEnableOption "the Portainer container";
 
-    image = containerOptions.mkImageOption "docker.io/portainer/portainer-ce:2.43.0@sha256:707366c811956fe077135a6633af67e698529612869711cdb24896c892b28feb";
+    image = mkImageOption "docker.io/portainer/portainer-ce:2.43.0@sha256:707366c811956fe077135a6633af67e698529612869711cdb24896c892b28feb";
 
     podmanSocket = mkOption {
       type = types.str;

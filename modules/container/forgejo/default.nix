@@ -11,15 +11,17 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.forgejo;
   inherit (config.virtualisation.quadlet) networks volumes;
 in
 {
   options.trev.containers.forgejo = {
     enable = mkEnableOption "Forgejo container";
-    image = containerOptions.mkImageOption "codeberg.org/forgejo/forgejo:15.0.5@sha256:eda2e378442d2f18cfa563994f8ad66e71f04ac9c3bb4259cc57bdd641890f5c";
+    image = mkImageOption "codeberg.org/forgejo/forgejo:15.0.5@sha256:eda2e378442d2f18cfa563994f8ad66e71f04ac9c3bb4259cc57bdd641890f5c";
 
     domain = mkOption {
       type = types.str;

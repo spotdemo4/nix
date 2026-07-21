@@ -10,8 +10,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.victoria-metrics;
   jsonExporter = lib.attrByPath [ "trev" "containers" "json-exporter" ] {
     enable = false;
@@ -22,7 +24,7 @@ in
 {
   options.trev.containers.victoria-metrics = {
     enable = mkEnableOption "the VictoriaMetrics container";
-    image = containerOptions.mkImageOption "docker.io/victoriametrics/victoria-metrics:v1.148.0@sha256:407013e902f9a0ba1d4b2d4c077c47bbaf917c893c52ff39b19efe83a654afda";
+    image = mkImageOption "docker.io/victoriametrics/victoria-metrics:v1.148.0@sha256:407013e902f9a0ba1d4b2d4c077c47bbaf917c893c52ff39b19efe83a654afda";
 
     domain = mkOption {
       type = types.str;

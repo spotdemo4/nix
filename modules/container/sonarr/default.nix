@@ -10,15 +10,17 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.sonarr;
   inherit (config.virtualisation.quadlet) volumes;
 in
 {
   options.trev.containers.sonarr = {
     enable = mkEnableOption "Sonarr container";
-    image = containerOptions.mkImageOption "lscr.io/linuxserver/sonarr:4.0.19@sha256:24acea2956a0ccb11f103877d9f4f8576600fb34bff34820ed749c2256dab89f";
+    image = mkImageOption "lscr.io/linuxserver/sonarr:4.0.19@sha256:24acea2956a0ccb11f103877d9f4f8576600fb34bff34820ed749c2256dab89f";
     uid = mkOption {
       type = types.int;
       default = 1000;

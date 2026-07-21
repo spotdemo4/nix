@@ -13,8 +13,11 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    secretReferenceType
+    ;
   cfg = config.trev.containers.traefik;
   valkeyConfig = lib.attrByPath [ "trev" "containers" "valkey" ] {
     enable = false;
@@ -59,7 +62,7 @@ in
   options.trev.containers.traefik = {
     enable = mkEnableOption "the Traefik container";
 
-    image = containerOptions.mkImageOption "docker.io/traefik:v3.7.8@sha256:4299bbed850421258fc5448c2e0e6ad350981d4d335a68de11b92448aedbefe5";
+    image = mkImageOption "docker.io/traefik:v3.7.8@sha256:4299bbed850421258fc5448c2e0e6ad350981d4d335a68de11b92448aedbefe5";
 
     podmanSocket = mkOption {
       type = types.str;
@@ -148,27 +151,27 @@ in
 
     secrets = {
       cloudflareDns = mkOption {
-        type = containerOptions.secretReferenceType;
+        type = secretReferenceType;
         description = "Podman secret containing the Cloudflare DNS API token.";
       };
       crowdsec = mkOption {
-        type = containerOptions.secretReferenceType;
+        type = secretReferenceType;
         description = "Podman secret containing the CrowdSec LAPI key.";
       };
       turnstileSiteKey = mkOption {
-        type = containerOptions.secretReferenceType;
+        type = secretReferenceType;
         description = "Podman secret containing the Cloudflare Turnstile site key.";
       };
       turnstileSecretKey = mkOption {
-        type = containerOptions.secretReferenceType;
+        type = secretReferenceType;
         description = "Podman secret containing the Cloudflare Turnstile secret key.";
       };
       userAdmin = mkOption {
-        type = containerOptions.secretReferenceType;
+        type = secretReferenceType;
         description = "Podman secret containing the admin basic-auth users file.";
       };
       userTrev = mkOption {
-        type = containerOptions.secretReferenceType;
+        type = secretReferenceType;
         description = "Podman secret containing the trev basic-auth users file.";
       };
     };

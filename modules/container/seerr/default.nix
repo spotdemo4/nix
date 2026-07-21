@@ -11,22 +11,25 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    networks
+    ;
   cfg = config.trev.containers.seerr;
   sonarr = lib.attrByPath [ "trev" "containers" "sonarr" ] { enable = false; } config;
   radarr = lib.attrByPath [ "trev" "containers" "radarr" ] { enable = false; } config;
   plex = lib.attrByPath [ "trev" "containers" "plex" ] { enable = false; } config;
   inherit (config.virtualisation.quadlet) volumes;
-  networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
-  sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } networks;
-  radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } networks;
-  plexNetwork = lib.attrByPath [ "plex" ] { ref = "plex"; } networks;
+  quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
+  sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } quadletNetworks;
+  radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } quadletNetworks;
+  plexNetwork = lib.attrByPath [ "plex" ] { ref = "plex"; } quadletNetworks;
 in
 {
   options.trev.containers.seerr = {
     enable = mkEnableOption "Seerr container";
-    image = containerOptions.mkImageOption "ghcr.io/seerr-team/seerr:v3.3.0@sha256:c92d2dc117f62185e7bcb88cd56efd374ea79210eaf433275449e8d5988eb5a8";
+    image = mkImageOption "ghcr.io/seerr-team/seerr:v3.3.0@sha256:c92d2dc117f62185e7bcb88cd56efd374ea79210eaf433275449e8d5988eb5a8";
     timeZone = mkOption {
       type = types.str;
       default = "America/Detroit";
@@ -50,7 +53,7 @@ in
       default = 5055;
       description = "Seerr port published on the host.";
     };
-    networks = containerOptions.networks // {
+    networks = networks // {
       default = [
         sonarrNetwork.ref
         radarrNetwork.ref

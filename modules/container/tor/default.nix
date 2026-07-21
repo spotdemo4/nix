@@ -11,7 +11,9 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    ;
   cfg = config.trev.containers.tor;
   inherit (config.virtualisation.quadlet) networks volumes;
   torrc = pkgs.replaceVars ./torrc {
@@ -29,7 +31,7 @@ in
   options.trev.containers.tor = {
     enable = mkEnableOption "the Tor relay container";
 
-    image = containerOptions.mkImageOption "docker.io/dockurr/tor:0.4.9.11@sha256:446881b3366cbc2cc5cf8d13a76e3104f60824b7c15343d14defe903ded18f0d";
+    image = mkImageOption "docker.io/dockurr/tor:0.4.9.11@sha256:446881b3366cbc2cc5cf8d13a76e3104f60824b7c15343d14defe903ded18f0d";
 
     nickname = mkOption {
       type = types.str;

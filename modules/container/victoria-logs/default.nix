@@ -10,15 +10,17 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.victoria-logs;
   inherit (config.virtualisation.quadlet) networks volumes;
 in
 {
   options.trev.containers.victoria-logs = {
     enable = mkEnableOption "the VictoriaLogs container";
-    image = containerOptions.mkImageOption "docker.io/victoriametrics/victoria-logs:v1.52.0@sha256:47b820890d64c4575a2a0a46415dcd8a4fd59a0f1fcd6a377693d7aea639442e";
+    image = mkImageOption "docker.io/victoriametrics/victoria-logs:v1.52.0@sha256:47b820890d64c4575a2a0a46415dcd8a4fd59a0f1fcd6a377693d7aea639442e";
 
     domain = mkOption {
       type = types.str;

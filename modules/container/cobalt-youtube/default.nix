@@ -5,7 +5,9 @@
 }:
 let
   inherit (lib) mkEnableOption mkIf;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    ;
   cfg = config.trev.containers.cobalt-youtube;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
     enable = false;
@@ -20,7 +22,7 @@ in
   options.trev.containers.cobalt-youtube = {
     enable = mkEnableOption "Cobalt YouTube session generator container";
 
-    image = containerOptions.mkImageOption "ghcr.io/imputnet/yt-session-generator:webserver@sha256:95b801ce70c93dfa7a0732fa52d41ef0fe891489e72926360bd50aa001797d5d";
+    image = mkImageOption "ghcr.io/imputnet/yt-session-generator:webserver@sha256:95b801ce70c93dfa7a0732fa52d41ef0fe891489e72926360bd50aa001797d5d";
   };
 
   config = mkIf cfg.enable {

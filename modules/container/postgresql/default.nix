@@ -16,7 +16,12 @@ let
     optional
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    networks
+    publishPorts
+    secretReferenceType
+    ;
   cfg = config.trev.containers.postgresql;
   enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
   inherit (config.virtualisation.quadlet) volumes;
@@ -35,7 +40,7 @@ in
             options = {
               enable = mkEnableOption "the ${name} PostgreSQL container";
 
-              image = containerOptions.mkImageOption "docker.io/postgres:18.4-alpine@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15";
+              image = mkImageOption "docker.io/postgres:18.4-alpine@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15";
 
               database = mkOption {
                 type = types.str;
@@ -49,13 +54,13 @@ in
               };
 
               passwordSecret = mkOption {
-                type = types.nullOr containerOptions.secretReferenceType;
+                type = types.nullOr secretReferenceType;
                 default = null;
                 description = "Podman secret reference containing the database password.";
               };
 
-              networks = containerOptions.networks;
-              publishPorts = containerOptions.publishPorts;
+              networks = networks;
+              publishPorts = publishPorts;
 
               volumeName = mkOption {
                 type = types.str;

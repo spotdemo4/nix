@@ -11,8 +11,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.rsyncd;
   inherit (config.virtualisation.quadlet) volumes;
   inherit (config) secrets;
@@ -20,7 +22,7 @@ in
 {
   options.trev.containers.rsyncd = {
     enable = mkEnableOption "rsync daemon container";
-    image = containerOptions.mkImageOption "docker.io/vimagick/rsyncd:latest@sha256:fb98a50388b111940d0e4cae0b9fd5f1606b970caa713dfb1ec1c680b8290638";
+    image = mkImageOption "docker.io/vimagick/rsyncd:latest@sha256:fb98a50388b111940d0e4cae0b9fd5f1606b970caa713dfb1ec1c680b8290638";
 
     configFile = mkOption {
       type = types.either types.path types.str;

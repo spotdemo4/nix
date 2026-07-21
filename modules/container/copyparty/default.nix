@@ -12,8 +12,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.copyparty;
   inherit (config.virtualisation.quadlet) volumes;
   inherit (config) secrets;
@@ -26,7 +28,7 @@ in
 {
   options.trev.containers.copyparty = {
     enable = mkEnableOption "Copyparty container";
-    image = containerOptions.mkImageOption "ghcr.io/9001/copyparty-ac:1.20.18@sha256:59fe48c65b5f527c98abf0dfb9eb59e4177923c6a97287974524a6dacc0dbea7";
+    image = mkImageOption "ghcr.io/9001/copyparty-ac:1.20.18@sha256:59fe48c65b5f527c98abf0dfb9eb59e4177923c6a97287974524a6dacc0dbea7";
 
     dataPath = mkOption {
       type = types.str;

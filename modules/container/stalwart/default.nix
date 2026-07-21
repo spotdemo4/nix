@@ -10,8 +10,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.stalwart;
   inherit (config.virtualisation.quadlet) networks volumes;
 in
@@ -19,7 +21,7 @@ in
   options.trev.containers.stalwart = {
     enable = mkEnableOption "Stalwart mail server container";
 
-    image = containerOptions.mkImageOption "docker.io/stalwartlabs/stalwart:v0.15.5-alpine@sha256:0620ceba9165c104789d5cacb0aa209e7f16295f54edead631b1925b1ccc1ccf";
+    image = mkImageOption "docker.io/stalwartlabs/stalwart:v0.15.5-alpine@sha256:0620ceba9165c104789d5cacb0aa209e7f16295f54edead631b1925b1ccc1ccf";
 
     certificatesPath = mkOption {
       type = types.str;

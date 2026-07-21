@@ -10,7 +10,9 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    ;
   cfg = config.trev.containers.traefik-certs-dumper;
   traefik = lib.attrByPath [ "trev" "containers" "traefik" ] {
     enable = false;
@@ -25,7 +27,7 @@ in
   options.trev.containers.traefik-certs-dumper = {
     enable = mkEnableOption "the Traefik certificate dumper container";
 
-    image = containerOptions.mkImageOption "ghcr.io/kereis/traefik-certs-dumper:1.8.22@sha256:9d71a7cc50d4b00ac30a27ffc94cca375953cd11ebc722772943823528497996";
+    image = mkImageOption "ghcr.io/kereis/traefik-certs-dumper:1.8.22@sha256:9d71a7cc50d4b00ac30a27ffc94cca375953cd11ebc722772943823528497996";
 
     outputDir = mkOption {
       type = types.str;

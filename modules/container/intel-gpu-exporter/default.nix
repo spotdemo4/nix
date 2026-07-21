@@ -10,13 +10,15 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    ;
   cfg = config.trev.containers.intel-gpu-exporter;
 in
 {
   options.trev.containers.intel-gpu-exporter = {
     enable = mkEnableOption "the Intel GPU Exporter container";
-    image = containerOptions.mkImageOption "ghcr.io/spotdemo4/intel-gpu-exporter:latest@sha256:79b14da50f7db1e4143c10298fb234e55989f643180ee4a0d6b330f8f48b27f6";
+    image = mkImageOption "ghcr.io/spotdemo4/intel-gpu-exporter:latest@sha256:79b14da50f7db1e4143c10298fb234e55989f643180ee4a0d6b330f8f48b27f6";
 
     publishPorts = mkOption {
       type = types.listOf types.str;

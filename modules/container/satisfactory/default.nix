@@ -10,15 +10,17 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.satisfactory;
   inherit (config.virtualisation.quadlet) volumes;
 in
 {
   options.trev.containers.satisfactory = {
     enable = mkEnableOption "the Satisfactory container";
-    image = containerOptions.mkImageOption "ghcr.io/wolveix/satisfactory-server:v1.9.10@sha256:e0f2f8c9759875c97add050d3a344167b71cb41bef68e85771f1ea8cc8c00301";
+    image = mkImageOption "ghcr.io/wolveix/satisfactory-server:v1.9.10@sha256:e0f2f8c9759875c97add050d3a344167b71cb41bef68e85771f1ea8cc8c00301";
 
     environments = mkOption {
       type = types.attrsOf types.str;

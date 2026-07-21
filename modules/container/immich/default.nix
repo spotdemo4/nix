@@ -11,8 +11,10 @@ let
     optional
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.immich;
   database = lib.attrByPath [ "trev" "containers" "immich-postgresql" ] {
     enable = false;
@@ -37,7 +39,7 @@ in
 {
   options.trev.containers.immich = {
     enable = mkEnableOption "Immich container";
-    image = containerOptions.mkImageOption "ghcr.io/imagegenius/immich:3.0.3@sha256:45abbf8a52f14f5166640fe2f4f2067cd00a87df27694b4d39d80ad0ac78c9ec";
+    image = mkImageOption "ghcr.io/imagegenius/immich:3.0.3@sha256:45abbf8a52f14f5166640fe2f4f2067cd00a87df27694b4d39d80ad0ac78c9ec";
 
     photosPath = mkOption {
       type = types.str;

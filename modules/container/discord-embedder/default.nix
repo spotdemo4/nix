@@ -11,8 +11,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.discord-embedder;
   inherit (config.virtualisation.quadlet) volumes;
   secretFileType = types.either types.path types.str;
@@ -20,7 +22,7 @@ in
 {
   options.trev.containers.discord-embedder = {
     enable = mkEnableOption "Discord embedder container";
-    image = containerOptions.mkImageOption "ghcr.io/spotdemo4/discord-embedder:0.1.23@sha256:69f4ff92dd35fd186e4005a648fa1d0ca650bb89c97d00610eb9f83c14b0b805";
+    image = mkImageOption "ghcr.io/spotdemo4/discord-embedder:0.1.23@sha256:69f4ff92dd35fd186e4005a648fa1d0ca650bb89c97d00610eb9f83c14b0b805";
     uid = mkOption {
       type = types.int;
       default = 1000;

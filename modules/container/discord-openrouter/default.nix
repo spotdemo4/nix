@@ -11,7 +11,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    secretReferenceType
+    ;
   cfg = config.trev.containers.discord-openrouter;
   inherit (config.virtualisation.quadlet) volumes;
 in
@@ -19,10 +22,10 @@ in
   options.trev.containers.discord-openrouter = {
     enable = mkEnableOption "Discord OpenRouter container";
 
-    image = containerOptions.mkImageOption "ghcr.io/spotdemo4/discord-openrouter:0.0.9@sha256:f0f840513a644c65236d4b8eb3708d5aef3b4fdff3425dbbefba0d6c1a5a186b";
+    image = mkImageOption "ghcr.io/spotdemo4/discord-openrouter:0.0.9@sha256:f0f840513a644c65236d4b8eb3708d5aef3b4fdff3425dbbefba0d6c1a5a186b";
 
     openrouterSecret = mkOption {
-      type = containerOptions.secretReferenceType;
+      type = secretReferenceType;
       default = {
         ref = "openrouter";
         file = self + /secrets/openrouter.age;
@@ -31,7 +34,7 @@ in
     };
 
     discordSecret = mkOption {
-      type = containerOptions.secretReferenceType;
+      type = secretReferenceType;
       default = {
         ref = "discord-openrouter";
         file = self + /secrets/discord-openrouter.age;

@@ -10,20 +10,23 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    networks
+    ;
   cfg = config.trev.containers.bazarr;
   sonarr = lib.attrByPath [ "trev" "containers" "sonarr" ] { enable = false; } config;
   radarr = lib.attrByPath [ "trev" "containers" "radarr" ] { enable = false; } config;
   inherit (config.virtualisation.quadlet) volumes;
-  networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
-  sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } networks;
-  radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } networks;
+  quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
+  sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } quadletNetworks;
+  radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } quadletNetworks;
 in
 {
   options.trev.containers.bazarr = {
     enable = mkEnableOption "Bazarr container";
-    image = containerOptions.mkImageOption "lscr.io/linuxserver/bazarr:1.6.0@sha256:4c30dc0bb9a5d223075e7f5d12c77bd293c4b460f86d696dbe64763104c1e88c";
+    image = mkImageOption "lscr.io/linuxserver/bazarr:1.6.0@sha256:4c30dc0bb9a5d223075e7f5d12c77bd293c4b460f86d696dbe64763104c1e88c";
     uid = mkOption {
       type = types.int;
       default = 1000;
@@ -54,7 +57,7 @@ in
       default = 6767;
       description = "Bazarr port published on the host.";
     };
-    networks = containerOptions.networks // {
+    networks = networks // {
       default = [
         sonarrNetwork.ref
         radarrNetwork.ref

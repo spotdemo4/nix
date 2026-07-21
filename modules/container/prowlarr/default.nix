@@ -10,20 +10,23 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    networks
+    ;
   cfg = config.trev.containers.prowlarr;
   sonarr = lib.attrByPath [ "trev" "containers" "sonarr" ] { enable = false; } config;
   radarr = lib.attrByPath [ "trev" "containers" "radarr" ] { enable = false; } config;
   inherit (config.virtualisation.quadlet) volumes;
-  networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
-  sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } networks;
-  radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } networks;
+  quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
+  sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } quadletNetworks;
+  radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } quadletNetworks;
 in
 {
   options.trev.containers.prowlarr = {
     enable = mkEnableOption "Prowlarr container";
-    image = containerOptions.mkImageOption "lscr.io/linuxserver/prowlarr:2.4.0@sha256:4fd7a166c8f46dd3370a871c250ee577d6c2ae97a0dbe0e3614b5ef736205620";
+    image = mkImageOption "lscr.io/linuxserver/prowlarr:2.4.0@sha256:4fd7a166c8f46dd3370a871c250ee577d6c2ae97a0dbe0e3614b5ef736205620";
     uid = mkOption {
       type = types.int;
       default = 1000;
@@ -49,7 +52,7 @@ in
       default = 9696;
       description = "Prowlarr port published on the host.";
     };
-    networks = containerOptions.networks // {
+    networks = networks // {
       default = [
         sonarrNetwork.ref
         radarrNetwork.ref

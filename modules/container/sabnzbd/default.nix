@@ -10,20 +10,23 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    networks
+    ;
   cfg = config.trev.containers.sabnzbd;
   sonarr = lib.attrByPath [ "trev" "containers" "sonarr" ] { enable = false; } config;
   radarr = lib.attrByPath [ "trev" "containers" "radarr" ] { enable = false; } config;
   inherit (config.virtualisation.quadlet) volumes;
-  networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
-  sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } networks;
-  radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } networks;
+  quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
+  sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } quadletNetworks;
+  radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } quadletNetworks;
 in
 {
   options.trev.containers.sabnzbd = {
     enable = mkEnableOption "SABnzbd container";
-    image = containerOptions.mkImageOption "lscr.io/linuxserver/sabnzbd:5.0.4@sha256:b67039e6739c2379f2eac8901248cdfcd78536ee34fe6948faea6b8ce8b4805b";
+    image = mkImageOption "lscr.io/linuxserver/sabnzbd:5.0.4@sha256:b67039e6739c2379f2eac8901248cdfcd78536ee34fe6948faea6b8ce8b4805b";
     uid = mkOption {
       type = types.int;
       default = 1000;
@@ -54,7 +57,7 @@ in
       default = 8080;
       description = "SABnzbd port published on the host.";
     };
-    networks = containerOptions.networks // {
+    networks = networks // {
       default = [
         sonarrNetwork.ref
         radarrNetwork.ref

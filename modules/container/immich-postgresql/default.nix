@@ -11,17 +11,21 @@ let
     optional
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    networks
+    secretReferenceType
+    ;
   cfg = config.trev.containers.immich-postgresql;
   immich = lib.attrByPath [ "trev" "containers" "immich" ] { enable = false; } config;
   inherit (config.virtualisation.quadlet) volumes;
-  networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
-  immichNetwork = lib.attrByPath [ "immich" ] { ref = "immich"; } networks;
+  quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
+  immichNetwork = lib.attrByPath [ "immich" ] { ref = "immich"; } quadletNetworks;
 in
 {
   options.trev.containers.immich-postgresql = {
     enable = mkEnableOption "Immich PostgreSQL container";
-    image = containerOptions.mkImageOption "ghcr.io/immich-app/postgres:18-vectorchord0.5.3@sha256:828081a755d3911a2d94f0a2be9f98570c07d52cf080fd310a9d6e4b83b73aa5";
+    image = mkImageOption "ghcr.io/immich-app/postgres:18-vectorchord0.5.3@sha256:828081a755d3911a2d94f0a2be9f98570c07d52cf080fd310a9d6e4b83b73aa5";
 
     containerName = mkOption {
       type = types.str;
@@ -48,12 +52,12 @@ in
     };
 
     passwordSecret = mkOption {
-      type = types.nullOr containerOptions.secretReferenceType;
+      type = types.nullOr secretReferenceType;
       default = null;
       description = "Podman secret reference containing the database password.";
     };
 
-    networks = containerOptions.networks // {
+    networks = networks // {
       default = [ immichNetwork.ref ];
     };
   };

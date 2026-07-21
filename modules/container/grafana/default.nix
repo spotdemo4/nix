@@ -11,8 +11,11 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    secretReferenceType
+    ;
   cfg = config.trev.containers.grafana;
   victoriaLogs = lib.attrByPath [ "trev" "containers" "victoria-logs" ] { enable = false; } config;
   victoriaMetrics = lib.attrByPath [ "trev" "containers" "victoria-metrics" ] {
@@ -29,7 +32,7 @@ in
 {
   options.trev.containers.grafana = {
     enable = mkEnableOption "the Grafana container";
-    image = containerOptions.mkImageOption "docker.io/grafana/grafana-enterprise:13.1.1@sha256:b92dd301ac40f837e87bfd05428397f9096a0941773ab417e67b399d0381b3ba";
+    image = mkImageOption "docker.io/grafana/grafana-enterprise:13.1.1@sha256:b92dd301ac40f837e87bfd05428397f9096a0941773ab417e67b399d0381b3ba";
 
     domain = mkOption {
       type = types.str;
@@ -38,7 +41,7 @@ in
     };
 
     secret = mkOption {
-      type = containerOptions.secretReferenceType;
+      type = secretReferenceType;
       default = {
         ref = "grafana";
         file = self + /secrets/grafana.age;

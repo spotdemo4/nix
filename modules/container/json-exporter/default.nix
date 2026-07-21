@@ -10,7 +10,9 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    ;
   cfg = config.trev.containers.json-exporter;
   victoriaMetrics = lib.attrByPath [ "trev" "containers" "victoria-metrics" ] {
     enable = false;
@@ -22,7 +24,7 @@ in
 {
   options.trev.containers.json-exporter = {
     enable = mkEnableOption "the JSON Exporter container";
-    image = containerOptions.mkImageOption "quay.io/prometheuscommunity/json-exporter:v0.7.0@sha256:3a777171d39ad435cb39519e84e0a8b5c63c7e716cc06011f8140cfaabfc1baf";
+    image = mkImageOption "quay.io/prometheuscommunity/json-exporter:v0.7.0@sha256:3a777171d39ad435cb39519e84e0a8b5c63c7e716cc06011f8140cfaabfc1baf";
 
     configFile = mkOption {
       type = types.path;

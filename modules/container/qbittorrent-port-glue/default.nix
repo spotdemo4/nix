@@ -11,7 +11,9 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    ;
   cfg = config.trev.containers.qbittorrent-port-glue;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
     enable = false;
@@ -30,7 +32,7 @@ in
 {
   options.trev.containers.qbittorrent-port-glue = {
     enable = mkEnableOption "qBittorrent port glue container";
-    image = containerOptions.mkImageOption "ghcr.io/spotdemo4/qbittorrent-port-glue:0.1.1@sha256:28587cf6c7b28ed3e8464a36f476ea11881e8a0a204cdaae852f0f438f8c7cc1";
+    image = mkImageOption "ghcr.io/spotdemo4/qbittorrent-port-glue:0.1.1@sha256:28587cf6c7b28ed3e8464a36f476ea11881e8a0a204cdaae852f0f438f8c7cc1";
     qbittorrentHost = mkOption {
       type = types.str;
       default = "http://localhost";

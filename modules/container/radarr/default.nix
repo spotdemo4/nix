@@ -10,15 +10,17 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.radarr;
   inherit (config.virtualisation.quadlet) volumes;
 in
 {
   options.trev.containers.radarr = {
     enable = mkEnableOption "Radarr container";
-    image = containerOptions.mkImageOption "lscr.io/linuxserver/radarr:6.3.0@sha256:e35056574cdc695a9ee745aa1ecda9eab3842450bf4b7b8471b023790fa3861d";
+    image = mkImageOption "lscr.io/linuxserver/radarr:6.3.0@sha256:e35056574cdc695a9ee745aa1ecda9eab3842450bf4b7b8471b023790fa3861d";
     uid = mkOption {
       type = types.int;
       default = 1000;

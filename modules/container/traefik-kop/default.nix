@@ -10,13 +10,15 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    ;
   cfg = config.trev.containers.traefik-kop;
 in
 {
   options.trev.containers.traefik-kop = {
     enable = mkEnableOption "the Traefik Kop container";
-    image = containerOptions.mkImageOption "ghcr.io/jittering/traefik-kop:0.20.1@sha256:f4919330407ae93f6d966cff7d7352198c09ed5e788c959a1bfd9d0eaf7e1091";
+    image = mkImageOption "ghcr.io/jittering/traefik-kop:0.20.1@sha256:f4919330407ae93f6d966cff7d7352198c09ed5e788c959a1bfd9d0eaf7e1091";
 
     podmanSocket = mkOption {
       type = types.str;

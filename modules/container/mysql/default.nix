@@ -13,7 +13,12 @@ let
     nameValuePair
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    networks
+    publishPorts
+    secretReferenceType
+    ;
   cfg = config.trev.containers.mysql;
   enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
   inherit (config.virtualisation.quadlet) volumes;
@@ -32,7 +37,7 @@ in
             options = {
               enable = mkEnableOption "the ${name} MySQL container";
 
-              image = containerOptions.mkImageOption "docker.io/mysql:9.7.1@sha256:8fdf311514c91fa5014e93e98e19d7f5d9eb162a462c13100c956dacc278ee21";
+              image = mkImageOption "docker.io/mysql:9.7.1@sha256:8fdf311514c91fa5014e93e98e19d7f5d9eb162a462c13100c956dacc278ee21";
 
               database = mkOption {
                 type = types.str;
@@ -46,12 +51,12 @@ in
               };
 
               password = mkOption {
-                type = containerOptions.secretReferenceType;
+                type = secretReferenceType;
                 description = "Podman secret reference containing the database password.";
               };
 
-              networks = containerOptions.networks;
-              publishPorts = containerOptions.publishPorts;
+              networks = networks;
+              publishPorts = publishPorts;
 
               volumeName = mkOption {
                 type = types.str;

@@ -10,15 +10,17 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.plex;
   inherit (config.virtualisation.quadlet) volumes;
 in
 {
   options.trev.containers.plex = {
     enable = mkEnableOption "Plex container";
-    image = containerOptions.mkImageOption "lscr.io/linuxserver/plex:1.43.3@sha256:59c671e182563040092a2d0901e429dc15e0aba9883acd13ef97857372b79b21";
+    image = mkImageOption "lscr.io/linuxserver/plex:1.43.3@sha256:59c671e182563040092a2d0901e429dc15e0aba9883acd13ef97857372b79b21";
     uid = mkOption {
       type = types.int;
       default = 1000;

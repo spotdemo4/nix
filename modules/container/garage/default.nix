@@ -13,8 +13,10 @@ let
     replaceStrings
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.garage;
   inherit (config.virtualisation.quadlet) volumes;
   inherit (config) secrets;
@@ -32,7 +34,7 @@ in
 {
   options.trev.containers.garage = {
     enable = mkEnableOption "Garage container";
-    image = containerOptions.mkImageOption "docker.io/dxflrs/garage:v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690";
+    image = mkImageOption "docker.io/dxflrs/garage:v2.3.0@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690";
 
     dataPath = mkOption {
       type = types.str;

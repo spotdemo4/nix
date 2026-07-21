@@ -10,8 +10,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.monerod;
   inherit (config.virtualisation.quadlet) networks;
 in
@@ -19,7 +21,7 @@ in
   options.trev.containers.monerod = {
     enable = mkEnableOption "the Monero daemon container";
 
-    image = containerOptions.mkImageOption "ghcr.io/sethforprivacy/simple-monerod:v0.18.5.1@sha256:42863e2703fcee53b8ee937499d37d49a94e99c6122660c3b3e53d15e4a864ec";
+    image = mkImageOption "ghcr.io/sethforprivacy/simple-monerod:v0.18.5.1@sha256:42863e2703fcee53b8ee937499d37d49a94e99c6122660c3b3e53d15e4a864ec";
 
     dataDir = mkOption {
       type = types.str;

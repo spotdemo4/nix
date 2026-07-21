@@ -10,8 +10,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.cobalt;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
     enable = false;
@@ -26,7 +28,7 @@ in
   options.trev.containers.cobalt = {
     enable = mkEnableOption "Cobalt container";
 
-    image = containerOptions.mkImageOption "ghcr.io/imputnet/cobalt:11.5@sha256:01637bc0ae6668f132f66b2dd992fc71865b7373ff483a406afa81d679118fc0";
+    image = mkImageOption "ghcr.io/imputnet/cobalt:11.5@sha256:01637bc0ae6668f132f66b2dd992fc71865b7373ff483a406afa81d679118fc0";
 
     apiUrl = mkOption {
       type = types.str;

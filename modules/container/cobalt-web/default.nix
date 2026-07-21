@@ -10,8 +10,10 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.cobalt-web;
   cobalt = lib.attrByPath [ "trev" "containers" "cobalt" ] { enable = false; } config;
 in
@@ -19,7 +21,7 @@ in
   options.trev.containers.cobalt-web = {
     enable = mkEnableOption "Cobalt web container";
 
-    image = containerOptions.mkImageOption "ghcr.io/spotdemo4/cobalt-web:11.7@sha256:30392487965b2c96f70f04ec5e3ef24a7804eec6ef0c7b9fd7d1e19ed955d1c9";
+    image = mkImageOption "ghcr.io/spotdemo4/cobalt-web:11.7@sha256:30392487965b2c96f70f04ec5e3ef24a7804eec6ef0c7b9fd7d1e19ed955d1c9";
 
     defaultApiUrl = mkOption {
       type = types.str;

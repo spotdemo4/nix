@@ -10,8 +10,11 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    secretReferenceType
+    ;
   cfg = config.trev.containers.shlink-web;
   shlink = lib.attrByPath [ "trev" "containers" "shlink" ] { enable = false; } config;
   inherit (config.virtualisation.quadlet) containers;
@@ -21,7 +24,7 @@ in
   options.trev.containers.shlink-web = {
     enable = mkEnableOption "Shlink web client container";
 
-    image = containerOptions.mkImageOption "docker.io/shlinkio/shlink-web-client:4.8.0@sha256:ec804a7f9dc8d5f64615c780106d4d954ec81648dc2a1393442c68da8e48e102";
+    image = mkImageOption "docker.io/shlinkio/shlink-web-client:4.8.0@sha256:ec804a7f9dc8d5f64615c780106d4d954ec81648dc2a1393442c68da8e48e102";
 
     serverUrl = mkOption {
       type = types.str;
@@ -42,7 +45,7 @@ in
     };
 
     apiSecret = mkOption {
-      type = containerOptions.secretReferenceType;
+      type = secretReferenceType;
       default.ref = "shlink";
       description = "Shlink API key secret registered by the Shlink container.";
     };

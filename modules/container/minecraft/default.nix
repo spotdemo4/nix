@@ -11,18 +11,21 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    secretReferenceType
+    ;
   cfg = config.trev.containers.minecraft;
   inherit (config.virtualisation.quadlet) volumes;
 in
 {
   options.trev.containers.minecraft = {
     enable = mkEnableOption "the Minecraft container";
-    image = containerOptions.mkImageOption "docker.io/itzg/minecraft-server:latest@sha256:9faa6aefeedd5a883c3ee241653fd1421529bdbafc428d0513e43cae0f2b7d68";
+    image = mkImageOption "docker.io/itzg/minecraft-server:latest@sha256:9faa6aefeedd5a883c3ee241653fd1421529bdbafc428d0513e43cae0f2b7d68";
 
     curseforgeSecret = mkOption {
-      type = containerOptions.secretReferenceType;
+      type = secretReferenceType;
       default = {
         ref = "curseforge";
         file = self + /secrets/curseforge.age;

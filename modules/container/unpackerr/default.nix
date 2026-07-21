@@ -11,19 +11,22 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    networks
+    ;
   cfg = config.trev.containers.unpackerr;
   radarr = lib.attrByPath [ "trev" "containers" "radarr" ] { enable = false; } config;
   sonarr = lib.attrByPath [ "trev" "containers" "sonarr" ] { enable = false; } config;
-  networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
-  radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } networks;
-  sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } networks;
+  quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
+  radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } quadletNetworks;
+  sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } quadletNetworks;
   secretFileType = types.either types.path types.str;
 in
 {
   options.trev.containers.unpackerr = {
     enable = mkEnableOption "Unpackerr container";
-    image = containerOptions.mkImageOption "ghcr.io/unpackerr/unpackerr:0.15.2@sha256:89e13608521ece21dd300c39229fd595a55fbf4b8152771af5670a7455b5c747";
+    image = mkImageOption "ghcr.io/unpackerr/unpackerr:0.15.2@sha256:89e13608521ece21dd300c39229fd595a55fbf4b8152771af5670a7455b5c747";
     uid = mkOption {
       type = types.int;
       default = 1000;
@@ -64,7 +67,7 @@ in
       default = self + /secrets/sonarr.age;
       description = "Age file containing the Sonarr API key.";
     };
-    networks = containerOptions.networks // {
+    networks = networks // {
       default = [
         radarrNetwork.ref
         sonarrNetwork.ref

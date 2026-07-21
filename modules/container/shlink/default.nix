@@ -12,8 +12,11 @@ let
     optional
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    secretReferenceType
+    ;
   cfg = config.trev.containers.shlink;
   postgresql = lib.attrByPath [ "trev" "containers" "postgresql" ] {
     enable = false;
@@ -35,7 +38,7 @@ in
   options.trev.containers.shlink = {
     enable = mkEnableOption "Shlink container";
 
-    image = containerOptions.mkImageOption "ghcr.io/shlinkio/shlink:5.1.5@sha256:77b8eb87bcb1a56bd0ecc590398d415545e5ba83414f28d37dc565a91c3c50b2";
+    image = mkImageOption "ghcr.io/shlinkio/shlink:5.1.5@sha256:77b8eb87bcb1a56bd0ecc590398d415545e5ba83414f28d37dc565a91c3c50b2";
 
     domain = mkOption {
       type = types.str;
@@ -44,7 +47,7 @@ in
     };
 
     geoliteSecret = mkOption {
-      type = containerOptions.secretReferenceType;
+      type = secretReferenceType;
       default = {
         ref = "geolite";
         file = self + /secrets/geolite.age;
@@ -53,7 +56,7 @@ in
     };
 
     apiSecret = mkOption {
-      type = containerOptions.secretReferenceType;
+      type = secretReferenceType;
       default = {
         ref = "shlink";
         file = self + /secrets/shlink.age;

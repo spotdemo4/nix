@@ -10,15 +10,17 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.victoria-traces;
   inherit (config.virtualisation.quadlet) networks volumes;
 in
 {
   options.trev.containers.victoria-traces = {
     enable = mkEnableOption "the VictoriaTraces container";
-    image = containerOptions.mkImageOption "docker.io/victoriametrics/victoria-traces:v0.9.4@sha256:de1f0ce3916692236a711b58e48c65cc4138bfaa4e36324cfa25206e5485b187";
+    image = mkImageOption "docker.io/victoriametrics/victoria-traces:v0.9.4@sha256:de1f0ce3916692236a711b58e48c65cc4138bfaa4e36324cfa25206e5485b187";
 
     domain = mkOption {
       type = types.str;

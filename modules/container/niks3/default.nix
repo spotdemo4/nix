@@ -12,8 +12,11 @@ let
     optional
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    secretReferenceType
+    ;
   cfg = config.trev.containers.niks3;
   postgresql = lib.attrByPath [ "trev" "containers" "postgresql" ] {
     enable = false;
@@ -33,7 +36,7 @@ in
 {
   options.trev.containers.niks3 = {
     enable = mkEnableOption "Niks3 container";
-    image = containerOptions.mkImageOption "ghcr.io/mic92/niks3:main@sha256:3f087a3b59202b333a89e414e732f03b5e43d13f187a4e46a639a6f499472e34";
+    image = mkImageOption "ghcr.io/mic92/niks3:main@sha256:3f087a3b59202b333a89e414e732f03b5e43d13f187a4e46a639a6f499472e34";
 
     domain = mkOption {
       type = types.str;
@@ -90,7 +93,7 @@ in
     };
 
     databaseUrlSecret = mkOption {
-      type = types.nullOr containerOptions.secretReferenceType;
+      type = types.nullOr secretReferenceType;
       default = null;
       description = "Podman secret reference containing the complete Niks3 PostgreSQL connection string.";
     };

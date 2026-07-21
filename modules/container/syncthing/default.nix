@@ -10,15 +10,17 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
-  inherit (containerOptions) mkContainer;
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkContainer
+    mkImageOption
+    ;
   cfg = config.trev.containers.syncthing;
   inherit (config.virtualisation.quadlet) networks volumes;
 in
 {
   options.trev.containers.syncthing = {
     enable = mkEnableOption "Syncthing container";
-    image = containerOptions.mkImageOption "docker.io/syncthing/syncthing:2.1.2@sha256:4464f4161dd0251e20d46bb3aec83363db75d80cef1abdd5d5fd4054b04a004d";
+    image = mkImageOption "docker.io/syncthing/syncthing:2.1.2@sha256:4464f4161dd0251e20d46bb3aec83363db75d80cef1abdd5d5fd4054b04a004d";
 
     domain = mkOption {
       type = types.str;

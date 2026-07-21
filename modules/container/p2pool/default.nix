@@ -10,7 +10,9 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    ;
   cfg = config.trev.containers.p2pool;
   monerod = lib.attrByPath [ "trev" "containers" "monerod" ] { enable = false; } config;
   inherit (config.virtualisation.quadlet) networks volumes;
@@ -19,7 +21,7 @@ in
   options.trev.containers.p2pool = {
     enable = mkEnableOption "the P2Pool container";
 
-    image = containerOptions.mkImageOption "ghcr.io/sethforprivacy/p2pool:v4.17@sha256:b46a062c0169a3d5cb37530799a8846f963a0769dbadae18cb24d02c71ca8091";
+    image = mkImageOption "ghcr.io/sethforprivacy/p2pool:v4.17@sha256:b46a062c0169a3d5cb37530799a8846f963a0769dbadae18cb24d02c71ca8091";
 
     wallet = mkOption {
       type = types.str;

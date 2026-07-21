@@ -10,7 +10,9 @@ let
     mkOption
     types
     ;
-  containerOptions = import ../../../lib/container-options.nix { inherit lib; };
+  inherit (import ../../../lib/container-options.nix { inherit lib; })
+    mkImageOption
+    ;
   cfg = config.trev.containers.crowdsec;
   inherit (config.virtualisation.quadlet) volumes;
 in
@@ -18,7 +20,7 @@ in
   options.trev.containers.crowdsec = {
     enable = mkEnableOption "CrowdSec container";
 
-    image = containerOptions.mkImageOption "docker.io/crowdsecurity/crowdsec:v1.7.8@sha256:2f527c9bb8b367120eb08b82890aa912ce96bfa1ada93dda0721700e4b4e0dde";
+    image = mkImageOption "docker.io/crowdsecurity/crowdsec:v1.7.8@sha256:2f527c9bb8b367120eb08b82890aa912ce96bfa1ada93dda0721700e4b4e0dde";
 
     timeZone = mkOption {
       type = types.str;
