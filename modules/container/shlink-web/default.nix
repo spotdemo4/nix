@@ -14,7 +14,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
-    secretReferenceType
+    secretType
     ;
   cfg = config.trev.containers.shlink-web;
   shlink = lib.attrByPath [ "trev" "containers" "shlink" ] { enable = false; } config;
@@ -46,7 +46,7 @@ in
     };
 
     apiSecret = mkOption {
-      type = secretReferenceType;
+      type = secretType;
       default.ref = "shlink";
       description = "Shlink API key secret registered by the Shlink container.";
     };

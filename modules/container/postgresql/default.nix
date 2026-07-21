@@ -22,7 +22,7 @@ let
     mkImageOption
     networks
     publishPorts
-    secretReferenceType
+    secretType
     ;
   cfg = config.trev.containers.postgresql;
   enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
@@ -56,7 +56,7 @@ in
               };
 
               passwordSecret = mkOption {
-                type = types.nullOr secretReferenceType;
+                type = types.nullOr secretType;
                 default = null;
                 description = "Podman secret reference containing the database password.";
               };

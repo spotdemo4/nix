@@ -14,6 +14,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
+    secretType
     ;
   cfg = config.trev.containers.forgejo;
   inherit (config.virtualisation.quadlet) networks volumes;
@@ -41,29 +42,38 @@ in
       description = "Forgejo HTTP port to publish.";
     };
 
-    lfsSecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/forgejo-lfs.age;
-      description = "Age file containing the LFS JWT secret.";
+    lfsSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "forgejo-lfs";
+        file = self + /secrets/forgejo-lfs.age;
+      };
+      description = "Forgejo LFS JWT secret.";
     };
-    jwtSecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/forgejo-jwt.age;
-      description = "Age file containing the JWT secret.";
+    jwtSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "forgejo-jwt";
+        file = self + /secrets/forgejo-jwt.age;
+      };
+      description = "Forgejo JWT secret.";
     };
-    tokenSecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/forgejo-token.age;
-      description = "Age file containing the internal token.";
+    tokenSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "forgejo-token";
+        file = self + /secrets/forgejo-token.age;
+      };
+      description = "Forgejo internal token secret.";
     };
   };
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
       secrets = {
-        forgejo-lfs.file = cfg.lfsSecretFile;
-        forgejo-jwt.file = cfg.jwtSecretFile;
-        forgejo-token.file = cfg.tokenSecretFile;
+        ${cfg.lfsSecret.ref} = cfg.lfsSecret;
+        ${cfg.jwtSecret.ref} = cfg.jwtSecret;
+        ${cfg.tokenSecret.ref} = cfg.tokenSecret;
       };
 
       containers.forgejo.containerConfig = mkContainer {
@@ -76,17 +86,17 @@ in
         ];
         secrets = [
           {
-            inherit (config.virtualisation.quadlet.secrets.forgejo-lfs) ref;
+            inherit (cfg.lfsSecret) ref;
             type = "mount";
             target = "/secrets/forgejo-lfs";
           }
           {
-            inherit (config.virtualisation.quadlet.secrets.forgejo-jwt) ref;
+            inherit (cfg.jwtSecret) ref;
             type = "mount";
             target = "/secrets/forgejo-jwt";
           }
           {
-            inherit (config.virtualisation.quadlet.secrets.forgejo-token) ref;
+            inherit (cfg.tokenSecret) ref;
             type = "mount";
             target = "/secrets/forgejo-token";
           }

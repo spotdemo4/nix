@@ -14,6 +14,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
+    secretType
     ;
   cfg = config.trev.containers.qbittorrent-port-glue;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
@@ -54,10 +55,13 @@ in
       default = "/tmp/gluetun/forwarded_port";
       description = "Container path to Gluetun's forwarded port file.";
     };
-    passwordSecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/password.age;
-      description = "Age file containing the qBittorrent password.";
+    passwordSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "password";
+        file = self + /secrets/password.age;
+      };
+      description = "qBittorrent password secret.";
     };
   };
 
@@ -74,7 +78,7 @@ in
     ];
 
     virtualisation.quadlet = {
-      secrets.password.file = cfg.passwordSecretFile;
+      secrets.${cfg.passwordSecret.ref} = cfg.passwordSecret;
 
       containers.qbittorrent-port-glue = {
         containerConfig = mkContainer {
@@ -88,7 +92,7 @@ in
           };
           secrets = [
             {
-              inherit (config.virtualisation.quadlet.secrets.password) ref;
+              inherit (cfg.passwordSecret) ref;
               type = "env";
               target = "QBITTORRENT_PASS";
             }

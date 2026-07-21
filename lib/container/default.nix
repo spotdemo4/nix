@@ -82,5 +82,5 @@ in
     description = "Additional arguments passed to the container application.";
   };
 
-  secretReferenceType = types.submodule (import ../secrets/secret.nix);
+  secretType = types.submodule (import ../secrets/secret.nix);
 }

@@ -15,7 +15,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
-    secretReferenceType
+    secretType
     ;
   cfg = config.trev.containers.niks3;
   postgresql = lib.attrByPath [ "trev" "containers" "postgresql" ] {
@@ -29,7 +29,7 @@ let
     ref = "postgresql-niks3";
     database = "";
   } postgresql;
-  inherit (config.virtualisation.quadlet) containers networks secrets;
+  inherit (config.virtualisation.quadlet) containers networks;
   databaseContainer = lib.attrByPath [ "postgresql-niks3" ] { ref = "postgresql-niks3"; } containers;
 in
 {
@@ -67,32 +67,44 @@ in
       description = "OIDC provider configuration mounted into Niks3.";
     };
 
-    apiTokenSecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/niks3.age;
-      description = "Age-encrypted Niks3 API token.";
+    apiTokenSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "niks3";
+        file = self + /secrets/niks3.age;
+      };
+      description = "Niks3 API token secret.";
     };
 
-    signingKeySecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/niks3-signing-key.age;
-      description = "Age-encrypted Niks3 signing key.";
+    signingKeySecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "niks3-signing-key";
+        file = self + /secrets/niks3-signing-key.age;
+      };
+      description = "Niks3 signing key secret.";
     };
 
-    s3AccessKeySecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/garage-nix-key.age;
-      description = "Age-encrypted S3 access key.";
+    s3AccessKeySecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "garage-nix-key";
+        file = self + /secrets/garage-nix-key.age;
+      };
+      description = "S3 access key secret.";
     };
 
-    s3SecretKeySecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/garage-nix-secret.age;
-      description = "Age-encrypted S3 secret key.";
+    s3SecretKeySecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "garage-nix-secret";
+        file = self + /secrets/garage-nix-secret.age;
+      };
+      description = "S3 secret key secret.";
     };
 
     databaseUrlSecret = mkOption {
-      type = types.nullOr secretReferenceType;
+      type = types.nullOr secretType;
       default = null;
       description = "Podman secret reference containing the complete Niks3 PostgreSQL connection string.";
     };
@@ -126,10 +138,10 @@ in
 
     virtualisation.quadlet = {
       secrets = {
-        niks3.file = cfg.apiTokenSecretFile;
-        niks3-signing-key.file = cfg.signingKeySecretFile;
-        garage-nix-key.file = cfg.s3AccessKeySecretFile;
-        garage-nix-secret.file = cfg.s3SecretKeySecretFile;
+        ${cfg.apiTokenSecret.ref} = cfg.apiTokenSecret;
+        ${cfg.signingKeySecret.ref} = cfg.signingKeySecret;
+        ${cfg.s3AccessKeySecret.ref} = cfg.s3AccessKeySecret;
+        ${cfg.s3SecretKeySecret.ref} = cfg.s3SecretKeySecret;
       };
 
       containers.niks3 = {
@@ -145,22 +157,22 @@ in
           };
           secrets = [
             {
-              inherit (secrets.niks3) ref;
+              inherit (cfg.apiTokenSecret) ref;
               type = "env";
               target = "NIKS3_API_TOKEN";
             }
             {
-              inherit (secrets.niks3-signing-key) ref;
+              inherit (cfg.signingKeySecret) ref;
               type = "mount";
               target = "/secrets/signing-key";
             }
             {
-              inherit (secrets.garage-nix-key) ref;
+              inherit (cfg.s3AccessKeySecret) ref;
               type = "env";
               target = "NIKS3_S3_ACCESS_KEY";
             }
             {
-              inherit (secrets.garage-nix-secret) ref;
+              inherit (cfg.s3SecretKeySecret) ref;
               type = "env";
               target = "NIKS3_S3_SECRET_KEY";
             }

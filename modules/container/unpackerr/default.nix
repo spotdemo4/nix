@@ -15,6 +15,7 @@ let
     mkContainer
     mkImageOption
     networks
+    secretType
     ;
   cfg = config.trev.containers.unpackerr;
   radarr = lib.attrByPath [ "trev" "containers" "radarr" ] { enable = false; } config;
@@ -22,7 +23,6 @@ let
   quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
   radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } quadletNetworks;
   sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } quadletNetworks;
-  secretFileType = types.either types.path types.str;
 in
 {
   options.trev.containers.unpackerr = {
@@ -58,15 +58,21 @@ in
       default = "http://sonarr:8989";
       description = "Sonarr URL used by Unpackerr.";
     };
-    radarrSecretFile = mkOption {
-      type = secretFileType;
-      default = self + /secrets/radarr.age;
-      description = "Age file containing the Radarr API key.";
+    radarrSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "radarr";
+        file = self + /secrets/radarr.age;
+      };
+      description = "Radarr API key secret.";
     };
-    sonarrSecretFile = mkOption {
-      type = secretFileType;
-      default = self + /secrets/sonarr.age;
-      description = "Age file containing the Sonarr API key.";
+    sonarrSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "sonarr";
+        file = self + /secrets/sonarr.age;
+      };
+      description = "Sonarr API key secret.";
     };
     networks = networks // {
       default = [
@@ -90,8 +96,8 @@ in
 
     virtualisation.quadlet = {
       secrets = {
-        radarr.file = cfg.radarrSecretFile;
-        sonarr.file = cfg.sonarrSecretFile;
+        ${cfg.radarrSecret.ref} = cfg.radarrSecret;
+        ${cfg.sonarrSecret.ref} = cfg.sonarrSecret;
       };
 
       containers.unpackerr.containerConfig = mkContainer {
@@ -100,12 +106,12 @@ in
         user = "${toString cfg.uid}:${toString cfg.gid}";
         secrets = [
           {
-            inherit (config.virtualisation.quadlet.secrets.radarr) ref;
+            inherit (cfg.radarrSecret) ref;
             type = "env";
             target = "UN_RADARR_0_API_KEY";
           }
           {
-            inherit (config.virtualisation.quadlet.secrets.sonarr) ref;
+            inherit (cfg.sonarrSecret) ref;
             type = "env";
             target = "UN_SONARR_0_API_KEY";
           }

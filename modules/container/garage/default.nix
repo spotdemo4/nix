@@ -16,9 +16,10 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
+    secretType
     ;
   cfg = config.trev.containers.garage;
-  inherit (config.virtualisation.quadlet) secrets volumes;
+  inherit (config.virtualisation.quadlet) volumes;
 
   configFile = pkgs.replaceVars ./garage.toml {
     metadata_dir = "/meta";
@@ -65,31 +66,40 @@ in
       description = "Domain routed to the Nix binary cache bucket.";
     };
 
-    rpcSecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/garage-rpc.age;
-      description = "Age-encrypted Garage RPC secret.";
+    rpcSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "garage-rpc";
+        file = self + /secrets/garage-rpc.age;
+      };
+      description = "Garage RPC secret.";
     };
 
-    adminSecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/garage-admin.age;
-      description = "Age-encrypted Garage admin token.";
+    adminSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "garage-admin";
+        file = self + /secrets/garage-admin.age;
+      };
+      description = "Garage admin token secret.";
     };
 
-    metricsSecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/garage-metrics.age;
-      description = "Age-encrypted Garage metrics token.";
+    metricsSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "garage-metrics";
+        file = self + /secrets/garage-metrics.age;
+      };
+      description = "Garage metrics token secret.";
     };
   };
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
       secrets = {
-        garage-rpc.file = cfg.rpcSecretFile;
-        garage-admin.file = cfg.adminSecretFile;
-        garage-metrics.file = cfg.metricsSecretFile;
+        ${cfg.rpcSecret.ref} = cfg.rpcSecret;
+        ${cfg.adminSecret.ref} = cfg.adminSecret;
+        ${cfg.metricsSecret.ref} = cfg.metricsSecret;
       };
 
       containers.garage.containerConfig = mkContainer {
@@ -102,19 +112,19 @@ in
         ];
         secrets = [
           {
-            inherit (secrets.garage-rpc) ref;
+            inherit (cfg.rpcSecret) ref;
             type = "mount";
             target = "/secrets/rpc-secret";
             mode = "0400";
           }
           {
-            inherit (secrets.garage-admin) ref;
+            inherit (cfg.adminSecret) ref;
             type = "mount";
             target = "/secrets/admin-token";
             mode = "0400";
           }
           {
-            inherit (secrets.garage-metrics) ref;
+            inherit (cfg.metricsSecret) ref;
             type = "mount";
             target = "/secrets/metrics-token";
             mode = "0400";

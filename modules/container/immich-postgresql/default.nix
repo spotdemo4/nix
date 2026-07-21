@@ -16,7 +16,7 @@ let
     mkContainer
     mkImageOption
     networks
-    secretReferenceType
+    secretType
     ;
   cfg = config.trev.containers.immich-postgresql;
   immich = lib.attrByPath [ "trev" "containers" "immich" ] { enable = false; } config;
@@ -54,7 +54,7 @@ in
     };
 
     passwordSecret = mkOption {
-      type = types.nullOr secretReferenceType;
+      type = types.nullOr secretType;
       default = null;
       description = "Podman secret reference containing the database password.";
     };

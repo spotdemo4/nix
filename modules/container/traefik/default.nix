@@ -17,7 +17,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
-    secretReferenceType
+    secretType
     ;
   cfg = config.trev.containers.traefik;
   valkeyConfig = lib.attrByPath [ "trev" "containers" "valkey" ] {
@@ -152,27 +152,27 @@ in
 
     secrets = {
       cloudflareDns = mkOption {
-        type = secretReferenceType;
+        type = secretType;
         description = "Podman secret containing the Cloudflare DNS API token.";
       };
       crowdsec = mkOption {
-        type = secretReferenceType;
+        type = secretType;
         description = "Podman secret containing the CrowdSec LAPI key.";
       };
       turnstileSiteKey = mkOption {
-        type = secretReferenceType;
+        type = secretType;
         description = "Podman secret containing the Cloudflare Turnstile site key.";
       };
       turnstileSecretKey = mkOption {
-        type = secretReferenceType;
+        type = secretType;
         description = "Podman secret containing the Cloudflare Turnstile secret key.";
       };
       userAdmin = mkOption {
-        type = secretReferenceType;
+        type = secretType;
         description = "Podman secret containing the admin basic-auth users file.";
       };
       userTrev = mkOption {
-        type = secretReferenceType;
+        type = secretType;
         description = "Podman secret containing the trev basic-auth users file.";
       };
     };

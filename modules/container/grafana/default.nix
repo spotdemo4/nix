@@ -14,7 +14,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
-    secretReferenceType
+    secretType
     ;
   cfg = config.trev.containers.grafana;
   victoriaLogs = lib.attrByPath [ "trev" "containers" "victoria-logs" ] { enable = false; } config;
@@ -41,7 +41,7 @@ in
     };
 
     secret = mkOption {
-      type = secretReferenceType;
+      type = secretType;
       default = {
         ref = "grafana";
         file = self + /secrets/grafana.age;
@@ -93,7 +93,7 @@ in
     ];
 
     virtualisation.quadlet = {
-      secrets.${cfg.secret.ref}.file = toString cfg.secret.file;
+      secrets.${cfg.secret.ref} = cfg.secret;
 
       containers.grafana.containerConfig = mkContainer {
         image = cfg.image;

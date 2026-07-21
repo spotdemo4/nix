@@ -14,10 +14,10 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
+    secretType
     ;
   cfg = config.trev.containers.discord-embedder;
   inherit (config.virtualisation.quadlet) volumes;
-  secretFileType = types.either types.path types.str;
 in
 {
   options.trev.containers.discord-embedder = {
@@ -71,41 +71,56 @@ in
       default = "150459222637805570";
       description = "Comma-separated Discord channel IDs.";
     };
-    discordSecretFile = mkOption {
-      type = secretFileType;
-      default = self + /secrets/embedder-discord.age;
-      description = "Age file containing the Discord token.";
+    discordSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "embedder-discord";
+        file = self + /secrets/embedder-discord.age;
+      };
+      description = "Discord token secret.";
     };
-    instagramSecretFile = mkOption {
-      type = secretFileType;
-      default = self + /secrets/embedder-instagram.age;
-      description = "Age file containing the Instagram password.";
+    instagramSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "embedder-instagram";
+        file = self + /secrets/embedder-instagram.age;
+      };
+      description = "Instagram password secret.";
     };
-    redditSecretFile = mkOption {
-      type = secretFileType;
-      default = self + /secrets/embedder-reddit.age;
-      description = "Age file containing the Reddit password.";
+    redditSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "embedder-reddit";
+        file = self + /secrets/embedder-reddit.age;
+      };
+      description = "Reddit password secret.";
     };
-    tiktokSecretFile = mkOption {
-      type = secretFileType;
-      default = self + /secrets/embedder-tiktok.age;
-      description = "Age file containing the TikTok password.";
+    tiktokSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "embedder-tiktok";
+        file = self + /secrets/embedder-tiktok.age;
+      };
+      description = "TikTok password secret.";
     };
-    xSecretFile = mkOption {
-      type = secretFileType;
-      default = self + /secrets/embedder-x.age;
-      description = "Age file containing the X password.";
+    xSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "embedder-x";
+        file = self + /secrets/embedder-x.age;
+      };
+      description = "X password secret.";
     };
   };
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
       secrets = {
-        embedder-discord.file = cfg.discordSecretFile;
-        embedder-instagram.file = cfg.instagramSecretFile;
-        embedder-reddit.file = cfg.redditSecretFile;
-        embedder-tiktok.file = cfg.tiktokSecretFile;
-        embedder-x.file = cfg.xSecretFile;
+        ${cfg.discordSecret.ref} = cfg.discordSecret;
+        ${cfg.instagramSecret.ref} = cfg.instagramSecret;
+        ${cfg.redditSecret.ref} = cfg.redditSecret;
+        ${cfg.tiktokSecret.ref} = cfg.tiktokSecret;
+        ${cfg.xSecret.ref} = cfg.xSecret;
       };
 
       containers.discord-embedder.containerConfig = mkContainer {
@@ -128,27 +143,27 @@ in
         };
         secrets = [
           {
-            inherit (config.virtualisation.quadlet.secrets.embedder-discord) ref;
+            inherit (cfg.discordSecret) ref;
             type = "env";
             target = "DISCORD_TOKEN";
           }
           {
-            inherit (config.virtualisation.quadlet.secrets.embedder-instagram) ref;
+            inherit (cfg.instagramSecret) ref;
             type = "env";
             target = "INSTAGRAM_PASSWORD";
           }
           {
-            inherit (config.virtualisation.quadlet.secrets.embedder-reddit) ref;
+            inherit (cfg.redditSecret) ref;
             type = "env";
             target = "REDDIT_PASSWORD";
           }
           {
-            inherit (config.virtualisation.quadlet.secrets.embedder-tiktok) ref;
+            inherit (cfg.tiktokSecret) ref;
             type = "env";
             target = "TIKTOK_PASSWORD";
           }
           {
-            inherit (config.virtualisation.quadlet.secrets.embedder-x) ref;
+            inherit (cfg.xSecret) ref;
             type = "env";
             target = "X_PASSWORD";
           }

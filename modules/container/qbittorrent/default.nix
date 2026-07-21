@@ -14,6 +14,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
+    secretType
     ;
   cfg = config.trev.containers.qbittorrent;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
@@ -66,10 +67,13 @@ in
       default = "ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest";
       description = "LinuxServer Docker mods enabled for qBittorrent.";
     };
-    protonVpnSecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/protonvpn-qbittorrent.age;
-      description = "Age file containing the Proton VPN WireGuard private key.";
+    protonVpnSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "protonvpn-qbittorrent";
+        file = self + /secrets/protonvpn-qbittorrent.age;
+      };
+      description = "Proton VPN WireGuard private key secret.";
     };
   };
 
@@ -82,7 +86,7 @@ in
     ];
 
     virtualisation.quadlet = {
-      secrets.protonvpn-qbittorrent.file = cfg.protonVpnSecretFile;
+      secrets.${cfg.protonVpnSecret.ref} = cfg.protonVpnSecret;
 
       containers.qbittorrent = {
         containerConfig = mkContainer {

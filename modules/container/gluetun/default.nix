@@ -18,7 +18,7 @@ let
     mkContainer
     mkImageOption
     networks
-    secretReferenceType
+    secretType
     ;
   cfg = config.trev.containers.gluetun;
   enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
@@ -61,7 +61,7 @@ in
               networks = networks;
 
               secret = mkOption {
-                type = secretReferenceType;
+                type = secretType;
                 description = "Podman secret reference containing the WireGuard private key.";
               };
 

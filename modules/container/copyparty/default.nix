@@ -15,9 +15,10 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
+    secretType
     ;
   cfg = config.trev.containers.copyparty;
-  inherit (config.virtualisation.quadlet) secrets volumes;
+  inherit (config.virtualisation.quadlet) volumes;
 
   accounts = "/accounts.conf";
   configFile = pkgs.replaceVars ./copyparty.conf {
@@ -41,10 +42,13 @@ in
       description = "Domain routed to Copyparty.";
     };
 
-    accountsSecretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/copyparty.age;
-      description = "Age-encrypted Copyparty accounts configuration.";
+    accountsSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "copyparty";
+        file = self + /secrets/copyparty.age;
+      };
+      description = "Copyparty accounts configuration secret.";
     };
 
     userId = mkOption {
@@ -68,7 +72,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      secrets.copyparty.file = cfg.accountsSecretFile;
+      secrets.${cfg.accountsSecret.ref} = cfg.accountsSecret;
 
       containers.copyparty.containerConfig = mkContainer {
         image = cfg.image;
@@ -76,7 +80,7 @@ in
         user = "${toString cfg.userId}:${toString cfg.groupId}";
         secrets = [
           {
-            inherit (secrets.copyparty) ref;
+            inherit (cfg.accountsSecret) ref;
             type = "mount";
             target = accounts;
           }

@@ -14,7 +14,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
-    secretReferenceType
+    secretType
     ;
   cfg = config.trev.containers.minecraft;
   inherit (config.virtualisation.quadlet) volumes;
@@ -25,7 +25,7 @@ in
     image = mkImageOption "docker.io/itzg/minecraft-server:latest@sha256:9faa6aefeedd5a883c3ee241653fd1421529bdbafc428d0513e43cae0f2b7d68";
 
     curseforgeSecret = mkOption {
-      type = secretReferenceType;
+      type = secretType;
       default = {
         ref = "curseforge";
         file = self + /secrets/curseforge.age;
@@ -61,7 +61,7 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      secrets.${cfg.curseforgeSecret.ref}.file = toString cfg.curseforgeSecret.file;
+      secrets.${cfg.curseforgeSecret.ref} = cfg.curseforgeSecret;
 
       containers.minecraft.containerConfig = mkContainer {
         image = cfg.image;

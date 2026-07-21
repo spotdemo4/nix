@@ -14,9 +14,10 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
+    secretType
     ;
   cfg = config.trev.containers.rsyncd;
-  inherit (config.virtualisation.quadlet) secrets volumes;
+  inherit (config.virtualisation.quadlet) volumes;
 in
 {
   options.trev.containers.rsyncd = {
@@ -29,10 +30,13 @@ in
       description = "rsync daemon configuration mounted into the container.";
     };
 
-    secretFile = mkOption {
-      type = types.either types.path types.str;
-      default = self + /secrets/rsyncd.age;
-      description = "Age-encrypted rsync daemon credentials.";
+    secret = mkOption {
+      type = secretType;
+      default = {
+        ref = "rsyncd";
+        file = self + /secrets/rsyncd.age;
+      };
+      description = "rsync daemon credentials secret.";
     };
 
     tlsDomain = mkOption {
@@ -50,14 +54,14 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
-      secrets.rsyncd.file = cfg.secretFile;
+      secrets.${cfg.secret.ref} = cfg.secret;
 
       containers.rsyncd.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         secrets = [
           {
-            inherit (secrets.rsyncd) ref;
+            inherit (cfg.secret) ref;
             type = "mount";
             target = "/etc/rsyncd.secrets";
             mode = "0400";

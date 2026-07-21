@@ -15,7 +15,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
-    secretReferenceType
+    secretType
     ;
   cfg = config.trev.containers.shlink;
   postgresql = lib.attrByPath [ "trev" "containers" "postgresql" ] {
@@ -47,7 +47,7 @@ in
     };
 
     geoliteSecret = mkOption {
-      type = secretReferenceType;
+      type = secretType;
       default = {
         ref = "geolite";
         file = self + /secrets/geolite.age;
@@ -56,7 +56,7 @@ in
     };
 
     apiSecret = mkOption {
-      type = secretReferenceType;
+      type = secretType;
       default = {
         ref = "shlink";
         file = self + /secrets/shlink.age;
@@ -83,8 +83,8 @@ in
 
     virtualisation.quadlet = {
       secrets = {
-        ${cfg.geoliteSecret.ref}.file = toString cfg.geoliteSecret.file;
-        ${cfg.apiSecret.ref}.file = toString cfg.apiSecret.file;
+        ${cfg.geoliteSecret.ref} = cfg.geoliteSecret;
+        ${cfg.apiSecret.ref} = cfg.apiSecret;
       };
 
       containers.shlink = {

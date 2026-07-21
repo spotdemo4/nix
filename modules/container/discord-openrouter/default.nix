@@ -14,7 +14,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
-    secretReferenceType
+    secretType
     ;
   cfg = config.trev.containers.discord-openrouter;
   inherit (config.virtualisation.quadlet) volumes;
@@ -26,7 +26,7 @@ in
     image = mkImageOption "ghcr.io/spotdemo4/discord-openrouter:0.0.9@sha256:f0f840513a644c65236d4b8eb3708d5aef3b4fdff3425dbbefba0d6c1a5a186b";
 
     openrouterSecret = mkOption {
-      type = secretReferenceType;
+      type = secretType;
       default = {
         ref = "openrouter";
         file = self + /secrets/openrouter.age;
@@ -35,7 +35,7 @@ in
     };
 
     discordSecret = mkOption {
-      type = secretReferenceType;
+      type = secretType;
       default = {
         ref = "discord-openrouter";
         file = self + /secrets/discord-openrouter.age;
@@ -53,8 +53,8 @@ in
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
       secrets = {
-        ${cfg.openrouterSecret.ref}.file = toString cfg.openrouterSecret.file;
-        ${cfg.discordSecret.ref}.file = toString cfg.discordSecret.file;
+        ${cfg.openrouterSecret.ref} = cfg.openrouterSecret;
+        ${cfg.discordSecret.ref} = cfg.discordSecret;
       };
 
       containers.discord-openrouter.containerConfig = mkContainer {
