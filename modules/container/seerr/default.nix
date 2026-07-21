@@ -1,4 +1,5 @@
 {
+  self,
   lib,
   config,
   ...
@@ -11,7 +12,7 @@ let
     mkOption
     types
     ;
-  inherit (import ../../../lib/container-options.nix { inherit lib; })
+  inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
     networks

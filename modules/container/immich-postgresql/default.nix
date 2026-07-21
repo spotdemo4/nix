@@ -1,4 +1,5 @@
 {
+  self,
   config,
   lib,
   ...
@@ -11,7 +12,7 @@ let
     optional
     types
     ;
-  inherit (import ../../../lib/container-options.nix { inherit lib; })
+  inherit (import (self + /lib/container) { inherit lib; })
     mkImageOption
     networks
     secretReferenceType

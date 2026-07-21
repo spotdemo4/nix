@@ -1,11 +1,12 @@
 {
+  self,
   config,
   lib,
   ...
 }:
 let
   inherit (lib) mkEnableOption mkIf;
-  inherit (import ../../../lib/container-options.nix { inherit lib; })
+  inherit (import (self + /lib/container) { inherit lib; })
     mkImageOption
     ;
   cfg = config.trev.containers.cobalt-youtube;

@@ -1,4 +1,5 @@
 {
+  self,
   config,
   lib,
   pkgs,
@@ -11,7 +12,7 @@ let
     mkOption
     types
     ;
-  inherit (import ../../../lib/container-options.nix { inherit lib; })
+  inherit (import (self + /lib/container) { inherit lib; })
     mkImageOption
     ;
   cfg = config.trev.containers.tor;
