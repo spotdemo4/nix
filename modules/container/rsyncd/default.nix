@@ -16,8 +16,7 @@ let
     mkImageOption
     ;
   cfg = config.trev.containers.rsyncd;
-  inherit (config.virtualisation.quadlet) volumes;
-  inherit (config) secrets;
+  inherit (config.virtualisation.quadlet) secrets volumes;
 in
 {
   options.trev.containers.rsyncd = {
@@ -50,9 +49,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    secrets.rsyncd.file = cfg.secretFile;
-
     virtualisation.quadlet = {
+      secrets.rsyncd.file = cfg.secretFile;
+
       containers.rsyncd.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";

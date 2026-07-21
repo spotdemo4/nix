@@ -73,33 +73,35 @@ in
       }
     ];
 
-    secrets.password.file = cfg.passwordSecretFile;
+    virtualisation.quadlet = {
+      secrets.password.file = cfg.passwordSecretFile;
 
-    virtualisation.quadlet.containers.qbittorrent-port-glue = {
-      containerConfig = mkContainer {
-        image = cfg.image;
-        pull = "missing";
-        environments = {
-          QBITTORRENT_HOST = cfg.qbittorrentHost;
-          QBITTORRENT_PORT = toString cfg.qbittorrentPort;
-          QBITTORRENT_USER = cfg.qbittorrentUser;
-          PORT_FILE = cfg.portFile;
+      containers.qbittorrent-port-glue = {
+        containerConfig = mkContainer {
+          image = cfg.image;
+          pull = "missing";
+          environments = {
+            QBITTORRENT_HOST = cfg.qbittorrentHost;
+            QBITTORRENT_PORT = toString cfg.qbittorrentPort;
+            QBITTORRENT_USER = cfg.qbittorrentUser;
+            PORT_FILE = cfg.portFile;
+          };
+          secrets = [
+            {
+              inherit (config.virtualisation.quadlet.secrets.password) ref;
+              type = "env";
+              target = "QBITTORRENT_PASS";
+            }
+          ];
+          volumes = [ "${gluetunVolume.ref}:/tmp/gluetun" ];
+          networks = [ "container:${gluetun.ref}" ];
         };
-        secrets = [
-          {
-            inherit (config.secrets.password) ref;
-            type = "env";
-            target = "QBITTORRENT_PASS";
-          }
-        ];
-        volumes = [ "${gluetunVolume.ref}:/tmp/gluetun" ];
-        networks = [ "container:${gluetun.ref}" ];
-      };
 
-      unitConfig = {
-        BindsTo = qbittorrentContainer.ref;
-        After = qbittorrentContainer.ref;
-        ReloadPropagatedFrom = qbittorrentContainer.ref;
+        unitConfig = {
+          BindsTo = qbittorrentContainer.ref;
+          After = qbittorrentContainer.ref;
+          ReloadPropagatedFrom = qbittorrentContainer.ref;
+        };
       };
     };
   };

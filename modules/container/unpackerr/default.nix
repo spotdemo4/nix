@@ -88,34 +88,36 @@ in
       }
     ];
 
-    secrets = {
-      radarr.file = cfg.radarrSecretFile;
-      sonarr.file = cfg.sonarrSecretFile;
-    };
-
-    virtualisation.quadlet.containers.unpackerr.containerConfig = mkContainer {
-      image = cfg.image;
-      pull = "missing";
-      user = "${toString cfg.uid}:${toString cfg.gid}";
-      secrets = [
-        {
-          inherit (config.secrets.radarr) ref;
-          type = "env";
-          target = "UN_RADARR_0_API_KEY";
-        }
-        {
-          inherit (config.secrets.sonarr) ref;
-          type = "env";
-          target = "UN_SONARR_0_API_KEY";
-        }
-      ];
-      environments = {
-        TZ = cfg.timeZone;
-        UN_RADARR_0_URL = cfg.radarrUrl;
-        UN_SONARR_0_URL = cfg.sonarrUrl;
+    virtualisation.quadlet = {
+      secrets = {
+        radarr.file = cfg.radarrSecretFile;
+        sonarr.file = cfg.sonarrSecretFile;
       };
-      volumes = [ "${cfg.poolPath}:/pool" ];
-      networks = cfg.networks;
+
+      containers.unpackerr.containerConfig = mkContainer {
+        image = cfg.image;
+        pull = "missing";
+        user = "${toString cfg.uid}:${toString cfg.gid}";
+        secrets = [
+          {
+            inherit (config.virtualisation.quadlet.secrets.radarr) ref;
+            type = "env";
+            target = "UN_RADARR_0_API_KEY";
+          }
+          {
+            inherit (config.virtualisation.quadlet.secrets.sonarr) ref;
+            type = "env";
+            target = "UN_SONARR_0_API_KEY";
+          }
+        ];
+        environments = {
+          TZ = cfg.timeZone;
+          UN_RADARR_0_URL = cfg.radarrUrl;
+          UN_SONARR_0_URL = cfg.sonarrUrl;
+        };
+        volumes = [ "${cfg.poolPath}:/pool" ];
+        networks = cfg.networks;
+      };
     };
   };
 }

@@ -149,7 +149,6 @@
     autoUpdate.enable = true;
   };
   trev = {
-    podman-secrets.enable = true;
     tailscale.enable = true;
     update = {
       enable = true;

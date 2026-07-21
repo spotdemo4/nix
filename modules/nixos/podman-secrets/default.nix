@@ -6,12 +6,10 @@
   ...
 }:
 let
-  cfg = config.trev.podman-secrets;
-  secretsWithFiles = lib.filterAttrs (_: secret: secret.file != null) config.secrets;
-  secretsWithoutFiles = lib.attrNames (
-    lib.filterAttrs (_: secret: secret.file == null) config.secrets
-  );
-  secretRefs = map (secret: secret.ref) (lib.attrValues config.secrets);
+  secrets = config.virtualisation.quadlet.secrets;
+  secretsWithFiles = lib.filterAttrs (_: secret: secret.file != null) secrets;
+  secretsWithoutFiles = lib.attrNames (lib.filterAttrs (_: secret: secret.file == null) secrets);
+  secretRefs = map (secret: secret.ref) (lib.attrValues secrets);
   duplicateSecretRefs = lib.unique (
     builtins.filter (
       ref: builtins.length (builtins.filter (candidate: candidate == ref) secretRefs) > 1
@@ -19,17 +17,13 @@ let
   );
 in
 {
-  options = {
-    trev.podman-secrets.enable = lib.mkEnableOption "Podman secrets backed by agenix";
-
-    secrets = lib.mkOption {
-      default = { };
-      description = "Secrets to decrypt with agenix and register with Podman.";
-      type = lib.types.attrsOf (lib.types.submodule (import (self + /lib/secrets/secret.nix)));
-    };
+  options.virtualisation.quadlet.secrets = lib.mkOption {
+    default = { };
+    description = "Secrets to decrypt with agenix and register with Podman.";
+    type = lib.types.attrsOf (lib.types.submodule (import (self + /lib/secrets/secret.nix)));
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (secrets != { }) {
     assertions = [
       {
         assertion = secretsWithoutFiles == [ ];

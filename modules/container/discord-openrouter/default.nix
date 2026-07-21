@@ -51,12 +51,12 @@ in
   };
 
   config = mkIf cfg.enable {
-    secrets = {
-      ${cfg.openrouterSecret.ref}.file = toString cfg.openrouterSecret.file;
-      ${cfg.discordSecret.ref}.file = toString cfg.discordSecret.file;
-    };
-
     virtualisation.quadlet = {
+      secrets = {
+        ${cfg.openrouterSecret.ref}.file = toString cfg.openrouterSecret.file;
+        ${cfg.discordSecret.ref}.file = toString cfg.discordSecret.file;
+      };
+
       containers.discord-openrouter.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";

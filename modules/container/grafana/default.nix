@@ -92,9 +92,9 @@ in
       }
     ];
 
-    secrets.${cfg.secret.ref}.file = toString cfg.secret.file;
-
     virtualisation.quadlet = {
+      secrets.${cfg.secret.ref}.file = toString cfg.secret.file;
+
       containers.grafana.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";

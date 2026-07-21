@@ -17,13 +17,15 @@ in
     (self + /modules/container/valkey)
   ];
 
-  secrets = {
-    "cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
-    "crowdsec".file = self + /secrets/crowdsec.age;
-    "cloudflare-turnstile-site-key".file = self + /secrets/cloudflare-turnstile-site-key.age;
-    "cloudflare-turnstile-secret-key".file = self + /secrets/cloudflare-turnstile-secret-key.age;
-    "user-admin".file = self + /secrets/user-admin.age;
-    "user-trev".file = self + /secrets/user-trev.age;
+  virtualisation.quadlet = {
+    secrets = {
+      "cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
+      "crowdsec".file = self + /secrets/crowdsec.age;
+      "cloudflare-turnstile-site-key".file = self + /secrets/cloudflare-turnstile-site-key.age;
+      "cloudflare-turnstile-secret-key".file = self + /secrets/cloudflare-turnstile-secret-key.age;
+      "user-admin".file = self + /secrets/user-admin.age;
+      "user-trev".file = self + /secrets/user-trev.age;
+    };
   };
 
   trev.containers = {
@@ -93,12 +95,12 @@ in
         syncthing = 22000;
       };
       secrets = {
-        cloudflareDns = config.secrets."cloudflare-dns";
-        crowdsec = config.secrets."crowdsec";
-        turnstileSiteKey = config.secrets."cloudflare-turnstile-site-key";
-        turnstileSecretKey = config.secrets."cloudflare-turnstile-secret-key";
-        userAdmin = config.secrets."user-admin";
-        userTrev = config.secrets."user-trev";
+        cloudflareDns = config.virtualisation.quadlet.secrets."cloudflare-dns";
+        crowdsec = config.virtualisation.quadlet.secrets."crowdsec";
+        turnstileSiteKey = config.virtualisation.quadlet.secrets."cloudflare-turnstile-site-key";
+        turnstileSecretKey = config.virtualisation.quadlet.secrets."cloudflare-turnstile-secret-key";
+        userAdmin = config.virtualisation.quadlet.secrets."user-admin";
+        userTrev = config.virtualisation.quadlet.secrets."user-trev";
       };
     };
 

@@ -81,9 +81,9 @@ in
       }
     ];
 
-    secrets.protonvpn-qbittorrent.file = cfg.protonVpnSecretFile;
-
     virtualisation.quadlet = {
+      secrets.protonvpn-qbittorrent.file = cfg.protonVpnSecretFile;
+
       containers.qbittorrent = {
         containerConfig = mkContainer {
           image = cfg.image;

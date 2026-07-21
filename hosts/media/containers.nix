@@ -37,7 +37,7 @@
       enable = true;
       instances.qbittorrent = {
         enable = true;
-        secret = config.secrets.protonvpn-qbittorrent;
+        secret = config.virtualisation.quadlet.secrets.protonvpn-qbittorrent;
         ports = [ "8185" ];
         environments = {
           VPN_SERVICE_PROVIDER = "protonvpn";

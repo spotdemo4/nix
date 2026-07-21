@@ -81,12 +81,12 @@ in
       }
     ];
 
-    secrets = {
-      ${cfg.geoliteSecret.ref}.file = toString cfg.geoliteSecret.file;
-      ${cfg.apiSecret.ref}.file = toString cfg.apiSecret.file;
-    };
-
     virtualisation.quadlet = {
+      secrets = {
+        ${cfg.geoliteSecret.ref}.file = toString cfg.geoliteSecret.file;
+        ${cfg.apiSecret.ref}.file = toString cfg.apiSecret.file;
+      };
+
       containers.shlink = {
         containerConfig = mkContainer {
           image = cfg.image;

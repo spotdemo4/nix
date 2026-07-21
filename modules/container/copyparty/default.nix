@@ -17,8 +17,7 @@ let
     mkImageOption
     ;
   cfg = config.trev.containers.copyparty;
-  inherit (config.virtualisation.quadlet) volumes;
-  inherit (config) secrets;
+  inherit (config.virtualisation.quadlet) secrets volumes;
 
   accounts = "/accounts.conf";
   configFile = pkgs.replaceVars ./copyparty.conf {
@@ -68,9 +67,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    secrets.copyparty.file = cfg.accountsSecretFile;
-
     virtualisation.quadlet = {
+      secrets.copyparty.file = cfg.accountsSecretFile;
+
       containers.copyparty.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";

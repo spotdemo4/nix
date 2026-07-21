@@ -29,9 +29,8 @@ let
     ref = "postgresql-niks3";
     database = "";
   } postgresql;
-  inherit (config.virtualisation.quadlet) containers networks;
+  inherit (config.virtualisation.quadlet) containers networks secrets;
   databaseContainer = lib.attrByPath [ "postgresql-niks3" ] { ref = "postgresql-niks3"; } containers;
-  inherit (config) secrets;
 in
 {
   options.trev.containers.niks3 = {
@@ -125,14 +124,14 @@ in
       }
     ];
 
-    secrets = {
-      niks3.file = cfg.apiTokenSecretFile;
-      niks3-signing-key.file = cfg.signingKeySecretFile;
-      garage-nix-key.file = cfg.s3AccessKeySecretFile;
-      garage-nix-secret.file = cfg.s3SecretKeySecretFile;
-    };
-
     virtualisation.quadlet = {
+      secrets = {
+        niks3.file = cfg.apiTokenSecretFile;
+        niks3-signing-key.file = cfg.signingKeySecretFile;
+        garage-nix-key.file = cfg.s3AccessKeySecretFile;
+        garage-nix-secret.file = cfg.s3SecretKeySecretFile;
+      };
+
       containers.niks3 = {
         containerConfig = mkContainer {
           image = cfg.image;

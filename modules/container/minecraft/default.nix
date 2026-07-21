@@ -60,9 +60,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    secrets.${cfg.curseforgeSecret.ref}.file = toString cfg.curseforgeSecret.file;
-
     virtualisation.quadlet = {
+      secrets.${cfg.curseforgeSecret.ref}.file = toString cfg.curseforgeSecret.file;
+
       containers.minecraft.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";

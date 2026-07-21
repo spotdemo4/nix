@@ -18,9 +18,11 @@
     (self + /modules/container/traefik-kop)
   ];
 
-  secrets = {
-    protonvpn-cobalt.file = toString (self + /secrets/protonvpn-cobalt.age);
-    shlink-postgresql.file = toString (self + /secrets/shlink-postgresql.age);
+  virtualisation.quadlet = {
+    secrets = {
+      protonvpn-cobalt.file = toString (self + /secrets/protonvpn-cobalt.age);
+      shlink-postgresql.file = toString (self + /secrets/shlink-postgresql.age);
+    };
   };
 
   trev.containers = {
@@ -36,7 +38,7 @@
       enable = true;
       instances.cobalt = {
         enable = true;
-        secret = config.secrets.protonvpn-cobalt;
+        secret = config.virtualisation.quadlet.secrets.protonvpn-cobalt;
         ports = [ "9000" ];
         environments = {
           VPN_SERVICE_PROVIDER = "protonvpn";
@@ -54,7 +56,7 @@
         database = "shlink";
         username = "shlink";
         networks = [ config.virtualisation.quadlet.networks.shlink.ref ];
-        passwordSecret = config.secrets.shlink-postgresql;
+        passwordSecret = config.virtualisation.quadlet.secrets.shlink-postgresql;
       };
     };
 

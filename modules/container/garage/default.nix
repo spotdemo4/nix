@@ -18,8 +18,7 @@ let
     mkImageOption
     ;
   cfg = config.trev.containers.garage;
-  inherit (config.virtualisation.quadlet) volumes;
-  inherit (config) secrets;
+  inherit (config.virtualisation.quadlet) secrets volumes;
 
   configFile = pkgs.replaceVars ./garage.toml {
     metadata_dir = "/meta";
@@ -86,13 +85,13 @@ in
   };
 
   config = mkIf cfg.enable {
-    secrets = {
-      garage-rpc.file = cfg.rpcSecretFile;
-      garage-admin.file = cfg.adminSecretFile;
-      garage-metrics.file = cfg.metricsSecretFile;
-    };
-
     virtualisation.quadlet = {
+      secrets = {
+        garage-rpc.file = cfg.rpcSecretFile;
+        garage-admin.file = cfg.adminSecretFile;
+        garage-metrics.file = cfg.metricsSecretFile;
+      };
+
       containers.garage.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";

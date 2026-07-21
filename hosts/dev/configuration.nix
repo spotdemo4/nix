@@ -211,7 +211,6 @@ in
 
   trev = {
     niks3.enable = true;
-    podman-secrets.enable = true;
     update = {
       enable = true;
       hostname = hostname;

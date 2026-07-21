@@ -147,7 +147,6 @@
     autoEscape = true;
     autoUpdate.enable = true;
   };
-  trev.podman-secrets.enable = true;
   trev.update = {
     enable = true;
     hostname = hostname;

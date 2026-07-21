@@ -22,10 +22,12 @@ in
     (self + /modules/container/valkey)
   ];
 
-  secrets = {
-    immich-postgresql.file = toString (self + /secrets/immich-postgresql.age);
-    niks3-database-url.file = toString (self + /secrets/niks3-database-url.age);
-    niks3-postgresql.file = toString (self + /secrets/niks3-postgresql.age);
+  virtualisation.quadlet = {
+    secrets = {
+      immich-postgresql.file = toString (self + /secrets/immich-postgresql.age);
+      niks3-database-url.file = toString (self + /secrets/niks3-database-url.age);
+      niks3-postgresql.file = toString (self + /secrets/niks3-postgresql.age);
+    };
   };
 
   trev.containers = {
@@ -37,12 +39,12 @@ in
     immich-postgresql = {
       enable = true;
       networks = [ networks.immich.ref ];
-      passwordSecret = config.secrets.immich-postgresql;
+      passwordSecret = config.virtualisation.quadlet.secrets.immich-postgresql;
     };
 
     niks3 = {
       enable = true;
-      databaseUrlSecret = config.secrets.niks3-database-url;
+      databaseUrlSecret = config.virtualisation.quadlet.secrets.niks3-database-url;
     };
     portainer-agent.enable = true;
     rsyncd.enable = true;
@@ -55,7 +57,7 @@ in
         database = "niks3";
         username = "niks3";
         networks = [ networks.niks3.ref ];
-        passwordSecret = config.secrets.niks3-postgresql;
+        passwordSecret = config.virtualisation.quadlet.secrets.niks3-postgresql;
       };
     };
 

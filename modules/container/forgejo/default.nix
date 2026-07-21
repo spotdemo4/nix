@@ -59,13 +59,13 @@ in
   };
 
   config = mkIf cfg.enable {
-    secrets = {
-      forgejo-lfs.file = cfg.lfsSecretFile;
-      forgejo-jwt.file = cfg.jwtSecretFile;
-      forgejo-token.file = cfg.tokenSecretFile;
-    };
-
     virtualisation.quadlet = {
+      secrets = {
+        forgejo-lfs.file = cfg.lfsSecretFile;
+        forgejo-jwt.file = cfg.jwtSecretFile;
+        forgejo-token.file = cfg.tokenSecretFile;
+      };
+
       containers.forgejo.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
@@ -76,19 +76,19 @@ in
         ];
         secrets = [
           {
-            inherit (config.secrets.forgejo-lfs) ref;
+            inherit (config.virtualisation.quadlet.secrets.forgejo-lfs) ref;
             type = "mount";
             target = "/secrets/forgejo-lfs";
             mode = "0400";
           }
           {
-            inherit (config.secrets.forgejo-jwt) ref;
+            inherit (config.virtualisation.quadlet.secrets.forgejo-jwt) ref;
             type = "mount";
             target = "/secrets/forgejo-jwt";
             mode = "0400";
           }
           {
-            inherit (config.secrets.forgejo-token) ref;
+            inherit (config.virtualisation.quadlet.secrets.forgejo-token) ref;
             type = "mount";
             target = "/secrets/forgejo-token";
             mode = "0400";

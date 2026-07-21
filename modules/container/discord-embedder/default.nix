@@ -99,15 +99,15 @@ in
   };
 
   config = mkIf cfg.enable {
-    secrets = {
-      embedder-discord.file = cfg.discordSecretFile;
-      embedder-instagram.file = cfg.instagramSecretFile;
-      embedder-reddit.file = cfg.redditSecretFile;
-      embedder-tiktok.file = cfg.tiktokSecretFile;
-      embedder-x.file = cfg.xSecretFile;
-    };
-
     virtualisation.quadlet = {
+      secrets = {
+        embedder-discord.file = cfg.discordSecretFile;
+        embedder-instagram.file = cfg.instagramSecretFile;
+        embedder-reddit.file = cfg.redditSecretFile;
+        embedder-tiktok.file = cfg.tiktokSecretFile;
+        embedder-x.file = cfg.xSecretFile;
+      };
+
       containers.discord-embedder.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
@@ -128,27 +128,27 @@ in
         };
         secrets = [
           {
-            inherit (config.secrets.embedder-discord) ref;
+            inherit (config.virtualisation.quadlet.secrets.embedder-discord) ref;
             type = "env";
             target = "DISCORD_TOKEN";
           }
           {
-            inherit (config.secrets.embedder-instagram) ref;
+            inherit (config.virtualisation.quadlet.secrets.embedder-instagram) ref;
             type = "env";
             target = "INSTAGRAM_PASSWORD";
           }
           {
-            inherit (config.secrets.embedder-reddit) ref;
+            inherit (config.virtualisation.quadlet.secrets.embedder-reddit) ref;
             type = "env";
             target = "REDDIT_PASSWORD";
           }
           {
-            inherit (config.secrets.embedder-tiktok) ref;
+            inherit (config.virtualisation.quadlet.secrets.embedder-tiktok) ref;
             type = "env";
             target = "TIKTOK_PASSWORD";
           }
           {
-            inherit (config.secrets.embedder-x) ref;
+            inherit (config.virtualisation.quadlet.secrets.embedder-x) ref;
             type = "env";
             target = "X_PASSWORD";
           }
