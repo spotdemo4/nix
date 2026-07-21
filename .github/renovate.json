@@ -23,9 +23,9 @@
       "description": "docker images",
       "managerFilePatterns": ["/.*.nix$/"],
       "matchStrings": [
-        "image = containerOptions\\.mkImageOption \"(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\""
+        "image = mkImageOption \"(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\""
       ],
-      "autoReplaceStringTemplate": "image = containerOptions.mkImageOption \"{{{depName}}}{{#if newValue}}:{{{newValue}}}{{else}}{{#if currentValue}}:{{{currentValue}}}{{/if}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
+      "autoReplaceStringTemplate": "image = mkImageOption \"{{{depName}}}{{#if newValue}}:{{{newValue}}}{{else}}{{#if currentValue}}:{{{currentValue}}}{{/if}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
       "depTypeTemplate": "image",
       "datasourceTemplate": "docker"
     },
