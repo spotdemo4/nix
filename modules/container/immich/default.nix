@@ -16,6 +16,11 @@ let
     mkContainer
     mkImageOption
     ;
+  inherit (config.virtualisation.quadlet)
+    containers
+    networks
+    volumes
+    ;
   cfg = config.trev.containers.immich;
   database = lib.attrByPath [ "trev" "containers" "immich-postgresql" ] {
     enable = false;
@@ -32,7 +37,6 @@ let
     enable = false;
     ref = "valkey-immich";
   } valkeyConfig;
-  inherit (config.virtualisation.quadlet) containers networks volumes;
   databaseContainer = lib.attrByPath [ database.containerName ] {
     ref = database.containerName;
   } containers;

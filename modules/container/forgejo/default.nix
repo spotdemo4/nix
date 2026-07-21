@@ -16,8 +16,11 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    networks
+    volumes
+    ;
   cfg = config.trev.containers.forgejo;
-  inherit (config.virtualisation.quadlet) networks volumes;
 in
 {
   options.trev.containers.forgejo = {

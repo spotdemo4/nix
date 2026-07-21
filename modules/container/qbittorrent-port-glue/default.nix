@@ -16,6 +16,10 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    containers
+    volumes
+    ;
   cfg = config.trev.containers.qbittorrent-port-glue;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
     enable = false;
@@ -27,7 +31,6 @@ let
     volumeName = "gluetun-qbittorrent";
   } gluetunConfig;
   qbittorrent = lib.attrByPath [ "trev" "containers" "qbittorrent" ] { enable = false; } config;
-  inherit (config.virtualisation.quadlet) containers volumes;
   gluetunVolume = lib.attrByPath [ gluetun.volumeName ] { ref = gluetun.volumeName; } volumes;
   qbittorrentContainer = lib.attrByPath [ "qbittorrent" ] { ref = "qbittorrent"; } containers;
 in

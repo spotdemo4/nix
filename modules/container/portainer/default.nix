@@ -15,8 +15,11 @@ let
     mkContainer
     mkImageOption
     ;
+  inherit (config.virtualisation.quadlet)
+    networks
+    volumes
+    ;
   cfg = config.trev.containers.portainer;
-  inherit (config.virtualisation.quadlet) networks volumes;
 in
 {
   options.trev.containers.portainer = {

@@ -19,6 +19,10 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    networks
+    volumes
+    ;
   cfg = config.trev.containers.traefik;
   valkeyConfig = lib.attrByPath [ "trev" "containers" "valkey" ] {
     enable = false;
@@ -28,7 +32,6 @@ let
     enable = false;
     ref = "valkey-traefik";
   } valkeyConfig;
-  inherit (config.virtualisation.quadlet) networks volumes;
 
   acmeDomains = concatStringsSep "\n" (
     mapAttrsToList (

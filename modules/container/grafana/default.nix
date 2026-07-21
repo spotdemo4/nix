@@ -16,6 +16,9 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    volumes
+    ;
   cfg = config.trev.containers.grafana;
   victoriaLogs = lib.attrByPath [ "trev" "containers" "victoria-logs" ] { enable = false; } config;
   victoriaMetrics = lib.attrByPath [ "trev" "containers" "victoria-metrics" ] {
@@ -24,7 +27,6 @@ let
   victoriaTraces = lib.attrByPath [ "trev" "containers" "victoria-traces" ] {
     enable = false;
   } config;
-  inherit (config.virtualisation.quadlet) volumes;
   networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
   networkRef = name: (lib.attrByPath [ name ] { ref = name; } networks).ref;
   missingNetworks = builtins.filter (name: !(builtins.hasAttr name networks)) cfg.networkNames;

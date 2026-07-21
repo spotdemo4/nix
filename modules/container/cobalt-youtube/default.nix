@@ -5,7 +5,10 @@
   ...
 }:
 let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib)
+    mkEnableOption
+    mkIf
+    ;
   inherit (import (self + /lib/container) { inherit lib; })
     mkImageOption
     ;

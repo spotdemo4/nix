@@ -15,8 +15,10 @@ let
     mkContainer
     mkImageOption
     ;
+  inherit (config.virtualisation.quadlet)
+    volumes
+    ;
   cfg = config.trev.containers.satisfactory;
-  inherit (config.virtualisation.quadlet) volumes;
 in
 {
   options.trev.containers.satisfactory = {

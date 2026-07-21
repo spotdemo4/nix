@@ -16,10 +16,12 @@ let
     mkImageOption
     networks
     ;
+  inherit (config.virtualisation.quadlet)
+    volumes
+    ;
   cfg = config.trev.containers.prowlarr;
   sonarr = lib.attrByPath [ "trev" "containers" "sonarr" ] { enable = false; } config;
   radarr = lib.attrByPath [ "trev" "containers" "radarr" ] { enable = false; } config;
-  inherit (config.virtualisation.quadlet) volumes;
   quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
   sonarrNetwork = lib.attrByPath [ "sonarr" ] { ref = "sonarr"; } quadletNetworks;
   radarrNetwork = lib.attrByPath [ "radarr" ] { ref = "radarr"; } quadletNetworks;

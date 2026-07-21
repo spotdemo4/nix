@@ -14,9 +14,12 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkImageOption
     ;
+  inherit (config.virtualisation.quadlet)
+    networks
+    volumes
+    ;
   cfg = config.trev.containers.p2pool;
   monerod = lib.attrByPath [ "trev" "containers" "monerod" ] { enable = false; } config;
-  inherit (config.virtualisation.quadlet) networks volumes;
 in
 {
   options.trev.containers.p2pool = {

@@ -14,8 +14,10 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkImageOption
     ;
+  inherit (config.virtualisation.quadlet)
+    volumes
+    ;
   cfg = config.trev.containers.crowdsec;
-  inherit (config.virtualisation.quadlet) volumes;
 in
 {
   options.trev.containers.crowdsec = {

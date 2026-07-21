@@ -14,12 +14,15 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkImageOption
     ;
+  inherit (config.virtualisation.quadlet)
+    containers
+    volumes
+    ;
   cfg = config.trev.containers.traefik-certs-dumper;
   traefik = lib.attrByPath [ "trev" "containers" "traefik" ] {
     enable = false;
     acmeVolumeName = "acme";
   } config;
-  inherit (config.virtualisation.quadlet) containers volumes;
   traefikContainer = lib.attrByPath [ cfg.traefikContainerName ] {
     ref = cfg.traefikContainerName;
   } containers;

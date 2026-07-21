@@ -17,8 +17,10 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    volumes
+    ;
   cfg = config.trev.containers.copyparty;
-  inherit (config.virtualisation.quadlet) volumes;
 
   accounts = "/accounts.conf";
   configFile = pkgs.replaceVars ./copyparty.conf {

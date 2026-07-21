@@ -16,9 +16,11 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    containers
+    ;
   cfg = config.trev.containers.shlink-web;
   shlink = lib.attrByPath [ "trev" "containers" "shlink" ] { enable = false; } config;
-  inherit (config.virtualisation.quadlet) containers;
   shlinkContainer = lib.attrByPath [ "shlink" ] { ref = "shlink"; } containers;
 in
 {

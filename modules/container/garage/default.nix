@@ -18,8 +18,10 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    volumes
+    ;
   cfg = config.trev.containers.garage;
-  inherit (config.virtualisation.quadlet) volumes;
 
   configFile = pkgs.replaceVars ./garage.toml {
     metadata_dir = "/meta";

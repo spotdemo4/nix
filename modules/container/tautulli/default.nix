@@ -16,9 +16,11 @@ let
     mkImageOption
     networks
     ;
+  inherit (config.virtualisation.quadlet)
+    volumes
+    ;
   cfg = config.trev.containers.tautulli;
   plex = lib.attrByPath [ "trev" "containers" "plex" ] { enable = false; } config;
-  inherit (config.virtualisation.quadlet) volumes;
   quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
   plexNetwork = lib.attrByPath [ "plex" ] { ref = "plex"; } quadletNetworks;
 in

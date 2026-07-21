@@ -17,6 +17,10 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    containers
+    networks
+    ;
   cfg = config.trev.containers.shlink;
   postgresql = lib.attrByPath [ "trev" "containers" "postgresql" ] {
     enable = false;
@@ -29,7 +33,6 @@ let
     passwordSecret = null;
     ref = "postgresql-shlink";
   } postgresql;
-  inherit (config.virtualisation.quadlet) containers networks;
   databaseContainer = lib.attrByPath [ "postgresql-shlink" ] {
     ref = "postgresql-shlink";
   } containers;

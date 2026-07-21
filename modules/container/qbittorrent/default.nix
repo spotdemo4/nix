@@ -16,6 +16,10 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    containers
+    volumes
+    ;
   cfg = config.trev.containers.qbittorrent;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
     enable = false;
@@ -25,7 +29,6 @@ let
     enable = false;
     ref = "gluetun-qbittorrent";
   } gluetunConfig;
-  inherit (config.virtualisation.quadlet) containers volumes;
   gluetunContainer = lib.attrByPath [ gluetun.ref ] { ref = gluetun.ref; } containers;
 in
 {

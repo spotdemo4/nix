@@ -17,6 +17,10 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    containers
+    networks
+    ;
   cfg = config.trev.containers.niks3;
   postgresql = lib.attrByPath [ "trev" "containers" "postgresql" ] {
     enable = false;
@@ -29,7 +33,6 @@ let
     ref = "postgresql-niks3";
     database = "";
   } postgresql;
-  inherit (config.virtualisation.quadlet) containers networks;
   databaseContainer = lib.attrByPath [ "postgresql-niks3" ] { ref = "postgresql-niks3"; } containers;
 in
 {

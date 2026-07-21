@@ -15,8 +15,11 @@ let
     mkContainer
     mkImageOption
     ;
+  inherit (config.virtualisation.quadlet)
+    networks
+    volumes
+    ;
   cfg = config.trev.containers.victoria-logs;
-  inherit (config.virtualisation.quadlet) networks volumes;
 in
 {
   options.trev.containers.victoria-logs = {

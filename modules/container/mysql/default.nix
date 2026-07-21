@@ -21,9 +21,11 @@ let
     publishPorts
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    volumes
+    ;
   cfg = config.trev.containers.mysql;
   enabledInstances = filterAttrs (_: instance: instance.enable) cfg.instances;
-  inherit (config.virtualisation.quadlet) volumes;
 in
 {
   options.trev.containers.mysql = {

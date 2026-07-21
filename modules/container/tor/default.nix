@@ -15,8 +15,11 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkImageOption
     ;
+  inherit (config.virtualisation.quadlet)
+    networks
+    volumes
+    ;
   cfg = config.trev.containers.tor;
-  inherit (config.virtualisation.quadlet) networks volumes;
   torrc = pkgs.replaceVars ./torrc {
     inherit (cfg)
       bandwidthRate

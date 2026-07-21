@@ -15,8 +15,10 @@ let
     mkContainer
     mkImageOption
     ;
+  inherit (config.virtualisation.quadlet)
+    networks
+    ;
   cfg = config.trev.containers.monerod;
-  inherit (config.virtualisation.quadlet) networks;
 in
 {
   options.trev.containers.monerod = {

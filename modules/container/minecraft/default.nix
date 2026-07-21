@@ -16,8 +16,10 @@ let
     mkImageOption
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    volumes
+    ;
   cfg = config.trev.containers.minecraft;
-  inherit (config.virtualisation.quadlet) volumes;
 in
 {
   options.trev.containers.minecraft = {

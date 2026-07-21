@@ -18,9 +18,11 @@ let
     networks
     secretType
     ;
+  inherit (config.virtualisation.quadlet)
+    volumes
+    ;
   cfg = config.trev.containers.immich-postgresql;
   immich = lib.attrByPath [ "trev" "containers" "immich" ] { enable = false; } config;
-  inherit (config.virtualisation.quadlet) volumes;
   quadletNetworks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
   immichNetwork = lib.attrByPath [ "immich" ] { ref = "immich"; } quadletNetworks;
 in
