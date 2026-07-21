@@ -38,16 +38,44 @@ in
       default = 3000;
       description = "Forgejo HTTP port to publish.";
     };
+
+    lfsSecretFile = mkOption {
+      type = types.either types.path types.str;
+      default = self + /secrets/forgejo-lfs.age;
+      description = "Age file containing the LFS JWT secret.";
+    };
+    jwtSecretFile = mkOption {
+      type = types.either types.path types.str;
+      default = self + /secrets/forgejo-jwt.age;
+      description = "Age file containing the JWT secret.";
+    };
+    tokenSecretFile = mkOption {
+      type = types.either types.path types.str;
+      default = self + /secrets/forgejo-token.age;
+      description = "Age file containing the internal token.";
+    };
   };
 
   config = mkIf cfg.enable {
+    secrets = {
+      forgejo-lfs.file = cfg.lfsSecretFile;
+      forgejo-jwt.file = cfg.jwtSecretFile;
+      forgejo-token.file = cfg.tokenSecretFile;
+    };
+
     virtualisation.quadlet = {
       containers.forgejo.containerConfig = {
         image = cfg.image;
         pull = "missing";
         volumes = [
           "${volumes.forgejo.ref}:/data"
+          "${./app.ini}:/data/gitea/conf/app.ini"
           "${cfg.localtimePath}:/etc/localtime:ro"
+        ];
+        secrets = [
+          "${config.secrets.forgejo-lfs.mount},target=/secrets/forgejo-lfs,mode=0400"
+          "${config.secrets.forgejo-jwt.mount},target=/secrets/forgejo-jwt,mode=0400"
+          "${config.secrets.forgejo-token.mount},target=/secrets/forgejo-token,mode=0400"
         ];
         publishPorts = [
           (toString cfg.port)
