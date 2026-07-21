@@ -92,10 +92,22 @@ in
           image = cfg.image;
           pull = "missing";
           secrets = [
-            "${cfg.geoliteSecret.env},target=GEOLITE_LICENSE_KEY"
-            "${cfg.apiSecret.env},target=INITIAL_API_KEY"
+            {
+              inherit (cfg.geoliteSecret) ref;
+              type = "env";
+              target = "GEOLITE_LICENSE_KEY";
+            }
+            {
+              inherit (cfg.apiSecret) ref;
+              type = "env";
+              target = "INITIAL_API_KEY";
+            }
           ]
-          ++ optional (database.passwordSecret != null) "${database.passwordSecret.env},target=DB_PASSWORD";
+          ++ optional (database.passwordSecret != null) {
+            inherit (database.passwordSecret) ref;
+            type = "env";
+            target = "DB_PASSWORD";
+          };
           environments = {
             DEFAULT_DOMAIN = cfg.domain;
             IS_HTTPS_ENABLED = "true";

@@ -12,6 +12,7 @@ let
     types
     ;
   inherit (import (self + /lib/container) { inherit lib; })
+    mkContainer
     mkImageOption
     secretReferenceType
     ;
@@ -56,7 +57,7 @@ in
     };
 
     virtualisation.quadlet = {
-      containers.discord-openrouter.containerConfig = {
+      containers.discord-openrouter.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         environments = {
@@ -65,8 +66,16 @@ in
           DEFAULT_MODEL = "google/gemini-2.5-flash";
         };
         secrets = [
-          "${cfg.openrouterSecret.env},target=OPENROUTER_API_KEY"
-          "${cfg.discordSecret.env},target=DISCORD_TOKEN"
+          {
+            inherit (cfg.openrouterSecret) ref;
+            type = "env";
+            target = "OPENROUTER_API_KEY";
+          }
+          {
+            inherit (cfg.discordSecret) ref;
+            type = "env";
+            target = "DISCORD_TOKEN";
+          }
         ];
         volumes = [
           "${volumes.discord-openrouter.ref}:/data"

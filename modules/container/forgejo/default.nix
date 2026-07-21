@@ -75,9 +75,24 @@ in
           "${cfg.localtimePath}:/etc/localtime:ro"
         ];
         secrets = [
-          "${config.secrets.forgejo-lfs.mount},target=/secrets/forgejo-lfs,mode=0400"
-          "${config.secrets.forgejo-jwt.mount},target=/secrets/forgejo-jwt,mode=0400"
-          "${config.secrets.forgejo-token.mount},target=/secrets/forgejo-token,mode=0400"
+          {
+            inherit (config.secrets.forgejo-lfs) ref;
+            type = "mount";
+            target = "/secrets/forgejo-lfs";
+            mode = "0400";
+          }
+          {
+            inherit (config.secrets.forgejo-jwt) ref;
+            type = "mount";
+            target = "/secrets/forgejo-jwt";
+            mode = "0400";
+          }
+          {
+            inherit (config.secrets.forgejo-token) ref;
+            type = "mount";
+            target = "/secrets/forgejo-token";
+            mode = "0400";
+          }
         ];
         publishPorts = [
           (toString cfg.port)

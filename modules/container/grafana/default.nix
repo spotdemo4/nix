@@ -105,7 +105,11 @@ in
         publishPorts = cfg.publishPorts;
         networks = map networkRef cfg.networkNames;
         secrets = [
-          "${cfg.secret.mount},target=/etc/secrets/client"
+          {
+            inherit (cfg.secret) ref;
+            type = "mount";
+            target = "/etc/secrets/client";
+          }
         ];
         labels = {
           traefik = {

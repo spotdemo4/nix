@@ -145,12 +145,32 @@ in
             NIKS3_OIDC_CONFIG = "/config/oidc.json";
           };
           secrets = [
-            "${secrets.niks3.env},target=NIKS3_API_TOKEN"
-            "${secrets.niks3-signing-key.mount},target=/secrets/signing-key"
-            "${secrets.garage-nix-key.env},target=NIKS3_S3_ACCESS_KEY"
-            "${secrets.garage-nix-secret.env},target=NIKS3_S3_SECRET_KEY"
+            {
+              inherit (secrets.niks3) ref;
+              type = "env";
+              target = "NIKS3_API_TOKEN";
+            }
+            {
+              inherit (secrets.niks3-signing-key) ref;
+              type = "mount";
+              target = "/secrets/signing-key";
+            }
+            {
+              inherit (secrets.garage-nix-key) ref;
+              type = "env";
+              target = "NIKS3_S3_ACCESS_KEY";
+            }
+            {
+              inherit (secrets.garage-nix-secret) ref;
+              type = "env";
+              target = "NIKS3_S3_SECRET_KEY";
+            }
           ]
-          ++ optional (cfg.databaseUrlSecret != null) "${cfg.databaseUrlSecret.env},target=NIKS3_DB";
+          ++ optional (cfg.databaseUrlSecret != null) {
+            inherit (cfg.databaseUrlSecret) ref;
+            type = "env";
+            target = "NIKS3_DB";
+          };
           volumes = [
             "${cfg.oidcConfigFile}:/config/oidc.json"
           ];

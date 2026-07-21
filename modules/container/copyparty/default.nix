@@ -76,7 +76,11 @@ in
         pull = "missing";
         user = "${toString cfg.userId}:${toString cfg.groupId}";
         secrets = [
-          "${secrets.copyparty.mount},target=${accounts}"
+          {
+            inherit (secrets.copyparty) ref;
+            type = "mount";
+            target = accounts;
+          }
         ];
         volumes = [
           "${cfg.dataPath}:/w"

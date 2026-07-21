@@ -204,12 +204,36 @@ in
           image = cfg.image;
           pull = "missing";
           secrets = [
-            "${cfg.secrets.cloudflareDns.env},target=CF_DNS_API_TOKEN"
-            "${cfg.secrets.crowdsec.mount},target=/secrets/crowdsec/lapi_key"
-            "${cfg.secrets.turnstileSiteKey.mount},target=/secrets/turnstile/site_key"
-            "${cfg.secrets.turnstileSecretKey.mount},target=/secrets/turnstile/secret_key"
-            "${cfg.secrets.userAdmin.mount},target=/secrets/user-admin"
-            "${cfg.secrets.userTrev.mount},target=/secrets/user-trev"
+            {
+              inherit (cfg.secrets.cloudflareDns) ref;
+              type = "env";
+              target = "CF_DNS_API_TOKEN";
+            }
+            {
+              inherit (cfg.secrets.crowdsec) ref;
+              type = "mount";
+              target = "/secrets/crowdsec/lapi_key";
+            }
+            {
+              inherit (cfg.secrets.turnstileSiteKey) ref;
+              type = "mount";
+              target = "/secrets/turnstile/site_key";
+            }
+            {
+              inherit (cfg.secrets.turnstileSecretKey) ref;
+              type = "mount";
+              target = "/secrets/turnstile/secret_key";
+            }
+            {
+              inherit (cfg.secrets.userAdmin) ref;
+              type = "mount";
+              target = "/secrets/user-admin";
+            }
+            {
+              inherit (cfg.secrets.userTrev) ref;
+              type = "mount";
+              target = "/secrets/user-trev";
+            }
           ];
           volumes = [
             "${cfg.podmanSocket}:/var/run/docker.sock"

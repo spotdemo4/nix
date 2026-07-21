@@ -12,6 +12,7 @@ let
     types
     ;
   inherit (import (self + /lib/container) { inherit lib; })
+    mkContainer
     mkImageOption
     networks
     ;
@@ -92,13 +93,21 @@ in
       sonarr.file = cfg.sonarrSecretFile;
     };
 
-    virtualisation.quadlet.containers.unpackerr.containerConfig = {
+    virtualisation.quadlet.containers.unpackerr.containerConfig = mkContainer {
       image = cfg.image;
       pull = "missing";
       user = "${toString cfg.uid}:${toString cfg.gid}";
       secrets = [
-        "${config.secrets.radarr.env},target=UN_RADARR_0_API_KEY"
-        "${config.secrets.sonarr.env},target=UN_SONARR_0_API_KEY"
+        {
+          inherit (config.secrets.radarr) ref;
+          type = "env";
+          target = "UN_RADARR_0_API_KEY";
+        }
+        {
+          inherit (config.secrets.sonarr) ref;
+          type = "env";
+          target = "UN_SONARR_0_API_KEY";
+        }
       ];
       environments = {
         TZ = cfg.timeZone;

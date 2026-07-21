@@ -15,6 +15,7 @@ let
     types
     ;
   inherit (import (self + /lib/container) { inherit lib; })
+    mkContainer
     mkImageOption
     networks
     secretReferenceType
@@ -87,7 +88,7 @@ in
       containers = mapAttrs' (
         _: instance:
         nameValuePair instance.ref {
-          containerConfig = {
+          containerConfig = mkContainer {
             image = instance.image;
             pull = "missing";
             devices = [
@@ -102,7 +103,11 @@ in
             healthCmd = "/gluetun-entrypoint healthcheck";
             notify = "healthy";
             secrets = [
-              "${instance.secret.env},target=WIREGUARD_PRIVATE_KEY"
+              {
+                inherit (instance.secret) ref;
+                type = "env";
+                target = "WIREGUARD_PRIVATE_KEY";
+              }
             ];
             networks = instance.networks;
             environments = instance.environments;

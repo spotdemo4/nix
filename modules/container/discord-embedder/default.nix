@@ -127,11 +127,31 @@ in
           X_USERNAME = "embedder@trev.xyz";
         };
         secrets = [
-          "${config.secrets.embedder-discord.env},target=DISCORD_TOKEN"
-          "${config.secrets.embedder-instagram.env},target=INSTAGRAM_PASSWORD"
-          "${config.secrets.embedder-reddit.env},target=REDDIT_PASSWORD"
-          "${config.secrets.embedder-tiktok.env},target=TIKTOK_PASSWORD"
-          "${config.secrets.embedder-x.env},target=X_PASSWORD"
+          {
+            inherit (config.secrets.embedder-discord) ref;
+            type = "env";
+            target = "DISCORD_TOKEN";
+          }
+          {
+            inherit (config.secrets.embedder-instagram) ref;
+            type = "env";
+            target = "INSTAGRAM_PASSWORD";
+          }
+          {
+            inherit (config.secrets.embedder-reddit) ref;
+            type = "env";
+            target = "REDDIT_PASSWORD";
+          }
+          {
+            inherit (config.secrets.embedder-tiktok) ref;
+            type = "env";
+            target = "TIKTOK_PASSWORD";
+          }
+          {
+            inherit (config.secrets.embedder-x) ref;
+            type = "env";
+            target = "X_PASSWORD";
+          }
         ];
         volumes = [
           "${cfg.filesPath}:/files"

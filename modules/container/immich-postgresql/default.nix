@@ -13,6 +13,7 @@ let
     types
     ;
   inherit (import (self + /lib/container) { inherit lib; })
+    mkContainer
     mkImageOption
     networks
     secretReferenceType
@@ -76,7 +77,7 @@ in
     ];
 
     virtualisation.quadlet = {
-      containers.${cfg.containerName}.containerConfig = {
+      containers.${cfg.containerName}.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         healthCmd = "pg_isready -U ${cfg.username} -d ${cfg.database}";
@@ -89,9 +90,11 @@ in
           POSTGRES_USER = cfg.username;
           POSTGRES_DB = cfg.database;
         };
-        secrets = optional (
-          cfg.passwordSecret != null
-        ) "${cfg.passwordSecret.env},target=POSTGRES_PASSWORD";
+        secrets = optional (cfg.passwordSecret != null) {
+          inherit (cfg.passwordSecret) ref;
+          type = "env";
+          target = "POSTGRES_PASSWORD";
+        };
       };
 
       volumes.${cfg.volumeName} = { };

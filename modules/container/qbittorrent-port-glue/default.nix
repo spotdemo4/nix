@@ -12,6 +12,7 @@ let
     types
     ;
   inherit (import (self + /lib/container) { inherit lib; })
+    mkContainer
     mkImageOption
     ;
   cfg = config.trev.containers.qbittorrent-port-glue;
@@ -75,7 +76,7 @@ in
     secrets.password.file = cfg.passwordSecretFile;
 
     virtualisation.quadlet.containers.qbittorrent-port-glue = {
-      containerConfig = {
+      containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
         environments = {
@@ -84,7 +85,13 @@ in
           QBITTORRENT_USER = cfg.qbittorrentUser;
           PORT_FILE = cfg.portFile;
         };
-        secrets = [ "${config.secrets.password.env},target=QBITTORRENT_PASS" ];
+        secrets = [
+          {
+            inherit (config.secrets.password) ref;
+            type = "env";
+            target = "QBITTORRENT_PASS";
+          }
+        ];
         volumes = [ "${gluetunVolume.ref}:/tmp/gluetun" ];
         networks = [ "container:${gluetun.ref}" ];
       };

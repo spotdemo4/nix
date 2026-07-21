@@ -121,9 +121,11 @@ in
 
             REDIS_HOSTNAME = valkey.ref;
           };
-          secrets = optional (
-            database.passwordSecret != null
-          ) "${database.passwordSecret.env},target=DB_PASSWORD";
+          secrets = optional (database.passwordSecret != null) {
+            inherit (database.passwordSecret) ref;
+            type = "env";
+            target = "DB_PASSWORD";
+          };
           volumes = [
             "${volumes.immich.ref}:/config"
             "${cfg.photosPath}:/photos"

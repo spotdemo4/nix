@@ -15,6 +15,7 @@ let
     types
     ;
   inherit (import (self + /lib/container) { inherit lib; })
+    mkContainer
     mkImageOption
     networks
     publishPorts
@@ -82,7 +83,7 @@ in
       containers = mapAttrs' (
         _: instance:
         nameValuePair instance.ref {
-          containerConfig = {
+          containerConfig = mkContainer {
             image = instance.image;
             pull = "missing";
             healthCmd = "mysqladmin ping -h localhost";
@@ -95,8 +96,16 @@ in
               MYSQL_USER = instance.username;
             };
             secrets = [
-              "${instance.password.env},target=MYSQL_PASSWORD"
-              "${instance.password.env},target=MYSQL_ROOT_PASSWORD"
+              {
+                inherit (instance.password) ref;
+                type = "env";
+                target = "MYSQL_PASSWORD";
+              }
+              {
+                inherit (instance.password) ref;
+                type = "env";
+                target = "MYSQL_ROOT_PASSWORD";
+              }
             ];
             networks = instance.networks;
             publishPorts = instance.publishPorts;

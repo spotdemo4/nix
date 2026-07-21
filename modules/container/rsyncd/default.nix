@@ -57,7 +57,12 @@ in
         image = cfg.image;
         pull = "missing";
         secrets = [
-          "${secrets.rsyncd.mount},target=/etc/rsyncd.secrets,mode=0400"
+          {
+            inherit (secrets.rsyncd) ref;
+            type = "mount";
+            target = "/etc/rsyncd.secrets";
+            mode = "0400";
+          }
         ];
         volumes = [
           "${cfg.configFile}:/etc/rsyncd.conf"

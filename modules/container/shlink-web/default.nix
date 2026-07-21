@@ -65,7 +65,11 @@ in
         image = cfg.image;
         pull = "missing";
         secrets = [
-          "${cfg.apiSecret.env},target=SHLINK_SERVER_API_KEY"
+          {
+            inherit (cfg.apiSecret) ref;
+            type = "env";
+            target = "SHLINK_SERVER_API_KEY";
+          }
         ];
         environments.SHLINK_SERVER_URL = cfg.serverUrl;
         publishPorts = [ "8080" ];

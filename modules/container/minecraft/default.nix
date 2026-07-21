@@ -68,7 +68,11 @@ in
         pull = "missing";
         environments = cfg.environments;
         secrets = [
-          "${cfg.curseforgeSecret.env},target=CF_API_KEY"
+          {
+            inherit (cfg.curseforgeSecret) ref;
+            type = "env";
+            target = "CF_API_KEY";
+          }
         ];
         volumes = [
           "${volumes.${cfg.volumeName}.ref}:/data"

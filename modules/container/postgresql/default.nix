@@ -18,6 +18,7 @@ let
     types
     ;
   inherit (import (self + /lib/container) { inherit lib; })
+    mkContainer
     mkImageOption
     networks
     publishPorts
@@ -94,7 +95,7 @@ in
         containers = mapAttrs' (
           _: instance:
           nameValuePair instance.ref {
-            containerConfig = {
+            containerConfig = mkContainer {
               image = instance.image;
               pull = "missing";
               healthCmd = "pg_isready -U ${instance.username} -d ${instance.database}";
@@ -107,9 +108,11 @@ in
                 POSTGRES_USER = instance.username;
                 PGDATA = "/var/lib/postgresql/18/docker";
               };
-              secrets = optional (
-                instance.passwordSecret != null
-              ) "${instance.passwordSecret.env},target=POSTGRES_PASSWORD";
+              secrets = optional (instance.passwordSecret != null) {
+                inherit (instance.passwordSecret) ref;
+                type = "env";
+                target = "POSTGRES_PASSWORD";
+              };
               networks = instance.networks;
               publishPorts = instance.publishPorts;
             };
