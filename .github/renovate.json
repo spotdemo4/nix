@@ -52,6 +52,12 @@
       "addLabels": ["nix"]
     },
     {
+      "matchManagers": ["nix"],
+      "matchDepNames": ["nur", "nix4vscode"],
+      "schedule": ["* 0-3 * * *"],
+      "updateNotScheduled": false
+    },
+    {
       "matchManagers": ["custom.regex"],
       "matchDepTypes": ["image"],
       "groupName": "docker images",
