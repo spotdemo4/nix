@@ -104,10 +104,15 @@ hl.config({
         auto_group = false,
         col = {
             border_active = {
-                colors = { "rgba(ff9900ee)", "rgba(ff1a00ee)" },
+                colors = { "rgba(ff9900ee)", "rgba(30362fee)" },
                 angle = 45,
             },
             border_inactive = "rgba(595959aa)",
+            border_locked_active = {
+                colors = { "rgba(ff9900ee)", "rgba(ff1a00ee)" },
+                angle = 45,
+            },
+            border_locked_inactive = "rgba(595959aa)",
         },
         groupbar = {
             enabled = false,
