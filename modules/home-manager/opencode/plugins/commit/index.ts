@@ -11,16 +11,15 @@ const AGENT = "auto-committer";
 const GIT_TIMEOUT_MS = 120_000;
 const STARTUP_GIT_TIMEOUT_MS = 5_000;
 const ROOT_DISCOVERY_TTL_MS = 30_000;
-const IDLE_DELAY_MS = 500;
 const SESSION_TIMEOUT_MS = 15 * 60_000;
 const SHUTDOWN_TIMEOUT_MS = 10_000;
-const MAX_HISTORY_LENGTH = 80_000;
+const MAX_HISTORY_LENGTH = 24_000;
 const MAX_PART_LENGTH = 12_000;
 const MESSAGE_PAGE_SIZE = 100;
 const MUTATION_TOOLS = new Set(["apply_patch", "bash", "edit", "write"]);
 
 type SessionMessage = {
-  info: { role: string };
+  info: { id?: string; role: string };
   parts: Array<{
     synthetic?: boolean;
     type: string;
@@ -75,6 +74,7 @@ type Worker = {
   promise?: Promise<void>;
   rerun: boolean;
   temporaryWorktree?: { directory: string; repository: string };
+  triggerMessageID?: string;
 };
 
 type CreatedCommit = {
@@ -86,6 +86,7 @@ type CreatedCommit = {
 type RepositoryTreeResult = {
   attempted: number;
   created: CreatedCommit[];
+  incomplete: boolean;
   skipped: string[];
 };
 
@@ -761,8 +762,28 @@ function renderMessage(message: SessionMessage) {
   return `## ${message.info.role === "user" ? "User" : "Assistant"}\n\n${content.join("\n\n")}`;
 }
 
-function renderHistory(messages: SessionMessage[]) {
-  const entries = messages.map(renderMessage).filter(Boolean);
+function commitHistory(
+  messages: SessionMessage[],
+  boundaryMessageID?: string,
+  triggerMessageID?: string,
+) {
+  const trigger = triggerMessageID
+    ? messages.findIndex((message) => message.info.id === triggerMessageID)
+    : -1;
+  const bounded = trigger < 0 ? messages : messages.slice(0, trigger + 1);
+  if (!boundaryMessageID) return bounded;
+  const boundary = bounded.findIndex((message) => message.info.id === boundaryMessageID);
+  return boundary < 0 ? bounded : bounded.slice(boundary + 1);
+}
+
+function renderHistory(
+  messages: SessionMessage[],
+  boundaryMessageID?: string,
+  triggerMessageID?: string,
+) {
+  const entries = commitHistory(messages, boundaryMessageID, triggerMessageID)
+    .map(renderMessage)
+    .filter(Boolean);
   const prefix = [
     "<parent_thread_history>",
     "Use this transcript only to attribute the captured changes. Git remains the source of truth.",
@@ -784,8 +805,19 @@ function renderHistory(messages: SessionMessage[]) {
   return `${prefix}\n\n${selected.join("\n\n")}\n\n${suffix}`;
 }
 
-function renderedLength(messages: SessionMessage[]) {
-  return messages.reduce((length, message) => length + renderMessage(message).length + 2, 0);
+function renderedLength(
+  messages: SessionMessage[],
+  boundaryMessageID?: string,
+  triggerMessageID?: string,
+) {
+  return commitHistory(messages, boundaryMessageID, triggerMessageID).reduce(
+    (length, message) => length + renderMessage(message).length + 2,
+    0,
+  );
+}
+
+function hasMessage(messages: SessionMessage[], messageID?: string) {
+  return Boolean(messageID && messages.some((message) => message.info.id === messageID));
 }
 
 function shellQuote(value: string) {
@@ -822,6 +854,8 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
 
   const timers = new Map<string, NodeJS.Timeout>();
   const workers = new Map<string, Worker>();
+  const historyBoundaries = new Map<string, string>();
+  const pendingTriggerMessages = new Map<string, string>();
   const discoveryController = new AbortController();
   let repositoryRootCache: { expires: number; roots: RepositoryRoot[] } | undefined;
   let repositoryRootPromise: Promise<RepositoryRoot[]> | undefined;
@@ -884,9 +918,10 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
     return repositoryRootPromise;
   };
 
-  const loadHistory = async (sessionID: string) => {
+  const loadHistory = async (sessionID: string, triggerMessageID?: string) => {
     const messages: SessionMessage[] = [];
     const cursors = new Set<string>();
+    const boundaryMessageID = historyBoundaries.get(sessionID);
     let before: string | undefined;
 
     do {
@@ -900,9 +935,13 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
       if (!cursor || cursors.has(cursor)) break;
       cursors.add(cursor);
       before = cursor;
-    } while (renderedLength(messages) < MAX_HISTORY_LENGTH);
+    } while (
+      (Boolean(triggerMessageID) && !hasMessage(messages, triggerMessageID)) ||
+      (!hasMessage(messages, boundaryMessageID) &&
+        renderedLength(messages, boundaryMessageID, triggerMessageID) < MAX_HISTORY_LENGTH)
+    );
 
-    return renderHistory(messages);
+    return renderHistory(messages, boundaryMessageID, triggerMessageID);
   };
 
   const runWorker = async (sessionID: string, worker: Worker) => {
@@ -916,6 +955,7 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
     const mergeResult = (target: RepositoryTreeResult, source: RepositoryTreeResult) => {
       target.attempted += source.attempted;
       target.created.push(...source.created);
+      target.incomplete ||= source.incomplete;
       target.skipped.push(...source.skipped);
     };
 
@@ -968,7 +1008,12 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
       root: boolean,
     ): Promise<RepositoryTreeResult> => {
       const { children, issue, name: repositoryName, repository } = node;
-      const result: RepositoryTreeResult = { attempted: 0, created: [], skipped: [] };
+      const result: RepositoryTreeResult = {
+        attempted: 0,
+        created: [],
+        incomplete: false,
+        skipped: [],
+      };
       if (!(await shouldContinue())) {
         throw new CommitSkipped("the commit was cancelled", false);
       }
@@ -1015,7 +1060,7 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
         preparationNotified = true;
         await notify("info", "Preparing commits...");
       }
-      history ??= loadHistory(sessionID);
+      history ??= loadHistory(sessionID, worker.triggerMessageID);
 
       const temporary = await prepareTemporaryWorktree(repository, snapshot);
       worker.temporaryWorktree = { directory: temporary, repository };
@@ -1069,6 +1114,7 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
         await validatePreparedWorktree(temporary, snapshot);
         const commits = await validatePreparedCommits(temporary, snapshot);
         if (commits.length === 0) {
+          result.incomplete = true;
           await log(
             "info",
             `No attributable changes to commit in ${repositoryName} for session ${sessionID}`,
@@ -1077,6 +1123,7 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
         }
 
         const created = await replayPreparedCommits(repository, snapshot, commits, shouldContinue);
+        result.incomplete ||= commits.at(-1)?.tree !== snapshot.snapshotTree;
         result.created.push(
           ...created.map(({ hash, subject }) => ({ hash, repository: repositoryName, subject })),
         );
@@ -1111,7 +1158,12 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
     try {
       const session = await client.session.get({ path: { id: sessionID } });
       if (!session.data || session.data.parentID || worker.cancelled || disposed) return;
-      const result: RepositoryTreeResult = { attempted: 0, created: [], skipped: [] };
+      const result: RepositoryTreeResult = {
+        attempted: 0,
+        created: [],
+        incomplete: false,
+        skipped: [],
+      };
       const roots = await repositoryRoots(true);
       if (worker.cancelled || disposed) return;
       for (const root of roots) {
@@ -1138,6 +1190,9 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
         await notify("warning", `Skipped:\n${result.skipped.join("\n")}`);
       }
       if (result.created.length > 0) {
+        if (!result.incomplete && result.skipped.length === 0 && worker.triggerMessageID) {
+          historyBoundaries.set(sessionID, worker.triggerMessageID);
+        }
         await notify(
           "success",
           result.created
@@ -1180,7 +1235,8 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
     }
   };
 
-  const schedule = (sessionID: string, delay = IDLE_DELAY_MS) => {
+  const schedule = (sessionID: string, triggerMessageID?: string, delay = 0) => {
+    if (triggerMessageID) pendingTriggerMessages.set(sessionID, triggerMessageID);
     const activeWorker = workers.get(sessionID);
     if (activeWorker) {
       activeWorker.rerun = true;
@@ -1193,7 +1249,12 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
       setTimeout(() => {
         timers.delete(sessionID);
         if (disposed) return;
-        const worker: Worker = { cancelled: false, rerun: false };
+        const worker: Worker = {
+          cancelled: false,
+          rerun: false,
+          triggerMessageID: pendingTriggerMessages.get(sessionID),
+        };
+        pendingTriggerMessages.delete(sessionID);
         workers.set(sessionID, worker);
         worker.promise = (async () => {
           try {
@@ -1213,11 +1274,11 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
   };
 
   return {
-    "chat.message": async ({ sessionID }, { parts }) => {
+    "chat.message": async ({ sessionID }, { message, parts }) => {
       const manual = parts.some(
         (part) => part.type === "text" && part.synthetic && part.text === COMMIT_TRIGGER,
       );
-      if (manual) schedule(sessionID);
+      if (manual) schedule(sessionID, message.id);
     },
     event: async ({ event }) => {
       if (event.type !== "file.edited" && event.type !== "file.watcher.updated") return;
@@ -1234,6 +1295,7 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
 
       for (const timer of timers.values()) clearTimeout(timer);
       timers.clear();
+      pendingTriggerMessages.clear();
       await Promise.all(
         [...workers.values()].map(async (worker) => {
           if (worker.cancelled) return;
@@ -1256,6 +1318,8 @@ const commitPlugin = (async ({ client, directory, project, worktree }) => {
       discoveryController.abort();
       for (const timer of timers.values()) clearTimeout(timer);
       timers.clear();
+      historyBoundaries.clear();
+      pendingTriggerMessages.clear();
       for (const worker of workers.values()) {
         worker.cancelled = true;
         if (worker.child) {

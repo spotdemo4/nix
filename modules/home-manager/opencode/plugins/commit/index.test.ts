@@ -21,6 +21,11 @@ import { COMMIT_TRIGGER } from "./constants";
 
 const directories: string[] = [];
 
+type HarnessMessage = {
+  info: { id?: string; role: string };
+  parts: Array<{ synthetic?: boolean; text?: string; type: string }>;
+};
+
 function git(cwd: string, ...args: string[]) {
   return execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
 }
@@ -73,6 +78,7 @@ async function createLifecycleHarness(
   options: {
     dirty?: boolean;
     globalProject?: boolean;
+    messages?: HarnessMessage[] | (() => HarnessMessage[] | Promise<HarnessMessage[]>);
     parentID?: string;
     prompt?: (directory: string, text: string) => Promise<void> | void;
     root?: string;
@@ -118,7 +124,13 @@ async function createLifecycleHarness(
         };
       },
       status: async () => ({ data: {} }),
-      messages: async () => ({ data: [], response: { headers: new Headers() } }),
+      messages: async () => ({
+        data:
+          typeof options.messages === "function"
+            ? await options.messages()
+            : (options.messages ?? []),
+        response: { headers: new Headers() },
+      }),
       create: async ({ query }: { query: { directory: string } }) => {
         childDirectory = query.directory;
         creates += 1;
@@ -257,11 +269,14 @@ async function triggerCommit(harness: Awaited<ReturnType<typeof createLifecycleH
   await requestCommit(harness);
 }
 
-async function requestCommit(harness: Awaited<ReturnType<typeof createLifecycleHarness>>) {
+async function requestCommit(
+  harness: Awaited<ReturnType<typeof createLifecycleHarness>>,
+  messageID = "commit-trigger",
+) {
   await harness.hooks["chat.message"]?.(
     { sessionID: "parent" },
     {
-      message: {} as never,
+      message: { id: messageID } as never,
       parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }] as never,
     },
   );
@@ -734,6 +749,235 @@ test("runs a manually requested commit without a model response or idle event", 
   expect(context).not.toContain(COMMIT_TRIGGER);
 
   await hooks.dispose?.();
+});
+
+test("sends only history since the preceding successful commit request", async () => {
+  const contexts: string[] = [];
+  const messages = [
+    {
+      info: { id: "old-work", role: "user" },
+      parts: [{ text: "already committed work", type: "text" }],
+    },
+    {
+      info: { id: "trigger-1", role: "user" },
+      parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
+    },
+  ];
+  const harness = await createLifecycleHarness({
+    messages,
+    prompt: async (directory, text) => {
+      contexts.push(text);
+      await commitCapturedRepository(directory, text);
+    },
+  });
+  harness.releasePrompt();
+
+  await requestCommit(harness, "trigger-1");
+  await waitFor(() => harness.toasts.filter((toast) => toast.variant === "success").length === 1);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  await writeFile(join(harness.root, "tracked.txt"), "second change\n");
+  await harness.hooks.event?.({
+    event: {
+      type: "file.watcher.updated",
+      properties: { event: "change", file: join(harness.root, "tracked.txt") },
+    },
+  });
+  messages.push(
+    { info: { id: "current-work", role: "user" }, parts: [{ text: "current work", type: "text" }] },
+    {
+      info: { id: "trigger-2", role: "user" },
+      parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
+    },
+  );
+
+  await requestCommit(harness, "trigger-2");
+  await waitFor(() => contexts.length === 2);
+
+  expect(contexts[1]).toContain("current work");
+  expect(contexts[1]).not.toContain("already committed work");
+  expect(contexts[1]).not.toContain(COMMIT_TRIGGER);
+  await harness.hooks.dispose?.();
+});
+
+test("retains attribution history after a commit request creates nothing", async () => {
+  const contexts: string[] = [];
+  const messages = [
+    {
+      info: { id: "work", role: "user" },
+      parts: [{ text: "work awaiting commit", type: "text" }],
+    },
+    {
+      info: { id: "trigger-1", role: "user" },
+      parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
+    },
+  ];
+  const harness = await createLifecycleHarness({
+    messages,
+    prompt: async (directory, text) => {
+      contexts.push(text);
+      if (contexts.length > 1) await commitCapturedRepository(directory, text);
+    },
+  });
+  harness.releasePrompt();
+
+  await requestCommit(harness, "trigger-1");
+  await waitFor(() => harness.toasts.some((toast) => toast.message.includes("No attributable")));
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  messages.push({
+    info: { id: "trigger-2", role: "user" },
+    parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
+  });
+  await requestCommit(harness, "trigger-2");
+  await waitFor(() => contexts.length === 2);
+
+  expect(contexts[1]).toContain("work awaiting commit");
+  await harness.hooks.dispose?.();
+});
+
+test("retains attribution history when a commit leaves snapshot changes behind", async () => {
+  const root = await createRepository();
+  await writeFile(join(root, "tracked.txt"), "first change\n");
+  await writeFile(join(root, "remaining.txt"), "remaining change\n");
+  const contexts: string[] = [];
+  const messages = [
+    {
+      info: { id: "work", role: "user" },
+      parts: [{ text: "work split across commits", type: "text" }],
+    },
+    {
+      info: { id: "trigger-1", role: "user" },
+      parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
+    },
+  ];
+  const harness = await createLifecycleHarness({
+    dirty: false,
+    messages,
+    prompt: async (directory, text) => {
+      contexts.push(text);
+      const path = contexts.length === 1 ? "tracked.txt" : "remaining.txt";
+      git(directory, "add", path);
+      git(directory, "-c", "core.hooksPath=/dev/null", "commit", "-m", "fix: commit selected work");
+    },
+    root,
+  });
+  harness.releasePrompt();
+
+  await requestCommit(harness, "trigger-1");
+  await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"));
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  messages.push({
+    info: { id: "trigger-2", role: "user" },
+    parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
+  });
+  await requestCommit(harness, "trigger-2");
+  await waitFor(() => contexts.length === 2);
+
+  expect(contexts[1]).toContain("work split across commits");
+  await harness.hooks.dispose?.();
+});
+
+test("retains attribution history when a nested repository remains incomplete", async () => {
+  const root = await createRepository();
+  const child = await addSubmodule(root, "modules/child");
+  await writeFile(join(child, "tracked.txt"), "first change\n");
+  await writeFile(join(child, "remaining.txt"), "remaining change\n");
+  const childContexts: string[] = [];
+  const messages = [
+    {
+      info: { id: "work", role: "user" },
+      parts: [{ text: "nested work split across commits", type: "text" }],
+    },
+    {
+      info: { id: "trigger-1", role: "user" },
+      parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
+    },
+  ];
+  const harness = await createLifecycleHarness({
+    dirty: false,
+    messages,
+    prompt: async (directory, text) => {
+      if (text.includes('repository "modules/child"')) {
+        childContexts.push(text);
+        const path = childContexts.length === 1 ? "tracked.txt" : "remaining.txt";
+        git(directory, "add", path);
+        git(
+          directory,
+          "-c",
+          "core.hooksPath=/dev/null",
+          "commit",
+          "-m",
+          "fix: commit selected nested work",
+        );
+        return;
+      }
+      await commitCapturedRepository(directory, text);
+    },
+    root,
+  });
+  harness.releasePrompt();
+
+  await requestCommit(harness, "trigger-1");
+  await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"), 15_000);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  messages.push({
+    info: { id: "trigger-2", role: "user" },
+    parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
+  });
+  await requestCommit(harness, "trigger-2");
+  await waitFor(() => childContexts.length === 2, 15_000);
+
+  expect(childContexts[1]).toContain("nested work split across commits");
+  await harness.hooks.dispose?.();
+});
+
+test("bounds history at the request that started an active worker", async () => {
+  const contexts: string[] = [];
+  const messages: HarnessMessage[] = [
+    {
+      info: { id: "work-1", role: "user" },
+      parts: [{ text: "first request work", type: "text" }],
+    },
+    {
+      info: { id: "trigger-1", role: "user" },
+      parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
+    },
+  ];
+  let releaseMessages = () => {};
+  const messagesReady = new Promise<void>((resolve) => {
+    releaseMessages = resolve;
+  });
+  const harness = await createLifecycleHarness({
+    messages: async () => {
+      await messagesReady;
+      return messages;
+    },
+    prompt: async (directory, text) => {
+      contexts.push(text);
+      await commitCapturedRepository(directory, text);
+    },
+  });
+  harness.releasePrompt();
+
+  await requestCommit(harness, "trigger-1");
+  await waitFor(() => harness.creates === 1);
+  messages.push(
+    {
+      info: { id: "work-2", role: "user" },
+      parts: [{ text: "later request work", type: "text" }],
+    },
+    {
+      info: { id: "trigger-2", role: "user" },
+      parts: [{ synthetic: true, text: COMMIT_TRIGGER, type: "text" }],
+    },
+  );
+  await requestCommit(harness, "trigger-2");
+  releaseMessages();
+  await waitFor(() => contexts.length === 1);
+  await waitFor(() => harness.toasts.some((toast) => toast.variant === "success"));
+
+  expect(contexts[0]).toContain("first request work");
+  expect(contexts[0]).not.toContain("later request work");
+  await harness.hooks.dispose?.();
 });
 
 test("continues a requested commit when the parent session resumes", async () => {
