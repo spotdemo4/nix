@@ -64,23 +64,22 @@ git reset --hard "$RESOLVED_TARGET_REVISION"
 
 gprint "Updating"
 touch "$RETRY_FILE"
-for attempt in 1 2 3; do
+for attempt in 1 2; do
     if nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
         rm -f "$RETRY_FILE"
         gprint "Update successful"
         exit 0
     fi
 
-    if [ "$attempt" -lt 3 ]; then
+    if [ "$attempt" -lt 2 ]; then
         sleep 1m
     fi
 done
 
 if nixos-rebuild boot --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
-    rm -f "$RETRY_FILE"
-    gprint "Update successful, reboot required"
-    exit 0
+    bprint "Update failed, reboot required"
+else
+    bprint "Update failed"
 fi
 
-bprint "Update failed"
 exit 1
