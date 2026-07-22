@@ -86,6 +86,7 @@ in
       extraConfig = ''
         set -g allow-passthrough on
         set -s extended-keys on
+        set -s extended-keys-format csi-u
         set -s terminal-features[100] 'xterm*:extkeys'
         unbind-key -nq C-S-p
         bind-key -n -N "Search and run key bindings (Ctrl-Shift-P)" C-F12 \
