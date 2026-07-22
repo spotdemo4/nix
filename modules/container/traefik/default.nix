@@ -7,7 +7,6 @@
 }:
 let
   inherit (lib)
-    concatStringsSep
     mapAttrsToList
     mkEnableOption
     mkIf
@@ -33,34 +32,25 @@ let
     ref = "valkey-traefik";
   } valkeyConfig;
 
-  acmeDomains = concatStringsSep "\n" (
-    mapAttrsToList (
-      main: sans:
-      concatStringsSep "\n" (
-        [
-          "          - main: \"${main}\""
-          "            sans:"
-        ]
-        ++ map (domain: "              - \"${domain}\"") sans
-      )
-    ) cfg.acmeDomains
+  toml = pkgs.formats.toml { };
+
+  configFile = toml.generate "traefik.toml" (
+    lib.recursiveUpdate (fromTOML (builtins.readFile ./config.toml)) {
+      tracing.otlp.grpc.endpoint = cfg.tracesEndpoint;
+      accessLog.otlp.http.endpoint = cfg.logsEndpoint;
+      providers.redis.endpoints = [ "${valkey.ref}:6379" ];
+      entryPoints.https.http.tls.domains = mapAttrsToList (main: sans: {
+        inherit main sans;
+      }) cfg.acmeDomains;
+      certificatesResolvers.letsencrypt.acme.email = cfg.acmeEmail;
+    }
   );
 
-  configFile = pkgs.replaceVars ./config.yaml.in {
-    acme = "/etc/traefik/acme";
-    inherit acmeDomains;
-    acmeEmail = cfg.acmeEmail;
-    file = "/config/provider.yaml";
-    logsEndpoint = cfg.logsEndpoint;
-    redis = valkey.ref;
-    tracesEndpoint = cfg.tracesEndpoint;
-  };
-
-  providerFile = pkgs.replaceVars ./provider.yaml {
-    crowdsecAddress = cfg.crowdsecAddress;
-    userAdmin = "/secrets/user-admin";
-    userTrev = "/secrets/user-trev";
-  };
+  providerFile = toml.generate "provider.toml" (
+    lib.recursiveUpdate (fromTOML (builtins.readFile ./provider.toml)) {
+      http.middlewares.crowdsec.plugin.bouncer.crowdsecLapiHost = cfg.crowdsecAddress;
+    }
+  );
 in
 {
   options.trev.containers.traefik = {
@@ -240,8 +230,8 @@ in
           ];
           volumes = [
             "${cfg.podmanSocket}:/var/run/docker.sock"
-            "${configFile}:/etc/traefik/traefik.yml"
-            "${providerFile}:/config/provider.yaml"
+            "${configFile}:/etc/traefik/traefik.toml"
+            "${providerFile}:/config/provider.toml"
             "${volumes.${cfg.acmeVolumeName}.ref}:/etc/traefik/acme"
             "${./captcha.html}:/captcha.html"
           ];

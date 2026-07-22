@@ -1,0 +1,96 @@
+#:schema https://json.schemastore.org/traefik-v3.json
+
+[log]
+level = "WARN"
+
+[experimental]
+otlpLogs = true
+
+[experimental.plugins.bouncer]
+moduleName = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+version = "v1.6.0"
+
+[api]
+insecure = false
+
+[metrics.prometheus.headerLabels]
+useragent = "User-Agent"
+
+[tracing]
+addInternals = true
+
+[tracing.otlp.grpc]
+# endpoint is supplied by default.nix.
+insecure = true
+
+[accessLog]
+format = "json"
+
+[accessLog.fields.headers]
+defaultMode = "drop"
+
+[accessLog.fields.headers.names]
+User-Agent = "keep"
+ServiceName = "keep"
+RouterName = "keep"
+
+[accessLog.otlp.http]
+# endpoint is supplied by default.nix.
+
+[providers.docker]
+endpoint = "unix:///var/run/docker.sock"
+exposedByDefault = false
+allowEmptyServices = true
+watch = true
+
+[providers.redis]
+# endpoints are supplied by default.nix.
+
+[providers.file]
+filename = "/config/provider.toml"
+watch = true
+
+[entryPoints.http]
+address = ":80"
+
+[entryPoints.http.http3]
+
+[entryPoints.http.http.redirections.entryPoint]
+to = "https"
+scheme = "https"
+
+[entryPoints.https]
+address = ":443"
+asDefault = true
+
+[entryPoints.https.http3]
+
+[entryPoints.https.http.tls]
+certResolver = "letsencrypt"
+# domains are supplied by default.nix.
+
+[entryPoints.rsyncd]
+address = ":873"
+
+[entryPoints.rsyncd-tls]
+address = ":874"
+
+[entryPoints.minecraft]
+address = ":25565"
+
+[entryPoints.plex]
+address = ":32400"
+
+[entryPoints.syncthing-tcp]
+address = ":22000/tcp"
+
+[entryPoints.syncthing-udp]
+address = ":22000/udp"
+
+[certificatesResolvers.letsencrypt.acme]
+# email is supplied by default.nix.
+storage = "/etc/traefik/acme/acme.json"
+
+[certificatesResolvers.letsencrypt.acme.dnsChallenge]
+provider = "cloudflare"
+resolvers = ["1.1.1.1:53", "8.8.8.8:53"]
