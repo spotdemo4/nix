@@ -23,44 +23,119 @@ in
       default = "trev";
       description = "User that owns the NixOS checkout.";
     };
+
+    ntfyUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "https://ntfy.sh/spotdemo4-nix-main";
+      description = "ntfy topic URL that announces new main branch revisions.";
+    };
+
+    fallbackInterval = lib.mkOption {
+      type = lib.types.str;
+      default = "1d";
+      description = "Interval between update checks used to recover missed notifications.";
+    };
   };
 
   config =
     let
       nixos-rebuild = pkgs.nixos-rebuild.override { nix = config.nix.package.out; };
+      stateDirectory = "/var/lib/trev-update";
 
       updater = pkgs.writeShellApplication {
         name = "update";
 
         runtimeInputs = [
-          pkgs.sudo
+          pkgs.coreutils
           pkgs.git
           pkgs.openssh
           pkgs.libnotify
-          config.nix.package
+          pkgs.util-linux
           nixos-rebuild
         ];
 
         text = builtins.readFile (
           pkgs.replaceVars ./update.sh {
             hostname = cfg.hostname;
+            inherit stateDirectory;
             user = cfg.user;
           }
         );
       };
+
+      updateListener = pkgs.writeShellApplication {
+        name = "update-listener";
+
+        runtimeInputs = [
+          pkgs.ntfy-sh
+          pkgs.systemd
+        ];
+
+        text = ''
+          if [[ "''${1:-}" == "--trigger" ]]; then
+            revision="''${NTFY_MESSAGE:-}"
+
+            if [[ ! "$revision" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "ignoring invalid revision: $revision" >&2
+              exit 0
+            fi
+
+            exec systemctl start "update@$revision.service"
+          fi
+
+          export UPDATE_LISTENER="$0"
+          exec ntfy subscribe ${lib.escapeShellArg cfg.ntfyUrl} ${lib.escapeShellArg ''"$UPDATE_LISTENER" --trigger''}
+        '';
+      };
     in
     lib.mkIf cfg.enable {
-      environment.systemPackages = [ updater ];
-
       systemd.services.update = {
-        description = "Update nixos in the background";
+        description = "Update NixOS";
         wantedBy = [ "multi-user.target" ];
+        wants = [ "network-online.target" ];
+        after = [ "network-online.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          Restart = "on-failure";
+          RestartSec = "5m";
+          StateDirectory = "trev-update";
+          ExecStart = "${updater}/bin/update";
+        };
+      };
+
+      systemd.services."update@" = {
+        description = "Update NixOS to revision %i";
+        wants = [ "network-online.target" ];
+        after = [ "network-online.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          Restart = "on-failure";
+          RestartSec = "5m";
+          StateDirectory = "trev-update";
+          ExecStart = "${updater}/bin/update %i";
+        };
+      };
+
+      systemd.services.update-listener = {
+        description = "Listen for NixOS update notifications";
+        wantedBy = [ "multi-user.target" ];
+        wants = [ "network-online.target" ];
+        after = [ "network-online.target" ];
         serviceConfig = {
           Type = "exec";
-          Restart = "on-failure";
-          ExecStart = [
-            "${updater}/bin/update -w"
-          ];
+          Restart = "always";
+          RestartSec = "10s";
+          ExecStart = "${updateListener}/bin/update-listener";
+        };
+      };
+
+      systemd.timers.update = {
+        description = "Fallback NixOS update check";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnUnitInactiveSec = cfg.fallbackInterval;
+          RandomizedDelaySec = "1h";
+          Persistent = true;
         };
       };
     };

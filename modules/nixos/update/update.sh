@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 
-# Escalate to root if not root
-[ "$UID" -eq 0 ] || exec sudo "$0" "$@"
-
 HOSTNAME=@hostname@
+STATE_DIRECTORY=@stateDirectory@
 USER=@user@
-USER_ID=$(id -u ${USER})
+USER_ID=$(id -u "${USER}")
 
 function notify() {
-    sudo -u ${USER} DISPLAY=:0 "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus" notify-send "$@" > /dev/null 2>&1 || true
+    runuser -u "${USER}" -- env DISPLAY=:0 "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus" notify-send "$@" > /dev/null 2>&1 || true
 }
 
 function gprint() {
@@ -21,90 +19,68 @@ function bprint() {
     notify --urgency=critical "Updater" "$1"
 }
 
-WATCH=false
-REBUILD=false
-while getopts 'dwr' flag; do
-    case "$flag" in
-        w) WATCH=true ;;
-        r) REBUILD=true ;;
-        *) echo "Invalid flag: $flag" ;;
-    esac
-done
+REVISION="${1:-}"
+if [ -n "$REVISION" ] && [[ ! "$REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "invalid revision: $REVISION" >&2
+    exit 1
+fi
 
-FIRST_RUN=true
-RETRY_COUNT=0
-while true; do
-    if [ "$FIRST_RUN" = false ]; then
-        REBUILD=false
+exec 9>"$STATE_DIRECTORY/lock"
+flock 9
 
-        if [ "$WATCH" = false ]; then
-            break
-        else
-            sleep 1m
-        fi
-    fi
-    FIRST_RUN=false
+RETRY_FILE="$STATE_DIRECTORY/retry"
 
-    echo "checking for updates"
-    cd /etc/nixos || { echo "could not change directory to /etc/nixos"; exit 1; }
-    if ! git fetch --all; then
-        echo "could not fetch updates"
-        continue
+echo "checking for updates"
+cd /etc/nixos || { echo "could not change directory to /etc/nixos"; exit 1; }
+if ! git fetch origin; then
+    echo "could not fetch updates"
+    exit 1
+fi
+
+TARGET_REVISION=origin/main
+if [ -n "$REVISION" ]; then
+    REMOTE_REVISION="$(git rev-parse --verify origin/main)"
+    if [ "$REVISION" != "$REMOTE_REVISION" ]; then
+        echo "ignoring revision that is not the current origin/main: $REVISION" >&2
+        exit 0
     fi
 
-    REMOTE_CHANGES=false
-    if ! git diff --quiet HEAD origin/main; then
-        REMOTE_CHANGES=true
-        REBUILD=true
+    if ! git merge-base --is-ancestor HEAD "$REVISION"; then
+        echo "ignoring revision that is not a descendant of HEAD: $REVISION" >&2
+        exit 0
     fi
 
-    LOCAL_CHANGES=false
-    if [ -n "$(git status --porcelain)" ]; then
-        LOCAL_CHANGES=true
-        REBUILD=true
-    fi
+    TARGET_REVISION="$REVISION"
+fi
 
-    if [ "$RETRY_COUNT" -ge 1 ]; then
-        REBUILD=true
-    fi
+CURRENT_REVISION="$(git rev-parse HEAD)"
+RESOLVED_TARGET_REVISION="$(git rev-parse "$TARGET_REVISION")"
+if [ "$CURRENT_REVISION" = "$RESOLVED_TARGET_REVISION" ] && [ ! -e "$RETRY_FILE" ]; then
+    exit 0
+fi
 
-    if [ "$REMOTE_CHANGES" = true ] && [ "$LOCAL_CHANGES" = true ]; then
-        echo "local and remote changes found: stashing and pulling"
-        git stash
-        git reset --hard origin/main
-        if ! git stash pop; then
-            echo "could not apply local changes"
-            continue
-        fi
-        git add .
-        nix fmt .
-    elif [ "$REMOTE_CHANGES" = true ]; then
-        echo "remote changes found: pulling"
-        git reset --hard origin/main
-    elif [ "$LOCAL_CHANGES" = true ]; then
-        echo "local changes found"
-        git add .
-        nix fmt .
-    fi
+echo "updating to $RESOLVED_TARGET_REVISION"
+git reset --hard "$RESOLVED_TARGET_REVISION"
 
-    if [ "$REBUILD" = false ]; then
-        continue
-    fi
-
-    gprint "Updating"
-    if ! nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
-        RETRY_COUNT=$((RETRY_COUNT + 1))
-        if [ "$RETRY_COUNT" -ge 3 ]; then
-            if ! nixos-rebuild boot --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
-                bprint "Update failed"
-            else
-                gprint "Update successful, reboot required"
-            fi
-
-            RETRY_COUNT=0
-        fi
-    else
+gprint "Updating"
+touch "$RETRY_FILE"
+for attempt in 1 2 3; do
+    if nixos-rebuild switch --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
+        rm -f "$RETRY_FILE"
         gprint "Update successful"
-        RETRY_COUNT=0
+        exit 0
+    fi
+
+    if [ "$attempt" -lt 3 ]; then
+        sleep 1m
     fi
 done
+
+if nixos-rebuild boot --flake "/etc/nixos#${HOSTNAME}" --accept-flake-config; then
+    rm -f "$RETRY_FILE"
+    gprint "Update successful, reboot required"
+    exit 0
+fi
+
+bprint "Update failed"
+exit 1
