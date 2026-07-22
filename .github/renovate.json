@@ -9,6 +9,7 @@
 
   // repository
   "extends": ["config:recommended"],
+  "addLabels": ["dep"],
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
@@ -47,14 +48,24 @@
       "automerge": true
     },
     {
+      "matchManagers": ["nix"],
+      "addLabels": ["nix"]
+    },
+    {
       "matchManagers": ["custom.regex"],
       "matchDepTypes": ["image"],
       "groupName": "docker images",
+      "addLabels": ["docker"],
       "pinDigests": true
     },
     {
       "matchManagers": ["github-actions"],
-      "groupName": "github actions"
+      "groupName": "github actions",
+      "addLabels": ["actions"]
+    },
+    {
+      "matchManagers": ["npm"],
+      "addLabels": ["node"]
     },
     {
       "matchFileNames": ["modules/home-manager/opencode/package.json"],
