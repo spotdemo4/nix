@@ -263,7 +263,6 @@ in
 
         unitConfig = {
           After = "podman.socket";
-          BindsTo = "podman.socket";
           ReloadPropagatedFrom = "podman.socket";
         };
       };
