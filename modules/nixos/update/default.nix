@@ -81,7 +81,6 @@ in
     lib.mkIf cfg.enable {
       systemd.services.update = {
         description = "Update NixOS";
-        wantedBy = [ "multi-user.target" ];
         wants = [ "network-online.target" ];
         after = [ "network-online.target" ];
         serviceConfig = {

@@ -10,7 +10,8 @@ if [[ "${1:-}" == "--trigger" ]]; then
         exit 0
     fi
 
-    exec systemctl start "update@$revision.service"
+    echo "received update notification for revision: $revision"
+    exec systemctl start --no-block "update@$revision.service"
 fi
 
 exec ntfy subscribe "$NTFY_URL" "$0 --trigger"
