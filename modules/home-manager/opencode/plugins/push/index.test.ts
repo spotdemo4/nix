@@ -352,6 +352,8 @@ describe("push TUI plugin", () => {
       timeoutMs: gitTimeouts.push,
     });
     expect(prompts).toHaveLength(0);
+    expect(calls.some((call) => call.args[0] === "status")).toBe(false);
+    expect(calls.some((call) => call.args[0] === "log")).toBe(false);
     expect(toasts).toContainEqual({
       message: "Pushed main to origin/main",
       title: "Push",
@@ -441,6 +443,11 @@ describe("push TUI plugin", () => {
     expect(parts[0]?.command).toBeUndefined();
     expect(parts[0]?.prompt).toContain("Never use `--force`");
     expect(parts[0]?.prompt).toContain("Never use a bare `git push`");
+    expect(parts[0]?.prompt).toContain("origin/main");
+    expect(parts[0]?.prompt).toContain("refs/heads/main");
+    expect(parts[0]?.prompt).toContain("fetch first");
+    expect(parts[0]?.prompt).toContain("untrusted remote output");
+    expect(parts[0]?.prompt).toContain("symbolic branch");
     expect(toasts).toContainEqual({
       message: "the direct push failed; handed off to the build agent",
       title: "Push",
@@ -508,6 +515,29 @@ describe("push TUI plugin", () => {
     expect(parts[0]?.prompt).toContain("no supported configured upstream");
   });
 
+  test("redacts credentials from failed push diagnostics", async () => {
+    const { api, commands, prompts } = createApi();
+    const { run } = createRunner({
+      push: {
+        code: 1,
+        stderr:
+          "https://user:password@example.test/repo https://ghp_url_token@example.test/repo token=secret Authorization: Bearer bearer-secret\n",
+        stdout: "",
+      },
+    });
+    await register(api, run);
+
+    await commands[0]?.run();
+
+    const parts = prompts[0]?.input.parts as Array<Record<string, unknown>>;
+    const prompt = String(parts[0]?.prompt);
+    expect(prompt).not.toContain("password@example");
+    expect(prompt).not.toContain("ghp_url_token");
+    expect(prompt).not.toContain("token=secret");
+    expect(prompt).not.toContain("bearer-secret");
+    expect(prompt).toContain("[REDACTED]");
+  });
+
   test("reports an empty workspace without running Git", async () => {
     const { api, commands, prompts, toasts } = createApi();
     const { calls, run } = createRunner();
@@ -522,6 +552,37 @@ describe("push TUI plugin", () => {
       title: "Push",
       variant: "warning",
     });
+  });
+
+  test("reuses recent repository discovery results", async () => {
+    const { api, commands } = createApi();
+    const { run } = createRunner();
+    let discoveries = 0;
+    await registerPushPlugin(api as never, undefined, run, async () => {
+      discoveries += 1;
+      return [repository()];
+    });
+
+    await commands[0]?.run();
+    await commands[0]?.run();
+
+    expect(discoveries).toBe(1);
+  });
+
+  test("invalidates repository discovery when workspace files change", async () => {
+    const { api, commands, emit } = createApi();
+    const { run } = createRunner();
+    let discoveries = 0;
+    await registerPushPlugin(api as never, undefined, run, async () => {
+      discoveries += 1;
+      return [repository()];
+    });
+
+    await commands[0]?.run();
+    emit("file.watcher.updated", { event: "change", file: "/workspace/.gitmodules" });
+    await commands[0]?.run();
+
+    expect(discoveries).toBe(2);
   });
 
   test("submits a fallback if the session became busy", async () => {

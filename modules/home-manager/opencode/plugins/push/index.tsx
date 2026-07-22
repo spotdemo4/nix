@@ -6,6 +6,7 @@ import { createSignal, onCleanup, Show } from "solid-js";
 import {
   discoverGitRepositories,
   selectGitWorkspace,
+  type GitRepository,
   type RepositoryDiscoveryOptions,
 } from "../git-status/core";
 import {
@@ -17,6 +18,7 @@ import {
 } from "./core";
 
 const PLUGIN_ID = "push";
+const REPOSITORY_CACHE_TTL_MS = 30_000;
 
 type RepositoryDiscoverer = (
   workspace: string,
@@ -201,6 +203,7 @@ export async function registerPushPlugin(
   const runGit = runner ?? createGitRunner(binary);
   const client = new PushStatusClient();
   const workspace = selectGitWorkspace(api.state.path.directory, api.state.path.worktree);
+  let repositoryCache: { expires: number; repositories: GitRepository[] } | undefined;
 
   const unregister = [
     api.keymap.registerLayer({
@@ -247,11 +250,22 @@ export async function registerPushPlugin(
             const signal = AbortSignal.any([api.lifecycle.signal, client.signal(sessionID)!]);
             let results: RepositoryPushOutcome[] = [];
             try {
-              const repositories = await discover(workspace, {
-                allowPartial: false,
-                gitBinary: binary,
-                signal,
-              });
+              let repositories: GitRepository[];
+              if (repositoryCache && repositoryCache.expires > Date.now()) {
+                repositories = repositoryCache.repositories;
+              } else {
+                repositories = await discover(workspace, {
+                  allowPartial: false,
+                  gitBinary: binary,
+                  signal,
+                });
+                if (!signal.aborted) {
+                  repositoryCache = {
+                    expires: Date.now() + REPOSITORY_CACHE_TTL_MS,
+                    repositories,
+                  };
+                }
+              }
               if (api.lifecycle.signal.aborted || client.isDisposed()) return;
               if (signal.aborted) {
                 api.ui.toast({
@@ -353,8 +367,14 @@ export async function registerPushPlugin(
         },
       ],
     }),
-    api.event.on("file.edited", (event) => client.cancelFile(event.properties.file)),
-    api.event.on("file.watcher.updated", (event) => client.cancelFile(event.properties.file)),
+    api.event.on("file.edited", (event) => {
+      repositoryCache = undefined;
+      client.cancelFile(event.properties.file);
+    }),
+    api.event.on("file.watcher.updated", (event) => {
+      repositoryCache = undefined;
+      client.cancelFile(event.properties.file);
+    }),
   ];
 
   api.lifecycle.onDispose(() => {
