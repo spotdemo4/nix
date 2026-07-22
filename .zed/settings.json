@@ -143,6 +143,20 @@
           }
         }
       ]
+    },
+    "TOML": {
+      "format_on_save": "on",
+      "language_servers": ["tombi", "oxfmt"],
+      "prettier": {
+        "allowed": false
+      },
+      "formatter": [
+        {
+          "language_server": {
+            "name": "oxfmt"
+          }
+        }
+      ]
     }
   }
 }
