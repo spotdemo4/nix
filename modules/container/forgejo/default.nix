@@ -84,6 +84,7 @@ in
         pull = "missing";
         volumes = [
           "${volumes.forgejo.ref}:/data"
+          "${volumes.forgejo-repo-archive.ref}:/data/gitea/repo-archive"
           "${./app.ini}:/data/gitea/conf/app.ini"
           "${cfg.localtimePath}:/etc/localtime:ro"
         ];
@@ -121,7 +122,15 @@ in
         };
       };
 
-      volumes.forgejo = { };
+      volumes = {
+        forgejo = { };
+        forgejo-repo-archive.volumeConfig = {
+          copy = false;
+          device = "tmpfs";
+          type = "tmpfs";
+          options = "size=2G,uid=1000,gid=1000,mode=0750,nodev,nosuid,noexec";
+        };
+      };
       networks.forgejo = { };
     };
   };
