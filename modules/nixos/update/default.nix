@@ -71,21 +71,11 @@ in
           pkgs.systemd
         ];
 
-        text = ''
-          if [[ "''${1:-}" == "--trigger" ]]; then
-            revision="''${NTFY_MESSAGE:-}"
-
-            if [[ ! "$revision" =~ ^[0-9a-f]{40}$ ]]; then
-              echo "ignoring invalid revision: $revision" >&2
-              exit 0
-            fi
-
-            exec systemctl start "update@$revision.service"
-          fi
-
-          export UPDATE_LISTENER="$0"
-          exec ntfy subscribe ${lib.escapeShellArg cfg.ntfyUrl} ${lib.escapeShellArg ''"$UPDATE_LISTENER" --trigger''}
-        '';
+        text = builtins.readFile (
+          pkgs.replaceVars ./update-listener.sh {
+            ntfyUrl = lib.escapeShellArg cfg.ntfyUrl;
+          }
+        );
       };
     in
     lib.mkIf cfg.enable {
