@@ -77,8 +77,21 @@ in
           }
         );
       };
+
+      updateLogs = pkgs.writeShellApplication {
+        name = "update-logs";
+        runtimeInputs = [ pkgs.systemd ];
+        text = ''
+          exec journalctl --boot --pager-end \
+            --identifier update \
+            --identifier update-listener \
+            "$@"
+        '';
+      };
     in
     lib.mkIf cfg.enable {
+      environment.systemPackages = [ updateLogs ];
+
       systemd.services.update = {
         description = "Update NixOS";
         wants = [ "network-online.target" ];
