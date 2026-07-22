@@ -25,6 +25,16 @@ jobs:
       - name: Run checks
         run: nix flake check
 
+  notify:
+    if: ${{ github.event_name == 'push' }}
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish update
+        env:
+          REVISION: ${{ github.sha }}
+        run: curl --fail-with-body --retry 3 --data-binary "$REVISION" https://ntfy.sh/spotdemo4-nix-main
+
   build:
     if: ${{ github.event_name != 'push' }}
     runs-on: ubuntu-latest
