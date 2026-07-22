@@ -9,6 +9,7 @@
     "html": true,
     "ini": true,
     "kotlin": true,
+    "log": true,
     "lua": true,
     "neocmake": true,
     "nix": true,

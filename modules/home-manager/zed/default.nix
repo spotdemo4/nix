@@ -12,6 +12,7 @@
         "html"
         "ini"
         "kotlin"
+        "log"
         "lua"
         "neocmake"
         "nix"
