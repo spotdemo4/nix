@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  self,
   ...
 }:
 let
@@ -43,7 +42,7 @@ in
         ];
 
         text = builtins.readFile (
-          pkgs.replaceVars (self + /scripts/update.sh) {
+          pkgs.replaceVars ./update.sh {
             hostname = cfg.hostname;
             user = cfg.user;
           }
