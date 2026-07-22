@@ -1,0 +1,14 @@
+name: Build Nix dependencies
+description: Build uncached dependencies without realizing NixOS system closures
+
+inputs:
+  flake:
+    description: Flake reference containing nixosConfigurations
+    default: "."
+  plan-only:
+    description: Report uncached dependencies without building them
+    default: "false"
+
+runs:
+  using: node24
+  main: index.mjs
