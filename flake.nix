@@ -15,45 +15,79 @@
   };
 
   inputs = {
-    systems.url = "github:spotdemo4/systems";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    systems = {
+      type = "github";
+      owner = "spotdemo4";
+      repo = "systems";
+      rev = "7759b373a7b0119835939988964a9b49bc3023af";
+    };
+    nixpkgs = {
+      type = "git";
+      url = "https://github.com/nixos/nixpkgs";
+      ref = "nixos-unstable";
+      rev = "61b7c44c4073f0b827768aff0049561b5110ea5a";
+      shallow = true;
+    };
 
     # quadlet nix
-    quadlet-nix.url = "github:SEIAROTg/quadlet-nix";
+    quadlet-nix = {
+      type = "github";
+      owner = "SEIAROTg";
+      repo = "quadlet-nix";
+      rev = "f1652b490b812c4e0b2a36565cdbedf87f35e438";
+    };
 
     # determinate nix
     determinate = {
-      url = "github:DeterminateSystems/determinate";
+      type = "github";
+      owner = "DeterminateSystems";
+      repo = "determinate";
+      rev = "e2a0eb345bf5d9c2ac0d2df26907e0881b99d6a3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # home manager
     home-manager = {
-      url = "github:nix-community/home-manager";
+      type = "github";
+      owner = "nix-community";
+      repo = "home-manager";
+      rev = "39411a8e12a5526d992e65bc7e3dc9a4414d6713";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # nix user repository
     nur = {
-      url = "github:nix-community/NUR";
+      type = "github";
+      owner = "nix-community";
+      repo = "NUR";
+      rev = "4632d28a9793b8f6750a5f7bee1118721c42521e";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # catppuccin nix
     catppuccin = {
-      url = "github:catppuccin/nix";
+      type = "github";
+      owner = "catppuccin";
+      repo = "nix";
+      rev = "673f730d0fc8db3468c51575f1d3d777cc55e51f";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # niks3
     niks3 = {
-      url = "github:Mic92/niks3";
+      type = "github";
+      owner = "Mic92";
+      repo = "niks3";
+      rev = "c887e471f7eceeae9c4092442f5621c60a653cbc";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # nix vscode extensions
     nix4vscode = {
-      url = "github:nix-community/nix4vscode";
+      type = "github";
+      owner = "nix-community";
+      repo = "nix4vscode";
+      rev = "af47d104650eb5f0a4ca770591040eef4dfaaa9c";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -62,7 +96,10 @@
 
     # trev's repository
     trevpkgs = {
-      url = "github:spotdemo4/trevpkgs";
+      type = "github";
+      owner = "spotdemo4";
+      repo = "trevpkgs";
+      rev = "be292fb497e3afccdc70fe50af1aa02699f0c597";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -71,7 +108,10 @@
 
     # zen browser
     zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
+      type = "github";
+      owner = "0xc000022070";
+      repo = "zen-browser-flake";
+      rev = "7202b917826e2e335d9935c3a943ae18681056b1";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
@@ -80,7 +120,10 @@
 
     # age nix
     agenix = {
-      url = "github:ryantm/agenix";
+      type = "github";
+      owner = "ryantm";
+      repo = "agenix";
+      rev = "b027ee29d959fda4b60b57566d64c98a202e0feb";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -90,7 +133,10 @@
 
     # trevbar
     trevbar = {
-      url = "github:spotdemo4/trevbar";
+      type = "github";
+      owner = "spotdemo4";
+      repo = "trevbar";
+      rev = "aa37b52a436b1aafff5458d0206a87963fe3f4c2";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
