@@ -167,12 +167,6 @@
             ];
           };
 
-          check = pkgs.mkShell {
-            packages = with pkgs; [
-              nix-fast-build
-            ];
-          };
-
           update = pkgs.mkShell {
             packages = with pkgs; [
               renovate
@@ -198,6 +192,7 @@
               || file.hasExt "yaml"
               || file.hasExt "toml"
               || file.hasExt "md"
+              || file.hasExt "mjs"
               || file.hasExt "ts"
               || file.hasExt "tsx";
             packages = with pkgs; [
@@ -219,8 +214,19 @@
             '';
           };
 
+          javascript = {
+            root = ./.github/actions/build;
+            packages = with pkgs; [
+              nodejs_24
+            ];
+            script = ''
+              node --test index.test.mjs
+            '';
+          };
+
           actions = {
-            root = ./.github/workflows;
+            root = ./.github;
+            filter = file: file.hasExt "yaml" || file.hasExt "yml";
             packages = with pkgs; [
               action-validator
               zizmor
