@@ -14,6 +14,11 @@ in
   determinate.enable = false;
   documentation.enable = false;
 
+  catppuccin = {
+    enable = false;
+    autoEnable = false;
+  };
+
   environment = {
     defaultPackages = lib.mkForce [ ];
     systemPackages = with pkgs; [
