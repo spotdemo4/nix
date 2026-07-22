@@ -47,12 +47,6 @@
       "automerge": true
     },
     {
-      "matchManagers": ["nix"],
-      "groupName": "nix inputs",
-      "prHourlyLimit": 0,
-      "prConcurrentLimit": 0
-    },
-    {
       "matchManagers": ["custom.regex"],
       "matchDepTypes": ["image"],
       "groupName": "docker images",
