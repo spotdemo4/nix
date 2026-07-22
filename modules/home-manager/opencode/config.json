@@ -9,7 +9,10 @@
   "plugin": ["./plugins/commit/index.ts", "./plugins/direnv/index.ts"],
   "agent": {
     "title": {
-      "model": "openai/gpt-5.3-codex-spark"
+      "model": "openai/gpt-5.3-codex-spark",
+      "options": {
+        "reasoningEffort": "low"
+      }
     },
     "summary": {
       "model": "openai/gpt-5.3-codex-spark"
