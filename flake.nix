@@ -42,7 +42,7 @@
       type = "github";
       owner = "DeterminateSystems";
       repo = "determinate";
-      rev = "e2a0eb345bf5d9c2ac0d2df26907e0881b99d6a3";
+      rev = "73b3bdb962a070aa088ac310e606ff760bcc0cf7";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
