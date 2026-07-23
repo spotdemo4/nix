@@ -101,6 +101,15 @@
       }
     }
   },
+  "terminal": {
+    "dock": "right"
+  },
+  "outline_panel": {
+    "button": false
+  },
+  "collaboration_panel": {
+    "button": false
+  },
   "agent_servers": {
     "codex-acp": {
       "type": "registry",
