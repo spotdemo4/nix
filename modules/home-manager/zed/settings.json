@@ -103,7 +103,8 @@
     }
   },
   "terminal": {
-    "dock": "right"
+    "dock": "right",
+    "font_family": "DejaVu Sans Mono"
   },
   "outline_panel": {
     "button": false
