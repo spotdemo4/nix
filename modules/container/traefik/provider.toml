@@ -20,8 +20,8 @@ burst = 200
 
 [http.middlewares.crowdsec.plugin.bouncer]
 enabled = true
-defaultDecisionSeconds = 60
-crowdsecMode = "stream"
+defaultDecisionSeconds = 15
+crowdsecMode = "live"
 crowdsecLapiKeyFile = "/secrets/crowdsec/lapi_key"
 # crowdsecLapiHost is supplied by default.nix.
 crowdsecLapiScheme = "http"
@@ -43,10 +43,10 @@ removeHeader = true
 usersFile = "/secrets/user-admin"
 
 [http.middlewares.secure.chain]
-middlewares = ["security-headers", "rate-limit", "crowdsec"]
+middlewares = ["security-headers", "rate-limit"]
 
 [http.middlewares.secure-trev.chain]
-middlewares = ["rate-limit", "crowdsec", "auth-trev"]
+middlewares = ["rate-limit", "auth-trev"]
 
 [http.middlewares.secure-admin.chain]
-middlewares = ["rate-limit", "crowdsec", "auth-admin"]
+middlewares = ["rate-limit", "auth-admin"]
