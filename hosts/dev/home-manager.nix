@@ -116,7 +116,7 @@ in
             print -n | gpg --quiet --yes --local-user 3AAF87E0B1A2AC36 --detach-sign --output /dev/null
           fi
 
-          if [[ -z "$TMUX" ]]; then
+          if [[ -z "$TMUX" && "$PWD" == "$HOME" ]]; then
             "${tmuxSessionPicker}/bin/tmux-session-picker"
           fi
         fi
