@@ -29,6 +29,7 @@
     "light": "Catppuccin Mocha (sky) - No Italics"
   },
   "icon_theme": "Catppuccin Mocha",
+  "resize_all_panels_in_dock": ["left", "right"],
   "project_panel": {
     "sort_mode": "files_first",
     "dock": "left"
