@@ -34,7 +34,7 @@
     "dock": "left"
   },
   "git_panel": {
-    "dock": "left"
+    "dock": "right"
   },
   "ssh_connections": [
     {
