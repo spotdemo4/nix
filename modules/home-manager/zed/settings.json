@@ -67,14 +67,19 @@
     "project": "debug"
   },
   "agent": {
-    "dock": "bottom",
+    "dock": "right",
     "tool_permissions": {
       "default": "allow"
     },
+    "commit_message_model": {
+      "provider": "openai",
+      "model": "gpt-5.3-codex-spark"
+    },
+    "commit_message_instructions": "Use the Conventional Commits format: <type>(<scope>): <description>.",
     "favorite_models": [
       {
         "provider": "openrouter",
-        "model": "moonshotai/kimi-k2.6"
+        "model": "moonshotai/kimi-k3"
       },
       {
         "provider": "openrouter",
@@ -101,19 +106,19 @@
       "type": "registry",
       "default_config_options": {
         "mode": "auto",
-        "model": "gpt-5.5",
-        "reasoning_effort": "xhigh"
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "high"
       }
     },
     "opencode": {
       "type": "registry",
       "default_config_options": {
         "mode": "build",
-        "effort": "xhigh",
-        "model": "openai/gpt-5.6-sol-fast"
+        "effort": "high",
+        "model": "openai/gpt-5.6-sol"
       },
       "favorite_config_option_values": {
-        "model": ["openai/gpt-5.6-sol-fast", "openai/gpt-5.5-fast"]
+        "model": ["openai/gpt-5.6-sol", "openai/gpt-5.5-fast"]
       }
     }
   },
