@@ -8,6 +8,7 @@
     "context": "Workspace",
     "bindings": {
       "cmd-alt-g": ["task::Spawn", { "task_name": "Refresh Git Index" }],
+      "ctrl-shift-a": "agent::ToggleFocus",
       "ctrl-shift-t": "terminal_panel::Toggle"
     }
   }
