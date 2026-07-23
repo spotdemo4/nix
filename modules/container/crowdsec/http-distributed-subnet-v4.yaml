@@ -1,0 +1,28 @@
+type: leaky
+name: trev/http-distributed-subnet-v4
+description: Detect distributed HTTP traffic from an IPv4 /24
+filter: |
+  "source_ip" in evt.Meta &&
+  evt.Meta.service == "http" &&
+  IsIPV4(evt.Meta.source_ip) &&
+  !IpInRange(evt.Meta.source_ip, "10.0.0.0/8") &&
+  !IpInRange(evt.Meta.source_ip, "172.16.0.0/12") &&
+  !IpInRange(evt.Meta.source_ip, "192.168.0.0/16") &&
+  !IpInRange(evt.Meta.source_ip, "127.0.0.0/8")
+groupby: IpToRange(evt.Meta.source_ip, "24")
+distinct: evt.Meta.source_ip
+capacity: 10
+leakspeed: 30s
+blackhole: 30m
+scope:
+  type: Range
+  expression: IpToRange(evt.Meta.source_ip, "24")
+labels:
+  remediation: true
+  classification:
+    - attack.T1498
+  confidence: 2
+  spoofable: 0
+  service: http
+  behavior: "http:distributed-crawl"
+  label: Distributed HTTP traffic from an IPv4 subnet

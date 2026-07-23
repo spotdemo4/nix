@@ -79,6 +79,8 @@ in
           "${cfg.atticParserFile}:/etc/crowdsec/parsers/s02-enrich/attic.yaml:ro"
           "${cfg.garageParserFile}:/etc/crowdsec/parsers/s02-enrich/garage.yaml:ro"
           "${cfg.niks3ParserFile}:/etc/crowdsec/parsers/s02-enrich/niks3.yaml:ro"
+          "${./http-distributed-subnet-v4.yaml}:/etc/crowdsec/scenarios/trev-http-distributed-subnet-v4.yaml:ro"
+          "${./http-distributed-subnet-v6.yaml}:/etc/crowdsec/scenarios/trev-http-distributed-subnet-v6.yaml:ro"
         ];
         publishPorts = [
           "6061:8080" # api

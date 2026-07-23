@@ -1,3 +1,12 @@
+name: distributed_http_range_remediation
+filters:
+  - Alert.Remediation == true && Alert.GetScope() == "Range" && Alert.GetScenario() in ["trev/http-distributed-subnet-v4", "trev/http-distributed-subnet-v6"]
+decisions:
+  - type: captcha
+    scope: Range
+    duration: 30m
+on_success: break
+---
 name: captcha_remediation
 filters:
   - Alert.Remediation == true && Alert.GetScope() == "Ip" && Alert.GetScenario() contains "http"

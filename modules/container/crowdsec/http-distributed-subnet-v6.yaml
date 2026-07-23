@@ -1,0 +1,27 @@
+type: leaky
+name: trev/http-distributed-subnet-v6
+description: Detect distributed HTTP traffic from an IPv6 /64
+filter: |
+  "source_ip" in evt.Meta &&
+  evt.Meta.service == "http" &&
+  IsIPV6(evt.Meta.source_ip) &&
+  !IpInRange(evt.Meta.source_ip, "::1/128") &&
+  !IpInRange(evt.Meta.source_ip, "fc00::/7") &&
+  !IpInRange(evt.Meta.source_ip, "fe80::/10")
+groupby: IpToRange(evt.Meta.source_ip, "64")
+distinct: evt.Meta.source_ip
+capacity: 10
+leakspeed: 30s
+blackhole: 30m
+scope:
+  type: Range
+  expression: IpToRange(evt.Meta.source_ip, "64")
+labels:
+  remediation: true
+  classification:
+    - attack.T1498
+  confidence: 2
+  spoofable: 0
+  service: http
+  behavior: "http:distributed-crawl"
+  label: Distributed HTTP traffic from an IPv6 subnet
