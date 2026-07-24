@@ -17,7 +17,7 @@
     '';
 
     xdg.configFile."hypr/hyprtoolkit.conf".text = ''
-      background = rgba(0, 0, 0, 0.4)
+      background = rgba(181818cc)
       accent = rgba(33ccffee)
       accent_secondary = rgba(00ff99ee)
     '';
