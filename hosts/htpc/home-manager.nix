@@ -71,6 +71,7 @@
     home-manager.enable = true;
     kitty = {
       enable = true;
+      font.name = "PaperMono Nerd Font Mono";
       keybindings = {
         "--allow-fallback=shifted,ascii ctrl+shift+p" = "send_key ctrl+f12";
         "shift+enter" = "send_text all \\x1b[13;2u";

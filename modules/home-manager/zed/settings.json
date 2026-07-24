@@ -1,5 +1,5 @@
 {
-  "buffer_font_family": "Fira Code",
+  "buffer_font_family": "PaperMono Nerd Font Mono",
   "cli_default_open_behavior": "new_window",
   "auto_install_extensions": {
     "bash": true,
@@ -104,7 +104,7 @@
   },
   "terminal": {
     "dock": "right",
-    "font_family": "DejaVu Sans Mono"
+    "font_family": "PaperMono Nerd Font Mono"
   },
   "outline_panel": {
     "button": false
