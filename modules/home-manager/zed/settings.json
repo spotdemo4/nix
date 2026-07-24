@@ -69,6 +69,7 @@
   },
   "agent": {
     "dock": "right",
+    "flexible": false,
     "tool_permissions": {
       "default": "allow"
     },
@@ -104,6 +105,7 @@
   },
   "terminal": {
     "dock": "right",
+    "flexible": false,
     "font_family": "PaperMono Nerd Font Mono"
   },
   "outline_panel": {
