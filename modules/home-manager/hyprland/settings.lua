@@ -1,5 +1,5 @@
 local mod = "SUPER"
-local menu = "wofi --show drun"
+local menu = "hyprlauncher"
 local terminal = "konsole"
 local screenshot = "grimblast --freeze copy area"
 
@@ -7,6 +7,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("nm-applet --indicator")
     hl.exec_cmd("blueman-applet")
     hl.exec_cmd("trevbar")
+    hl.exec_cmd("hyprlauncher -d")
 end)
 
 hl.env("QT_QPA_PLATFORMTHEME", "qt5ct")

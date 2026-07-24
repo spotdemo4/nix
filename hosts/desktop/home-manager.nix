@@ -15,6 +15,7 @@
     (self + /modules/home-manager/gpg)
     (self + /modules/home-manager/gtk)
     (self + /modules/home-manager/hypridle)
+    (self + /modules/home-manager/hyprlauncher)
     (self + /modules/home-manager/hyprland)
     (self + /modules/home-manager/hyprlock)
     (self + /modules/home-manager/hyprpaper)
@@ -27,7 +28,6 @@
     (self + /modules/home-manager/steam)
     (self + /modules/home-manager/vscode)
     (self + /modules/home-manager/waybar)
-    (self + /modules/home-manager/wofi)
     (self + /modules/home-manager/zed)
     (self + /modules/home-manager/zen)
   ];
@@ -159,6 +159,7 @@
       discord.enable = true;
       gpg.enable = true;
       gtk.enable = true;
+      hyprlauncher.enable = true;
       hyprland.enable = true;
       hyprlock.enable = true;
       hyprshutdown.enable = true;
@@ -169,7 +170,6 @@
       steam.enable = true;
       vscode.enable = true;
       waybar.enable = true;
-      wofi.enable = true;
       zed.enable = true;
       zen.enable = true;
     };
