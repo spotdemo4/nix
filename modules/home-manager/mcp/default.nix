@@ -15,6 +15,7 @@ let
   secretPath = name: config.trev.mcp.secretPaths.${name} or config.age.secrets.${name}.path;
   chromeDevtoolsArgs = [
     "--no-usage-statistics"
+    "--isolated"
     "--executable-path=${pkgs.chromium}/bin/chromium"
   ]
   ++ lib.optional config.trev.mcp.chromeHeadless "--headless=true";
