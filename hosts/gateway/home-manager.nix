@@ -1,8 +1,13 @@
-{ inputs, ... }:
+{
+  inputs,
+  self,
+  ...
+}:
 {
   imports = [
     inputs.catppuccin.homeModules.catppuccin
     inputs.agenix.homeManagerModules.default
+    (self + /modules/home-manager/starship)
   ];
 
   home = {
@@ -37,14 +42,6 @@
       enableZshIntegration = true;
     };
     home-manager.enable = true;
-    starship = {
-      enable = true;
-      enableZshIntegration = true;
-      settings = {
-        container.disabled = true;
-        command_timeout = 3600000;
-      };
-    };
     zoxide = {
       enable = true;
       enableZshIntegration = true;
@@ -71,11 +68,9 @@
       enable = true;
       flavor = "mocha";
     };
-    starship = {
-      enable = true;
-      flavor = "mocha";
-    };
   };
+
+  trev.programs.starship.enable = true;
 
   # https://github.com/nix-community/home-manager/issues/7935
   manual.manpages.enable = false;

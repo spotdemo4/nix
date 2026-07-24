@@ -23,6 +23,7 @@
     (self + /modules/home-manager/mods)
     (self + /modules/home-manager/opencode)
     (self + /modules/home-manager/ssh)
+    (self + /modules/home-manager/starship)
     (self + /modules/home-manager/steam)
     (self + /modules/home-manager/vscode)
     (self + /modules/home-manager/waybar)
@@ -79,14 +80,6 @@
       settings.auto_reload_config = -1;
     };
     mpv.enable = true;
-    starship = {
-      enable = true;
-      enableZshIntegration = true;
-      settings = {
-        container.disabled = true;
-        command_timeout = 3600000;
-      };
-    };
     zoxide = {
       enable = true;
       enableZshIntegration = true;
@@ -154,10 +147,6 @@
       accent = "sky";
       flavor = "mocha";
     };
-    starship = {
-      enable = true;
-      flavor = "mocha";
-    };
   };
 
   trev = {
@@ -176,6 +165,7 @@
       mods.enable = true;
       opencode.enable = true;
       ssh.enable = true;
+      starship.enable = true;
       steam.enable = true;
       vscode.enable = true;
       waybar.enable = true;

@@ -32,6 +32,7 @@ in
     (self + /modules/home-manager/mcp)
     (self + /modules/home-manager/opencode)
     (self + /modules/home-manager/ssh)
+    (self + /modules/home-manager/starship)
   ];
 
   home = {
@@ -71,14 +72,6 @@ in
       enableZshIntegration = true;
     };
     home-manager.enable = true;
-    starship = {
-      enable = true;
-      enableZshIntegration = true;
-      settings = {
-        container.disabled = true;
-        command_timeout = 3600000;
-      };
-    };
     tmux = {
       enable = true;
       baseIndex = 1;
@@ -140,10 +133,6 @@ in
       enable = true;
       flavor = "mocha";
     };
-    starship = {
-      enable = true;
-      flavor = "mocha";
-    };
     tmux = {
       enable = true;
       flavor = "mocha";
@@ -159,6 +148,7 @@ in
       codex.enable = true;
       gpg.enable = true;
       opencode.enable = true;
+      starship.enable = true;
       ssh = {
         enable = true;
         proxyJump = null;
