@@ -15,7 +15,10 @@
 
   environment.systemPackages = with pkgs; [
     fastfetch
-    ffmpeg
+    (pkgs.ffmpeg.override {
+      ffmpegVariant = "headless";
+      withVpl = true;
+    })
     iperf
     kitty
     ncdu
