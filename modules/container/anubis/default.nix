@@ -120,8 +120,7 @@ in
               BIND = ":8080";
               ED25519_PRIVATE_KEY_HEX_FILE = "/run/secrets/anubis-signing-key";
               POLICY_FNAME = "/etc/anubis/policy.yaml";
-              # Anubis' Traefik integration uses this externally routed prefix for challenges.
-              PUBLIC_URL = "https://${instance.domain}/.within.website/x/cmd/anubis";
+              PUBLIC_URL = "https://${instance.domain}";
               REDIRECT_DOMAINS = instance.domain;
               TARGET = " ";
             };
