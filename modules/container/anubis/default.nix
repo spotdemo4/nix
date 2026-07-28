@@ -145,7 +145,10 @@ in
             networks = [
               networks.${instance.networkName}.ref
             ];
-            healthCmd = "anubis --healthcheck";
+            healthCmd = builtins.toJSON [
+              "anubis"
+              "--healthcheck"
+            ];
             healthInterval = "1m";
             healthTimeout = "10s";
             healthStartPeriod = "5s";
