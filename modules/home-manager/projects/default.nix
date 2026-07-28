@@ -31,6 +31,22 @@ in
           path = "~/dev/astal";
         }
         {
+          name = "bumper";
+          path = "~/dev/bumper";
+        }
+        {
+          name = "codex-action";
+          path = "~/dev/codex-action";
+        }
+        {
+          name = "codex-commit";
+          path = "~/dev/codex-commit";
+        }
+        {
+          name = "DuckMetrics";
+          path = "~/dev/DuckMetrics";
+        }
+        {
           name = "flake-release";
           path = "~/dev/flake-release";
         }
@@ -47,12 +63,28 @@ in
           path = "~/dev/nix-init";
         }
         {
+          name = "nixaws";
+          path = "~/dev/nixaws";
+        }
+        {
           name = "oxc-zed";
           path = "~/dev/oxc-zed";
         }
         {
           name = "pangram-chrome";
           path = "~/dev/pangram-chrome";
+        }
+        {
+          name = "rsync-action";
+          path = "~/dev/rsync-action";
+        }
+        {
+          name = "serialization-bench";
+          path = "~/dev/serialization-bench";
+        }
+        {
+          name = "stack";
+          path = "~/dev/stack";
         }
         {
           name = "template/cpp";
