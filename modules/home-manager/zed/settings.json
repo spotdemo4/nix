@@ -64,7 +64,7 @@
     },
     "commit_message_model": {
       "provider": "openai",
-      "model": "gpt-5.3-codex-spark"
+      "model": "gpt-5.6-luna"
     },
     "commit_message_instructions": "Use the Conventional Commits format: <type>(<scope>): <description>.",
     "favorite_models": [
