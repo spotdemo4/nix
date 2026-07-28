@@ -21,6 +21,7 @@
     ncdu
     nmap
     traceroute
+    trev.libvmaf
     unzip
     wget
     yt-dlp
