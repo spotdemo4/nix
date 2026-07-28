@@ -37,17 +37,6 @@
   "git_panel": {
     "dock": "right"
   },
-  "ssh_connections": [
-    {
-      "host": "dev",
-      "nickname": "dev",
-      "projects": [
-        { "paths": ["~/dev/nix"] },
-        { "paths": ["~/dev/TrevRPC"] },
-        { "paths": ["~/dev/nix-fix-hash"] }
-      ]
-    }
-  ],
   "edit_predictions": {
     "provider": "zed"
   },

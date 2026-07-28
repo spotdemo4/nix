@@ -24,6 +24,7 @@
     (self + /modules/home-manager/mcp)
     (self + /modules/home-manager/mods)
     (self + /modules/home-manager/opencode)
+    (self + /modules/home-manager/projects)
     (self + /modules/home-manager/ssh)
     (self + /modules/home-manager/starship)
     (self + /modules/home-manager/steam)

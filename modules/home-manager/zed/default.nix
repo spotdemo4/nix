@@ -1,4 +1,16 @@
 { config, lib, ... }:
+let
+  projects = config.trev.projects;
+  settings = (builtins.fromJSON (builtins.readFile ./settings.json)) // {
+    ssh_connections = [
+      {
+        host = projects.sshHost;
+        nickname = projects.sshHost;
+        projects = map (project: { paths = [ project.path ]; }) projects.entries;
+      }
+    ];
+  };
+in
 {
   options.trev.programs.zed.enable = lib.mkEnableOption "Trev's Zed configuration";
 
@@ -30,12 +42,11 @@
       mutableUserSettings = false;
       mutableUserKeymaps = false;
       mutableUserTasks = false;
+      userSettings = settings;
       userKeymaps = builtins.fromJSON (builtins.readFile ./keymap.json);
       userTasks = builtins.fromJSON (builtins.readFile ./tasks.json);
       enableMcpIntegration = false;
     };
-
-    xdg.configFile."zed/settings.json".source = lib.mkForce ./settings.json;
 
     # Zed Theme
     catppuccin.zed = {
