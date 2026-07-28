@@ -24,7 +24,9 @@
     codex
     fastfetch
     feh
-    ffmpeg
+    (pkgs.ffmpeg.override {
+      withVpl = true;
+    })
     file
     file-roller
     gimp
