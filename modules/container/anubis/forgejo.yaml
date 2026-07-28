@@ -1,0 +1,15 @@
+bots:
+  - import: (data)/meta/default-config.yaml
+  - import: (data)/clients/git.yaml
+  - import: (data)/clients/go-get.yaml
+  - import: (data)/clients/docker-client.yaml
+  - import: (data)/apps/allow-api-routes.yaml
+
+status_codes:
+  CHALLENGE: 200
+  DENY: 403
+
+store:
+  backend: bbolt
+  parameters:
+    path: /data/anubis.bdb

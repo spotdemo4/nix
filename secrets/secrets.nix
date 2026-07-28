@@ -24,6 +24,7 @@ in
   "forgejo-jwt.age".publicKeys = keys.development ++ [ keys.files ];
   "forgejo-lfs.age".publicKeys = keys.development ++ [ keys.files ];
   "forgejo-token.age".publicKeys = keys.development ++ [ keys.files ];
+  "anubis-forgejo-signing-key.age".publicKeys = keys.local ++ [ keys.files ];
   "garage-admin.age".publicKeys = keys.local ++ [ keys.files ];
   "garage-metrics.age".publicKeys = keys.local ++ [ keys.files ];
   "garage-nix-key.age".publicKeys = keys.local ++ [ keys.files ];

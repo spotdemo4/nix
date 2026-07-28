@@ -8,6 +8,7 @@ let
 in
 {
   imports = [
+    (self + /modules/container/anubis)
     (self + /modules/container/copyparty)
     (self + /modules/container/forgejo)
     (self + /modules/container/garage)
@@ -31,6 +32,20 @@ in
   };
 
   trev.containers = {
+    anubis = {
+      enable = true;
+      instances.forgejo = {
+        enable = true;
+        domain = "trev.zip";
+        hostIp = "10.10.10.113";
+        policyFile = self + /modules/container/anubis/forgejo.yaml;
+        signingKeySecret = {
+          ref = "anubis-forgejo-signing-key";
+          file = self + /secrets/anubis-forgejo-signing-key.age;
+        };
+      };
+    };
+
     copyparty.enable = true;
     forgejo.enable = true;
     garage.enable = true;

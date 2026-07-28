@@ -116,7 +116,7 @@ in
             enable = true;
             http.routers.forgejo = {
               rule = "Host(`${cfg.domain}`)";
-              middlewares = "secure@file";
+              middlewares = "secure@file,forgejo-anubis@redis";
             };
           };
         };
