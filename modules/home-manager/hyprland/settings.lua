@@ -26,18 +26,17 @@ end
 start_project = function(editor_command, browser_command)
     project_launch_in_progress = true
 
-    local editor_subscription
-    editor_subscription = hl.on("window.open", function(editor_window)
-        local editor_class = string.lower(editor_window.class)
-        if editor_class ~= "dev.zed.zed" and editor_class ~= "zed" then
+    local browser_subscription
+    browser_subscription = hl.on("window.open", function(browser_window)
+        if not string.find(string.lower(browser_window.class), "helium", 1, true) then
             return
         end
 
-        editor_subscription:remove()
+        browser_subscription:remove()
 
         local grouped, group = pcall(function()
-            hl.dispatch(hl.dsp.group.toggle({ window = "address:" .. editor_window.address }))
-            return editor_window.group
+            hl.dispatch(hl.dsp.group.toggle({ window = "address:" .. browser_window.address }))
+            return browser_window.group
         end)
 
         if not grouped or group == nil then
@@ -46,46 +45,47 @@ start_project = function(editor_command, browser_command)
             return
         end
 
-        local browser_subscription
-        browser_subscription = hl.on("window.open", function(browser_window)
-            if not string.find(string.lower(browser_window.class), "helium", 1, true) then
+        local editor_subscription
+        editor_subscription = hl.on("window.open", function(editor_window)
+            local editor_class = string.lower(editor_window.class)
+            if editor_class ~= "dev.zed.zed" and editor_class ~= "zed" then
                 return
             end
 
-            browser_subscription:remove()
+            editor_subscription:remove()
 
             local added = pcall(function()
-                group:add(browser_window)
+                group:add(editor_window)
                 hl.dispatch(hl.dsp.focus({ window = "address:" .. editor_window.address }))
             end)
 
             if not added then
-                notify_project_error("Could not add Helium to the project window group")
+                notify_project_error("Could not add Zed to the project window group")
             end
 
             finish_project_launch()
         end)
 
         hl.timer(function()
-            if browser_subscription:is_active() then
-                browser_subscription:remove()
-                notify_project_error("Timed out waiting for Helium")
+            if editor_subscription:is_active() then
+                editor_subscription:remove()
+                notify_project_error("Timed out waiting for Zed")
                 finish_project_launch()
             end
         end, { timeout = 15000, type = "oneshot" })
 
-        hl.exec_cmd(browser_command)
+        hl.exec_cmd(editor_command)
     end)
 
     hl.timer(function()
-        if editor_subscription:is_active() then
-            editor_subscription:remove()
-            notify_project_error("Timed out waiting for Zed")
+        if browser_subscription:is_active() then
+            browser_subscription:remove()
+            notify_project_error("Timed out waiting for Helium")
             finish_project_launch()
         end
     end, { timeout = 15000, type = "oneshot" })
 
-    hl.exec_cmd(editor_command)
+    hl.exec_cmd(browser_command)
 end
 
 _G.open_project = function(editor_command, browser_command)
