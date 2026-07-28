@@ -2,6 +2,108 @@ local mod = "SUPER"
 local menu = "hyprlauncher"
 local terminal = "konsole"
 local screenshot = "grimblast --freeze copy area"
+local project_launch_in_progress = false
+local project_launch_queue = {}
+local start_project
+
+local function notify_project_error(message)
+    hl.notification.create({
+        text = message,
+        timeout = 5000,
+        icon = "error",
+    })
+end
+
+local function finish_project_launch()
+    project_launch_in_progress = false
+
+    local next_project = table.remove(project_launch_queue, 1)
+    if next_project ~= nil then
+        start_project(next_project.editor_command, next_project.browser_command)
+    end
+end
+
+start_project = function(editor_command, browser_command)
+    project_launch_in_progress = true
+
+    local editor_subscription
+    editor_subscription = hl.on("window.open", function(editor_window)
+        local editor_class = string.lower(editor_window.class)
+        if editor_class ~= "dev.zed.zed" and editor_class ~= "zed" then
+            return
+        end
+
+        editor_subscription:remove()
+
+        local grouped, group = pcall(function()
+            hl.dispatch(hl.dsp.group.toggle({ window = "address:" .. editor_window.address }))
+            return editor_window.group
+        end)
+
+        if not grouped or group == nil then
+            notify_project_error("Could not create the project window group")
+            finish_project_launch()
+            return
+        end
+
+        local browser_subscription
+        browser_subscription = hl.on("window.open", function(browser_window)
+            if not string.find(string.lower(browser_window.class), "helium", 1, true) then
+                return
+            end
+
+            browser_subscription:remove()
+
+            local added = pcall(function()
+                group:add(browser_window)
+                hl.dispatch(hl.dsp.focus({ window = "address:" .. editor_window.address }))
+            end)
+
+            if not added then
+                notify_project_error("Could not add Helium to the project window group")
+            end
+
+            finish_project_launch()
+        end)
+
+        hl.timer(function()
+            if browser_subscription:is_active() then
+                browser_subscription:remove()
+                notify_project_error("Timed out waiting for Helium")
+                finish_project_launch()
+            end
+        end, { timeout = 15000, type = "oneshot" })
+
+        hl.exec_cmd(browser_command)
+    end)
+
+    hl.timer(function()
+        if editor_subscription:is_active() then
+            editor_subscription:remove()
+            notify_project_error("Timed out waiting for Zed")
+            finish_project_launch()
+        end
+    end, { timeout = 15000, type = "oneshot" })
+
+    hl.exec_cmd(editor_command)
+end
+
+_G.open_project = function(editor_command, browser_command)
+    if project_launch_in_progress then
+        table.insert(project_launch_queue, {
+            editor_command = editor_command,
+            browser_command = browser_command,
+        })
+        hl.notification.create({
+            text = "Project queued",
+            timeout = 3000,
+            icon = "info",
+        })
+        return
+    end
+
+    start_project(editor_command, browser_command)
+end
 
 hl.on("hyprland.start", function()
     hl.exec_cmd("nm-applet --indicator")
