@@ -25,7 +25,6 @@ in
 
   environment.systemPackages = with pkgs; [
     attic-client
-    claude-code
     codex
     fastfetch
     ffmpeg

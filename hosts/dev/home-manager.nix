@@ -27,6 +27,7 @@ in
   imports = [
     inputs.catppuccin.homeModules.catppuccin
     inputs.agenix.homeManagerModules.default
+    (self + /modules/home-manager/cliproxyapi)
     (self + /modules/home-manager/codex)
     (self + /modules/home-manager/gpg)
     (self + /modules/home-manager/mcp)
@@ -153,6 +154,10 @@ in
         enable = true;
         proxyJump = null;
       };
+    };
+    services.cliproxyapi = {
+      enable = true;
+      claude.enable = true;
     };
   };
 
