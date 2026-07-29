@@ -1,4 +1,7 @@
 {
+  "prettier": {
+    "allowed": false
+  },
   "lsp": {
     "nixd": {
       "settings": {
@@ -12,6 +15,9 @@
           "home-manager": {
             "expr": "(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.desktop.options.home-manager.users.type.getSubOptions []"
           }
+        },
+        "formatting": {
+          "command": ["nixfmt"]
         }
       }
     },
@@ -41,12 +47,20 @@
     }
   },
   "languages": {
+    "Nix": {
+      "format_on_save": "on",
+      "language_servers": ["nixd"],
+      "formatter": [
+        {
+          "language_server": {
+            "name": "nixd"
+          }
+        }
+      ]
+    },
     "TypeScript": {
       "format_on_save": "on",
       "language_servers": ["typescript-ls", "oxlint", "oxfmt", "tailwindcss-language-server"],
-      "prettier": {
-        "allowed": false
-      },
       "formatter": [
         {
           "language_server": {
@@ -61,9 +75,6 @@
     "TSX": {
       "format_on_save": "on",
       "language_servers": ["typescript-ls", "oxlint", "oxfmt", "tailwindcss-language-server"],
-      "prettier": {
-        "allowed": false
-      },
       "formatter": [
         {
           "language_server": {
@@ -78,9 +89,6 @@
     "JavaScript": {
       "format_on_save": "on",
       "language_servers": ["typescript-ls", "oxlint", "oxfmt", "tailwindcss-language-server"],
-      "prettier": {
-        "allowed": false
-      },
       "formatter": [
         {
           "language_server": {
@@ -94,9 +102,6 @@
     },
     "JSON": {
       "format_on_save": "on",
-      "prettier": {
-        "allowed": false
-      },
       "formatter": [
         {
           "language_server": {
@@ -107,9 +112,6 @@
     },
     "JSONC": {
       "format_on_save": "on",
-      "prettier": {
-        "allowed": false
-      },
       "formatter": [
         {
           "language_server": {
@@ -120,9 +122,6 @@
     },
     "Markdown": {
       "format_on_save": "on",
-      "prettier": {
-        "allowed": false
-      },
       "formatter": [
         {
           "language_server": {
@@ -133,9 +132,6 @@
     },
     "YAML": {
       "format_on_save": "on",
-      "prettier": {
-        "allowed": false
-      },
       "formatter": [
         {
           "language_server": {
@@ -147,9 +143,6 @@
     "TOML": {
       "format_on_save": "on",
       "language_servers": ["tombi", "oxfmt"],
-      "prettier": {
-        "allowed": false
-      },
       "formatter": [
         {
           "language_server": {
