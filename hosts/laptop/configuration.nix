@@ -20,7 +20,6 @@
     android-tools
     attic-client
     bruno
-    claude-code
     codex
     fastfetch
     feh

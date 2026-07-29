@@ -178,7 +178,7 @@
     services = {
       cliproxyapi = {
         enable = true;
-        settings."api-keys" = [ "zed-local" ];
+        claude.enable = true;
       };
       hypridle.enable = true;
       hyprpaper.enable = true;
