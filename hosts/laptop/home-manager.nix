@@ -8,6 +8,7 @@
     inputs.catppuccin.homeModules.catppuccin
     inputs.agenix.homeManagerModules.default
     (self + /modules/home-manager/chromium)
+    (self + /modules/home-manager/cliproxyapi)
     (self + /modules/home-manager/codex)
     (self + /modules/home-manager/continue)
     (self + /modules/home-manager/cursor)
@@ -175,6 +176,10 @@
       zen.enable = true;
     };
     services = {
+      cliproxyapi = {
+        enable = true;
+        settings."api-keys" = [ "zed-local" ];
+      };
       hypridle.enable = true;
       hyprpaper.enable = true;
     };

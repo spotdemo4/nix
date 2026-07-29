@@ -176,7 +176,10 @@
       zen.enable = true;
     };
     services = {
-      cliproxyapi.enable = true;
+      cliproxyapi = {
+        enable = true;
+        settings."api-keys" = [ "zed-local" ];
+      };
       hypridle.enable = true;
       hyprpaper.enable = true;
     };
