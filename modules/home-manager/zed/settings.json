@@ -62,6 +62,12 @@
     "tool_permissions": {
       "default": "allow"
     },
+    "default_model": {
+      "provider": "openai",
+      "model": "gpt-5.6-sol",
+      "enable_thinking": true,
+      "effort": "high"
+    },
     "commit_message_model": {
       "provider": "openai",
       "model": "gpt-5.6-luna"
