@@ -123,6 +123,7 @@
         "CLAUDE_CODE_SUBAGENT_MODEL": "gpt-5.6-sol"
       },
       "default_config_options": {
+        "mode": "bypassPermissions",
         "model": "gpt-5.6-sol",
         "effort": "high"
       }
