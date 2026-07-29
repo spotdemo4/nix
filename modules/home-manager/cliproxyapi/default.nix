@@ -48,7 +48,6 @@ let
 
       exec ${lib.getExe cfg.claude.package} \
         --model ${lib.escapeShellArg cfg.claude.model} \
-        --mcp-config ${lib.escapeShellArg "${config.xdg.configHome}/mcp/mcp.json"} \
         "$@"
     '';
   };
@@ -129,6 +128,12 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = [ cliProxyApiPackage ] ++ lib.optional cfg.claude.enable claudePackage;
+
+    programs.claude-code = lib.mkIf cfg.claude.enable {
+      enable = true;
+      package = null;
+      enableMcpIntegration = true;
+    };
 
     xdg.configFile = lib.mkIf (cfg.configFile == null) {
       "cliproxyapi/config.yaml".source = generatedConfig;
