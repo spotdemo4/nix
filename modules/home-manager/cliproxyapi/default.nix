@@ -46,7 +46,10 @@ let
       export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.claude.sonnetModel}
       export CLAUDE_CODE_SUBAGENT_MODEL=${lib.escapeShellArg cfg.claude.model}
 
-      exec ${lib.getExe cfg.claude.package} --model ${lib.escapeShellArg cfg.claude.model} "$@"
+      exec ${lib.getExe cfg.claude.package} \
+        --model ${lib.escapeShellArg cfg.claude.model} \
+        --mcp-config ${lib.escapeShellArg "${config.xdg.configHome}/mcp/mcp.json"} \
+        "$@"
     '';
   };
 in
