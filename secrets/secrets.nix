@@ -12,6 +12,12 @@ in
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
 
   # etc server
+  "cliproxyapi.age".publicKeys = [
+    keys.desktop
+    keys.devTrev
+    keys.etc
+    keys.laptop
+  ];
   "discord-openrouter.age".publicKeys = keys.local ++ [ keys.etc ];
   "geolite.age".publicKeys = keys.local ++ [ keys.etc ];
   "openrouter.age".publicKeys = keys.local ++ [ keys.etc ];

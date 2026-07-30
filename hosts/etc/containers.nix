@@ -8,6 +8,7 @@
     (self + /modules/container/cobalt)
     (self + /modules/container/cobalt-web)
     (self + /modules/container/cobalt-youtube)
+    (self + /modules/container/cliproxyapi)
     (self + /modules/container/crowdsec)
     (self + /modules/container/discord-openrouter)
     (self + /modules/container/gluetun)
@@ -28,6 +29,7 @@
   trev.containers = {
     cobalt.enable = true;
     cobalt-web.enable = true;
+    cliproxyapi.enable = true;
     crowdsec.enable = true;
     discord-openrouter.enable = true;
     portainer-agent.enable = true;

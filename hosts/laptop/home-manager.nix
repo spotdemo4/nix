@@ -8,7 +8,7 @@
     inputs.catppuccin.homeModules.catppuccin
     inputs.agenix.homeManagerModules.default
     (self + /modules/home-manager/chromium)
-    (self + /modules/home-manager/cliproxyapi)
+    (self + /modules/home-manager/claude)
     (self + /modules/home-manager/codex)
     (self + /modules/home-manager/continue)
     (self + /modules/home-manager/cursor)
@@ -155,6 +155,7 @@
     mcp.enable = true;
     programs = {
       chromium.enable = true;
+      claude.enable = true;
       codex.enable = true;
       continue.enable = true;
       cursor.enable = true;
@@ -176,10 +177,6 @@
       zen.enable = true;
     };
     services = {
-      cliproxyapi = {
-        enable = true;
-        claude.enable = true;
-      };
       hypridle.enable = true;
       hyprpaper.enable = true;
     };
