@@ -25,7 +25,7 @@ in
   options.trev.containers.portainer = {
     enable = mkEnableOption "the Portainer container";
 
-    image = mkImageOption "docker.io/portainer/portainer-ce:2.44.0@sha256:ef3262b42084df4080229f1b8bf47f791cf85f386c525728e1323e08f88dcea5";
+    image = mkImageOption "docker.io/portainer/portainer-ce:2.44.0@sha256:f49255cd9378827fadfde46062ad0395050237c51d03a93a3dc1dbc6050dda3e";
 
     podmanSocket = mkOption {
       type = types.str;
