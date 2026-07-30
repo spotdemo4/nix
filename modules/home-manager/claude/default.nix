@@ -34,7 +34,36 @@ let
 
       exec ${lib.getExe cfg.package} \
         --model ${lib.escapeShellArg cfg.model} \
-        "$@"
+      "$@"
+    '';
+  };
+  claudeAgentAcpPackage = pkgs.writeShellApplication {
+    name = "claude-agent-acp";
+    text = ''
+      secret_path="''${XDG_RUNTIME_DIR}/agenix/cliproxyapi"
+
+      if [[ ! -r "$secret_path" ]]; then
+        printf 'Claude API token file is not readable: %s\n' "$secret_path" >&2
+        exit 1
+      fi
+
+      ANTHROPIC_AUTH_TOKEN="$(<"$secret_path")"
+      if [[ -z "$ANTHROPIC_AUTH_TOKEN" || "$ANTHROPIC_AUTH_TOKEN" == *$'\n'* ]]; then
+        printf 'Claude API token must be a non-empty single line\n' >&2
+        exit 1
+      fi
+
+      unset ANTHROPIC_API_KEY
+      export ANTHROPIC_AUTH_TOKEN
+      export ANTHROPIC_BASE_URL=${lib.escapeShellArg cfg.baseUrl}
+      export ANTHROPIC_CUSTOM_MODEL_OPTION=${lib.escapeShellArg cfg.model}
+      export ANTHROPIC_MODEL=${lib.escapeShellArg cfg.model}
+      export ANTHROPIC_DEFAULT_HAIKU_MODEL=${lib.escapeShellArg cfg.haikuModel}
+      export ANTHROPIC_DEFAULT_OPUS_MODEL=${lib.escapeShellArg cfg.opusModel}
+      export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.sonnetModel}
+      export CLAUDE_CODE_SUBAGENT_MODEL=${lib.escapeShellArg cfg.model}
+
+      exec ${lib.getExe pkgs.claude-agent-acp} "$@"
     '';
   };
 in
@@ -78,7 +107,10 @@ in
   config = lib.mkIf cfg.enable {
     age.secrets.cliproxyapi.file = self + /secrets/cliproxyapi.age;
 
-    home.packages = [ claudePackage ];
+    home.packages = [
+      claudeAgentAcpPackage
+      claudePackage
+    ];
 
     programs.claude-code = {
       enable = true;
