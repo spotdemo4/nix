@@ -133,6 +133,27 @@ in
       enable = true;
       package = null;
       enableMcpIntegration = true;
+
+      settings = {
+        effortLevel = "high";
+        enableWorkflows = true;
+        workflowSizeGuideline = "medium";
+      };
+
+      context = ''
+        # Workflow orchestration
+
+        Default to the Workflow tool for substantive tasks whenever the work can be usefully decomposed into independent workstreams, parallel research, competing approaches, specialist reviews, or an implementation-and-verification pipeline. Work directly only when the task is trivial, inherently sequential, or too small for workflow coordination to improve the result.
+
+        When composing a workflow:
+
+        - Use multiple subagents with deliberately different perspectives and model assignments. Avoid a single-model monoculture.
+        - Use `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` across the workflow. For three or more meaningful independent workstreams, include all three models when practical; for smaller workflows, use at least two models when a second opinion would improve the result.
+        - Set `effort: "high"` explicitly on every workflow subagent.
+        - Use `gpt-5.6-sol` for the hardest architecture, synthesis, and adversarial verification; `gpt-5.6-terra` for balanced implementation, analysis, and review; and `gpt-5.6-luna` for focused reconnaissance, bounded checks, and additional independent opinions.
+        - Give each subagent a precise, non-overlapping remit. Run independent work concurrently with `pipeline()` or `parallel()` as appropriate, then reconcile disagreements and synthesize the strongest result.
+        - Prefer explicit per-agent model and effort assignments over relying on the global subagent fallback.
+      '';
     };
 
     xdg.configFile = lib.mkIf (cfg.configFile == null) {
