@@ -80,6 +80,11 @@ in
           url = forgejo "llc" "codex-commit";
         }
         {
+          name = "discord-embedder";
+          path = "~/dev/discord-embedder";
+          url = github "discord-embedder";
+        }
+        {
           name = "DuckMetrics";
           path = "~/dev/DuckMetrics";
           url = forgejo "llc" "DuckMetrics";
