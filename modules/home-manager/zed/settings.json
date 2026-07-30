@@ -63,13 +63,13 @@
       "default": "allow"
     },
     "default_model": {
-      "provider": "openai",
+      "provider": "openai-subscribed",
       "model": "gpt-5.6-sol",
       "enable_thinking": true,
       "effort": "high"
     },
     "commit_message_model": {
-      "provider": "openai",
+      "provider": "openai-subscribed",
       "model": "gpt-5.6-luna"
     },
     "commit_message_instructions": "Use the Conventional Commits format: <type>(<scope>): <description>.",
