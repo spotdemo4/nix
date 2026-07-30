@@ -64,6 +64,7 @@
       "s3.trev.zip"
       "nix.trev.zip"
       "niks3.trev.zip"
+      "proxy.trev.xyz"
     ];
   };
   time.timeZone = "America/Detroit";
