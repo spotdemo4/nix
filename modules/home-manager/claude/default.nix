@@ -163,6 +163,11 @@ in
       enableMcpIntegration = true;
 
       settings = {
+        attribution = {
+          commit = "";
+          pr = "";
+          sessionUrl = false;
+        };
         effortLevel = "high";
         enableWorkflows = true;
         fallbackModel = [
