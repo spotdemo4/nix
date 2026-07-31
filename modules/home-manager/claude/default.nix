@@ -102,9 +102,38 @@ in
       default = "gpt-5.6-sol";
       description = "Model used by Claude Code and its subagents.";
     };
+
+    contextWindowTokens = lib.mkOption {
+      type = lib.types.ints.positive;
+      default = 272000;
+      description = "Context window Claude Code assumes for models routed through CLIProxyAPI.";
+    };
+
+    autoCompactWindowTokens = lib.mkOption {
+      type = lib.types.ints.positive;
+      default = 258400;
+      description = "Context capacity Claude Code uses for auto-compaction calculations.";
+    };
+
+    maxOutputTokens = lib.mkOption {
+      type = lib.types.ints.positive;
+      default = 128000;
+      description = "Maximum output tokens Claude Code requests and reserves before auto-compaction.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.maxOutputTokens < cfg.contextWindowTokens;
+        message = "trev.programs.claude.maxOutputTokens must be smaller than contextWindowTokens.";
+      }
+      {
+        assertion = cfg.autoCompactWindowTokens <= cfg.contextWindowTokens;
+        message = "trev.programs.claude.autoCompactWindowTokens must not exceed contextWindowTokens.";
+      }
+    ];
+
     age.secrets.cliproxyapi.file = self + /secrets/cliproxyapi.age;
 
     home.packages = [
@@ -121,6 +150,11 @@ in
         effortLevel = "high";
         enableWorkflows = true;
         workflowSizeGuideline = "medium";
+        env = {
+          CLAUDE_CODE_AUTO_COMPACT_WINDOW = toString cfg.autoCompactWindowTokens;
+          CLAUDE_CODE_MAX_CONTEXT_TOKENS = toString cfg.contextWindowTokens;
+          CLAUDE_CODE_MAX_OUTPUT_TOKENS = toString cfg.maxOutputTokens;
+        };
       };
 
       context = ''
