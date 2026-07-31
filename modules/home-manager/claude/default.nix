@@ -7,8 +7,23 @@
 }:
 let
   cfg = config.trev.programs.claude;
+  claudeRuntimeInputs = [
+    pkgs.direnv
+    pkgs.gh
+    pkgs.nodejs_24
+    pkgs.python3
+  ];
+  direnvHook = {
+    hooks = [
+      {
+        type = "command";
+        command = ''${lib.getExe pkgs.direnv} export bash > "$CLAUDE_ENV_FILE"'';
+      }
+    ];
+  };
   claudePackage = pkgs.writeShellApplication {
     name = "claude";
+    runtimeInputs = claudeRuntimeInputs;
     text = ''
       secret_path="''${XDG_RUNTIME_DIR}/agenix/cliproxyapi"
 
@@ -39,6 +54,7 @@ let
   };
   claudeAgentAcpPackage = pkgs.writeShellApplication {
     name = "claude-agent-acp";
+    runtimeInputs = claudeRuntimeInputs;
     text = ''
       secret_path="''${XDG_RUNTIME_DIR}/agenix/cliproxyapi"
 
@@ -149,6 +165,10 @@ in
       settings = {
         effortLevel = "high";
         enableWorkflows = true;
+        hooks = {
+          CwdChanged = [ direnvHook ];
+          SessionStart = [ direnvHook ];
+        };
         skillOverrides."claude-api" = "off";
         workflowSizeGuideline = "medium";
         env = {
