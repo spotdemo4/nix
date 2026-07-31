@@ -157,17 +157,12 @@ in
       description = "github runner user";
       extraGroups = [ "docker" ];
     };
-    gitea-runner = {
-      isNormalUser = true;
-      description = "gitea runner user";
-      extraGroups = [ "docker" ];
-    };
   };
 
   # allow users to use nix
   nix.extraOptions = ''
     warn-dirty = false
-    allowed-users = github-runner gitea-runner
+    allowed-users = github-runner
     trusted-users = builder trev
   '';
 
@@ -265,78 +260,10 @@ in
     };
   };
 
-  # Forgejo runners
+  # Forgejo runner registration tokens
   age.secrets."forgejo".file = self + /secrets/forgejo.age;
   age.secrets."forgejo-org".file = self + /secrets/forgejo-org.age;
   age.secrets."forgejo-template".file = self + /secrets/forgejo-template.age;
-  services.gitea-actions-runner = {
-    package = pkgs.forgejo-runner;
-    instances = {
-      trev = {
-        enable = true;
-        url = "https://trev.zip/";
-        tokenFile = config.age.secrets."forgejo".path;
-        name = "builder";
-        labels = [
-          "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest@sha256:58ea92624c7c09582e05594d95488331045053d3a3f34cf09649f2a32313a614"
-          "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04@sha256:58ea92624c7c09582e05594d95488331045053d3a3f34cf09649f2a32313a614"
-          "nixos-latest:docker://nixos/nix:2.35.1@sha256:377d4887aca98f0dfa12971c1ea6d6a625a435d8b610d4c95a436843da6fbfd1"
-        ];
-        settings = {
-          runner = {
-            capacity = 2;
-          };
-          container = {
-            network = "host";
-            privileged = true;
-            docker_host = "unix:///run/podman/podman.sock";
-          };
-        };
-      };
-      org = {
-        enable = true;
-        url = "https://trev.zip/";
-        tokenFile = config.age.secrets."forgejo-org".path;
-        name = "builder";
-        labels = [
-          "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest@sha256:58ea92624c7c09582e05594d95488331045053d3a3f34cf09649f2a32313a614"
-          "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04@sha256:58ea92624c7c09582e05594d95488331045053d3a3f34cf09649f2a32313a614"
-          "nixos-latest:docker://nixos/nix:2.35.1@sha256:377d4887aca98f0dfa12971c1ea6d6a625a435d8b610d4c95a436843da6fbfd1"
-        ];
-        settings = {
-          runner = {
-            capacity = 2;
-          };
-          container = {
-            network = "host";
-            privileged = true;
-            docker_host = "unix:///run/podman/podman.sock";
-          };
-        };
-      };
-      template = {
-        enable = true;
-        url = "https://trev.zip/";
-        tokenFile = config.age.secrets."forgejo-template".path;
-        name = "builder";
-        labels = [
-          "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest@sha256:58ea92624c7c09582e05594d95488331045053d3a3f34cf09649f2a32313a614"
-          "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04@sha256:58ea92624c7c09582e05594d95488331045053d3a3f34cf09649f2a32313a614"
-          "nixos-latest:docker://nixos/nix:2.35.1@sha256:377d4887aca98f0dfa12971c1ea6d6a625a435d8b610d4c95a436843da6fbfd1"
-        ];
-        settings = {
-          runner = {
-            capacity = 2;
-          };
-          container = {
-            network = "host";
-            privileged = true;
-            docker_host = "unix:///run/podman/podman.sock";
-          };
-        };
-      };
-    };
-  };
 
   # Docker
   virtualisation.docker = {
