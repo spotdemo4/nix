@@ -149,6 +149,7 @@ in
       settings = {
         effortLevel = "high";
         enableWorkflows = true;
+        skillOverrides."claude-api" = "off";
         workflowSizeGuideline = "medium";
         env = {
           CLAUDE_CODE_AUTO_COMPACT_WINDOW = toString cfg.autoCompactWindowTokens;
