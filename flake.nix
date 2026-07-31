@@ -230,6 +230,60 @@
         };
 
         checks = pkgs.mkChecks {
+          flake-root-paths =
+            let
+              flakeRoot = builtins.unsafeDiscardStringContext (toString self.outPath);
+              containsFlakeRoot =
+                value:
+                let
+                  string = toString value;
+                in
+                builtins.hasAttr flakeRoot (builtins.getContext string)
+                || pkgs.lib.hasInfix flakeRoot (builtins.unsafeDiscardStringContext string);
+              quadletOffenders = builtins.concatLists (
+                pkgs.lib.mapAttrsToList (
+                  host: configuration:
+                  builtins.concatLists (
+                    pkgs.lib.mapAttrsToList (
+                      group: objects:
+                      if builtins.isAttrs objects then
+                        builtins.concatLists (
+                          pkgs.lib.mapAttrsToList (
+                            name: object:
+                            pkgs.lib.optional (
+                              builtins.isAttrs object && object ? _configText && containsFlakeRoot object._configText
+                            ) "${host}:quadlet:${group}.${name}"
+                          ) objects
+                        )
+                      else
+                        [ ]
+                    ) configuration.config.virtualisation.quadlet
+                  )
+                ) self.nixosConfigurations
+              );
+              restartTriggerOffenders = builtins.concatLists (
+                pkgs.lib.mapAttrsToList (
+                  host: configuration:
+                  builtins.concatLists (
+                    pkgs.lib.mapAttrsToList (
+                      name: service:
+                      pkgs.lib.optional (builtins.any containsFlakeRoot (
+                        service.restartTriggers or [ ]
+                      )) "${host}:restartTriggers:${name}"
+                    ) configuration.config.systemd.services
+                  )
+                ) self.nixosConfigurations
+              );
+              offenders = quadletOffenders ++ restartTriggerOffenders;
+            in
+            if offenders != [ ] then
+              throw ''
+                generated service configuration contains paths rooted in this flake:
+                ${pkgs.lib.concatStringsSep "\n" offenders}
+              ''
+            else
+              pkgs.runCommand "flake-root-paths" { } "touch $out";
+
           format = {
             root = ./.;
             filter =

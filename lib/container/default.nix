@@ -44,8 +44,16 @@ let
       in
       lib.concatStringsSep "," ([ ref ] ++ options);
   toSecret = secret: if builtins.isString secret then secret else toStructuredSecret secret;
+  toContentPath =
+    path:
+    builtins.path {
+      inherit path;
+      name = baseNameOf (builtins.unsafeDiscardStringContext (toString path));
+    };
 in
 {
+  inherit toContentPath;
+
   mkContainer =
     config:
     config

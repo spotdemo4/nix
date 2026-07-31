@@ -19,6 +19,7 @@ let
     mkContainer
     mkImageOption
     secretType
+    toContentPath
     ;
   inherit (config.virtualisation.quadlet)
     networks
@@ -111,6 +112,7 @@ in
         name: instance:
         let
           containerName = "anubis-${name}";
+          policyFile = toContentPath instance.policyFile;
         in
         nameValuePair containerName {
           containerConfig = mkContainer {
@@ -126,7 +128,7 @@ in
             };
             volumes = [
               "${volumes.${containerName}.ref}:/data:U"
-              "${instance.policyFile}:/etc/anubis/policy.yaml:ro"
+              "${policyFile}:/etc/anubis/policy.yaml:ro"
             ];
             secrets = [
               {

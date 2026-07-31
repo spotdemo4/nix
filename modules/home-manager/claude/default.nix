@@ -165,6 +165,10 @@ in
       settings = {
         effortLevel = "high";
         enableWorkflows = true;
+        fallbackModel = [
+          "sonnet"
+          "haiku"
+        ];
         hooks = {
           CwdChanged = [ direnvHook ];
           SessionStart = [ direnvHook ];
@@ -173,6 +177,7 @@ in
         workflowSizeGuideline = "medium";
         env = {
           CLAUDE_CODE_AUTO_COMPACT_WINDOW = toString cfg.autoCompactWindowTokens;
+          CLAUDE_CODE_MAX_RETRIES = "15";
           CLAUDE_CODE_MAX_CONTEXT_TOKENS = toString cfg.contextWindowTokens;
           CLAUDE_CODE_MAX_OUTPUT_TOKENS = toString cfg.maxOutputTokens;
         };

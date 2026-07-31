@@ -15,9 +15,11 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
+    toContentPath
     ;
   inherit (config.virtualisation.quadlet) volumes;
   cfg = config.trev.containers.cliproxyapi;
+  apiKeyFile = toContentPath cfg.apiKeyFile;
   reservedSettings = [
     "api-keys"
     "auth-dir"
@@ -112,7 +114,7 @@ in
       }
     ];
 
-    age.secrets.cliproxyapi.file = cfg.apiKeyFile;
+    age.secrets.cliproxyapi.file = apiKeyFile;
 
     virtualisation.quadlet = {
       containers.cliproxyapi = {
@@ -149,7 +151,7 @@ in
     };
 
     systemd.services.cliproxyapi.restartTriggers = [
-      cfg.apiKeyFile
+      apiKeyFile
       configTemplate
     ];
   };
