@@ -125,6 +125,11 @@ in
           url = github "pangram-chrome";
         }
         {
+          name = "QuantaTrack";
+          path = "~/dev/QuantaTrack";
+          url = "https://git.quantadev.cc/Quanta/QuantaTrack";
+        }
+        {
           name = "rsync-action";
           path = "~/dev/rsync-action";
           url = forgejo "llc" "rsync-action";
