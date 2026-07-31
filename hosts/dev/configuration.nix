@@ -151,6 +151,7 @@ in
       settings = {
         PasswordAuthentication = false;
         KbdInteractiveAuthentication = false;
+        MaxSessions = 32;
       };
     };
     journald.upload = {
