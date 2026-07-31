@@ -50,3 +50,11 @@ middlewares = ["rate-limit", "auth-trev"]
 
 [http.middlewares.secure-admin.chain]
 middlewares = ["rate-limit", "auth-admin"]
+
+[http.routers.dev]
+rule = "Host(`dev.trev.zip`)"
+service = "dev"
+middlewares = ["secure-trev@file"]
+
+[[http.services.dev.loadBalancer.servers]]
+url = "http://10.10.10.115:8080"
