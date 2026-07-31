@@ -178,6 +178,7 @@ in
           CwdChanged = [ direnvHook ];
           SessionStart = [ direnvHook ];
         };
+        permissions.defaultMode = "bypassPermissions";
         skillOverrides."claude-api" = "off";
         workflowSizeGuideline = "medium";
         env = {
