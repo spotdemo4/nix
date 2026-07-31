@@ -260,10 +260,11 @@ in
     };
   };
 
-  # Forgejo runner registration tokens
+  # Runner registration tokens
   age.secrets."forgejo".file = self + /secrets/forgejo.age;
   age.secrets."forgejo-org".file = self + /secrets/forgejo-org.age;
   age.secrets."forgejo-template".file = self + /secrets/forgejo-template.age;
+  age.secrets."quanta-runner".file = self + /secrets/quanta-runner.age;
 
   # Docker
   virtualisation.docker = {
