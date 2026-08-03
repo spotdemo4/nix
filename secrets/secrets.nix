@@ -67,6 +67,7 @@ in
   "sonarr.age".publicKeys = keys.local ++ [ keys.media ];
 
   # monitor server
+  "duckmetrics-quack-token.age".publicKeys = keys.local ++ [ keys.monitor ];
   "grafana.age".publicKeys = keys.local ++ [ keys.monitor ];
 
   # builds

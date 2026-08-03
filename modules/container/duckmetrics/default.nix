@@ -14,6 +14,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
+    secretType
     toContentPath
     ;
   inherit (config.virtualisation.quadlet)
@@ -42,6 +43,15 @@ in
       type = types.path;
       default = ./prometheus.yaml;
       description = "Prometheus scrape configuration file.";
+    };
+
+    quackTokenSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "duckmetrics-quack-token";
+        file = self + /secrets/duckmetrics-quack-token.age;
+      };
+      description = "DuckMetrics Quack authentication token secret.";
     };
 
     publishPorts = mkOption {
@@ -93,6 +103,8 @@ in
     ];
 
     virtualisation.quadlet = {
+      secrets.${cfg.quackTokenSecret.ref} = cfg.quackTokenSecret;
+
       containers.duckmetrics.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
@@ -108,6 +120,13 @@ in
         networks = [
           networks.${cfg.networkName}.ref
         ];
+        secrets = [
+          {
+            inherit (cfg.quackTokenSecret) ref;
+            type = "env";
+            target = "DUCKMETRICS_QUACK_TOKEN";
+          }
+        ];
         exec = [
           "--duckdb"
           "/data/duckmetrics.duckdb"
@@ -117,6 +136,9 @@ in
           "0.0.0.0:4318"
           "--health.endpoint"
           "0.0.0.0:13133"
+          "--quack"
+          "--quack.uri"
+          "quack:0.0.0.0:9494"
           "--dashboard"
           "--dashboard.listen"
           "0.0.0.0:8080"
