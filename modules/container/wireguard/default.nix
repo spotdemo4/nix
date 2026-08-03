@@ -9,7 +9,6 @@ let
     mkEnableOption
     mkIf
     mkOption
-    types
     ;
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
@@ -29,17 +28,6 @@ in
       description = "Podman secret containing the WireGuard server configuration.";
     };
 
-    hostIP = mkOption {
-      type = types.str;
-      default = "0.0.0.0";
-      description = "Host IP on which the WireGuard port is published.";
-    };
-
-    port = mkOption {
-      type = types.port;
-      default = 51820;
-      description = "UDP port on which the WireGuard server listens.";
-    };
   };
 
   config = mkIf cfg.enable {
@@ -62,8 +50,7 @@ in
           mode = "0400";
         }
       ];
-      publishPorts = [ "${cfg.hostIP}:${toString cfg.port}:51820/udp" ];
-      sysctl."net.ipv4.ip_forward" = "1";
+      networks = [ "host" ];
       healthCmd = builtins.toJSON [
         "wg"
         "show"
