@@ -6,6 +6,9 @@
   self,
   ...
 }:
+let
+  lan = import (self + /lib/lan);
+in
 {
   imports = [
     ./hardware.nix
@@ -147,13 +150,17 @@
     hostName = hostname;
     networkmanager.enable = true;
     firewall.enable = false;
-    hosts."10.10.10.115" = [ "dev" ];
+    hosts = lan.hosts;
     nameservers = [
       "1.1.1.1"
       "9.9.9.9"
     ];
     wg-quick.interfaces.dev.configFile = config.age.secrets."wireguard-dev".path;
   };
+
+  systemd.services.wg-quick-dev.restartTriggers = [
+    (builtins.hashFile "sha256" config.age.secrets."wireguard-dev".file)
+  ];
 
   time.timeZone = "America/Detroit";
   i18n.defaultLocale = "en_US.UTF-8";

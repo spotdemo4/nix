@@ -1,6 +1,12 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  self,
+  ...
+}:
 let
   cfg = config.trev.programs.ssh;
+  lan = import (self + /lib/lan);
 in
 {
   options.trev.programs.ssh = {
@@ -23,61 +29,61 @@ in
           IdentityFile = "/home/trev/.ssh/id_ed25519";
         };
         "bench" = {
-          HostName = "10.10.10.110";
+          HostName = lan.addresses.bench;
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
         };
         "build" = {
-          HostName = "10.10.10.108";
+          HostName = lan.addresses.build;
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
         };
         "dev" = {
-          HostName = "10.10.10.115";
+          HostName = lan.addresses.dev;
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
         };
         "etc" = {
-          HostName = "10.10.10.114";
+          HostName = lan.addresses.etc;
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
         };
         "files" = {
-          HostName = "10.10.10.113";
+          HostName = lan.addresses.files;
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
         };
         "game" = {
-          HostName = "10.10.10.111";
+          HostName = lan.addresses.game;
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
         };
         "mail" = {
-          HostName = "10.10.10.112";
+          HostName = lan.addresses.mail;
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
         };
         "media" = {
-          HostName = "10.10.10.107";
+          HostName = lan.addresses.media;
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
         };
         "monitor" = {
-          HostName = "10.10.10.109";
+          HostName = lan.addresses.monitor;
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
         };
         "debian" = {
-          HostName = "10.10.10.106";
+          HostName = lan.addresses.debian;
           User = "root";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
