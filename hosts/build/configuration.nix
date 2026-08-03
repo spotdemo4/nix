@@ -121,7 +121,10 @@ in
   };
   services.journald.upload = {
     enable = true;
-    settings.Upload.URL = "http://10.10.10.109:9428/insert/journald";
+    settings.Upload = {
+      URL = "http://10.10.10.109:19532";
+      Compression = "no";
+    };
   };
 
   users.groups.trev.gid = 1000;

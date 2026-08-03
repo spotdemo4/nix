@@ -31,7 +31,7 @@ in
 {
   options.trev.containers.duckmetrics = {
     enable = mkEnableOption "the DuckMetrics container";
-    image = mkImageOption "trev.zip/llc/duckmetrics:2.1.0@sha256:9c0fba194712869d8fb1c32c92501334859f09d3c44f486f5965fe569a39ec75";
+    image = mkImageOption "trev.zip/llc/duckmetrics:2.2.0@sha256:dc9f275e82b298387b6bcf5fe51868b6fbc9c6201d3036174e0d0ce09b402941";
 
     domain = mkOption {
       type = types.str;
@@ -134,6 +134,8 @@ in
           "0.0.0.0:4317"
           "--otlp.http-endpoint"
           "0.0.0.0:4318"
+          "--journal-upload.endpoint"
+          "0.0.0.0:19532"
           "--health.endpoint"
           "0.0.0.0:13133"
           "--quack"
