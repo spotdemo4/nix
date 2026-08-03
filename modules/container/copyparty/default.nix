@@ -30,7 +30,7 @@ in
 {
   options.trev.containers.copyparty = {
     enable = mkEnableOption "Copyparty container";
-    image = mkImageOption "ghcr.io/9001/copyparty-ac:1.20.19@sha256:74e20a95ed1e7146c2d3e970a6fc4279066dadb1b3d6816ab4b0d331403d230a";
+    image = mkImageOption "ghcr.io/9001/copyparty-ac:1.20.20@sha256:174925f4aa4da8ce2241f5ea3ba63d026844d76cafe4a5d6e284a0306fb202ed";
 
     dataPath = mkOption {
       type = types.str;
