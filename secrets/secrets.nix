@@ -53,6 +53,7 @@ in
   "crowdsec.age".publicKeys = keys.local ++ [ keys.gateway ];
   "user-admin.age".publicKeys = keys.local ++ [ keys.gateway ];
   "user-trev.age".publicKeys = keys.local ++ [ keys.gateway ];
+  "wireguard-server.age".publicKeys = keys.local ++ [ keys.gateway ];
 
   # media server
   "embedder-discord.age".publicKeys = keys.local ++ [ keys.media ];
@@ -85,4 +86,6 @@ in
   # local only
   "continue.age".publicKeys = keys.local;
   "mods.age".publicKeys = keys.local;
+  "wireguard-desktop.age".publicKeys = [ keys.desktop ];
+  "wireguard-laptop.age".publicKeys = [ keys.laptop ];
 }

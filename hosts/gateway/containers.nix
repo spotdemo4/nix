@@ -15,6 +15,7 @@ in
     (self + /modules/container/traefik)
     (self + /modules/container/traefik-certs-dumper)
     (self + /modules/container/valkey)
+    (self + /modules/container/wireguard)
   ];
 
   virtualisation.quadlet = {
@@ -25,6 +26,7 @@ in
       "cloudflare-turnstile-secret-key".file = self + /secrets/cloudflare-turnstile-secret-key.age;
       "user-admin".file = self + /secrets/user-admin.age;
       "user-trev".file = self + /secrets/user-trev.age;
+      "wireguard-server".file = self + /secrets/wireguard-server.age;
     };
   };
 
@@ -117,6 +119,12 @@ in
         networks = [ networks.traefik.ref ];
         args = [ "--notify-keyspace-events Ksg" ];
       };
+    };
+
+    wireguard = {
+      enable = true;
+      hostIP = "10.10.10.105";
+      serverConfigSecret = config.virtualisation.quadlet.secrets."wireguard-server";
     };
   };
 }

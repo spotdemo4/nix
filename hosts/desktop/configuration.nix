@@ -99,7 +99,10 @@
     };
   };
 
-  age.secrets."builder-key".file = self + /secrets/builder-key.age;
+  age.secrets = {
+    "builder-key".file = self + /secrets/builder-key.age;
+    "wireguard-dev".file = self + /secrets/wireguard-desktop.age;
+  };
   age.identityPaths = [ "/home/trev/.ssh/id_ed25519" ];
 
   nix.settings = {
@@ -144,10 +147,12 @@
     hostName = hostname;
     networkmanager.enable = true;
     firewall.enable = false;
+    hosts."10.10.10.115" = [ "dev" ];
     nameservers = [
       "1.1.1.1"
       "9.9.9.9"
     ];
+    wg-quick.interfaces.dev.configFile = config.age.secrets."wireguard-dev".path;
   };
 
   time.timeZone = "America/Detroit";
