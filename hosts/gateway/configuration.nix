@@ -67,13 +67,6 @@
       "niks3.trev.zip"
       "proxy.trev.xyz"
     ];
-    nat = {
-      enable = true;
-      externalInterface = "eth1";
-      extraCommands = ''
-        iptables -w -t nat -A nixos-nat-post -s 10.77.77.0/24 -d 10.10.10.115/32 -o eth1 -j MASQUERADE
-      '';
-    };
   };
   time.timeZone = "America/Detroit";
   i18n.defaultLocale = "en_US.UTF-8";
