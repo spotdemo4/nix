@@ -15,6 +15,7 @@ let
     mkContainer
     mkImageOption
     ;
+  inherit (config.virtualisation.quadlet) containers;
   cfg = config.trev.containers.cobalt;
   gluetunConfig = lib.attrByPath [ "trev" "containers" "gluetun" ] {
     enable = false;
@@ -24,6 +25,7 @@ let
     enable = false;
     ref = "gluetun-cobalt";
   } gluetunConfig;
+  gluetunContainer = lib.attrByPath [ gluetun.ref ] { ref = gluetun.ref; } containers;
 in
 {
   options.trev.containers.cobalt = {
@@ -69,9 +71,9 @@ in
       };
 
       unitConfig = {
-        After = gluetun.ref;
-        BindsTo = gluetun.ref;
-        ReloadPropagatedFrom = gluetun.ref;
+        After = gluetunContainer.ref;
+        BindsTo = gluetunContainer.ref;
+        ReloadPropagatedFrom = gluetunContainer.ref;
       };
     };
   };
