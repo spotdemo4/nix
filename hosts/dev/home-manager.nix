@@ -14,11 +14,20 @@ let
     ];
     text = builtins.readFile ./tmux-command-picker.sh;
   };
+  tmuxProjectSession = pkgs.writeShellApplication {
+    name = "tmux-project-session";
+    runtimeInputs = [
+      pkgs.tmux
+      pkgs.util-linux
+    ];
+    text = builtins.readFile ./tmux-project-session.sh;
+  };
   tmuxSessionPicker = pkgs.writeShellApplication {
     name = "tmux-session-picker";
     runtimeInputs = [
       pkgs.fzf
       pkgs.tmux
+      tmuxProjectSession
     ];
     text = builtins.readFile ./tmux-session-picker.sh;
   };
@@ -42,6 +51,7 @@ in
     stateVersion = "24.05";
     packages = [
       tmuxCommandPicker
+      tmuxProjectSession
       tmuxSessionPicker
     ];
     sessionVariables.NIX_PATH = "nixpkgs=${inputs.nixpkgs.outPath}";
@@ -100,6 +110,11 @@ in
     zsh = {
       enable = true;
       autosuggestion.enable = true;
+      initContent = ''
+        if [[ "$ZED_TERM" == true && -z "$TMUX" && -t 0 ]]; then
+          exec "${tmuxProjectSession}/bin/tmux-project-session" "$PWD"
+        fi
+      '';
       loginExtra = ''
         if [[ -n "$SSH_CONNECTION" && -t 0 ]]; then
           export GPG_TTY="$(tty)"
@@ -110,7 +125,7 @@ in
             print -n | gpg --quiet --yes --local-user 3AAF87E0B1A2AC36 --detach-sign --output /dev/null
           fi
 
-          if [[ -z "$TMUX" && "$PWD" == "$HOME" ]]; then
+          if [[ "$ZED_TERM" != true && -z "$TMUX" && "$PWD" == "$HOME" ]]; then
             "${tmuxSessionPicker}/bin/tmux-session-picker"
           fi
         fi

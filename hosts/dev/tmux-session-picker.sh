@@ -91,19 +91,7 @@ case "$kind" in
       exec tmux attach-session -t "$name"
     fi
 
-    name="${path##*/}"
-    name="${name//[^[:alnum:]_-]/-}"
-    [[ -n "$name" ]] || name="project"
-    candidate="$name"
-    suffix=2
-    while tmux has-session -t "$candidate" 2>/dev/null; do
-      candidate="$name-$suffix"
-      ((suffix += 1))
-    done
-
-    tmux new-session -d -s "$candidate" -c "$path"
-    tmux set-option -t "$candidate" @project-root "$path"
-    exec tmux attach-session -t "$candidate"
+    exec tmux-project-session "$path"
     ;;
   session)
     exec tmux attach-session -t "$name"
