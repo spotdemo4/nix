@@ -123,7 +123,6 @@ in
 
     wireguard = {
       enable = true;
-      hostIP = "10.10.10.105";
       serverConfigSecret = config.virtualisation.quadlet.secrets."wireguard-server";
     };
   };
