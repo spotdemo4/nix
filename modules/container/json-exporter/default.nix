@@ -13,14 +13,12 @@ let
     ;
   inherit (import (self + /lib/container) { inherit lib; })
     mkImageOption
+    toContentPath
     ;
   cfg = config.trev.containers.json-exporter;
-  victoriaMetrics = lib.attrByPath [ "trev" "containers" "victoria-metrics" ] {
-    enable = false;
-    networkName = "victoria-metrics";
-  } config;
   networks = lib.attrByPath [ "virtualisation" "quadlet" "networks" ] { } config;
   network = lib.attrByPath [ cfg.networkName ] { ref = cfg.networkName; } networks;
+  configFile = toContentPath cfg.configFile;
 in
 {
   options.trev.containers.json-exporter = {
@@ -29,23 +27,19 @@ in
 
     configFile = mkOption {
       type = types.path;
-      default = ../victoria-metrics/json-exporter.yaml;
+      default = ./config.yaml;
       description = "JSON Exporter configuration file.";
     };
 
     networkName = mkOption {
       type = types.str;
-      default = "victoria-metrics";
+      default = "duckmetrics";
       description = "Name of the Quadlet network to attach to JSON Exporter.";
     };
   };
 
   config = mkIf cfg.enable {
     assertions = [
-      {
-        assertion = cfg.networkName != victoriaMetrics.networkName || victoriaMetrics.enable;
-        message = "trev.containers.json-exporter requires trev.containers.victoria-metrics.enable = true when using its network";
-      }
       {
         assertion = builtins.hasAttr cfg.networkName networks;
         message = "trev.containers.json-exporter requires the '${cfg.networkName}' Quadlet network to be defined";
@@ -56,7 +50,7 @@ in
       image = cfg.image;
       pull = "missing";
       volumes = [
-        "${cfg.configFile}:/json-exporter.yaml"
+        "${configFile}:/json-exporter.yaml"
       ];
       networks = [
         network.ref
