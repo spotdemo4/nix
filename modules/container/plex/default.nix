@@ -23,7 +23,7 @@ in
 {
   options.trev.containers.plex = {
     enable = mkEnableOption "Plex container";
-    image = mkImageOption "lscr.io/linuxserver/plex:1.43.3@sha256:507713a14f9586f827d00c81381ecdcd438009172342b322b62a0e2b65081fdf";
+    image = mkImageOption "lscr.io/linuxserver/plex:1.43.3@sha256:0f57346cb9eda39631da8e6f6517dbf0471b91f8e65621305a3e166f8ffce952";
     uid = mkOption {
       type = types.int;
       default = 1000;
