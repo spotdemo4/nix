@@ -26,6 +26,7 @@ in
         "${nonfatalJournalUpload}/bin/systemd-journal-upload-nonfatal"
       ];
       NotifyAccess = "all";
+      RestartSec = lib.mkForce "30s";
     };
   };
 }

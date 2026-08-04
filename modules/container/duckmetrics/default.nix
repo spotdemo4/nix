@@ -144,6 +144,7 @@ in
         ]
         ++ cfg.extraArgs;
         stopTimeout = 45;
+        healthOnFailure = "kill";
         labels = {
           traefik = {
             enable = true;

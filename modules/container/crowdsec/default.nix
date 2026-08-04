@@ -86,7 +86,7 @@ in
           "6061:8080" # api
           "6060:6060" # prometheus
         ];
-        healthCmd = "current=\"$(wget -qO- http://127.0.0.1:6060/metrics | awk '/^cs_victorialogssource_hits_total/ { print $2; exit }')\" || exit 1; test -n \"$current\" || exit 1; previous=\"$(cat /tmp/crowdsec-victorialogs-lines 2>/dev/null || true)\"; printf '%s\\n' \"$current\" > /tmp/crowdsec-victorialogs-lines; test -z \"$previous\" || test \"$current\" != \"$previous\"";
+        healthCmd = "cscli lapi status >/dev/null 2>&1";
         healthInterval = "1m";
         healthTimeout = "10s";
         healthStartPeriod = "2m";

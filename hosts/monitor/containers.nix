@@ -18,6 +18,16 @@
         "10.10.10.109:19532:19532"
         "10.10.10.109:9494:9494"
       ];
+      extraArgs = [
+        "--storage.received-at-retention"
+        "168h"
+        "--storage.maintenance-interval"
+        "15m"
+        "--storage.checkpoint-interval"
+        "1h"
+        "--storage.maintenance-timeout"
+        "10m"
+      ];
     };
     json-exporter.enable = true;
     portainer-agent.enable = true;
