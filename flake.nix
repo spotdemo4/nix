@@ -179,6 +179,7 @@
               niks3.nixosModules.niks3-auto-upload
               nur.modules.nixos.default
               trevpkgs.nixosModules.overlay
+              ./modules/nixos/journald-upload
               ./modules/nixos/podman
               ./hosts/${hostname}/configuration.nix
             ];
