@@ -27,7 +27,7 @@ in
 {
   options.trev.containers.grafana = {
     enable = mkEnableOption "the Grafana container";
-    image = mkImageOption "docker.io/grafana/grafana-enterprise:13.1.1@sha256:892fc2c021a2727b68c9668c0f61832d14c624745a7f83214fb3d66110bb7d31";
+    image = mkImageOption "docker.io/grafana/grafana-enterprise:13.1.2@sha256:24d67e9b90298f8c97e65b39c440f55723f63a21313a559b53b58756ea74c09f";
 
     domain = mkOption {
       type = types.str;
