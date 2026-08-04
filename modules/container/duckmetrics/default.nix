@@ -76,12 +76,6 @@ in
       description = "Name of the persistent DuckMetrics data volume.";
     };
 
-    dashboardRefresh = mkOption {
-      type = types.str;
-      default = "5s";
-      description = "DuckMetrics dashboard browser refresh interval.";
-    };
-
     extraArgs = mkOption {
       type = types.listOf types.str;
       default = [ ];
@@ -144,8 +138,6 @@ in
           "--dashboard"
           "--dashboard.listen"
           "0.0.0.0:8080"
-          "--dashboard.refresh"
-          cfg.dashboardRefresh
           "--prometheus.config"
           "/prometheus.yaml"
           "--allow-insecure-non-loopback"
