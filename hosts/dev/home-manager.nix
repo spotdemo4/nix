@@ -89,6 +89,7 @@ in
       escapeTime = 0;
       extraConfig = ''
         set -g allow-passthrough on
+        set -g status-right ""
         set -s extended-keys on
         set -s extended-keys-format csi-u
         set -s terminal-features[100] 'xterm*:extkeys'
