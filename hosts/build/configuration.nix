@@ -271,6 +271,16 @@ in
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
+  # LXC: /proc/sys is ro (ConditionPathIsReadWrite=/proc/sys fails) but
+  # lxc 7.0.0+ (lxc#4673) allows mount fstype=binfmt_misc RW even with ro /proc/sys
+  systemd.units."proc-sys-fs-binfmt_misc.automount" = {
+    overrideStrategy = "asDropin";
+    text = ''
+      [Unit]
+      ConditionPathIsReadWrite=
+    '';
+  };
+
   # Docker
   virtualisation.docker = {
     enable = true;
