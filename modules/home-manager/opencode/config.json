@@ -7,6 +7,51 @@
   "default_agent": "build",
   "permission": "allow",
   "plugin": ["./plugins/commit/index.ts", "./plugins/direnv/index.ts"],
+  "provider": {
+    "meta": {
+      "name": "Meta Model API",
+      "npm": "@ai-sdk/openai",
+      "options": {
+        "baseURL": "https://api.meta.ai/v1"
+      },
+      "models": {
+        "muse-spark-1.2": {
+          "name": "muse-spark-1.2",
+          "reasoning": true,
+          "limit": {
+            "context": 1048576,
+            "output": 131072
+          },
+          "modalities": {
+            "input": ["text", "image", "pdf", "video"],
+            "output": ["text"]
+          },
+          "options": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": ["reasoning.encrypted_content"]
+          }
+        },
+        "muse-spark-1.2-contributor": {
+          "name": "muse-spark-1.2-contributor",
+          "reasoning": true,
+          "limit": {
+            "context": 1048576,
+            "output": 131072
+          },
+          "modalities": {
+            "input": ["text", "image", "pdf", "video"],
+            "output": ["text"]
+          },
+          "options": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "auto",
+            "include": ["reasoning.encrypted_content"]
+          }
+        }
+      }
+    }
+  },
   "agent": {
     "title": {
       "model": "openai/gpt-5.6-luna",
