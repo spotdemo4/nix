@@ -10,7 +10,6 @@
     (self + /modules/container/cobalt-youtube)
     (self + /modules/container/cliproxyapi)
     (self + /modules/container/crowdsec)
-    (self + /modules/container/discord-openrouter)
     (self + /modules/container/gluetun)
     (self + /modules/container/portainer-agent)
     (self + /modules/container/postgresql)
@@ -31,7 +30,6 @@
     cobalt-web.enable = true;
     cliproxyapi.enable = true;
     crowdsec.enable = true;
-    discord-openrouter.enable = true;
     portainer-agent.enable = true;
     shlink.enable = true;
     shlink-web.enable = true;
