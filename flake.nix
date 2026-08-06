@@ -180,6 +180,7 @@
               nur.modules.nixos.default
               trevpkgs.nixosModules.overlay
               ./modules/nixos/journald-upload
+              ./modules/nixos/nix
               ./modules/nixos/podman
               ./hosts/${hostname}/configuration.nix
             ];
