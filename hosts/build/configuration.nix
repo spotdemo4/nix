@@ -269,6 +269,8 @@ in
   age.secrets."forgejo-template".file = self + /secrets/forgejo-template.age;
   age.secrets."quanta-runner".file = self + /secrets/quanta-runner.age;
 
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   # Docker
   virtualisation.docker = {
     enable = true;
