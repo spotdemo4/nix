@@ -270,6 +270,7 @@ in
   age.secrets."quanta-runner".file = self + /secrets/quanta-runner.age;
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.preferStaticEmulators = true;
 
   # LXC: /proc/sys is ro (ConditionPathIsReadWrite=/proc/sys fails) but
   # lxc 7.0.0+ (lxc#4673) allows mount fstype=binfmt_misc RW even with ro /proc/sys
