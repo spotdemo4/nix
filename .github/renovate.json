@@ -35,9 +35,9 @@
       "description": "Forgejo runner label docker images",
       "managerFilePatterns": ["/.*.nix$/"],
       "matchStrings": [
-        "\"(?<depName>[^\"\\s:]+):docker://(?<packageName>[^\\s:@\"]+):(?<currentValue>[^@\\s\"]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?\""
+        "\"(?<depName>[^\"\\s:]+):docker://(?<packageName>[^\\s:@\"]+):(?<currentValue>[^@\\s\"]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?\"\\s*(?:#\\s*arch=(?<arch>\\S+))?"
       ],
-      "autoReplaceStringTemplate": "\"{{{depName}}}:docker://{{{packageName}}}:{{#if newValue}}{{{newValue}}}{{else}}{{{currentValue}}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
+      "autoReplaceStringTemplate": "\"{{{depName}}}:docker://{{{packageName}}}:{{#if newValue}}{{{newValue}}}{{else}}{{{currentValue}}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"{{#if arch}} # arch={{{arch}}}{{/if}}",
       "depTypeTemplate": "image",
       "datasourceTemplate": "docker"
     }
@@ -79,6 +79,12 @@
     },
     {
       "matchPackageNames": ["docker.io/stalwartlabs/stalwart"],
+      "enabled": false
+    },
+    {
+      "description": "disable single-arch pin - must be updated via skopeo to per-arch manifest, not index",
+      "matchManagers": ["custom.regex"],
+      "matchDepNames": ["ubuntu-24.04-arm"],
       "enabled": false
     }
   ]
