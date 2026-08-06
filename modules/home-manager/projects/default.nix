@@ -150,6 +150,11 @@ in
           url = forgejo "template" "cpp";
         }
         {
+          name = "template/gleam";
+          path = "~/dev/template/gleam";
+          url = forgejo "template" "gleam";
+        }
+        {
           name = "template/go";
           path = "~/dev/template/go";
           url = forgejo "template" "go";
