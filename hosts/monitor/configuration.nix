@@ -114,10 +114,15 @@
   services.journald.upload = {
     enable = true;
     settings.Upload = {
-      URL = "http://10.10.10.109:19532";
+      URL = "http://127.0.0.1:19532";
       Compression = "no";
     };
   };
+  services.journald.extraConfig = ''
+    RateLimitIntervalSec=30s
+    RateLimitBurst=1000
+    SystemMaxUse=500M
+  '';
   users.groups.trev.gid = 1000;
   users.users.trev = {
     isNormalUser = true;

@@ -40,6 +40,7 @@ let
   databaseContainer = lib.attrByPath [ database.containerName ] {
     ref = database.containerName;
   } containers;
+  valkeyContainer = lib.attrByPath [ valkey.ref ] { ref = valkey.ref; } containers;
 in
 {
   options.trev.containers.immich = {
@@ -110,6 +111,10 @@ in
 
     virtualisation.quadlet = {
       containers.immich = {
+        serviceConfig = {
+          LogRateLimitIntervalSec = "30s";
+          LogRateLimitBurst = "500";
+        };
         containerConfig = mkContainer {
           image = cfg.image;
           pull = "missing";
@@ -124,6 +129,10 @@ in
             DB_DATABASE_NAME = database.database;
 
             REDIS_HOSTNAME = valkey.ref;
+
+            IMMICH_LOG_LEVEL = "warn";
+            IMMICH_ENV = "production";
+            NODE_ENV = "production";
           };
           secrets = optional (database.passwordSecret != null) {
             inherit (database.passwordSecret) ref;
@@ -152,8 +161,14 @@ in
         };
 
         unitConfig = {
-          After = databaseContainer.ref;
-          BindsTo = databaseContainer.ref;
+          After = [
+            databaseContainer.ref
+            valkeyContainer.ref
+          ];
+          BindsTo = [
+            databaseContainer.ref
+            valkeyContainer.ref
+          ];
         };
       };
 

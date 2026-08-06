@@ -98,6 +98,11 @@ in
 
   config = mkIf cfg.enable {
     virtualisation.quadlet = {
+      containers.garage.serviceConfig = {
+        LogRateLimitIntervalSec = "30s";
+        LogRateLimitBurst = "500";
+      };
+
       secrets = {
         ${cfg.rpcSecret.ref} = cfg.rpcSecret;
         ${cfg.adminSecret.ref} = cfg.adminSecret;
@@ -107,6 +112,7 @@ in
       containers.garage.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
+        environments.RUST_LOG = "garage=warn";
         volumes = [
           "${configFile}:/etc/garage.toml"
           "${volumes.garage.ref}:/meta"
