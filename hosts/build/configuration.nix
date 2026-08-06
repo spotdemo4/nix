@@ -273,13 +273,23 @@ in
 
   # LXC: /proc/sys is ro (ConditionPathIsReadWrite=/proc/sys fails) but
   # lxc 7.0.0+ (lxc#4673) allows mount fstype=binfmt_misc RW even with ro /proc/sys
+  # autofs automount is unsupported in unpriv LXC - use direct mount
   systemd.units."proc-sys-fs-binfmt_misc.automount" = {
     overrideStrategy = "asDropin";
     text = ''
       [Unit]
       ConditionPathIsReadWrite=
     '';
+    enable = false;
   };
+  systemd.mounts = [
+    {
+      what = "binfmt_misc";
+      where = "/proc/sys/fs/binfmt_misc";
+      type = "binfmt_misc";
+      wantedBy = [ "sysinit.target" ];
+    }
+  ];
 
   # Docker
   virtualisation.docker = {
