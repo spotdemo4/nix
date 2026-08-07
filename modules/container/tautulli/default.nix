@@ -27,7 +27,7 @@ in
 {
   options.trev.containers.tautulli = {
     enable = mkEnableOption "Tautulli container";
-    image = mkImageOption "lscr.io/linuxserver/tautulli:latest@sha256:f0c3e7228c84ad0539f9d5aa9f56c79ef19f6c8d0ad61199d803d32a7b0e080b";
+    image = mkImageOption "lscr.io/linuxserver/tautulli:latest@sha256:5a6501710790b545693de2938bdfd279d52291f986b6f7273716783b2b080cc6";
     uid = mkOption {
       type = types.int;
       default = 1000;
