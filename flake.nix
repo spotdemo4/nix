@@ -111,7 +111,7 @@
       type = "github";
       owner = "0xc000022070";
       repo = "zen-browser-flake";
-      rev = "67202a6dc9ad712796fe31ef7797084d1fb8dbfe";
+      rev = "43272965c62be2c512630bc80deeb6792b2f285b";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
