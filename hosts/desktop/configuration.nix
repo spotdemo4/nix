@@ -83,7 +83,7 @@ in
     noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-color-emoji
-    trev.paper-mono
+    trev.trev-mono
   ];
 
   boot.loader = {
