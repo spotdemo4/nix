@@ -11,6 +11,10 @@
     programs.chromium = {
       enable = true;
       package = pkgs.chromium;
+      commandLineArgs = [
+        "--ozone-platform=wayland"
+        "--enable-features=Vulkan,VulkanFromANGLE,DefaultANGLEVulkan,AcceleratedVideoEncoder"
+      ];
       extensions = [
         { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # UBlock Origin Lite
         { id = "nngceckbapebfimnlniiiahkandclblb"; } # Bitwarden
