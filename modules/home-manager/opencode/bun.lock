@@ -5,7 +5,7 @@
     "": {
       "name": "opencode-config",
       "dependencies": {
-        "@opencode-ai/plugin": "1.18.17",
+        "@opencode-ai/plugin": "1.18.18",
         "@opentui/core": "0.5.2",
         "@opentui/keymap": "0.5.2",
         "@opentui/solid": "0.5.2",
@@ -99,9 +99,9 @@
 
     "@msgpackr-extract/msgpackr-extract-win32-x64": ["@msgpackr-extract/msgpackr-extract-win32-x64@3.0.4", "", { "os": "win32", "cpu": "x64" }, "sha512-CmCXPQrkbwExx3j946/PtHWHbYJiCRBRDl4BlkRQcJB/YOwQxJRTpoo7aTsortjgoJ1x7opzTSxn7C+ASSLVjQ=="],
 
-    "@opencode-ai/plugin": ["@opencode-ai/plugin@1.18.17", "", { "dependencies": { "@ai-sdk/provider": "3.0.8", "@opencode-ai/sdk": "1.18.17", "effect": "4.0.0-beta.83", "zod": "4.1.8" }, "peerDependencies": { "@opentui/core": ">=0.4.5", "@opentui/keymap": ">=0.4.5", "@opentui/solid": ">=0.4.5" }, "optionalPeers": ["@opentui/core", "@opentui/keymap", "@opentui/solid"] }, "sha512-ENQoAKCq2CN9qd3bGE+k/LRNuL5/l5RV4AS9doxDuhhj4iLlWocWhP+5Zbf8jCYoMqIINmogC2NRzWACd4LjPQ=="],
+    "@opencode-ai/plugin": ["@opencode-ai/plugin@1.18.18", "", { "dependencies": { "@ai-sdk/provider": "3.0.8", "@opencode-ai/sdk": "1.18.18", "effect": "4.0.0-beta.83", "zod": "4.1.8" }, "peerDependencies": { "@opentui/core": ">=0.4.5", "@opentui/keymap": ">=0.4.5", "@opentui/solid": ">=0.4.5" }, "optionalPeers": ["@opentui/core", "@opentui/keymap", "@opentui/solid"] }, "sha512-vqQeqJtn9c+J+tIQDzYk88xip/NVNN1hym1ATmckxo6zINHAoXoul4Sw/jgnvL00rLsfAvhja28qax4h3g/5Jg=="],
 
-    "@opencode-ai/sdk": ["@opencode-ai/sdk@1.18.17", "", { "dependencies": { "cross-spawn": "7.0.6" } }, "sha512-91crjO/F53ndu3s7MWvadjZisqplsWH2SvUSQtJgazIm327iS0Sp/QysAfUlvO/hF+CEgbx2mT2sL1rKopZc5g=="],
+    "@opencode-ai/sdk": ["@opencode-ai/sdk@1.18.18", "", { "dependencies": { "cross-spawn": "7.0.6" } }, "sha512-zJlwXskIR47V1dkPJqeKBgq7nejG1uU8lJaGIGqbX3MWRCT8vKn0fEotbxuPCKnTdmWsDyNGNg9q1qIliDSMDA=="],
 
     "@opentui/core": ["@opentui/core@0.5.2", "", { "dependencies": { "bun-ffi-structs": "0.3.1", "diff": "9.0.0", "marked": "17.0.1", "string-width": "7.2.0", "strip-ansi": "7.1.2" }, "optionalDependencies": { "@opentui/core-darwin-arm64": "0.5.2", "@opentui/core-darwin-x64": "0.5.2", "@opentui/core-linux-arm64": "0.5.2", "@opentui/core-linux-arm64-musl": "0.5.2", "@opentui/core-linux-x64": "0.5.2", "@opentui/core-linux-x64-musl": "0.5.2", "@opentui/core-win32-arm64": "0.5.2", "@opentui/core-win32-x64": "0.5.2" }, "peerDependencies": { "web-tree-sitter": "0.25.10" } }, "sha512-GOuD0Mq1ylybq9eEX6L0TdYlfJ2zJVLGecuh6yEM8RpT9oMtR0f+gEWqGJsBN/ay+Y5TOCH9b3vePEcwOW01fg=="],
 
