@@ -44,7 +44,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    age.secrets."niks3".file = cfg.authTokenSecretFile;
+    age.secrets."niks3" = {
+      file = cfg.authTokenSecretFile;
+      owner = "trev";
+    };
 
     environment.systemPackages = [ niks3Wrapper ];
 
