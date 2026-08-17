@@ -49,6 +49,12 @@ in
       default = "victoria-logs";
       description = "Name of the persistent VictoriaLogs data volume.";
     };
+
+    extraArgs = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "Additional arguments passed to VictoriaLogs.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -63,6 +69,7 @@ in
         networks = [
           networks.${cfg.networkName}.ref
         ];
+        exec = cfg.extraArgs;
         labels = {
           traefik = {
             enable = true;
@@ -79,5 +86,7 @@ in
       networks.${cfg.networkName} = { };
       volumes.${cfg.volumeName} = { };
     };
+
+    systemd.services.victoria-logs.serviceConfig.RestartSec = "5m";
   };
 }

@@ -21,7 +21,7 @@
       ];
       extraArgs = [
         "--storage.received-at-retention"
-        "168h"
+        "24h"
         "--storage.maintenance-interval"
         "15m"
         "--storage.checkpoint-interval"
@@ -29,7 +29,7 @@
         "--storage.maintenance-timeout"
         "10m"
         "--storage.minimum-free-bytes"
-        "10737418240"
+        "53687091200"
       ];
     };
     json-exporter.enable = true;
@@ -38,6 +38,12 @@
       enable = true;
       ip = "10.10.10.109";
     };
-    victoria-logs.enable = true;
+    victoria-logs = {
+      enable = true;
+      extraArgs = [
+        "-retentionPeriod=7d"
+        "-retention.maxDiskSpaceUsageBytes=10GiB"
+      ];
+    };
   };
 }

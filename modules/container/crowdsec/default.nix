@@ -99,5 +99,7 @@ in
         crowdsec-config = { };
       };
     };
+
+    systemd.services.crowdsec.serviceConfig.RestartSec = "5m";
   };
 }

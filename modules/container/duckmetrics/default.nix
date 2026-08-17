@@ -144,7 +144,6 @@ in
         ]
         ++ cfg.extraArgs;
         stopTimeout = 45;
-        healthOnFailure = "kill";
         labels = {
           traefik = {
             enable = true;
@@ -164,5 +163,7 @@ in
       networks.${cfg.networkName} = { };
       volumes.${cfg.volumeName} = { };
     };
+
+    systemd.services.duckmetrics.serviceConfig.RestartSec = "5m";
   };
 }
