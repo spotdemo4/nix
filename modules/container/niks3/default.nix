@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   self,
   ...
 }:
@@ -34,6 +35,17 @@ let
     database = "";
   } postgresql;
   databaseContainer = lib.attrByPath [ "postgresql-niks3" ] { ref = "postgresql-niks3"; } containers;
+  gcCommand = pkgs.writeShellApplication {
+    name = "niks3-gc";
+    runtimeInputs = [ pkgs.podman ];
+    text = ''
+      exec podman exec niks3 niks3 gc \
+        --server-url=${lib.escapeShellArg "http://127.0.0.1:${toString cfg.port}"} \
+        --auth-token-path=/run/secrets/niks3-api-token \
+        --older-than=${lib.escapeShellArg cfg.gc.olderThan} \
+        --failed-uploads-older-than=${lib.escapeShellArg cfg.gc.failedUploadsOlderThan}
+    '';
+  };
 in
 {
   options.trev.containers.niks3 = {
@@ -112,6 +124,40 @@ in
       description = "Podman secret reference containing the complete Niks3 PostgreSQL connection string.";
     };
 
+    gc = {
+      enable = mkEnableOption "automatic Niks3 garbage collection";
+
+      olderThan = mkOption {
+        type = types.str;
+        default = "720h";
+        description = "Minimum age of closures to garbage collect.";
+      };
+
+      failedUploadsOlderThan = mkOption {
+        type = types.str;
+        default = "6h";
+        description = "Minimum age of failed uploads to garbage collect.";
+      };
+
+      schedule = mkOption {
+        type = types.str;
+        default = "daily";
+        description = "Systemd calendar expression for garbage collection.";
+      };
+
+      randomizedDelaySec = mkOption {
+        type = types.str;
+        default = "30m";
+        description = "Maximum randomized delay before garbage collection.";
+      };
+
+      timeout = mkOption {
+        type = types.str;
+        default = "2h";
+        description = "Maximum duration of a garbage collection run.";
+      };
+    };
+
     port = mkOption {
       type = types.port;
       default = 5751;
@@ -151,7 +197,9 @@ in
         containerConfig = mkContainer {
           image = cfg.image;
           pull = "missing";
+          notify = true;
           environments = {
+            NIKS3_API_TOKEN_PATH = "/run/secrets/niks3-api-token";
             NIKS3_CACHE_URL = cfg.cacheUrl;
             NIKS3_S3_ENDPOINT = cfg.s3Endpoint;
             NIKS3_S3_BUCKET = cfg.s3Bucket;
@@ -161,8 +209,11 @@ in
           secrets = [
             {
               inherit (cfg.apiTokenSecret) ref;
-              type = "env";
-              target = "NIKS3_API_TOKEN";
+              type = "mount";
+              target = "/run/secrets/niks3-api-token";
+              uid = 0;
+              gid = 0;
+              mode = "0400";
             }
             {
               inherit (cfg.signingKeySecret) ref;
@@ -209,6 +260,27 @@ in
       };
 
       networks.niks3 = { };
+    };
+
+    systemd.services.niks3-gc = mkIf cfg.gc.enable {
+      description = "Niks3 garbage collection";
+      requires = [ "niks3.service" ];
+      after = [ "niks3.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = lib.getExe gcCommand;
+        TimeoutStartSec = cfg.gc.timeout;
+      };
+    };
+
+    systemd.timers.niks3-gc = mkIf cfg.gc.enable {
+      description = "Niks3 garbage collection timer";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = cfg.gc.schedule;
+        RandomizedDelaySec = cfg.gc.randomizedDelaySec;
+        Persistent = true;
+      };
     };
   };
 }

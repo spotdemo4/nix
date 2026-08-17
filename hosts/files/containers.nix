@@ -60,6 +60,7 @@ in
     niks3 = {
       enable = true;
       databaseUrlSecret = config.virtualisation.quadlet.secrets.niks3-database-url;
+      gc.enable = true;
     };
     portainer-agent.enable = true;
     rsyncd.enable = true;
