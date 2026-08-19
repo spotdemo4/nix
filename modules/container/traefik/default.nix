@@ -56,7 +56,7 @@ in
   options.trev.containers.traefik = {
     enable = mkEnableOption "the Traefik container";
 
-    image = mkImageOption "docker.io/traefik:v3.7.10@sha256:9c3b91d5fb7770853ca5c1124a23c34bf2d9b47ffaebeab2614cbaf410dcb2ac";
+    image = mkImageOption "docker.io/traefik:v3.7.11@sha256:eb37f58646a901dc7727cf448cae36daaefaba79de33b5058dab79aa4c04aefb";
 
     podmanSocket = mkOption {
       type = types.str;
