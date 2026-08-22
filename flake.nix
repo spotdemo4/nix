@@ -25,7 +25,7 @@
       type = "git";
       url = "https://github.com/nixos/nixpkgs";
       ref = "nixos-unstable";
-      rev = "ffb3c9b700e759be2ef13237c9d8f953b32a1e46";
+      rev = "2c423e03bbafcff28bfadc6781a4a8257f205cb5";
       shallow = true;
     };
 
