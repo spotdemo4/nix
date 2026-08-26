@@ -29,7 +29,7 @@ in
 {
   options.trev.containers.prowlarr = {
     enable = mkEnableOption "Prowlarr container";
-    image = mkImageOption "lscr.io/linuxserver/prowlarr:2.5.2@sha256:1295cff29d10b486c0d8324d1559a552140a5932bf8b3d87e398654414f63f92";
+    image = mkImageOption "lscr.io/linuxserver/prowlarr:2.5.2@sha256:ab91301778251f82a31bbfc87f0497376d59e84439d9a1ceff6a61d594d1e3d7";
     uid = mkOption {
       type = types.int;
       default = 1000;
