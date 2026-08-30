@@ -43,6 +43,7 @@
       extraArgs = [
         "-retentionPeriod=7d"
         "-retention.maxDiskSpaceUsageBytes=10GiB"
+        "-storage.minFreeDiskSpaceBytes=10GiB"
       ];
     };
   };
