@@ -98,8 +98,6 @@ in
         after = [ "network-online.target" ];
         serviceConfig = {
           Type = "oneshot";
-          Restart = "on-failure";
-          RestartSec = "5m";
           StateDirectory = "trev-update";
           ExecStart = "${updater}/bin/update";
         };
@@ -111,8 +109,6 @@ in
         after = [ "network-online.target" ];
         serviceConfig = {
           Type = "oneshot";
-          Restart = "on-failure";
-          RestartSec = "5m";
           StateDirectory = "trev-update";
           ExecStart = "${updater}/bin/update %i";
         };
