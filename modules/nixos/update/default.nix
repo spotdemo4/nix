@@ -96,6 +96,7 @@ in
         description = "Update NixOS";
         wants = [ "network-online.target" ];
         after = [ "network-online.target" ];
+        restartIfChanged = false;
         serviceConfig = {
           Type = "oneshot";
           StateDirectory = "trev-update";
@@ -107,6 +108,7 @@ in
         description = "Update NixOS to revision %i";
         wants = [ "network-online.target" ];
         after = [ "network-online.target" ];
+        restartIfChanged = false;
         serviceConfig = {
           Type = "oneshot";
           StateDirectory = "trev-update";
