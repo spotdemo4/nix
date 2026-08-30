@@ -2,8 +2,6 @@ let
   keys = import ./keys.nix;
 in
 {
-  "tailscale.age".publicKeys = keys.all;
-
   # build server
   "builder-key.age".publicKeys = keys.local ++ [ keys.build ];
   "forgejo.age".publicKeys = keys.local ++ [ keys.build ];

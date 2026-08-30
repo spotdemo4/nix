@@ -10,7 +10,6 @@
     ./hardware.nix
     ./containers.nix
     (self + /modules/nixos/podman-secrets)
-    (self + /modules/nixos/tailscale)
     (self + /modules/nixos/update)
   ];
 
@@ -120,6 +119,7 @@
       Compression = "no";
     };
   };
+  services.tailscale.enable = true;
   users.groups.trev.gid = 1000;
   users.users.trev = {
     isNormalUser = true;
@@ -154,7 +154,6 @@
     autoUpdate.enable = true;
   };
   trev = {
-    tailscale.enable = true;
     update = {
       enable = true;
       hostname = hostname;

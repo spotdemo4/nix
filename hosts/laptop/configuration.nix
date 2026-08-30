@@ -14,7 +14,6 @@ in
     ./hardware.nix
     (self + /modules/nixos/gnome-auth-agent)
     (self + /modules/nixos/niks3)
-    (self + /modules/nixos/tailscale)
     (self + /modules/nixos/update)
   ];
 
@@ -262,6 +261,7 @@ in
         };
       };
     };
+    tailscale.enable = true;
     upower.enable = true;
   };
 
@@ -305,7 +305,6 @@ in
   trev = {
     gnome-auth-agent.enable = true;
     niks3.enable = true;
-    tailscale.enable = true;
     update = {
       enable = true;
       hostname = hostname;

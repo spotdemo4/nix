@@ -11,7 +11,6 @@
     ./hardware.nix
     (self + /modules/nixos/gnome-auth-agent)
     (self + /modules/nixos/niks3)
-    (self + /modules/nixos/tailscale)
     (self + /modules/nixos/update)
   ];
 
@@ -250,6 +249,7 @@
         };
       };
     };
+    tailscale.enable = true;
   };
 
   virtualisation.docker.enable = true;
@@ -287,7 +287,6 @@
   trev = {
     gnome-auth-agent.enable = true;
     niks3.enable = true;
-    tailscale.enable = true;
     update = {
       enable = true;
       hostname = hostname;
