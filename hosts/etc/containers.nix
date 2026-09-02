@@ -40,10 +40,6 @@
               name = "z-ai/glm-5.3-flash";
               alias = "glm-5.3-flash";
             }
-            {
-              name = "openai/gpt-5.6-sol";
-              alias = "gpt-5.6-sol";
-            }
           ];
         }
       ];
