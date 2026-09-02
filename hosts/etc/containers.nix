@@ -28,7 +28,26 @@
   trev.containers = {
     cobalt.enable = true;
     cobalt-web.enable = true;
-    cliproxyapi.enable = true;
+    cliproxyapi = {
+      enable = true;
+      openaiCompatibility = [
+        {
+          name = "openrouter";
+          baseUrl = "https://openrouter.ai/api/v1";
+          apiKeyFile = self + /secrets/openrouter.age;
+          models = [
+            {
+              name = "z-ai/glm-5.3-flash";
+              alias = "glm-5.3-flash";
+            }
+            {
+              name = "openai/gpt-5.6-sol";
+              alias = "gpt-5.6-sol";
+            }
+          ];
+        }
+      ];
+    };
     crowdsec.enable = true;
     portainer-agent.enable = true;
     shlink.enable = true;

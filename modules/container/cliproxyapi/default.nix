@@ -24,11 +24,36 @@ let
     "api-keys"
     "auth-dir"
     "host"
+    "openai-compatibility"
     "port"
     "remote-management"
   ];
   overriddenSettings = builtins.filter (name: builtins.hasAttr name cfg.settings) reservedSettings;
   jsonFormat = pkgs.formats.json { };
+
+  indexedProviders = lib.imap0 (
+    index: provider: provider // { inherit index; }
+  ) cfg.openaiCompatibility;
+
+  toProviderConfig =
+    provider:
+    {
+      name = provider.name;
+      disabled = provider.disabled;
+      base-url = provider.baseUrl;
+      models = map (
+        model:
+        { inherit (model) name; } // lib.optionalAttrs (model.alias != null) { inherit (model) alias; }
+      ) provider.models;
+      # Internal marker consumed (and stripped) by generateConfig.
+      key-index = provider.index;
+    }
+    // lib.optionalAttrs (provider.prefix != null) { inherit (provider) prefix; }
+    // lib.optionalAttrs (provider.headers != { }) { headers = provider.headers; }
+    // lib.optionalAttrs (provider.proxyUrl != null) { proxy-url = provider.proxyUrl; };
+
+  providerKeySecret = provider: config.age.secrets."cliproxyapi-${provider.name}".path;
+
   configTemplate = jsonFormat.generate "cliproxyapi.json" (
     lib.recursiveUpdate {
       debug = false;
@@ -41,6 +66,7 @@ let
       port = cfg.port;
       "auth-dir" = "/root/.cli-proxy-api";
       "api-keys" = [ ];
+      "openai-compatibility" = map toProviderConfig indexedProviders;
       "remote-management" = {
         "allow-remote" = false;
         "secret-key" = "";
@@ -48,6 +74,51 @@ let
       };
     }
   );
+
+  rawfileArgs = lib.concatStringsSep "\n" (
+    map (
+      provider:
+      "--rawfile provider_keys_${toString provider.index} ${lib.escapeShellArg (providerKeySecret provider)}"
+    ) indexedProviders
+  );
+
+  keysObject =
+    if indexedProviders == [ ] then
+      "{ }"
+    else
+      "{ "
+      + lib.concatStringsSep ", " (
+        map (
+          provider: ''"${toString provider.index}": $provider_keys_${toString provider.index}''
+        ) indexedProviders
+      )
+      + " }";
+
+  configProgram = ''
+    ($api_key | sub("\\r?\\n$"; "")) as $key
+    | if ($key == "" or ($key | test("[\\r\\n]"))) then
+        error("CLIProxyAPI API key must be a non-empty single line")
+      else . end
+    | (
+        ${keysObject}
+        | to_entries
+        | map(.value | sub("\\r?\\n$"; "") | split("\n") | map(select(length > 0)))
+      ) as $all_keys
+    | if any($all_keys[]; length == 0) then
+        error("Provider API key file must contain at least one non-empty key")
+      else . end
+    | if any($all_keys[][]; test("\\r")) then
+        error("Provider API keys must not contain carriage returns")
+      else . end
+    | .["openai-compatibility"] |= map(
+        if has("key-index") then
+          .["api-key-entries"] = ($all_keys[.["key-index"]] | map({ "api-key": . }))
+          | del(.["key-index"])
+        else . end
+      )
+    | .["api-keys"] = [$key]
+  '';
+
   generateConfig = pkgs.writeShellApplication {
     name = "generate-cliproxyapi-config";
     runtimeInputs = with pkgs; [
@@ -60,14 +131,10 @@ let
       temporary="$(mktemp "''${output}.XXXXXX")"
       trap 'rm -f "$temporary"' EXIT
 
-      jq --rawfile api_key "$key_file" '
-        ($api_key | sub("\\r?\\n$"; "")) as $key
-        | if ($key == "" or ($key | test("[\\r\\n]"))) then
-            error("CLIProxyAPI API key must be a non-empty single line")
-          else
-            .["api-keys"] = [$key]
-          end
-      ' ${lib.escapeShellArg configTemplate} > "$temporary"
+      jq --rawfile api_key "$key_file" \
+        ${rawfileArgs} \
+        '${configProgram}' \
+        ${lib.escapeShellArg configTemplate} > "$temporary"
 
       chmod 0600 "$temporary"
       mv -f "$temporary" "$output"
@@ -99,6 +166,71 @@ in
       description = "Agenix-encrypted CLIProxyAPI client API key.";
     };
 
+    openaiCompatibility = mkOption {
+      type = types.listOf (
+        types.submodule {
+          options = {
+            name = mkOption {
+              type = types.str;
+              description = "Provider name used by CLIProxyAPI.";
+            };
+            disabled = mkOption {
+              type = types.bool;
+              default = false;
+              description = "Disable this provider without removing it.";
+            };
+            prefix = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Require calls like `<prefix>/<model>` to target this provider.";
+            };
+            baseUrl = mkOption {
+              type = types.str;
+              description = "Base URL of the provider API.";
+            };
+            headers = mkOption {
+              type = types.attrsOf types.str;
+              default = { };
+              description = "Extra HTTP headers sent to the provider.";
+            };
+            proxyUrl = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Optional proxy applied to every API key of this provider.";
+            };
+            apiKeyFile = mkOption {
+              type = types.path;
+              description = "Agenix-encrypted file containing one API key per line.";
+            };
+            models = mkOption {
+              type = types.listOf (
+                types.submodule {
+                  options = {
+                    name = mkOption {
+                      type = types.str;
+                      description = "The actual model name at the provider.";
+                    };
+                    alias = mkOption {
+                      type = types.nullOr types.str;
+                      default = null;
+                      description = "The alias used in the API.";
+                    };
+                  };
+                }
+              );
+              default = [ ];
+              description = "Models exposed by this provider.";
+            };
+          };
+        }
+      );
+      default = [ ];
+      description = ''
+        OpenAI-compatible providers. API keys are injected from agenix
+        secrets into the generated configuration at container start.
+      '';
+    };
+
     settings = mkOption {
       type = types.attrsOf jsonFormat.type;
       default = { };
@@ -112,9 +244,25 @@ in
         assertion = overriddenSettings == [ ];
         message = "trev.containers.cliproxyapi.settings cannot override: ${lib.concatStringsSep ", " overriddenSettings}";
       }
+      {
+        assertion =
+          lib.length cfg.openaiCompatibility
+          == lib.length (lib.unique (map (p: p.name) cfg.openaiCompatibility));
+        message = "trev.containers.cliproxyapi.openaiCompatibility provider names must be unique";
+      }
     ];
 
-    age.secrets.cliproxyapi.file = apiKeyFile;
+    age.secrets = {
+      cliproxyapi.file = apiKeyFile;
+    }
+    // builtins.listToAttrs (
+      map (
+        provider:
+        lib.nameValuePair "cliproxyapi-${provider.name}" {
+          file = toContentPath provider.apiKeyFile;
+        }
+      ) indexedProviders
+    );
 
     virtualisation.quadlet = {
       containers.cliproxyapi = {
@@ -153,6 +301,7 @@ in
     systemd.services.cliproxyapi.restartTriggers = [
       apiKeyFile
       configTemplate
-    ];
+    ]
+    ++ map (provider: toContentPath provider.apiKeyFile) indexedProviders;
   };
 }
