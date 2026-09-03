@@ -45,4 +45,4 @@ jobs:
         uses: spotdemo4/nix-init@c7537bc73ce11ca01e53bd9d119d6e46363f9888 # v1.65.0
 
       - name: Build packages
-        uses: ./.github/actions/build
+        uses: $/.github/actions/build
