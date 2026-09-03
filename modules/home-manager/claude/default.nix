@@ -45,6 +45,7 @@ let
       export ANTHROPIC_DEFAULT_HAIKU_MODEL=${lib.escapeShellArg cfg.haikuModel}
       export ANTHROPIC_DEFAULT_OPUS_MODEL=${lib.escapeShellArg cfg.opusModel}
       export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.sonnetModel}
+      export CLAUDE_CODE_SUBAGENT_MODEL="gpt-5.6-luna"
 
       exec ${lib.getExe cfg.package} \
         --model ${lib.escapeShellArg cfg.model} \
@@ -76,6 +77,7 @@ let
       export ANTHROPIC_DEFAULT_HAIKU_MODEL=${lib.escapeShellArg cfg.haikuModel}
       export ANTHROPIC_DEFAULT_OPUS_MODEL=${lib.escapeShellArg cfg.opusModel}
       export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.sonnetModel}
+      export CLAUDE_CODE_SUBAGENT_MODEL="gpt-5.6-luna"
 
       exec ${lib.getExe pkgs.claude-agent-acp} "$@"
     '';
