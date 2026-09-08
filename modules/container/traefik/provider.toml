@@ -68,11 +68,11 @@ service = "windows"
 certResolver = "letsencrypt"
 
 [[tcp.services.windows.loadBalancer.servers]]
-address = "10.10.10.104:5050"
+address = "10.10.10.104:8085"
 
 [udp.routers.windows]
 entryPoints = ["windows-udp"]
 service = "windows"
 
 [[udp.services.windows.loadBalancer.servers]]
-address = "10.10.10.104:5050"
+address = "10.10.10.104:8085"

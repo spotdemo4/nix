@@ -143,7 +143,7 @@ in
       };
       windows = mkOption {
         type = types.port;
-        default = 5050;
+        default = 8085;
         description = "Windows UDP entrypoint port.";
       };
     };
@@ -250,7 +250,7 @@ in
             "${toString cfg.ports.minecraft}:25565"
             "${toString cfg.ports.syncthing}:22000/tcp"
             "${toString cfg.ports.syncthing}:22000/udp"
-            "${toString cfg.ports.windows}:5050/udp"
+            "${toString cfg.ports.windows}:8085/udp"
           ];
           networks = [
             networks.${cfg.networkName}.ref

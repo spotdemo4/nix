@@ -94,7 +94,7 @@ address = ":22000/tcp"
 address = ":22000/udp"
 
 [entryPoints.windows-udp]
-address = ":5050/udp"
+address = ":8085/udp"
 
 [certificatesResolvers.letsencrypt.acme]
 # email is supplied by default.nix.
