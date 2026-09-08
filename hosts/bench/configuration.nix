@@ -68,9 +68,7 @@ in
 
   services = {
     fstrim.enable = false;
-    journald.extraConfig = ''
-      Storage=volatile
-    '';
+    journald.settings.Journal.Storage = "volatile";
     logrotate.enable = false;
     openssh = {
       enable = true;

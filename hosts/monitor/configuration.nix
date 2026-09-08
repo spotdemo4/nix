@@ -118,11 +118,6 @@
       Compression = "no";
     };
   };
-  services.journald.extraConfig = ''
-    RateLimitIntervalSec=30s
-    RateLimitBurst=1000
-    SystemMaxUse=500M
-  '';
   users.groups.trev.gid = 1000;
   users.users.trev = {
     isNormalUser = true;

@@ -20,11 +20,11 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
-    services.journald.extraConfig = lib.mkDefault ''
-      RateLimitIntervalSec=30s
-      RateLimitBurst=1000
-      SystemMaxUse=500M
-    '';
+    services.journald.settings.Journal = {
+      RateLimitIntervalSec = lib.mkDefault "30s";
+      RateLimitBurst = lib.mkDefault 1000;
+      SystemMaxUse = lib.mkDefault "500M";
+    };
 
     # Throttle noisy units that dominated 75% of ingest (see DuckMetrics report).
     systemd.services.systemd-networkd.serviceConfig.LogRateLimitIntervalSec = lib.mkDefault "30s";
