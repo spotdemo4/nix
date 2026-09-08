@@ -141,6 +141,11 @@ in
         default = 22000;
         description = "Syncthing TCP and UDP entrypoint port.";
       };
+      windows = mkOption {
+        type = types.port;
+        default = 5050;
+        description = "Windows UDP entrypoint port.";
+      };
     };
 
     secrets = {
@@ -245,6 +250,7 @@ in
             "${toString cfg.ports.minecraft}:25565"
             "${toString cfg.ports.syncthing}:22000/tcp"
             "${toString cfg.ports.syncthing}:22000/udp"
+            "${toString cfg.ports.windows}:5050/udp"
           ];
           networks = [
             networks.${cfg.networkName}.ref

@@ -93,6 +93,9 @@ address = ":22000/tcp"
 [entryPoints.syncthing-udp]
 address = ":22000/udp"
 
+[entryPoints.windows-udp]
+address = ":5050/udp"
+
 [certificatesResolvers.letsencrypt.acme]
 # email is supplied by default.nix.
 storage = "/etc/traefik/acme/acme.json"
