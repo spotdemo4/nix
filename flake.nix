@@ -69,7 +69,7 @@
       type = "github";
       owner = "catppuccin";
       repo = "nix";
-      rev = "35d78c213b65e38789bcb359aae2380fcb4dc3e8";
+      rev = "3142fdbeea0b181ad6600587dfe484ccb644dcc6";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
