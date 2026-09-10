@@ -78,7 +78,7 @@
       type = "github";
       owner = "Mic92";
       repo = "niks3";
-      rev = "3b7f955d7cd51aae473108cf785a159c84586ff2";
+      rev = "f5820e6b2c9a92dc43644df2adbaba0724449099";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
