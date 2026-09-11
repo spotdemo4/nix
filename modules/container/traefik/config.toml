@@ -53,9 +53,6 @@ watch = true
 [entryPoints.http]
 address = ":80"
 
-[entryPoints.http.http]
-middlewares = ["crowdsec@file"]
-
 [entryPoints.http.http3]
 
 [entryPoints.http.http.redirections.entryPoint]
@@ -65,9 +62,6 @@ scheme = "https"
 [entryPoints.https]
 address = ":443"
 asDefault = true
-
-[entryPoints.https.http]
-middlewares = ["crowdsec@file"]
 
 [entryPoints.https.http3]
 
