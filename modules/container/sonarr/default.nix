@@ -23,7 +23,7 @@ in
 {
   options.trev.containers.sonarr = {
     enable = mkEnableOption "Sonarr container";
-    image = mkImageOption "lscr.io/linuxserver/sonarr:4.0.19@sha256:c19aa4ecdf03d73e1d5c901da33744cb7eb4d921f89bafed1ca264601d7fa224";
+    image = mkImageOption "lscr.io/linuxserver/sonarr:4.0.19@sha256:82172b363f9eddc02aca544f880a044f2ceb9aaf190bc87e4454e2f705eb91d0";
     uid = mkOption {
       type = types.int;
       default = 1000;
