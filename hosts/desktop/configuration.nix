@@ -61,6 +61,7 @@ in
     proton-vpn-cli
     ripgrep
     stunnel
+    t3code
     thunderbird
     tor-browser
     trev.codex-commit
