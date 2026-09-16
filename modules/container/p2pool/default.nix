@@ -25,7 +25,7 @@ in
   options.trev.containers.p2pool = {
     enable = mkEnableOption "the P2Pool container";
 
-    image = mkImageOption "ghcr.io/sethforprivacy/p2pool:v4.18@sha256:53b6a88aff43c7f165066c4e918fea250fabd0afccee7e07a020dff3ce605de7";
+    image = mkImageOption "ghcr.io/sethforprivacy/p2pool:v4.18@sha256:369f8b47c6f120174f73293c8b33c6cf87a798f8e3ae19ad45420a14da7ffcc9";
 
     wallet = mkOption {
       type = types.str;
