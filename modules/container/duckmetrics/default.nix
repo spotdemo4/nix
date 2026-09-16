@@ -31,7 +31,7 @@ in
 {
   options.trev.containers.duckmetrics = {
     enable = mkEnableOption "the DuckMetrics container";
-    image = mkImageOption "trev.zip/llc/duckmetrics:2.4.8@sha256:555d4f50aca74de32a38af2be3048b70f7df7814f8f5022ee1e280934f5d8897";
+    image = mkImageOption "trev.zip/llc/duckmetrics:2.4.9@sha256:5b8244b98e14db9a5cd75c2a60a8b1824ec047c030041572cead996b105d74d0";
 
     domain = mkOption {
       type = types.str;
