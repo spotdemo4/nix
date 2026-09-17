@@ -43,6 +43,7 @@ in
     (self + /modules/home-manager/opencode)
     (self + /modules/home-manager/ssh)
     (self + /modules/home-manager/starship)
+    (self + /modules/home-manager/t3code)
   ];
 
   home = {
@@ -171,6 +172,11 @@ in
         enable = true;
         proxyJump = null;
       };
+    };
+    services.t3code = {
+      enable = true;
+      host = "10.10.10.115";
+      port = 3773;
     };
   };
 

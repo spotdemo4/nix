@@ -177,6 +177,7 @@ in
         "render"
       ];
       shell = pkgs.zsh;
+      linger = true;
       openssh.authorizedKeys.keys = (import (self + /secrets/keys.nix)).sshClients;
     };
   };

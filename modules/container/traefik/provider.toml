@@ -59,6 +59,14 @@ middlewares = ["secure-trev@file"]
 [[http.services.dev.loadBalancer.servers]]
 url = "http://10.10.10.115:8080"
 
+[http.routers.t3]
+rule = "Host(`t3.trev.zip`)"
+service = "t3"
+middlewares = ["secure-trev@file"]
+
+[[http.services.t3.loadBalancer.servers]]
+url = "http://10.10.10.115:3773"
+
 [http.routers.windows]
 entryPoints = ["https"]
 rule = "Host(`windows.trev.xyz`)"
