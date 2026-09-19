@@ -76,7 +76,7 @@ in
             options = {
               enable = mkEnableOption "the ${name} Forgejo runner container";
 
-              image = mkImageOption "code.forgejo.org/forgejo/runner:13.1.0@sha256:c4af85fd9f0dd03788676a534781a87c71aa2c6a37737143e017eb94d4312952";
+              image = mkImageOption "code.forgejo.org/forgejo/runner:13.2.0@sha256:ca3d5eea46004789a175d1369eec6829d3ea9bfbe2011a06625b4bdaa55f7552";
 
               url = mkOption {
                 type = types.str;
