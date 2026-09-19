@@ -42,6 +42,7 @@ let
       export ANTHROPIC_AUTH_TOKEN
       export ANTHROPIC_BASE_URL=${lib.escapeShellArg cfg.baseUrl}
       export ANTHROPIC_CUSTOM_MODEL_OPTION=${lib.escapeShellArg cfg.model}
+      export ANTHROPIC_DEFAULT_FABLE_MODEL=${lib.escapeShellArg cfg.fableModel}
       export ANTHROPIC_DEFAULT_HAIKU_MODEL=${lib.escapeShellArg cfg.haikuModel}
       export ANTHROPIC_DEFAULT_OPUS_MODEL=${lib.escapeShellArg cfg.opusModel}
       export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.sonnetModel}
@@ -74,6 +75,7 @@ let
       export ANTHROPIC_BASE_URL=${lib.escapeShellArg cfg.baseUrl}
       export ANTHROPIC_CUSTOM_MODEL_OPTION=${lib.escapeShellArg cfg.model}
       export ANTHROPIC_MODEL=${lib.escapeShellArg cfg.model}
+      export ANTHROPIC_DEFAULT_FABLE_MODEL=${lib.escapeShellArg cfg.fableModel}
       export ANTHROPIC_DEFAULT_HAIKU_MODEL=${lib.escapeShellArg cfg.haikuModel}
       export ANTHROPIC_DEFAULT_OPUS_MODEL=${lib.escapeShellArg cfg.opusModel}
       export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.sonnetModel}
@@ -93,6 +95,12 @@ in
       type = lib.types.str;
       default = "https://proxy.trev.xyz";
       description = "CLIProxyAPI endpoint used by Claude Code.";
+    };
+
+    fableModel = lib.mkOption {
+      type = lib.types.str;
+      default = "gpt-6-astra";
+      description = "Model used when Claude Code selects Fable.";
     };
 
     haikuModel = lib.mkOption {
