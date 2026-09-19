@@ -123,7 +123,7 @@ in
 
     model = lib.mkOption {
       type = lib.types.str;
-      default = "gpt-5.6-sol";
+      default = "gpt-6-astra";
       description = "Model used by Claude Code and its subagents.";
     };
 
