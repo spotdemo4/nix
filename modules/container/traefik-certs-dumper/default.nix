@@ -31,7 +31,7 @@ in
   options.trev.containers.traefik-certs-dumper = {
     enable = mkEnableOption "the Traefik certificate dumper container";
 
-    image = mkImageOption "ghcr.io/kereis/traefik-certs-dumper:1.8.26@sha256:786c7ef6b20f5129c93cc3be607cb1969e77737b94577f75b0cdd930fd936557";
+    image = mkImageOption "ghcr.io/kereis/traefik-certs-dumper:1.8.27@sha256:bdf11204340a1d19bc7007c1ddeb82406a18f2a7d9dd56195c19a11860a0c4be";
 
     outputDir = mkOption {
       type = types.str;
