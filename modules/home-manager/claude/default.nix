@@ -192,6 +192,7 @@ in
         };
         effortLevel = "high";
         enableWorkflows = true;
+        feedbackDrafts = "off";
         fallbackModel = [
           "sonnet"
           "haiku"
