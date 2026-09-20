@@ -87,7 +87,7 @@
       type = "github";
       owner = "nix-community";
       repo = "nix4vscode";
-      rev = "1385cf459a21c4c78f47ef36504876016981a450";
+      rev = "79eb3e7e13d248f98eb10e8fa506529ad1312f35";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
