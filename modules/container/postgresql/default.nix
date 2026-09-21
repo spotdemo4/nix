@@ -44,7 +44,7 @@ in
             options = {
               enable = mkEnableOption "the ${name} PostgreSQL container";
 
-              image = mkImageOption "docker.io/postgres:18.6-alpine@sha256:6c538e7206ea40ff740ef27883529390a690b6ead6ba96b44c67a9f7c638e8fd";
+              image = mkImageOption "docker.io/postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873";
 
               database = mkOption {
                 type = types.str;
