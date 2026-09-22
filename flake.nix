@@ -233,6 +233,39 @@
         };
 
         checks = pkgs.mkChecks {
+          runner-docker =
+            let
+              build = self.nixosConfigurations.build.config;
+              runners = [
+                "forgejo-runner-trev"
+                "forgejo-runner-org"
+                "forgejo-runner-template"
+                "gitea-runner-quanta"
+              ];
+              offenders = builtins.filter (
+                name:
+                let
+                  text = build.virtualisation.quadlet.containers.${name}._configText;
+                  lines = pkgs.lib.splitString "\n" text;
+                  required = [
+                    "Volume=/run/docker.sock:/var/run/docker.sock"
+                    "Volume=${name}.volume:/data"
+                    "Requires=docker.service docker.socket"
+                    "After=docker.service docker.socket"
+                    "PartOf=docker.service docker.socket"
+                  ];
+                in
+                !(builtins.all (line: builtins.elem line lines) required) || pkgs.lib.hasInfix "podman.sock" text
+              ) runners;
+            in
+            if !build.virtualisation.docker.enable || offenders != [ ] then
+              throw ''
+                build runners must use native Docker and preserve their state volumes:
+                ${pkgs.lib.concatStringsSep "\n" offenders}
+              ''
+            else
+              pkgs.runCommand "runner-docker" { } "touch $out";
+
           flake-root-paths =
             let
               flakeRoot = builtins.unsafeDiscardStringContext (toString self.outPath);

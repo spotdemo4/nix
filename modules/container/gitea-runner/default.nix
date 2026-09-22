@@ -87,10 +87,10 @@ in
                 description = "Additional Gitea runner configuration.";
               };
 
-              podmanSocket = mkOption {
+              dockerSocket = mkOption {
                 type = types.str;
-                default = "/run/podman/podman.sock";
-                description = "Host Podman socket exposed to the runner.";
+                default = "/run/docker.sock";
+                description = "Host rootful Docker socket exposed to the runner.";
               };
 
               networks = networks;
@@ -130,6 +130,10 @@ in
         }) enabledInstances
         ++ [
           {
+            assertion = enabledInstances == { } || config.virtualisation.docker.enable;
+            message = "Enabled Gitea runner instances require virtualisation.docker.enable.";
+          }
+          {
             assertion = builtins.length refs == builtins.length (unique refs);
             message = "Enabled Gitea runner instances must have unique refs";
           }
@@ -168,7 +172,7 @@ in
               };
               environmentFiles = optional (instance.tokenFile != "") instance.tokenFile;
               volumes = [
-                "${instance.podmanSocket}:/var/run/docker.sock"
+                "${instance.dockerSocket}:/var/run/docker.sock"
                 "${configFile}:/config.yaml:ro"
                 "${volumes.${instance.volumeName}.ref}:/data"
               ];
@@ -177,9 +181,9 @@ in
             };
 
             unitConfig = {
-              After = "podman.socket";
-              BindsTo = "podman.socket";
-              ReloadPropagatedFrom = "podman.socket";
+              Requires = "docker.service docker.socket";
+              After = "docker.service docker.socket";
+              PartOf = "docker.service docker.socket";
             };
           }
         ) enabledInstances;
