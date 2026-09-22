@@ -84,7 +84,7 @@ in
         pull = "missing";
         volumes = [
           "${volumes.forgejo.ref}:/data"
-          "${volumes.forgejo-repo-archive.ref}:/data/gitea/repo-archive"
+          "${volumes.forgejo-archive-cache.ref}:/data/gitea/repo-archive"
           "${./app.ini}:/data/gitea/conf/app.ini"
           "${cfg.localtimePath}:/etc/localtime:ro"
         ];
@@ -124,11 +124,13 @@ in
 
       volumes = {
         forgejo = { };
-        forgejo-repo-archive.volumeConfig = {
+        forgejo-archive-cache.volumeConfig = {
           copy = false;
-          device = "tmpfs";
-          type = "tmpfs";
-          options = "size=2G,uid=1000,gid=1000,mode=0750,nodev,nosuid,noexec";
+          # Podman 5.8 supports these flags but not Quadlet's UID/GID keys.
+          podmanArgs = [
+            "--uid=1000"
+            "--gid=1000"
+          ];
         };
       };
       networks.forgejo = { };

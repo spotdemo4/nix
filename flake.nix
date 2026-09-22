@@ -233,6 +233,40 @@
         };
 
         checks = pkgs.mkChecks {
+          forgejo-archive-storage =
+            let
+              quadlet = self.nixosConfigurations.files.config.virtualisation.quadlet;
+              container = quadlet.containers.forgejo._configText;
+              volume = quadlet.volumes.forgejo-archive-cache;
+              lines = pkgs.lib.splitString "\n" volume._configText;
+              required = [
+                "VolumeName=forgejo-archive-cache"
+                "Copy=false"
+                "PodmanArgs=--uid=1000"
+                "PodmanArgs=--gid=1000"
+              ];
+              persistent =
+                volume.volumeConfig.device == null
+                && volume.volumeConfig.type == null
+                && volume.volumeConfig.options == null
+                && builtins.elem volume.volumeConfig.driver [
+                  null
+                  "local"
+                ];
+            in
+            if
+              !persistent
+              || !(builtins.all (line: builtins.elem line lines) required)
+              || !(builtins.elem "Volume=forgejo-archive-cache.volume:/data/gitea/repo-archive" (
+                pkgs.lib.splitString "\n" container
+              ))
+              || quadlet.volumes ? forgejo-repo-archive
+              || pkgs.lib.hasInfix "forgejo-repo-archive.volume" container
+            then
+              throw "Forgejo archives must use a new persistent volume owned by UID/GID 1000"
+            else
+              pkgs.runCommand "forgejo-archive-storage" { } "touch $out";
+
           runner-docker =
             let
               build = self.nixosConfigurations.build.config;
