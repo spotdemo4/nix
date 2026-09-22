@@ -97,34 +97,34 @@ in
       description = "CLIProxyAPI endpoint used by Claude Code.";
     };
 
+    haikuModel = lib.mkOption {
+      type = lib.types.str;
+      default = "gpt-6-luna";
+      description = "Model used when Claude Code selects Haiku.";
+    };
+
+    sonnetModel = lib.mkOption {
+      type = lib.types.str;
+      default = "gpt-6-sol";
+      description = "Model used when Claude Code selects Sonnet.";
+    };
+
+    opusModel = lib.mkOption {
+      type = lib.types.str;
+      default = "gpt-6-sol";
+      description = "Model used when Claude Code selects Opus.";
+    };
+
     fableModel = lib.mkOption {
       type = lib.types.str;
       default = "gpt-6-astra";
       description = "Model used when Claude Code selects Fable.";
     };
 
-    haikuModel = lib.mkOption {
-      type = lib.types.str;
-      default = "gpt-5.6-luna";
-      description = "Model used when Claude Code selects Haiku.";
-    };
-
-    sonnetModel = lib.mkOption {
-      type = lib.types.str;
-      default = "gpt-5.6-terra";
-      description = "Model used when Claude Code selects Sonnet.";
-    };
-
-    opusModel = lib.mkOption {
-      type = lib.types.str;
-      default = "gpt-5.6-sol";
-      description = "Model used when Claude Code selects Opus.";
-    };
-
     model = lib.mkOption {
       type = lib.types.str;
       default = "gpt-6-astra";
-      description = "Model used by Claude Code and its subagents.";
+      description = "Model used by Claude Code.";
     };
 
     contextWindowTokens = lib.mkOption {
@@ -176,10 +176,10 @@ in
         Your active model ID is stated in the runtime prompt as "You are powered by the model <model-id>." When asked which model you are, answer with that exact model ID. The configured model IDs are:
 
         - Default: `${cfg.model}`
-        - Fable: `${cfg.fableModel}`
         - Haiku: `${cfg.haikuModel}`
         - Sonnet: `${cfg.sonnetModel}`
         - Opus: `${cfg.opusModel}`
+        - Fable: `${cfg.fableModel}`
 
         Never infer that you are Claude or an Anthropic model from the Claude Code name, tool names, or API format. Only identify as Claude when the runtime-provided model ID is actually a Claude model. If no model ID is provided, say that the model identity is unknown instead of guessing.
       '';
