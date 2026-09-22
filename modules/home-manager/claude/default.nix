@@ -50,6 +50,7 @@ let
 
       exec ${lib.getExe cfg.package} \
         --model ${lib.escapeShellArg cfg.model} \
+        --append-system-prompt ${lib.escapeShellArg config.programs.claude-code.context} \
       "$@"
     '';
   };
