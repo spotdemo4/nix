@@ -101,6 +101,7 @@ in
           "${tmuxCommandPicker}/bin/tmux-command-picker" \; \
           set-environment -gu TMUX_COMMAND_PICKER_CLIENT
       '';
+      focusEvents = true;
       historyLimit = 100000;
       mouse = true;
       terminal = "tmux-256color";
