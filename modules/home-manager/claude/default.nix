@@ -48,6 +48,8 @@ let
       export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.sonnetModel}
       export CLAUDE_CODE_SUBAGENT_MODEL=${lib.escapeShellArg cfg.haikuModel}
 
+      # Backticks in the model identity guidance are literal, not command substitutions.
+      # shellcheck disable=SC2016
       exec ${lib.getExe cfg.package} \
         --model ${lib.escapeShellArg cfg.model} \
         --append-system-prompt ${lib.escapeShellArg config.programs.claude-code.context} \
