@@ -29,7 +29,7 @@ in
 {
   options.trev.containers.bazarr = {
     enable = mkEnableOption "Bazarr container";
-    image = mkImageOption "lscr.io/linuxserver/bazarr:1.6.1@sha256:d24bd0048c759a468970989e9df11a6b96a7628d556d00f923e60a35ba59237b";
+    image = mkImageOption "lscr.io/linuxserver/bazarr:1.6.1@sha256:762f802274598da27255b2e5778f262b2b71b355a23e3812d9ee1520f8dbe37c";
     uid = mkOption {
       type = types.int;
       default = 1000;
