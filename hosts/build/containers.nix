@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   self,
   ...
 }:
@@ -23,6 +24,9 @@ let
   };
   forgejoRunner = runner // {
     url = "https://trev.zip/";
+    labels = map (
+      label: label + lib.optionalString (lib.hasPrefix "ubuntu-24.04-arm:" label) "?platform=linux/arm64"
+    ) labels;
   };
 in
 {
