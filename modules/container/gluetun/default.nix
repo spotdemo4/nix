@@ -40,7 +40,7 @@ in
             options = {
               enable = mkEnableOption "the ${name} Gluetun container";
 
-              image = mkImageOption "docker.io/qmcgaw/gluetun:latest@sha256:12df8b20528d4cd5e9b6e827d40f2886cf78e53e7e9afc750050648c31183793";
+              image = mkImageOption "docker.io/qmcgaw/gluetun:latest@sha256:596fb46a686fd060b33022669dba951496bc8fa8c68a6306fd8a4acf689497c3";
 
               ports = mkOption {
                 type = types.listOf types.str;
