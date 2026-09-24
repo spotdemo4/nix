@@ -35,7 +35,7 @@ in
   options.trev.containers.tor = {
     enable = mkEnableOption "the Tor relay container";
 
-    image = mkImageOption "docker.io/dockurr/tor:0.4.9.12@sha256:03194e6f7358093873c210704b3b5ca1bf5c09ffb1ae71a4a539fb1464aafa50";
+    image = mkImageOption "docker.io/dockurr/tor:0.4.9.13@sha256:1ada8797bf79181fc993befa5e9a74242e2208195c87f8f41007e735cd5884df";
 
     nickname = mkOption {
       type = types.str;
