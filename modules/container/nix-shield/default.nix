@@ -22,7 +22,7 @@ in
   options.trev.containers.nix-shield = {
     enable = mkEnableOption "nix-shield container";
 
-    image = mkImageOption "trev.zip/llc/nix-shield:0.3.0@sha256:27031918705b2c406fd030975d3458204f157be52389d73e36032d400af8d70c";
+    image = mkImageOption "trev.zip/llc/nix-shield:0.4.0@sha256:1c4a340f07527f5bcb5c657761dc2650d24e15a6e7167f82e3cc30a72c9c93ac";
 
     allowedIPs = mkOption {
       type = types.listOf types.str;
