@@ -11,6 +11,7 @@
     (self + /modules/container/cliproxyapi)
     (self + /modules/container/crowdsec)
     (self + /modules/container/gluetun)
+    (self + /modules/container/nix-shield)
     (self + /modules/container/portainer-agent)
     (self + /modules/container/postgresql)
     (self + /modules/container/shlink)
@@ -45,6 +46,7 @@
       ];
     };
     crowdsec.enable = true;
+    nix-shield.enable = true;
     portainer-agent.enable = true;
     shlink.enable = true;
     shlink-web.enable = true;
