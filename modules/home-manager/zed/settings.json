@@ -4,6 +4,7 @@
   "auto_install_extensions": {
     "bash": true,
     "catppuccin-icons": true,
+    "dockerfile": true,
     "git-firefly": true,
     "gleam": true,
     "html": true,

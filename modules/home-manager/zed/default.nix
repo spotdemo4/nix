@@ -53,6 +53,7 @@ in
       enable = true;
       extensions = [
         "bash"
+        "dockerfile"
         "git-firefly"
         "gleam"
         "html"
