@@ -6,6 +6,7 @@
 }:
 let
   inherit (lib)
+    concatStringsSep
     mkEnableOption
     mkIf
     mkOption
@@ -21,7 +22,13 @@ in
   options.trev.containers.nix-shield = {
     enable = mkEnableOption "nix-shield container";
 
-    image = mkImageOption "trev.zip/llc/nix-shield:0.2.0@sha256:93f2f61d4f99386964afc99c9396331b22cbfa6621da3eda469a82fe79e5d814";
+    image = mkImageOption "trev.zip/llc/nix-shield:0.3.0@sha256:27031918705b2c406fd030975d3458204f157be52389d73e36032d400af8d70c";
+
+    allowedIPs = mkOption {
+      type = types.listOf types.str;
+      default = [ "10.10.10.105" ];
+      description = "IP addresses nix-shield is allowed to fetch from in addition to public addresses.";
+    };
 
     domain = mkOption {
       type = types.str;
@@ -35,6 +42,7 @@ in
       image = cfg.image;
       pull = "missing";
       publishPorts = [ "3000" ];
+      environments.NIX_SHIELD_ALLOWED_IPS = concatStringsSep "," cfg.allowedIPs;
       labels = {
         traefik = {
           enable = true;
