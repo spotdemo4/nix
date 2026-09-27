@@ -123,7 +123,7 @@
       type = "github";
       owner = "ryantm";
       repo = "agenix";
-      rev = "654f73179924797b0d5307105398aedfcdc10800";
+      rev = "9353cb29366a8535ac9483065284785fd48012a2";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
