@@ -79,17 +79,6 @@ in
   networking = {
     hostName = hostname;
     firewall.enable = false;
-    hosts."10.10.10.105" = [
-      "trev.xyz"
-      "trev.zip"
-      "trev.kiwi"
-      "trev.rs"
-      "cache.trev.zip"
-      "s3.trev.zip"
-      "nix.trev.zip"
-      "niks3.trev.zip"
-      "proxy.trev.xyz"
-    ];
   };
 
   time.timeZone = "America/Detroit";

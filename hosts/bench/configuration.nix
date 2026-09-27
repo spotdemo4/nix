@@ -57,10 +57,6 @@ in
       enable = true;
       allowedTCPPorts = [ 22 ];
     };
-    hosts."10.10.10.105" = [
-      "nix.trev.zip"
-      "proxy.trev.xyz"
-    ];
   };
 
   time.timeZone = "America/Detroit";
