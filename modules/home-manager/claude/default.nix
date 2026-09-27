@@ -46,7 +46,7 @@ let
       export ANTHROPIC_DEFAULT_HAIKU_MODEL=${lib.escapeShellArg cfg.haikuModel}
       export ANTHROPIC_DEFAULT_OPUS_MODEL=${lib.escapeShellArg cfg.opusModel}
       export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.sonnetModel}
-      export CLAUDE_CODE_SUBAGENT_MODEL=${lib.escapeShellArg cfg.haikuModel}
+      export CLAUDE_CODE_SUBAGENT_MODEL=${lib.escapeShellArg cfg.subagentModel}
 
       # Backticks in the model identity guidance are literal, not command substitutions.
       # shellcheck disable=SC2016
@@ -82,7 +82,7 @@ let
       export ANTHROPIC_DEFAULT_HAIKU_MODEL=${lib.escapeShellArg cfg.haikuModel}
       export ANTHROPIC_DEFAULT_OPUS_MODEL=${lib.escapeShellArg cfg.opusModel}
       export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.sonnetModel}
-      export CLAUDE_CODE_SUBAGENT_MODEL=${lib.escapeShellArg cfg.haikuModel}
+      export CLAUDE_CODE_SUBAGENT_MODEL=${lib.escapeShellArg cfg.subagentModel}
 
       exec ${lib.getExe pkgs.claude-agent-acp} "$@"
     '';
@@ -102,32 +102,38 @@ in
 
     haikuModel = lib.mkOption {
       type = lib.types.str;
-      default = "gpt-6-luna";
+      default = "claude-haiku-4-5-20251001";
       description = "Model used when Claude Code selects Haiku.";
     };
 
     sonnetModel = lib.mkOption {
       type = lib.types.str;
-      default = "gpt-6-sol";
+      default = "claude-sonnet-5";
       description = "Model used when Claude Code selects Sonnet.";
     };
 
     opusModel = lib.mkOption {
       type = lib.types.str;
-      default = "gpt-6-sol";
+      default = "claude-opus-5-5";
       description = "Model used when Claude Code selects Opus.";
     };
 
     fableModel = lib.mkOption {
       type = lib.types.str;
-      default = "gpt-6-astra";
+      default = "claude-fable-5-1";
       description = "Model used when Claude Code selects Fable.";
+    };
+
+    subagentModel = lib.mkOption {
+      type = lib.types.str;
+      default = "gpt-6-luna";
+      description = "Default model used by Claude Code subagents, independently of the model aliases.";
     };
 
     model = lib.mkOption {
       type = lib.types.str;
-      default = "gpt-6-astra";
-      description = "Model used by Claude Code.";
+      default = "claude-opus-5-5";
+      description = "Default model used by Claude Code.";
     };
 
     contextWindowTokens = lib.mkOption {
@@ -174,17 +180,11 @@ in
       enableMcpIntegration = true;
 
       context = ''
-        You run inside Claude Code through an Anthropic-compatible proxy. Claude Code is the host application, not your model identity.
+        You run inside Claude Code through CLIProxyAPI, which serves both Anthropic Claude and OpenAI GPT models. Claude Code is the host application, not your model identity.
 
-        Your active model ID is stated in the runtime prompt as "You are powered by the model <model-id>." When asked which model you are, answer with that exact model ID. The configured model IDs are:
+        Use the current runtime model ID to identify yourself, for example from "You are powered by the model <model-id>." When asked which model you are, answer with that exact model ID. After a /model switch, use the updated runtime model information rather than the startup default or earlier responses.
 
-        - Default: `${cfg.model}`
-        - Haiku: `${cfg.haikuModel}`
-        - Sonnet: `${cfg.sonnetModel}`
-        - Opus: `${cfg.opusModel}`
-        - Fable: `${cfg.fableModel}`
-
-        Never infer that you are Claude or an Anthropic model from the Claude Code name, tool names, or API format. Only identify as Claude when the runtime-provided model ID is actually a Claude model. If no model ID is provided, say that the model identity is unknown instead of guessing.
+        A runtime model ID starting with `claude-` identifies an Anthropic Claude model; one starting with `gpt-` identifies an OpenAI GPT model. Either provider may be active. Do not infer model identity from the Claude Code name, tool names, API format, alias labels, or previous responses. If no reliable runtime model ID is provided, say that the model identity is unknown instead of guessing.
       '';
 
       settings = {
@@ -197,18 +197,36 @@ in
         enableWorkflows = true;
         feedbackDrafts = "off";
         fallbackModel = [
-          "sonnet"
-          "haiku"
+          "gpt-6-sol"
+          "gpt-6-luna"
         ];
         hooks = {
           CwdChanged = [ direnvHook ];
           SessionStart = [ direnvHook ];
         };
+        modelPicker.options = [
+          {
+            model = "gpt-6-astra";
+            label = "GPT-6 Astra";
+            description = "OpenAI GPT-6 Astra via CLIProxyAPI";
+          }
+          {
+            model = "gpt-6-sol";
+            label = "GPT-6 Sol";
+            description = "OpenAI GPT-6 Sol via CLIProxyAPI";
+          }
+          {
+            model = "gpt-6-luna";
+            label = "GPT-6 Luna";
+            description = "OpenAI GPT-6 Luna via CLIProxyAPI";
+          }
+        ];
         permissions.defaultMode = "bypassPermissions";
         skillOverrides."claude-api" = "off";
         workflowSizeGuideline = "medium";
         env = {
           CLAUDE_CODE_AUTO_COMPACT_WINDOW = toString cfg.autoCompactWindowTokens;
+          CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY = "1";
           CLAUDE_CODE_MAX_RETRIES = "15";
           CLAUDE_CODE_MAX_CONTEXT_TOKENS = toString cfg.contextWindowTokens;
           CLAUDE_CODE_MAX_OUTPUT_TOKENS = toString cfg.maxOutputTokens;
