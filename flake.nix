@@ -125,7 +125,6 @@
       repo = "agenix";
       rev = "9353cb29366a8535ac9483065284785fd48012a2";
       inputs = {
-        systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
       };
