@@ -305,7 +305,6 @@ in
         workflowSizeGuideline = "medium";
         env = {
           CLAUDE_CODE_AUTO_COMPACT_WINDOW = toString cfg.autoCompactWindowTokens;
-          CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY = "1";
           CLAUDE_CODE_MAX_RETRIES = "15";
           CLAUDE_CODE_MAX_CONTEXT_TOKENS = toString cfg.contextWindowTokens;
           CLAUDE_CODE_MAX_OUTPUT_TOKENS = toString cfg.maxOutputTokens;
