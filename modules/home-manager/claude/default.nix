@@ -21,71 +21,105 @@ let
       }
     ];
   };
-  claudePackage = pkgs.writeShellApplication {
+  # Merged with host definitions via mkDefault so single fields can be overridden.
+  defaultModels = {
+    "claude-haiku-4-5-20251001".alias = "haiku";
+    "claude-sonnet-5" = {
+      alias = "sonnet";
+      effort = "high";
+    };
+    "claude-opus-5-5" = {
+      alias = "opus";
+      effort = "high";
+    };
+    "claude-fable-5-1" = {
+      alias = "fable";
+      effort = "high";
+    };
+    "gpt-6-astra" = {
+      label = "GPT-6 Astra";
+      description = "OpenAI GPT-6 Astra via CLIProxyAPI";
+      order = 1;
+    };
+    "gpt-6-sol" = {
+      label = "GPT-6 Sol";
+      description = "OpenAI GPT-6 Sol via CLIProxyAPI";
+      order = 2;
+    };
+    "gpt-6-luna" = {
+      label = "GPT-6 Luna";
+      description = "OpenAI GPT-6 Luna via CLIProxyAPI";
+      order = 3;
+    };
+  };
+  aliasedModels = lib.filterAttrs (_: model: model.alias != null) cfg.models;
+  pickerModels = lib.sortOn (model: model.order) (
+    lib.mapAttrsToList (id: model: model // { inherit id; }) (
+      lib.filterAttrs (_: model: model.alias == null) cfg.models
+    )
+  );
+  modelAliases = lib.mapAttrsToList (_: model: model.alias) aliasedModels;
+  unknownModels = lib.filter (id: !(cfg.models ? ${id})) (
+    [
+      cfg.model
+      cfg.subagentModel
+    ]
+    ++ cfg.fallbackModels
+  );
+  modelEnv = {
+    ANTHROPIC_BASE_URL = cfg.baseUrl;
+    ANTHROPIC_CUSTOM_MODEL_OPTION = cfg.model;
+    CLAUDE_CODE_SUBAGENT_MODEL = cfg.subagentModel;
+  }
+  // lib.mapAttrs' (
+    id: model: lib.nameValuePair "ANTHROPIC_DEFAULT_${lib.toUpper model.alias}_MODEL" id
+  ) aliasedModels;
+  mkClaudeWrapper =
+    {
+      name,
+      env ? { },
+      exec,
+    }:
+    pkgs.writeShellApplication {
+      inherit name;
+      runtimeInputs = claudeRuntimeInputs;
+      text = ''
+        secret_path="''${XDG_RUNTIME_DIR}/agenix/cliproxyapi"
+
+        if [[ ! -r "$secret_path" ]]; then
+          printf 'Claude API token file is not readable: %s\n' "$secret_path" >&2
+          exit 1
+        fi
+
+        ANTHROPIC_AUTH_TOKEN="$(<"$secret_path")"
+        if [[ -z "$ANTHROPIC_AUTH_TOKEN" || "$ANTHROPIC_AUTH_TOKEN" == *$'\n'* ]]; then
+          printf 'Claude API token must be a non-empty single line\n' >&2
+          exit 1
+        fi
+
+        unset ANTHROPIC_API_KEY
+        export ANTHROPIC_AUTH_TOKEN
+        ${lib.concatLines (
+          lib.mapAttrsToList (name: value: "export ${name}=${lib.escapeShellArg value}") (modelEnv // env)
+        )}
+        ${exec}
+      '';
+    };
+  claudePackage = mkClaudeWrapper {
     name = "claude";
-    runtimeInputs = claudeRuntimeInputs;
-    text = ''
-      secret_path="''${XDG_RUNTIME_DIR}/agenix/cliproxyapi"
-
-      if [[ ! -r "$secret_path" ]]; then
-        printf 'Claude API token file is not readable: %s\n' "$secret_path" >&2
-        exit 1
-      fi
-
-      ANTHROPIC_AUTH_TOKEN="$(<"$secret_path")"
-      if [[ -z "$ANTHROPIC_AUTH_TOKEN" || "$ANTHROPIC_AUTH_TOKEN" == *$'\n'* ]]; then
-        printf 'Claude API token must be a non-empty single line\n' >&2
-        exit 1
-      fi
-
-      unset ANTHROPIC_API_KEY
-      export ANTHROPIC_AUTH_TOKEN
-      export ANTHROPIC_BASE_URL=${lib.escapeShellArg cfg.baseUrl}
-      export ANTHROPIC_CUSTOM_MODEL_OPTION=${lib.escapeShellArg cfg.model}
-      export ANTHROPIC_DEFAULT_FABLE_MODEL=${lib.escapeShellArg cfg.fableModel}
-      export ANTHROPIC_DEFAULT_HAIKU_MODEL=${lib.escapeShellArg cfg.haikuModel}
-      export ANTHROPIC_DEFAULT_OPUS_MODEL=${lib.escapeShellArg cfg.opusModel}
-      export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.sonnetModel}
-      export CLAUDE_CODE_SUBAGENT_MODEL=${lib.escapeShellArg cfg.subagentModel}
-
+    exec = ''
       # Backticks in the model identity guidance are literal, not command substitutions.
       # shellcheck disable=SC2016
       exec ${lib.getExe cfg.package} \
         --model ${lib.escapeShellArg cfg.model} \
         --append-system-prompt ${lib.escapeShellArg config.programs.claude-code.context} \
-      "$@"
+        "$@"
     '';
   };
-  claudeAgentAcpPackage = pkgs.writeShellApplication {
+  claudeAgentAcpPackage = mkClaudeWrapper {
     name = "claude-agent-acp";
-    runtimeInputs = claudeRuntimeInputs;
-    text = ''
-      secret_path="''${XDG_RUNTIME_DIR}/agenix/cliproxyapi"
-
-      if [[ ! -r "$secret_path" ]]; then
-        printf 'Claude API token file is not readable: %s\n' "$secret_path" >&2
-        exit 1
-      fi
-
-      ANTHROPIC_AUTH_TOKEN="$(<"$secret_path")"
-      if [[ -z "$ANTHROPIC_AUTH_TOKEN" || "$ANTHROPIC_AUTH_TOKEN" == *$'\n'* ]]; then
-        printf 'Claude API token must be a non-empty single line\n' >&2
-        exit 1
-      fi
-
-      unset ANTHROPIC_API_KEY
-      export ANTHROPIC_AUTH_TOKEN
-      export ANTHROPIC_BASE_URL=${lib.escapeShellArg cfg.baseUrl}
-      export ANTHROPIC_CUSTOM_MODEL_OPTION=${lib.escapeShellArg cfg.model}
-      export ANTHROPIC_MODEL=${lib.escapeShellArg cfg.model}
-      export ANTHROPIC_DEFAULT_FABLE_MODEL=${lib.escapeShellArg cfg.fableModel}
-      export ANTHROPIC_DEFAULT_HAIKU_MODEL=${lib.escapeShellArg cfg.haikuModel}
-      export ANTHROPIC_DEFAULT_OPUS_MODEL=${lib.escapeShellArg cfg.opusModel}
-      export ANTHROPIC_DEFAULT_SONNET_MODEL=${lib.escapeShellArg cfg.sonnetModel}
-      export CLAUDE_CODE_SUBAGENT_MODEL=${lib.escapeShellArg cfg.subagentModel}
-
-      exec ${lib.getExe pkgs.claude-agent-acp} "$@"
-    '';
+    env.ANTHROPIC_MODEL = cfg.model;
+    exec = ''exec ${lib.getExe pkgs.claude-agent-acp} "$@"'';
   };
 in
 {
@@ -100,28 +134,62 @@ in
       description = "CLIProxyAPI endpoint used by Claude Code.";
     };
 
-    haikuModel = lib.mkOption {
-      type = lib.types.str;
-      default = "claude-haiku-4-5-20251001";
-      description = "Model used when Claude Code selects Haiku.";
-    };
+    models = lib.mkOption {
+      type = lib.types.attrsOf (
+        lib.types.submodule (
+          { name, ... }:
+          {
+            options = {
+              alias = lib.mkOption {
+                type = lib.types.nullOr (
+                  lib.types.enum [
+                    "haiku"
+                    "sonnet"
+                    "opus"
+                    "fable"
+                  ]
+                );
+                default = null;
+                description = "Claude Code model alias this model serves. Aliased models are listed by Claude Code itself, so they are left out of the model picker.";
+              };
 
-    sonnetModel = lib.mkOption {
-      type = lib.types.str;
-      default = "claude-sonnet-5";
-      description = "Model used when Claude Code selects Sonnet.";
-    };
+              label = lib.mkOption {
+                type = lib.types.str;
+                default = name;
+                description = "Model picker label.";
+              };
 
-    opusModel = lib.mkOption {
-      type = lib.types.str;
-      default = "claude-opus-5-5";
-      description = "Model used when Claude Code selects Opus.";
-    };
+              description = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+                description = "Model picker description.";
+              };
 
-    fableModel = lib.mkOption {
-      type = lib.types.str;
-      default = "claude-fable-5-1";
-      description = "Model used when Claude Code selects Fable.";
+              order = lib.mkOption {
+                type = lib.types.int;
+                default = 0;
+                description = "Model picker sort key; ties are sorted by model ID.";
+              };
+
+              effort = lib.mkOption {
+                type = lib.types.nullOr (
+                  lib.types.enum [
+                    "low"
+                    "medium"
+                    "high"
+                    "xhigh"
+                    "max"
+                  ]
+                );
+                default = null;
+                description = "Default effort level for this model, or null to leave it to Claude Code.";
+              };
+            };
+          }
+        )
+      );
+      default = { };
+      description = "Models served through CLIProxyAPI, keyed by model ID.";
     };
 
     subagentModel = lib.mkOption {
@@ -134,6 +202,15 @@ in
       type = lib.types.str;
       default = "claude-opus-5-5";
       description = "Default model used by Claude Code.";
+    };
+
+    fallbackModels = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "gpt-6-sol"
+        "gpt-6-luna"
+      ];
+      description = "Models Claude Code falls back to, in order, when the selected model is unavailable.";
     };
 
     contextWindowTokens = lib.mkOption {
@@ -156,6 +233,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    trev.programs.claude.models = lib.mapAttrs (_: lib.mapAttrs (_: lib.mkDefault)) defaultModels;
+
     assertions = [
       {
         assertion = cfg.maxOutputTokens < cfg.contextWindowTokens;
@@ -164,6 +243,14 @@ in
       {
         assertion = cfg.autoCompactWindowTokens <= cfg.contextWindowTokens;
         message = "trev.programs.claude.autoCompactWindowTokens must not exceed contextWindowTokens.";
+      }
+      {
+        assertion = unknownModels == [ ];
+        message = "trev.programs.claude references models missing from trev.programs.claude.models: ${lib.concatStringsSep ", " (lib.unique unknownModels)}.";
+      }
+      {
+        assertion = lib.allUnique modelAliases;
+        message = "trev.programs.claude.models must not assign the same alias to more than one model.";
       }
     ];
 
@@ -196,37 +283,28 @@ in
         effortLevel = "high";
         enableWorkflows = true;
         feedbackDrafts = "off";
-        fallbackModel = [
-          "gpt-6-sol"
-          "gpt-6-luna"
-        ];
+        fallbackModel = cfg.fallbackModels;
         hooks = {
           CwdChanged = [ direnvHook ];
           SessionStart = [ direnvHook ];
         };
-        modelPicker.options = [
+        modelPicker.options = map (
+          model:
           {
-            model = "gpt-6-astra";
-            label = "GPT-6 Astra";
-            description = "OpenAI GPT-6 Astra via CLIProxyAPI";
+            model = model.id;
+            inherit (model) label;
           }
-          {
-            model = "gpt-6-sol";
-            label = "GPT-6 Sol";
-            description = "OpenAI GPT-6 Sol via CLIProxyAPI";
-          }
-          {
-            model = "gpt-6-luna";
-            label = "GPT-6 Luna";
-            description = "OpenAI GPT-6 Luna via CLIProxyAPI";
-          }
-        ];
+          // lib.optionalAttrs (model.description != null) { inherit (model) description; }
+        ) pickerModels;
+        # Newer models ignore the top-level user effortLevel, so pin it per model.
+        modelSettings = lib.mapAttrs (_: model: { effortLevel = model.effort; }) (
+          lib.filterAttrs (_: model: model.effort != null) cfg.models
+        );
         permissions.defaultMode = "bypassPermissions";
         skillOverrides."claude-api" = "off";
         workflowSizeGuideline = "medium";
         env = {
           CLAUDE_CODE_AUTO_COMPACT_WINDOW = toString cfg.autoCompactWindowTokens;
-          CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY = "1";
           CLAUDE_CODE_MAX_RETRIES = "15";
           CLAUDE_CODE_MAX_CONTEXT_TOKENS = toString cfg.contextWindowTokens;
           CLAUDE_CODE_MAX_OUTPUT_TOKENS = toString cfg.maxOutputTokens;

@@ -5,22 +5,11 @@
 }:
 let
   projects = config.trev.projects;
-  claude =
-    lib.attrByPath
-      [
-        "trev"
-        "programs"
-        "claude"
-      ]
-      {
-        enable = false;
-        baseUrl = "https://proxy.trev.xyz";
-        haikuModel = "gpt-5.6-luna";
-        sonnetModel = "gpt-5.6-terra";
-        opusModel = "gpt-5.6-sol";
-        model = "gpt-5.6-sol";
-      }
-      config;
+  claude = lib.attrByPath [
+    "trev"
+    "programs"
+    "claude"
+  ] { enable = false; } config;
   settings = lib.recursiveUpdate (builtins.fromJSON (builtins.readFile ./settings.json)) (
     {
       ssh_connections = [
