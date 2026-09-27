@@ -13,11 +13,19 @@ let
     pkgs.nodejs_24
     pkgs.python3
   ];
+  claudeRuntimePath = lib.makeBinPath claudeRuntimeInputs;
   direnvHook = {
     hooks = [
       {
         type = "command";
-        command = ''${lib.getExe pkgs.direnv} export bash > "$CLAUDE_ENV_FILE"'';
+        # Reloading direnv restores the PATH from before the inherited DIRENV_DIFF,
+        # which drops the wrapper runtime inputs, so append them again.
+        command = ''
+          {
+            ${lib.getExe pkgs.direnv} export bash
+            printf '\ncase ":$PATH:" in *:%s:*) ;; *) export PATH="$PATH:%s" ;; esac\n' ${claudeRuntimePath} ${claudeRuntimePath}
+          } > "$CLAUDE_ENV_FILE"
+        '';
       }
     ];
   };
@@ -82,8 +90,10 @@ let
     }:
     pkgs.writeShellApplication {
       inherit name;
-      runtimeInputs = claudeRuntimeInputs;
       text = ''
+        # Appended so project devshells and system profiles take priority.
+        export PATH="$PATH:${claudeRuntimePath}"
+
         secret_path="''${XDG_RUNTIME_DIR}/agenix/cliproxyapi"
 
         if [[ ! -r "$secret_path" ]]; then
