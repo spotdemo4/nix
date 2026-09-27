@@ -232,6 +232,50 @@
         };
 
         checks = pkgs.mkChecks {
+          cliproxyapi-fallback =
+            let
+              triggers = self.nixosConfigurations.etc.config.systemd.services.cliproxyapi.restartTriggers;
+              templates = builtins.filter (path: pkgs.lib.hasSuffix "-cliproxyapi.json" (toString path)) triggers;
+              template =
+                if builtins.length templates == 1 then
+                  builtins.head templates
+                else
+                  throw "CLIProxyAPI must have exactly one generated configuration template";
+              expectedModels = pkgs.writeText "cliproxyapi-fallback-models.json" (
+                builtins.toJSON {
+                  "glm-5.3-flash" = "z-ai/glm-5.3-flash";
+                  "gpt-6-astra" = "openai/gpt-6-astra";
+                  "gpt-6-sol" = "openai/gpt-6-sol";
+                  "gpt-6-luna" = "openai/gpt-6-luna";
+                  "claude-haiku-4-5-20251001" = "anthropic/claude-haiku-4.5";
+                  "claude-opus-5-5" = "anthropic/claude-opus-5.5";
+                  "claude-sonnet-5" = "anthropic/claude-sonnet-5";
+                  "claude-fable-5-1" = "anthropic/claude-fable-5.1";
+                }
+              );
+            in
+            pkgs.runCommand "cliproxyapi-fallback" { nativeBuildInputs = [ pkgs.jq ]; } ''
+              jq --exit-status --slurpfile expected ${expectedModels} '
+                . as $config
+                | [.["openai-compatibility"][] | select(.name == "openrouter")] as $providers
+                | $providers[0] as $provider
+                | ($providers | length == 1)
+                  and ($provider.disabled == false)
+                  and ($provider.priority == -10)
+                  and ($provider["base-url"] == "https://openrouter.ai/api/v1")
+                  and (($provider.prefix // "") == "")
+                  and (($config["force-model-prefix"] // false) == false)
+                  and (($config["max-retry-credentials"] // 0) == 0)
+                  and ($provider.models | length == 8)
+                  and ($provider.models | map(.alias) | unique | length == 8)
+                  and (($provider.models | map({key: .alias, value: .name}) | from_entries) == $expected[0])
+                  and ($config["api-keys"] == [])
+                  and ($provider | has("api-key-entries") | not)
+                  and ($provider["key-index"] == 0)
+              ' ${template}
+              touch $out
+            '';
+
           forgejo-archive-storage =
             let
               quadlet = self.nixosConfigurations.files.config.virtualisation.quadlet;

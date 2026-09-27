@@ -34,12 +34,42 @@
       openaiCompatibility = [
         {
           name = "openrouter";
+          # Prefer OAuth credentials; only fall back to the same model through OpenRouter.
+          priority = -10;
           baseUrl = "https://openrouter.ai/api/v1";
           apiKeyFile = self + /secrets/openrouter.age;
           models = [
             {
               name = "z-ai/glm-5.3-flash";
               alias = "glm-5.3-flash";
+            }
+            {
+              name = "openai/gpt-6-astra";
+              alias = "gpt-6-astra";
+            }
+            {
+              name = "openai/gpt-6-sol";
+              alias = "gpt-6-sol";
+            }
+            {
+              name = "openai/gpt-6-luna";
+              alias = "gpt-6-luna";
+            }
+            {
+              name = "anthropic/claude-haiku-4.5";
+              alias = "claude-haiku-4-5-20251001";
+            }
+            {
+              name = "anthropic/claude-opus-5.5";
+              alias = "claude-opus-5-5";
+            }
+            {
+              name = "anthropic/claude-sonnet-5";
+              alias = "claude-sonnet-5";
+            }
+            {
+              name = "anthropic/claude-fable-5.1";
+              alias = "claude-fable-5-1";
             }
           ];
         }
