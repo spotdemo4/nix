@@ -110,6 +110,11 @@ in
           url = github "nix-init";
         }
         {
+          name = "nix-shield";
+          path = "~/dev/nix-shield";
+          url = forgejo "llc" "nix-shield";
+        }
+        {
           name = "nixaws";
           path = "~/dev/nixaws";
           url = forgejo "llc" "nixaws";
@@ -135,9 +140,24 @@ in
           url = forgejo "llc" "rsync-action";
         }
         {
+          name = "runner-images";
+          path = "~/dev/runner-images";
+          url = forgejo "llc" "runner-images";
+        }
+        {
           name = "serialization-bench";
           path = "~/dev/serialization-bench";
           url = forgejo "llc" "serialization-bench";
+        }
+        {
+          name = "shellHook";
+          path = "~/dev/shellHook";
+          url = forgejo "llc" "shellHook";
+        }
+        {
+          name = "solid-toast";
+          path = "~/dev/solid-toast";
+          url = forgejo "llc" "solid-toast";
         }
         {
           name = "stack";
