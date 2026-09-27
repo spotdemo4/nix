@@ -39,6 +39,7 @@ let
     provider:
     {
       name = provider.name;
+      priority = provider.priority;
       disabled = provider.disabled;
       base-url = provider.baseUrl;
       models = map (
@@ -173,6 +174,15 @@ in
             name = mkOption {
               type = types.str;
               description = "Provider name used by CLIProxyAPI.";
+            };
+            priority = mkOption {
+              type = types.int;
+              default = 0;
+              description = ''
+                Selection priority when multiple providers or credentials match.
+                Higher values are preferred; negative values allow fallback
+                behind OAuth credentials with the default priority of zero.
+              '';
             };
             disabled = mkOption {
               type = types.bool;
