@@ -221,6 +221,18 @@ in
             description = "OpenAI GPT-6 Luna via CLIProxyAPI";
           }
         ];
+        # Newer models ignore the top-level user effortLevel, so pin it per model.
+        modelSettings =
+          lib.genAttrs
+            (lib.unique [
+              cfg.model
+              cfg.opusModel
+              cfg.sonnetModel
+              cfg.fableModel
+            ])
+            (_: {
+              effortLevel = "high";
+            });
         permissions.defaultMode = "bypassPermissions";
         skillOverrides."claude-api" = "off";
         workflowSizeGuideline = "medium";
