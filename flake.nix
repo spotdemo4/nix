@@ -82,6 +82,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # agenix
+    agenix = {
+      type = "github";
+      owner = "ryantm";
+      repo = "agenix";
+      rev = "94657d1d3ba79fcc9466a4d97fe6e62e40e8ec65";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # nix vscode extensions
     nix4vscode = {
       type = "github";
@@ -112,18 +121,6 @@
       owner = "0xc000022070";
       repo = "zen-browser-flake";
       rev = "b851b56b787a61b900751aca2f17e4a5ca6c394a";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-      };
-    };
-
-    # age nix
-    agenix = {
-      type = "github";
-      owner = "ryantm";
-      repo = "agenix";
-      rev = "94657d1d3ba79fcc9466a4d97fe6e62e40e8ec65";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
