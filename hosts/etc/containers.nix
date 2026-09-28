@@ -16,6 +16,7 @@
     (self + /modules/container/postgresql)
     (self + /modules/container/shlink)
     (self + /modules/container/shlink-web)
+    (self + /modules/container/solid-toast)
     (self + /modules/container/traefik-kop)
   ];
 
@@ -80,6 +81,7 @@
     portainer-agent.enable = true;
     shlink.enable = true;
     shlink-web.enable = true;
+    solid-toast.enable = true;
 
     gluetun = {
       enable = true;
