@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       id-token: write
     steps:
@@ -28,7 +28,7 @@ jobs:
   notify:
     if: ${{ github.event_name == 'push' }}
     needs: check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Publish update
         env:
@@ -37,7 +37,7 @@ jobs:
 
   build:
     if: ${{ github.event_name != 'push' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       id-token: write
     steps:
