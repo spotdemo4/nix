@@ -12,7 +12,10 @@ let
     pkgs.gh
     pkgs.nodejs_24
     pkgs.python3
-  ];
+  ]
+  ++ lib.optional (config.trev.mcp.enable or false) (
+    pkgs.callPackage ./forgejo-pr-wait { tokenFile = config.trev.mcp.forgejoTokenFile; }
+  );
   claudeRuntimePath = lib.makeBinPath claudeRuntimeInputs;
   direnvHook = {
     hooks = [
