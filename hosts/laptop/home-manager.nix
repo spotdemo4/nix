@@ -79,7 +79,10 @@
         "shift+enter" = "send_text all \\x1b[13;2u";
       };
       shellIntegration.enableZshIntegration = true;
-      settings.auto_reload_config = -1;
+      settings = {
+        auto_reload_config = -1;
+        remember_window_size = false;
+      };
     };
     mpv.enable = true;
     zoxide = {
