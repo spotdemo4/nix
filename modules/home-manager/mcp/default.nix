@@ -74,6 +74,13 @@ in
     };
 
     chromeHeadless = lib.mkEnableOption "headless Chrome for the Chrome DevTools MCP server";
+
+    forgejoTokenFile = lib.mkOption {
+      type = lib.types.str;
+      default = secretPath "forgejo-mcp";
+      readOnly = true;
+      description = "Path to the decrypted Forgejo token, for tools outside the MCP server.";
+    };
   };
 
   config = lib.mkIf config.trev.mcp.enable {
