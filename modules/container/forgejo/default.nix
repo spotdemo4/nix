@@ -2,6 +2,7 @@
   config,
   lib,
   self,
+  pkgs,
   ...
 }:
 let
@@ -21,6 +22,8 @@ let
     volumes
     ;
   cfg = config.trev.containers.forgejo;
+
+  catppuccinTheme = pkgs.callPackage ./theme.nix { };
 in
 {
   options.trev.containers.forgejo = {
@@ -86,6 +89,7 @@ in
           "${volumes.forgejo.ref}:/data"
           "${volumes.forgejo-archive-cache.ref}:/data/gitea/repo-archive"
           "${./app.ini}:/data/gitea/conf/app.ini"
+          "${catppuccinTheme}:/data/gitea/public/assets/css:ro"
           "${cfg.localtimePath}:/etc/localtime:ro"
         ];
         secrets = [
