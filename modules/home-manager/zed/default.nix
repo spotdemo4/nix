@@ -43,6 +43,7 @@ in
       extensions = [
         "bash"
         "dockerfile"
+        "emmet"
         "git-firefly"
         "gleam"
         "html"

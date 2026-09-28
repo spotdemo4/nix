@@ -5,6 +5,7 @@
     "bash": true,
     "catppuccin-icons": true,
     "dockerfile": true,
+    "emmet": true,
     "git-firefly": true,
     "gleam": true,
     "html": true,
