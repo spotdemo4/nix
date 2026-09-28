@@ -2,7 +2,19 @@
 
 [![check](https://img.shields.io/github/actions/workflow/status/spotdemo4/nix/check.yaml?branch=main&logo=github&logoColor=%23bac2de&label=check&labelColor=%23313244)](https://github.com/spotdemo4/nix/actions/workflows/check.yaml/)
 [![vulnerable](https://img.shields.io/github/actions/workflow/status/spotdemo4/nix/vulnerable.yaml?branch=main&logo=github&logoColor=%23bac2de&label=vulnerable&labelColor=%23313244)](https://github.com/spotdemo4/nix/actions/workflows/vulnerable.yaml)
-[![nix](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fspotdemo4%2Fnix%2Frefs%2Fheads%2Fmain%2Fflake.lock&query=%24.nodes.nixpkgs_2.original.ref&logo=nixos&logoColor=%23bac2de&label=channel&labelColor=%23313244&color=%234d6fb7)](https://nixos.org/)
+
+[![nixpkgs](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=nixpkgs&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/nixos/nixpkgs)
+[![quadlet-nix](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=quadlet-nix&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/SEIAROTg/quadlet-nix)
+[![determinate](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=determinate&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/DeterminateSystems/determinate)
+[![home-manager](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=home-manager&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/nix-community/home-manager)
+[![nur](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=nur&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/nix-community/NUR)
+[![catppuccin](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=catppuccin&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/catppuccin/nix)
+[![niks3](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=niks3&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/Mic92/niks3)
+[![nix4vscode](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=nix4vscode&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/nix-community/nix4vscode)
+[![trevpkgs](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=trevpkgs&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/spotdemo4/trevpkgs)
+[![zen-browser](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=zen-browser&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/0xc000022070/zen-browser-flake)
+[![agenix](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=agenix&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/ryantm/agenix)
+[![trevbar](https://nix-shield.trev.zip/?url=https://raw.githubusercontent.com/spotdemo4/nix/refs/heads/main/flake.lock&input=trevbar&logoColor=%23bac2de&labelColor=%23313244&color=%235277C3)](https://github.com/spotdemo4/trevbar)
 
 flake-based NixOS config
 
