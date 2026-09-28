@@ -67,6 +67,13 @@ let
     )
   );
   modelAliases = lib.mapAttrsToList (_: model: model.alias) aliasedModels;
+  # Each skills/<name>.md becomes the /<name> skill.
+  skillFiles = lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name) (
+    builtins.readDir ./skills
+  );
+  skills = lib.mapAttrs' (
+    name: _: lib.nameValuePair (lib.removeSuffix ".md" name) (./skills + "/${name}")
+  ) skillFiles;
   unknownModels = lib.filter (id: !(cfg.models ? ${id})) (
     [
       cfg.model
@@ -275,6 +282,7 @@ in
       enable = true;
       package = null;
       enableMcpIntegration = true;
+      inherit skills;
 
       context = ''
         You run inside Claude Code through CLIProxyAPI, which serves both Anthropic Claude and OpenAI GPT models. Claude Code is the host application, not your model identity.
