@@ -35,17 +35,40 @@ in
       description = "CurseForge API key secret.";
     };
 
-    environments = mkOption {
-      type = types.attrsOf types.str;
-      default = {
-        EULA = "TRUE";
-        TYPE = "AUTO_CURSEFORGE";
-        CF_PAGE_URL = "https://www.curseforge.com/minecraft/modpacks/all-the-mods-10";
-        MEMORY = "16G";
-        ALLOW_FLIGHT = "true";
-        MOTD = "chicken jockey";
-      };
-      description = "Environment variables passed to the Minecraft server.";
+    eula = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to accept the Minecraft EULA.";
+    };
+
+    type = mkOption {
+      type = types.str;
+      default = "AUTO_CURSEFORGE";
+      description = "Minecraft server type.";
+    };
+
+    curseforgePageUrl = mkOption {
+      type = types.str;
+      default = "https://www.curseforge.com/minecraft/modpacks/all-the-mods-10";
+      description = "CurseForge modpack page URL.";
+    };
+
+    memory = mkOption {
+      type = types.str;
+      default = "16G";
+      description = "Memory allocated to the Minecraft server.";
+    };
+
+    allowFlight = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to allow flight on the Minecraft server.";
+    };
+
+    motd = mkOption {
+      type = types.str;
+      default = "chicken jockey";
+      description = "Minecraft server message of the day.";
     };
 
     publishPorts = mkOption {
@@ -68,7 +91,14 @@ in
       containers.minecraft.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
-        environments = cfg.environments;
+        environments = {
+          EULA = lib.boolToString cfg.eula;
+          TYPE = cfg.type;
+          CF_PAGE_URL = cfg.curseforgePageUrl;
+          MEMORY = cfg.memory;
+          ALLOW_FLIGHT = lib.boolToString cfg.allowFlight;
+          MOTD = cfg.motd;
+        };
         secrets = [
           {
             inherit (cfg.curseforgeSecret) ref;
