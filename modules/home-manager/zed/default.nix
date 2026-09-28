@@ -58,6 +58,8 @@ in
         "ruff"
         "scss"
         "sql"
+        # pulls "sql" onto remote hosts; zed-industries/zed#60442
+        "sqlmesh"
         "svelte"
         "tombi"
         "toml"

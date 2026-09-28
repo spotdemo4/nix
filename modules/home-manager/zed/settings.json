@@ -20,6 +20,7 @@
     "ruff": true,
     "scss": true,
     "sql": true,
+    "sqlmesh": true,
     "svelte": true,
     "tombi": true,
     "toml": true,
@@ -41,6 +42,11 @@
   },
   "edit_predictions": {
     "provider": "zed"
+  },
+  "languages": {
+    "SQL": {
+      "language_servers": ["!sqlmesh", "..."]
+    }
   },
   "file_scan_exclusions": [
     "**/.git",
