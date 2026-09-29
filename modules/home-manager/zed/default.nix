@@ -27,7 +27,7 @@ let
         args = [ ];
         default_config_options = {
           mode = "bypassPermissions";
-          model = claude.model;
+          model = claude.resolvedModel;
           effort = "high";
         };
       };

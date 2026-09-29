@@ -38,14 +38,17 @@ let
     "claude-sonnet-5" = {
       alias = "sonnet";
       effort = "high";
+      context1m = true;
     };
     "claude-opus-5-5" = {
       alias = "opus";
       effort = "high";
+      context1m = true;
     };
     "claude-fable-5-1" = {
       alias = "fable";
       effort = "high";
+      context1m = true;
     };
     "gpt-6-astra" = {
       label = "GPT-6 Astra";
@@ -69,6 +72,9 @@ let
       lib.filterAttrs (_: model: model.alias == null) cfg.models
     )
   );
+  # Claude Code cannot verify 1M support behind a gateway, so opt in with the [1m] suffix.
+  # The `or` keeps unknown IDs evaluable until the unknownModels assertion reports them.
+  modelId = id: id + lib.optionalString (cfg.models.${id}.context1m or false) "[1m]";
   modelAliases = lib.mapAttrsToList (_: model: model.alias) aliasedModels;
   # Each skills/<name>.md becomes the /<name> skill.
   skillFiles = lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name) (
@@ -86,11 +92,11 @@ let
   );
   modelEnv = {
     ANTHROPIC_BASE_URL = cfg.baseUrl;
-    ANTHROPIC_CUSTOM_MODEL_OPTION = cfg.model;
-    CLAUDE_CODE_SUBAGENT_MODEL = cfg.subagentModel;
+    ANTHROPIC_CUSTOM_MODEL_OPTION = cfg.resolvedModel;
+    CLAUDE_CODE_SUBAGENT_MODEL = modelId cfg.subagentModel;
   }
   // lib.mapAttrs' (
-    id: model: lib.nameValuePair "ANTHROPIC_DEFAULT_${lib.toUpper model.alias}_MODEL" id
+    id: model: lib.nameValuePair "ANTHROPIC_DEFAULT_${lib.toUpper model.alias}_MODEL" (modelId id)
   ) aliasedModels;
   mkClaudeWrapper =
     {
@@ -131,14 +137,14 @@ let
       # Backticks in the model identity guidance are literal, not command substitutions.
       # shellcheck disable=SC2016
       exec ${lib.getExe cfg.package} \
-        --model ${lib.escapeShellArg cfg.model} \
+        --model ${lib.escapeShellArg cfg.resolvedModel} \
         --append-system-prompt ${lib.escapeShellArg config.programs.claude-code.context} \
         "$@"
     '';
   };
   claudeAgentAcpPackage = mkClaudeWrapper {
     name = "claude-agent-acp";
-    env.ANTHROPIC_MODEL = cfg.model;
+    env.ANTHROPIC_MODEL = cfg.resolvedModel;
     exec = ''exec ${lib.getExe pkgs.claude-agent-acp} "$@"'';
   };
 in
@@ -204,6 +210,12 @@ in
                 default = null;
                 description = "Default effort level for this model, or null to leave it to Claude Code.";
               };
+
+              context1m = lib.mkOption {
+                type = lib.types.bool;
+                default = false;
+                description = "Whether this Claude model has a 1M token context window. Claude Code assumes 200K for Claude models behind a gateway unless the model ID carries the [1m] suffix this adds.";
+              };
             };
           }
         )
@@ -224,6 +236,14 @@ in
       description = "Default model used by Claude Code.";
     };
 
+    resolvedModel = lib.mkOption {
+      type = lib.types.str;
+      readOnly = true;
+      default = modelId cfg.model;
+      defaultText = lib.literalMD "`model` with the `[1m]` suffix when its `context1m` is set";
+      description = "Model ID Claude Code is launched with.";
+    };
+
     fallbackModels = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [
@@ -236,19 +256,13 @@ in
     contextWindowTokens = lib.mkOption {
       type = lib.types.ints.positive;
       default = 272000;
-      description = "Context window Claude Code assumes for models routed through CLIProxyAPI.";
-    };
-
-    autoCompactWindowTokens = lib.mkOption {
-      type = lib.types.ints.positive;
-      default = 258400;
-      description = "Context capacity Claude Code uses for auto-compaction calculations.";
+      description = "Context window Claude Code assumes for non-Claude models, such as GPT models routed through CLIProxyAPI. Claude models use their own window; see context1m.";
     };
 
     maxOutputTokens = lib.mkOption {
       type = lib.types.ints.positive;
       default = 128000;
-      description = "Maximum output tokens Claude Code requests and reserves before auto-compaction.";
+      description = "Maximum output tokens Claude Code requests. Auto-compaction reserves at most 20K of it.";
     };
   };
 
@@ -259,10 +273,6 @@ in
       {
         assertion = cfg.maxOutputTokens < cfg.contextWindowTokens;
         message = "trev.programs.claude.maxOutputTokens must be smaller than contextWindowTokens.";
-      }
-      {
-        assertion = cfg.autoCompactWindowTokens <= cfg.contextWindowTokens;
-        message = "trev.programs.claude.autoCompactWindowTokens must not exceed contextWindowTokens.";
       }
       {
         assertion = unknownModels == [ ];
@@ -304,7 +314,7 @@ in
         effortLevel = "high";
         enableWorkflows = true;
         feedbackDrafts = "off";
-        fallbackModel = cfg.fallbackModels;
+        fallbackModel = map modelId cfg.fallbackModels;
         hooks = {
           CwdChanged = [ direnvHook ];
           SessionStart = [ direnvHook ];
@@ -312,7 +322,7 @@ in
         modelPicker.options = map (
           model:
           {
-            model = model.id;
+            model = modelId model.id;
             inherit (model) label;
           }
           // lib.optionalAttrs (model.description != null) { inherit (model) description; }
@@ -325,7 +335,6 @@ in
         skillOverrides."claude-api" = "off";
         workflowSizeGuideline = "medium";
         env = {
-          CLAUDE_CODE_AUTO_COMPACT_WINDOW = toString cfg.autoCompactWindowTokens;
           CLAUDE_CODE_MAX_RETRIES = "15";
           CLAUDE_CODE_MAX_CONTEXT_TOKENS = toString cfg.contextWindowTokens;
           CLAUDE_CODE_MAX_OUTPUT_TOKENS = toString cfg.maxOutputTokens;
