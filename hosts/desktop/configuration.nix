@@ -66,7 +66,7 @@ in
     tor-browser
     trev.codex-commit
     trev.helium
-    trev.libvmaf
+    trev.libvmaf-latest
     unzip
     vesktop
     wget
