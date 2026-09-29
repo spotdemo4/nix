@@ -34,7 +34,7 @@
       type = "github";
       owner = "SEIAROTg";
       repo = "quadlet-nix";
-      rev = "b6ff6c4d6b36b8e29bce417b668597fab3e03160";
+      rev = "db3af9df6943692c78cf9a05e3bfeb7d82e94cf3";
     };
 
     # determinate nix
