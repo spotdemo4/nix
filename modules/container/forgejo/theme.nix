@@ -19,8 +19,8 @@ stdenvNoCC.mkDerivation {
   patches = [
     # https://github.com/catppuccin/gitea/pull/92
     (fetchpatch {
-      url = "https://github.com/cometship/gitea/compare/6a789704686ec13178a13cd84bf1e30db191a437...a7c957f94a43c094a42b3116e1f50ce7449715ea.diff";
-      hash = "sha256-whsdJ+4ofLux4ZiXE8vTqz1bD0EGB57knNf7dSiVkaU=";
+      url = "https://github.com/cometship/gitea/compare/6a789704686ec13178a13cd84bf1e30db191a437...9aec8ff5d2e2aa07089d732e6eff03cf345baa47.diff";
+      hash = "sha256-YSBTkIpj6dqgMWO4eTlitdj7rUdLmEEQgVAavrm/E8w=";
     })
   ];
 
