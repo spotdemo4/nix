@@ -51,6 +51,9 @@ in
         template = forgejoRunner // {
           tokenFile = config.age.secrets."forgejo-template".path;
         };
+        quanta = forgejoRunner // {
+          tokenFile = config.age.secrets."forgejo-quanta".path;
+        };
       };
     };
 

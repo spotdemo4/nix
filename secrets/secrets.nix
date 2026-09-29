@@ -7,6 +7,7 @@ in
   "forgejo.age".publicKeys = keys.local ++ [ keys.build ];
   "forgejo-org.age".publicKeys = keys.local ++ [ keys.build ];
   "forgejo-template.age".publicKeys = keys.local ++ [ keys.build ];
+  "forgejo-quanta.age".publicKeys = keys.local ++ [ keys.build ];
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
   "quanta-runner.age".publicKeys = keys.local ++ [ keys.build ];
 
