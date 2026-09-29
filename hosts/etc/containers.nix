@@ -65,8 +65,8 @@
               alias = "claude-opus-5-5";
             }
             {
-              name = "anthropic/claude-sonnet-5";
-              alias = "claude-sonnet-5";
+              name = "anthropic/claude-sonnet-5.5";
+              alias = "claude-sonnet-5-5";
             }
             {
               name = "anthropic/claude-fable-5.1";

@@ -35,7 +35,7 @@ let
   # Merged with host definitions via mkDefault so single fields can be overridden.
   defaultModels = {
     "claude-haiku-4-5-20251001".alias = "haiku";
-    "claude-sonnet-5" = {
+    "claude-sonnet-5-5" = {
       alias = "sonnet";
       effort = "high";
       context1m = true;
