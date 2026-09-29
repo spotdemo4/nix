@@ -226,7 +226,7 @@ in
 
     subagentModel = lib.mkOption {
       type = lib.types.str;
-      default = "gpt-6-luna";
+      default = "claude-sonnet-5-5";
       description = "Default model used by Claude Code subagents, independently of the model aliases.";
     };
 
