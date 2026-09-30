@@ -15,16 +15,37 @@ usage() {
   exit 64
 }
 
+# Parsed by hand because getopts stops at the first operand, so `<pr> -R repo` would fail.
 repo=""
-while getopts "R:h" opt; do
-  case "$opt" in
-    R) repo="$OPTARG" ;;
-    *) usage ;;
+pr=""
+while (($#)); do
+  case "$1" in
+    -R)
+      (($# >= 2)) || usage
+      repo="$2"
+      shift 2
+      ;;
+    -R?*)
+      repo="${1#-R}"
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*) usage ;;
+    *)
+      [[ -z "$pr" ]] || usage
+      pr="$1"
+      shift
+      ;;
   esac
 done
-shift $((OPTIND - 1))
-[[ $# -eq 1 && "$1" =~ ^[0-9]+$ ]] || usage
-pr="$1"
+if (($#)); then
+  [[ -z "$pr" && $# -eq 1 ]] || usage
+  pr="$1"
+fi
+[[ "$pr" =~ ^[0-9]+$ ]] || usage
 
 if [[ -z "$repo" ]]; then
   # Handles https://host/owner/repo, git@host:owner/repo, and ssh://git@host/owner/repo.
