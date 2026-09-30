@@ -21,6 +21,8 @@ in
   "discord-openrouter.age".publicKeys = keys.local ++ [ keys.etc ];
   "geolite.age".publicKeys = keys.local ++ [ keys.etc ];
   "openrouter.age".publicKeys = keys.local ++ [ keys.etc ];
+  "pr-tracker-encryption-key.age".publicKeys = keys.local ++ [ keys.etc ];
+  "pr-tracker-jwt.age".publicKeys = keys.local ++ [ keys.etc ];
   "protonvpn-cobalt.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink-postgresql.age".publicKeys = keys.local ++ [ keys.etc ];
