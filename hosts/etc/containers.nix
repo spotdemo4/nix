@@ -13,6 +13,7 @@
     (self + /modules/container/gluetun)
     (self + /modules/container/nix-shield)
     (self + /modules/container/portainer-agent)
+    (self + /modules/container/pr-tracker)
     (self + /modules/container/postgresql)
     (self + /modules/container/shlink)
     (self + /modules/container/shlink-web)
@@ -79,6 +80,11 @@
     crowdsec.enable = true;
     nix-shield.enable = true;
     portainer-agent.enable = true;
+    pr-tracker = {
+      enable = true;
+      # Needed to create the first account; turn off afterwards.
+      signupEnabled = true;
+    };
     shlink.enable = true;
     shlink-web.enable = true;
     solid-toast.enable = true;
