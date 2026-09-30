@@ -23,5 +23,13 @@
       enable = true;
       publicKeys = [ { source = self + /secrets/gpg-public.asc; } ];
     };
+
+    # importGpgKeys runs gpg, which spawns keyboxd. At boot there is no
+    # /run/user/$UID yet, so its socket lands in ~/.gnupg and the daemon
+    # lingers holding pubring.db's lock, deadlocking the session's keyboxd.
+    home.activation.stopGpgKeyboxd = lib.hm.dag.entryAfter [ "importGpgKeys" ] ''
+      run env GNUPGHOME=${lib.escapeShellArg config.programs.gpg.homedir} \
+        ${config.programs.gpg.package}/bin/gpgconf --kill keyboxd
+    '';
   };
 }
