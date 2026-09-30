@@ -1,5 +1,6 @@
 {
   writeShellApplication,
+  coreutils,
   curl,
   git,
   jq,
@@ -8,6 +9,7 @@
 writeShellApplication {
   name = "forgejo-pr-wait";
   runtimeInputs = [
+    coreutils
     curl
     git
     jq

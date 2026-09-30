@@ -8,6 +8,7 @@
 #   1  a check failed
 #   2  not merging: checks passed (or none were reported) but the PR stayed open
 #   3  closed without merging
+#   4  stale auto-merge: scheduled only after the checks settled, so it will never fire
 #   64 usage error
 
 usage() {
@@ -82,6 +83,20 @@ statuses() {
   printf '%s\n' "$all"
 }
 
+# The last auto-merge schedule or cancellation in the PR timeline, or null, paginated.
+last_schedule() {
+  local page=1 last='null' body
+  while :; do
+    body="$(api "issues/$pr/timeline?limit=50&page=$page")"
+    [[ "$(jq length <<<"$body")" != 0 ]] || break
+    last="$(jq --argjson last "$last" \
+      '[$last] + [.[] | select(.type == "pull_scheduled_merge" or .type == "pull_cancel_scheduled_merge")] | last' \
+      <<<"$body")"
+    page=$((page + 1))
+  done
+  printf '%s\n' "$last"
+}
+
 print_statuses() {
   jq -r --arg base "$FORGEJO_URL" \
     '.[] | "  \(.context): \(.status) \(if (.target_url // "") | startswith("/") then $base + .target_url else .target_url // "" end)"' \
@@ -120,14 +135,34 @@ while :; do
   if [[ "$(jq '[.[] | select(.status == "pending")] | length' <<<"$checks")" == 0 ]]; then
     settled_since="${settled_since:-$SECONDS}"
     if ((SECONDS - settled_since >= grace)); then
-      if [[ "$(jq length <<<"$checks")" == 0 ]]; then
+      schedule="$(last_schedule)"
+      scheduled="$(jq '.type == "pull_scheduled_merge"' <<<"$schedule")"
+      code=2
+      if [[ "$scheduled" == true ]]; then
+        # Forgejo only tries a scheduled merge when a check status changes, so a schedule
+        # recorded after the last status has nothing left to trigger it.
+        scheduled_at="$(jq -r .created_at <<<"$schedule" | date -f - +%s)"
+        checked_at="$(jq -r '.[].updated_at' <<<"$checks" | date -f - +%s | sort -n | tail -n 1)"
+        if ((scheduled_at >= ${checked_at:-0})); then
+          code=4
+        fi
+      fi
+
+      if ((code == 4)); then
+        printf 'stale auto-merge: scheduled after the checks settled on %s, so it will never fire\n' "$sha"
+      elif [[ "$(jq length <<<"$checks")" == 0 ]]; then
         printf 'not merging: no checks reported on %s\n' "$sha"
       else
         printf 'not merging: checks passed on %s\n' "$sha"
-        print_statuses "$checks"
+      fi
+      print_statuses "$checks"
+      if [[ "$scheduled" == true ]]; then
+        printf 'auto-merge: scheduled at %s\n' "$(jq -r .created_at <<<"$schedule")"
+      else
+        printf 'auto-merge: not scheduled\n'
       fi
       printf 'mergeable: %s\n' "$(jq -r .mergeable <<<"$pr_json")"
-      exit 2
+      exit "$code"
     fi
   else
     settled_since=""
