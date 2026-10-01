@@ -93,6 +93,7 @@ let
   modelEnv = {
     ANTHROPIC_BASE_URL = cfg.baseUrl;
     ANTHROPIC_CUSTOM_MODEL_OPTION = cfg.resolvedModel;
+    CLAUDE_CODE_MAX_CONTEXT_TOKENS = toString cfg.contextWindowTokens;
     CLAUDE_CODE_SUBAGENT_MODEL = modelId cfg.subagentModel;
   }
   // lib.mapAttrs' (
@@ -146,6 +147,37 @@ let
     name = "claude-agent-acp";
     env.ANTHROPIC_MODEL = cfg.resolvedModel;
     exec = ''exec ${lib.getExe pkgs.claude-agent-acp} "$@"'';
+  };
+  # Talks to Anthropic directly with the /login subscription, for when CLIProxyAPI is down.
+  claudeLocalPackage = pkgs.writeShellApplication {
+    name = "claude-local";
+    text = ''
+      export PATH="$PATH:${claudeRuntimePath}"
+
+      # Drop gateway variables inherited from a proxied session.
+      unset ${
+        lib.concatStringsSep " " (
+          lib.attrNames modelEnv
+          ++ [
+            "ANTHROPIC_API_KEY"
+            "ANTHROPIC_AUTH_TOKEN"
+            "ANTHROPIC_MODEL"
+          ]
+        )
+      }
+
+      # The shared settings fall back to models only CLIProxyAPI serves.
+      exec ${lib.getExe cfg.package} \
+        --settings ${
+          lib.escapeShellArg (
+            builtins.toJSON {
+              fallbackModel = cfg.localFallbackModels;
+              modelPicker.options = [ ];
+            }
+          )
+        } \
+        "$@"
+    '';
   };
 in
 {
@@ -253,6 +285,12 @@ in
       description = "Models Claude Code falls back to, in order, when the selected model is unavailable.";
     };
 
+    localFallbackModels = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ "sonnet" ];
+      description = "Models claude-local falls back to, in order. Without CLIProxyAPI, aliases resolve to Claude Code's built-in models.";
+    };
+
     contextWindowTokens = lib.mkOption {
       type = lib.types.ints.positive;
       default = 272000;
@@ -288,6 +326,7 @@ in
 
     home.packages = [
       claudeAgentAcpPackage
+      claudeLocalPackage
       claudePackage
     ];
 
@@ -336,7 +375,6 @@ in
         workflowSizeGuideline = "medium";
         env = {
           CLAUDE_CODE_MAX_RETRIES = "15";
-          CLAUDE_CODE_MAX_CONTEXT_TOKENS = toString cfg.contextWindowTokens;
           CLAUDE_CODE_MAX_OUTPUT_TOKENS = toString cfg.maxOutputTokens;
         };
       };
