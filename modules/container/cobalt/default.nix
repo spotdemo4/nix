@@ -44,9 +44,21 @@ in
       default = "cobalt-api.trev.zip";
       description = "Domain routed to the Cobalt API.";
     };
+
+    port = mkOption {
+      type = types.port;
+      default = 9000;
+      description = "Cobalt API port, published on the host by its Gluetun instance.";
+    };
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.cobalt = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+      transparent = true;
+    };
+
     assertions = [
       {
         assertion = gluetunConfig.enable && gluetun.enable;
@@ -62,12 +74,6 @@ in
         networks = [
           "container:${gluetun.ref}"
         ];
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.cobalt.rule = "Host(`${cfg.domain}`)";
-          };
-        };
       };
 
       unitConfig = {

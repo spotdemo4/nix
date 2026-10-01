@@ -3,30 +3,36 @@
   self,
   ...
 }:
-let
-  inherit (config.virtualisation.quadlet) networks;
-in
 {
   imports = [
     (self + /modules/container/monero)
     (self + /modules/container/p2pool)
     (self + /modules/container/portainer)
     (self + /modules/container/tor)
-    (self + /modules/container/traefik)
-    (self + /modules/container/traefik-certs-dumper)
-    (self + /modules/container/valkey)
+    (self + /modules/container/trev-proxy)
     (self + /modules/container/wireguard)
   ];
 
+  age.secrets.cloudflare-dns.file = self + /secrets/cloudflare-dns.age;
+
   virtualisation.quadlet = {
     secrets = {
-      "cloudflare-dns".file = self + /secrets/cloudflare-dns.age;
-      "crowdsec".file = self + /secrets/crowdsec.age;
-      "cloudflare-turnstile-site-key".file = self + /secrets/cloudflare-turnstile-site-key.age;
-      "cloudflare-turnstile-secret-key".file = self + /secrets/cloudflare-turnstile-secret-key.age;
-      "user-admin".file = self + /secrets/user-admin.age;
-      "user-trev".file = self + /secrets/user-trev.age;
       "wireguard-server".file = self + /secrets/wireguard-server.age;
+    };
+  };
+
+  # Routes to upstreams outside this flake's hosts.
+  trev.proxy.routes = {
+    windows = {
+      domains = [ "windows.trev.xyz" ];
+      address = "10.10.10.104";
+      port = 8085;
+      auth = "admin";
+    };
+    windows-udp = {
+      protocol = "udp";
+      address = "10.10.10.104";
+      port = 8085;
     };
   };
 
@@ -52,7 +58,6 @@ in
     portainer = {
       enable = true;
       podmanSocket = "/run/podman/podman.sock";
-      routerRule = "HostRegexp(`portainer.trev.(zip|kiwi)`)";
       servicePort = 9000;
     };
 
@@ -67,12 +72,10 @@ in
       metricsAllowedIP = "10.10.10.109";
     };
 
-    traefik = {
+    trev-proxy = {
       enable = true;
-      podmanSocket = "/run/podman/podman.sock";
-      dashboardDomain = "traefik.trev.xyz";
       acmeEmail = "me@trev.xyz";
-      acmeDomains = {
+      certificates = {
         "trev.kiwi" = [ "*.trev.kiwi" ];
         "trev.rs" = [ "*.trev.rs" ];
         "trev.xyz" = [ "*.trev.xyz" ];
@@ -81,43 +84,30 @@ in
           "*.s3.trev.zip"
           "*.web.trev.zip"
         ];
-        "trev.コム" = [ "*.trev.コム" ];
+        # trev.コム
+        "trev.xn--tckwe" = [ "*.trev.xn--tckwe" ];
       };
-      tracesEndpoint = "10.10.10.109:4317";
-      logsEndpoint = "http://10.10.10.109:9428/insert/opentelemetry/v1/logs";
-      crowdsecAddress = "10.10.10.114:6061";
-      ports = {
-        http = 80;
-        https = 443;
-        rsync = 873;
-        rsyncTls = 874;
-        metrics = 8080;
-        plex = 32400;
-        minecraft = 25565;
-        syncthing = 22000;
-      };
-      secrets = {
-        cloudflareDns = config.virtualisation.quadlet.secrets."cloudflare-dns";
-        crowdsec = config.virtualisation.quadlet.secrets."crowdsec";
-        turnstileSiteKey = config.virtualisation.quadlet.secrets."cloudflare-turnstile-site-key";
-        turnstileSecretKey = config.virtualisation.quadlet.secrets."cloudflare-turnstile-secret-key";
-        userAdmin = config.virtualisation.quadlet.secrets."user-admin";
-        userTrev = config.virtualisation.quadlet.secrets."user-trev";
-      };
-    };
-
-    traefik-certs-dumper = {
-      enable = true;
-      outputDir = "/mnt/certs";
-    };
-
-    valkey = {
-      enable = true;
-      instances.traefik = {
-        enable = true;
-        publishPorts = [ "10.10.10.105:6379:6379" ];
-        networks = [ networks.traefik.ref ];
-        args = [ "--notify-keyspace-events Ksg" ];
+      cloudflareDnsSecret = "cloudflare-dns";
+      # Stalwart on the mail host reads these.
+      certificatesExport.directory = "/mnt/certs";
+      otlpEndpoint = "http://10.10.10.109:4318";
+      auth = {
+        ca = ./devices-ca.pem;
+        crl = ./devices.crl;
+        # Device certificate common names allowed into each group.
+        groups =
+          let
+            devices = [
+              "desktop"
+              "dev"
+              "htpc"
+              "laptop"
+            ];
+          in
+          {
+            trev = devices;
+            admin = devices;
+          };
       };
     };
 

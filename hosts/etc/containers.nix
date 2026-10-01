@@ -9,7 +9,6 @@
     (self + /modules/container/cobalt-web)
     (self + /modules/container/cobalt-youtube)
     (self + /modules/container/cliproxyapi)
-    (self + /modules/container/crowdsec)
     (self + /modules/container/gluetun)
     (self + /modules/container/nix-shield)
     (self + /modules/container/portainer-agent)
@@ -19,7 +18,6 @@
     (self + /modules/container/shlink-web)
     (self + /modules/container/solid-toast)
     (self + /modules/container/stack)
-    (self + /modules/container/traefik-kop)
   ];
 
   virtualisation.quadlet = {
@@ -78,7 +76,6 @@
         }
       ];
     };
-    crowdsec.enable = true;
     nix-shield.enable = true;
     portainer-agent.enable = true;
     pr-tracker = {
@@ -96,7 +93,7 @@
       instances.cobalt = {
         enable = true;
         secret = config.virtualisation.quadlet.secrets.protonvpn-cobalt;
-        ports = [ "9000" ];
+        ports = [ "9000:9000" ];
         environments = {
           VPN_SERVICE_PROVIDER = "protonvpn";
           VPN_TYPE = "wireguard";
@@ -117,9 +114,5 @@
       };
     };
 
-    traefik-kop = {
-      enable = true;
-      ip = "10.10.10.114";
-    };
   };
 }

@@ -41,10 +41,10 @@ in
       description = "Domain routed to the Shlink web client.";
     };
 
-    redirectDomain = mkOption {
-      type = types.str;
-      default = "trev.rs";
-      description = "Shlink domain whose root redirects to the web client.";
+    port = mkOption {
+      type = types.port;
+      default = 8083;
+      description = "Shlink web client port published on the host.";
     };
 
     apiSecret = mkOption {
@@ -55,6 +55,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.shlink-web = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+      auth = "admin";
+    };
+
     assertions = [
       {
         assertion = shlink.enable;
@@ -74,29 +80,7 @@ in
           }
         ];
         environments.SHLINK_SERVER_URL = cfg.serverUrl;
-        publishPorts = [ "8080" ];
-        labels = {
-          traefik = {
-            enable = true;
-            http = {
-              middlewares.shlink-web-redirect.redirectRegex = {
-                regex = "^https://${lib.escapeRegex cfg.redirectDomain}/";
-                replacement = "https://${cfg.domain}/";
-              };
-              routers = {
-                shlink-web = {
-                  rule = "Host(`${cfg.domain}`)";
-                  middlewares = "secure-admin@file";
-                };
-                shlink-web-redirect = {
-                  rule = "Host(`${cfg.redirectDomain}`) && Path(`/`) && Method(`GET`)";
-                  middlewares = "shlink-web-redirect@redis";
-                  service = "noop@internal";
-                };
-              };
-            };
-          };
-        };
+        publishPorts = [ "${toString cfg.port}:8080" ];
       };
 
       unitConfig = {

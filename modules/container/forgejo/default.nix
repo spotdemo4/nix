@@ -48,6 +48,12 @@ in
       description = "Forgejo HTTP port to publish.";
     };
 
+    routed = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether trev-proxy routes the domain straight to Forgejo; disable when Anubis fronts it.";
+    };
+
     lfsSecret = mkOption {
       type = secretType;
       default = {
@@ -75,6 +81,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.forgejo = mkIf cfg.routed {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+    };
+
     virtualisation.quadlet = {
       secrets = {
         ${cfg.lfsSecret.ref} = cfg.lfsSecret;
@@ -110,20 +121,11 @@ in
           }
         ];
         publishPorts = [
-          (toString cfg.port)
+          "${toString cfg.port}:3000"
         ];
         networks = [
           networks.forgejo.ref
         ];
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.forgejo = {
-              rule = "Host(`${cfg.domain}`)";
-              middlewares = "secure@file,forgejo-anubis@redis";
-            };
-          };
-        };
       };
 
       volumes = {

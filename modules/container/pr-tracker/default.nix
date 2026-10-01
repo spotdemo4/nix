@@ -33,6 +33,12 @@ in
       description = "Domain routed to pr-tracker.";
     };
 
+    port = mkOption {
+      type = types.port;
+      default = 8081;
+      description = "pr-tracker port published on the host.";
+    };
+
     signupEnabled = mkOption {
       type = types.bool;
       default = false;
@@ -71,6 +77,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.pr-tracker = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+      transparent = true;
+    };
+
     virtualisation.quadlet = {
       secrets = {
         ${cfg.jwtSecret.ref} = cfg.jwtSecret;
@@ -104,16 +116,7 @@ in
             target = "ENCRYPTION_KEY";
           }
         ];
-        publishPorts = [ "8080" ];
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.pr-tracker = {
-              rule = "Host(`${cfg.domain}`)";
-              middlewares = "secure@file";
-            };
-          };
-        };
+        publishPorts = [ "${toString cfg.port}:8080" ];
       };
 
       volumes.${cfg.volumeName} = { };

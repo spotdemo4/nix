@@ -6,7 +6,6 @@
 }:
 let
   inherit (lib)
-    concatMapStringsSep
     mkEnableOption
     mkIf
     mkOption
@@ -49,7 +48,7 @@ in
         "overseerr.trev.xyz"
         "seerr.trev.xyz"
       ];
-      description = "Domains routed to Seerr by Traefik.";
+      description = "Domains routed to Seerr.";
     };
     port = mkOption {
       type = types.port;
@@ -66,6 +65,10 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.seerr = {
+      inherit (cfg) domains port;
+    };
+
     assertions = [
       {
         assertion = sonarr.enable;
@@ -90,17 +93,8 @@ in
           TZ = cfg.timeZone;
         };
         volumes = [ "${volumes.seerr.ref}:/app/config" ];
-        publishPorts = [ (toString cfg.port) ];
+        publishPorts = [ "${toString cfg.port}:5055" ];
         networks = cfg.networks;
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.seerr = {
-              rule = concatMapStringsSep " || " (domain: "Host(`${domain}`)") cfg.domains;
-              middlewares = "secure@file";
-            };
-          };
-        };
       };
 
       volumes.seerr = { };

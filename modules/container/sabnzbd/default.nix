@@ -50,10 +50,13 @@ in
       default = "/mnt/pool/download/sabnzbd";
       description = "Host path for SABnzbd downloads.";
     };
-    domainPattern = mkOption {
-      type = types.str;
-      default = "sabnzbd.trev.(zip|kiwi)";
-      description = "Traefik HostRegexp pattern for SABnzbd.";
+    domains = mkOption {
+      type = types.listOf types.str;
+      default = [
+        "sabnzbd.trev.zip"
+        "sabnzbd.trev.kiwi"
+      ];
+      description = "Domains routed to SABnzbd.";
     };
     port = mkOption {
       type = types.port;
@@ -69,6 +72,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.sabnzbd = {
+      inherit (cfg) domains port;
+      auth = "trev";
+    };
+
     assertions = [
       {
         assertion = sonarr.enable;
@@ -93,17 +101,8 @@ in
           "${volumes.sabnzbd.ref}:/config"
           "${cfg.downloadPath}:/pool/download/sabnzbd"
         ];
-        publishPorts = [ (toString cfg.port) ];
+        publishPorts = [ "${toString cfg.port}:8080" ];
         networks = cfg.networks;
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.sabnzbd = {
-              rule = "HostRegexp(`${cfg.domainPattern}`)";
-              middlewares = "secure-trev@file";
-            };
-          };
-        };
       };
 
       volumes.sabnzbd = { };

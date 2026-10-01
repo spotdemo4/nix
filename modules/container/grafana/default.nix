@@ -50,9 +50,16 @@ in
       description = "Quadlet networks to attach to Grafana.";
     };
 
+    port = mkOption {
+      type = types.port;
+      default = 3000;
+      description = "Grafana port published on the host.";
+    };
+
     publishPorts = mkOption {
       type = types.listOf types.str;
-      default = [ "3000" ];
+      default = [ "${toString cfg.port}:3000" ];
+      defaultText = lib.literalExpression ''[ "''${toString cfg.port}:3000" ]'';
       description = "Ports to publish from Grafana.";
     };
 
@@ -64,6 +71,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.grafana = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+      auth = "admin";
+    };
+
     assertions = [
       {
         assertion = missingNetworks == [ ];
@@ -90,15 +103,6 @@ in
             target = "/etc/secrets/client";
           }
         ];
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.grafana = {
-              rule = "Host(`${cfg.domain}`)";
-              middlewares = "secure-admin@file";
-            };
-          };
-        };
       };
 
       volumes.${cfg.volumeName} = { };

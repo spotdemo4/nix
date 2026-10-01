@@ -94,6 +94,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.immich = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+    };
+
     assertions = [
       {
         assertion = database.enable;
@@ -144,20 +149,11 @@ in
             "${cfg.photosPath}:/photos"
           ];
           publishPorts = [
-            (toString cfg.port)
+            "${toString cfg.port}:8080"
           ];
           networks = [
             networks.immich.ref
           ];
-          labels = {
-            traefik = {
-              enable = true;
-              http.routers.immich = {
-                rule = "Host(`${cfg.domain}`)";
-                middlewares = "secure@file";
-              };
-            };
-          };
         };
 
         unitConfig = {

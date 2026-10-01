@@ -50,11 +50,6 @@ in
 
   # gateway server
   "cloudflare-dns.age".publicKeys = keys.local ++ [ keys.gateway ];
-  "cloudflare-turnstile-secret-key.age".publicKeys = keys.local ++ [ keys.gateway ];
-  "cloudflare-turnstile-site-key.age".publicKeys = keys.local ++ [ keys.gateway ];
-  "crowdsec.age".publicKeys = keys.local ++ [ keys.gateway ];
-  "user-admin.age".publicKeys = keys.local ++ [ keys.gateway ];
-  "user-trev.age".publicKeys = keys.local ++ [ keys.gateway ];
   "wireguard-server.age".publicKeys = keys.local ++ [
     keys.devTrev
     keys.gateway
@@ -88,6 +83,21 @@ in
   "github.age".publicKeys = keys.development;
   "gpg.age".publicKeys = keys.local ++ [ keys.devTrev ];
   "kagi.age".publicKeys = keys.development;
+
+  # trev-proxy device certificate keys
+  "device-desktop.age".publicKeys = [
+    keys.desktop
+    keys.devTrev
+  ];
+  "device-dev.age".publicKeys = [ keys.devTrev ];
+  "device-htpc.age".publicKeys = [
+    keys.devTrev
+    keys.htpc
+  ];
+  "device-laptop.age".publicKeys = [
+    keys.devTrev
+    keys.laptop
+  ];
 
   # local only
   "continue.age".publicKeys = keys.local;

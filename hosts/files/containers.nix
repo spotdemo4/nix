@@ -19,7 +19,6 @@ in
     (self + /modules/container/postgresql)
     (self + /modules/container/rsyncd)
     (self + /modules/container/syncthing)
-    (self + /modules/container/traefik-kop)
     (self + /modules/container/valkey)
   ];
 
@@ -38,6 +37,7 @@ in
         enable = true;
         domain = "trev.zip";
         hostIp = "10.10.10.113";
+        target = "http://forgejo:3000";
         policyFile = self + /modules/container/anubis/forgejo.yaml;
         signingKeySecret = {
           ref = "anubis-forgejo-signing-key";
@@ -47,7 +47,11 @@ in
     };
 
     copyparty.enable = true;
-    forgejo.enable = true;
+    forgejo = {
+      enable = true;
+      # Anubis fronts Forgejo.
+      routed = false;
+    };
     garage.enable = true;
     immich.enable = true;
 
@@ -75,11 +79,6 @@ in
         networks = [ networks.niks3.ref ];
         passwordSecret = config.virtualisation.quadlet.secrets.niks3-postgresql;
       };
-    };
-
-    traefik-kop = {
-      enable = true;
-      ip = "10.10.10.113";
     };
 
     valkey = {

@@ -14,7 +14,6 @@
     (self + /modules/container/seerr)
     (self + /modules/container/sonarr)
     (self + /modules/container/tautulli)
-    (self + /modules/container/traefik-kop)
     (self + /modules/container/unpackerr)
   ];
 
@@ -38,7 +37,7 @@
       instances.qbittorrent = {
         enable = true;
         secret = config.trev.containers.qbittorrent.protonVpnSecret;
-        ports = [ "8185" ];
+        ports = [ "8185:8185" ];
         environments = {
           VPN_SERVICE_PROVIDER = "protonvpn";
           VPN_TYPE = "wireguard";
@@ -53,9 +52,5 @@
       };
     };
 
-    traefik-kop = {
-      enable = true;
-      ip = "10.10.10.107";
-    };
   };
 }

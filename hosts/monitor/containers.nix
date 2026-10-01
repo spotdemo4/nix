@@ -4,7 +4,6 @@
     (self + /modules/container/duckmetrics)
     (self + /modules/container/json-exporter)
     (self + /modules/container/portainer-agent)
-    (self + /modules/container/traefik-kop)
     (self + /modules/container/victoria-logs)
   ];
 
@@ -34,10 +33,6 @@
     };
     json-exporter.enable = true;
     portainer-agent.enable = true;
-    traefik-kop = {
-      enable = true;
-      ip = "10.10.10.109";
-    };
     victoria-logs = {
       enable = true;
       extraArgs = [

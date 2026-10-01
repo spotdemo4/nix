@@ -53,19 +53,18 @@ in
 
               hostIp = mkOption {
                 type = types.str;
-                description = "Host address Traefik uses to reach this instance.";
-              };
-
-              middlewareName = mkOption {
-                type = types.str;
-                default = "${name}-anubis";
-                description = "Traefik ForwardAuth middleware name.";
+                description = "Host address trev-proxy uses to reach this instance.";
               };
 
               networkName = mkOption {
                 type = types.str;
                 default = name;
                 description = "Quadlet network used by the protected service.";
+              };
+
+              target = mkOption {
+                type = types.str;
+                description = "URL of the protected service that Anubis forwards allowed requests to.";
               };
 
               policyFile = mkOption {
@@ -76,7 +75,7 @@ in
               port = mkOption {
                 type = types.port;
                 default = 8923;
-                description = "Host port used by Traefik for authorization and challenges.";
+                description = "Host port trev-proxy routes the domain to.";
               };
 
               signingKeySecret = mkOption {
@@ -91,6 +90,16 @@ in
   };
 
   config = mkIf (cfg.enable && enabledInstances != { }) {
+    trev.proxy.routes = mapAttrs' (
+      name: instance:
+      nameValuePair "anubis-${name}" {
+        domains = [ instance.domain ];
+        address = instance.hostIp;
+        inherit (instance) port;
+        transparent = true;
+      }
+    ) enabledInstances;
+
     assertions =
       mapAttrsToList (name: instance: {
         assertion = builtins.hasAttr instance.networkName networks;
@@ -124,7 +133,9 @@ in
               POLICY_FNAME = "/etc/anubis/policy.yaml";
               PUBLIC_URL = "https://${instance.domain}";
               REDIRECT_DOMAINS = instance.domain;
-              TARGET = " ";
+              TARGET = instance.target;
+              # trev-proxy connects transparently, so the peer is the client.
+              USE_REMOTE_ADDRESS = "true";
             };
             volumes = [
               "${volumes.${containerName}.ref}:/data:U"
@@ -155,24 +166,6 @@ in
             healthStartPeriod = "5s";
             healthRetries = 3;
             healthOnFailure = "kill";
-            labels = {
-              traefik = {
-                enable = true;
-                http = {
-                  middlewares.${instance.middlewareName}.forwardauth = {
-                    address = "http://${instance.hostIp}:${toString instance.port}/.within.website/x/cmd/anubis/api/check";
-                    trustForwardHeader = true;
-                  };
-                  routers.${containerName} = {
-                    rule = "Host(`${instance.domain}`) && PathPrefix(`/.within.website/`)";
-                    priority = 100;
-                    middlewares = "secure@file";
-                    service = containerName;
-                  };
-                  services.${containerName}.loadbalancer.server.port = instance.port;
-                };
-              };
-            };
           };
 
           serviceConfig = {

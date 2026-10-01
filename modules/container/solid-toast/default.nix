@@ -28,22 +28,24 @@ in
       default = "solid-toast.trev.zip";
       description = "Domain routed to the solid-toast example.";
     };
+
+    port = mkOption {
+      type = types.port;
+      default = 3001;
+      description = "solid-toast port published on the host.";
+    };
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.solid-toast = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+    };
+
     virtualisation.quadlet.containers.solid-toast.containerConfig = mkContainer {
       image = cfg.image;
       pull = "missing";
-      publishPorts = [ "3000" ];
-      labels = {
-        traefik = {
-          enable = true;
-          http.routers.solid-toast = {
-            rule = "Host(`${cfg.domain}`)";
-            middlewares = "secure@file";
-          };
-        };
-      };
+      publishPorts = [ "${toString cfg.port}:3000" ];
     };
   };
 }

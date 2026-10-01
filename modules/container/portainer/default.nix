@@ -16,7 +16,6 @@ let
     mkImageOption
     ;
   inherit (config.virtualisation.quadlet)
-    networks
     volumes
     ;
   cfg = config.trev.containers.portainer;
@@ -33,16 +32,19 @@ in
       description = "Host Podman socket exposed to Portainer.";
     };
 
-    routerRule = mkOption {
-      type = types.str;
-      default = "HostRegexp(`portainer.trev.(zip|kiwi)`)";
-      description = "Traefik routing rule for Portainer.";
+    domains = mkOption {
+      type = types.listOf types.str;
+      default = [
+        "portainer.trev.zip"
+        "portainer.trev.kiwi"
+      ];
+      description = "Domains routed to Portainer.";
     };
 
     servicePort = mkOption {
       type = types.port;
       default = 9000;
-      description = "Internal Portainer HTTP port routed by Traefik.";
+      description = "Portainer port published on the host loopback.";
     };
 
     volumeName = mkOption {
@@ -50,15 +52,17 @@ in
       default = "portainer";
       description = "Quadlet volume containing Portainer data.";
     };
-
-    networkName = mkOption {
-      type = types.str;
-      default = "traefik";
-      description = "Quadlet network shared with Traefik.";
-    };
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.portainer = {
+      inherit (cfg) domains;
+      # trev-proxy runs on the host network next to Portainer.
+      address = "127.0.0.1";
+      port = cfg.servicePort;
+      auth = "trev";
+    };
+
     virtualisation.quadlet = {
       containers.portainer = {
         containerConfig = mkContainer {
@@ -68,24 +72,7 @@ in
             "${cfg.podmanSocket}:/var/run/docker.sock"
             "${volumes.${cfg.volumeName}.ref}:/data"
           ];
-          networks = [
-            networks.${cfg.networkName}.ref
-          ];
-          labels = {
-            traefik = {
-              enable = true;
-              http = {
-                routers.portainer = {
-                  rule = cfg.routerRule;
-                  middlewares = "secure-trev@file";
-                };
-                services.portainer.loadbalancer.server = {
-                  scheme = "http";
-                  port = cfg.servicePort;
-                };
-              };
-            };
-          };
+          publishPorts = [ "127.0.0.1:${toString cfg.servicePort}:9000" ];
         };
 
         unitConfig = {
@@ -96,7 +83,6 @@ in
       };
 
       volumes.${cfg.volumeName} = { };
-      networks.${cfg.networkName} = { };
     };
   };
 }

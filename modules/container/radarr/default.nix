@@ -44,10 +44,13 @@ in
       default = "/mnt/pool";
       description = "Host media pool path.";
     };
-    domainPattern = mkOption {
-      type = types.str;
-      default = "radarr.trev.(zip|kiwi)";
-      description = "Traefik HostRegexp pattern for Radarr.";
+    domains = mkOption {
+      type = types.listOf types.str;
+      default = [
+        "radarr.trev.zip"
+        "radarr.trev.kiwi"
+      ];
+      description = "Domains routed to Radarr.";
     };
     port = mkOption {
       type = types.port;
@@ -57,6 +60,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.radarr = {
+      inherit (cfg) domains port;
+      auth = "admin";
+    };
+
     virtualisation.quadlet = {
       containers.radarr.containerConfig = mkContainer {
         image = cfg.image;
@@ -70,17 +78,8 @@ in
           "${volumes.radarr.ref}:/config"
           "${cfg.poolPath}:/pool"
         ];
-        publishPorts = [ (toString cfg.port) ];
+        publishPorts = [ "${toString cfg.port}:7878" ];
         networks = [ config.virtualisation.quadlet.networks.radarr.ref ];
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.radarr = {
-              rule = "HostRegexp(`${cfg.domainPattern}`)";
-              middlewares = "secure-admin@file";
-            };
-          };
-        };
       };
 
       volumes.radarr = { };

@@ -49,6 +49,12 @@ in
       description = "Public Shlink domain.";
     };
 
+    port = mkOption {
+      type = types.port;
+      default = 8082;
+      description = "Shlink port published on the host.";
+    };
+
     geoliteSecret = mkOption {
       type = secretType;
       default = {
@@ -69,6 +75,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.shlink = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+      transparent = true;
+    };
+
     assertions = [
       {
         assertion = postgresql.enable;
@@ -123,13 +135,7 @@ in
           networks = [
             networks.shlink.ref
           ];
-          publishPorts = [ "8080" ];
-          labels = {
-            traefik = {
-              enable = true;
-              http.routers.shlink.rule = "Host(`${cfg.domain}`)";
-            };
-          };
+          publishPorts = [ "${toString cfg.port}:8080" ];
         };
 
         unitConfig = {

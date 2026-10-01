@@ -84,6 +84,15 @@ in
   };
 
   config = mkIf cfg.enable {
+    # The dashboard only accepts its listen address as the Host, which a TLS
+    # proxy can't rewrite, so it answers 403 here until DuckMetrics can allow
+    # another Host.
+    trev.proxy.routes.duckmetrics = {
+      domains = [ cfg.domain ];
+      port = 8080;
+      auth = "trev";
+    };
+
     assertions = [
       {
         assertion = cfg.prometheusConfigFile != ./prometheus.yaml || jsonExporter.enable;
@@ -144,20 +153,6 @@ in
         ]
         ++ cfg.extraArgs;
         stopTimeout = 45;
-        labels = {
-          traefik = {
-            enable = true;
-            http = {
-              middlewares.duckmetrics-dashboard.headers.customrequestheaders.Host = "0.0.0.0:8080";
-              services.duckmetrics.loadbalancer.server.port = 8080;
-              routers.duckmetrics = {
-                rule = "Host(`${cfg.domain}`)";
-                service = "duckmetrics";
-                middlewares = "secure-trev@file,duckmetrics-dashboard@redis";
-              };
-            };
-          };
-        };
       };
 
       networks.${cfg.networkName} = { };

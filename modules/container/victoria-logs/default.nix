@@ -58,6 +58,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.victoria-logs = {
+      domains = [ cfg.domain ];
+      port = 9428;
+      auth = "trev";
+    };
+
     virtualisation.quadlet = {
       containers.victoria-logs.containerConfig = mkContainer {
         image = cfg.image;
@@ -70,17 +76,6 @@ in
           networks.${cfg.networkName}.ref
         ];
         exec = cfg.extraArgs;
-        labels = {
-          traefik = {
-            enable = true;
-            http = {
-              routers.victoria-logs = {
-                rule = "Host(`${cfg.domain}`)";
-                middlewares = "secure-trev@file";
-              };
-            };
-          };
-        };
       };
 
       networks.${cfg.networkName} = { };

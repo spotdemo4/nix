@@ -12,6 +12,7 @@
     (self + /modules/home-manager/codex)
     (self + /modules/home-manager/continue)
     (self + /modules/home-manager/cursor)
+    (self + /modules/home-manager/device-certificate)
     (self + /modules/home-manager/discord)
     (self + /modules/home-manager/gpg)
     (self + /modules/home-manager/gtk)
@@ -156,6 +157,11 @@
       codex.enable = true;
       continue.enable = true;
       cursor.enable = true;
+      device-certificate = {
+        enable = true;
+        certificate = ./device.pem;
+        key = self + /secrets/device-htpc.age;
+      };
       discord.enable = true;
       gpg.enable = true;
       gtk.enable = true;

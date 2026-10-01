@@ -166,6 +166,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.niks3 = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+    };
+
     assertions = [
       {
         assertion = postgresql.enable;
@@ -243,14 +248,8 @@ in
             networks.niks3.ref
           ];
           publishPorts = [
-            (toString cfg.port)
+            "${toString cfg.port}:5751"
           ];
-          labels = {
-            traefik = {
-              enable = true;
-              http.routers.niks3.rule = "Host(`${cfg.domain}`)";
-            };
-          };
         };
 
         unitConfig = {

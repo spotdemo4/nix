@@ -54,6 +54,21 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes = {
+      satisfactory-server = {
+        protocol = "tcp";
+        port = 7777;
+      };
+      satisfactory-query = {
+        protocol = "udp";
+        port = 7777;
+      };
+      satisfactory-game = {
+        protocol = "tcp";
+        port = 8888;
+      };
+    };
+
     virtualisation.quadlet = {
       containers.satisfactory.containerConfig = mkContainer {
         image = cfg.image;
@@ -63,36 +78,6 @@ in
           "${volumes.${cfg.volumeName}.ref}:/config"
         ];
         publishPorts = cfg.publishPorts;
-        labels = {
-          traefik = {
-            enable = true;
-            tcp = {
-              services = {
-                satisfactory-server.loadbalancer.server.port = 7777;
-                satisfactory-game.loadbalancer.server.port = 8888;
-              };
-              routers = {
-                satisfactory-server = {
-                  rule = "HostSNI(`*`)";
-                  entryPoints = "satisfactory-server";
-                  service = "satisfactory-server";
-                };
-                satisfactory-game = {
-                  rule = "HostSNI(`*`)";
-                  entryPoints = "satisfactory-game";
-                  service = "satisfactory-game";
-                };
-              };
-            };
-            udp = {
-              services.satisfactory-query.loadbalancer.server.port = 7777;
-              routers.satisfactory-query = {
-                entryPoints = "satisfactory-query";
-                service = "satisfactory-query";
-              };
-            };
-          };
-        };
       };
 
       volumes.${cfg.volumeName} = { };

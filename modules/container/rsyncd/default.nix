@@ -55,6 +55,19 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes = {
+      rsyncd = {
+        protocol = "tcp";
+        inherit (cfg) port;
+        listen = 873;
+      };
+      rsyncd-tls = {
+        domains = [ cfg.tlsDomain ];
+        inherit (cfg) port;
+        listen = 874;
+      };
+    };
+
     virtualisation.quadlet = {
       secrets.${cfg.secret.ref} = cfg.secret;
 
@@ -76,26 +89,6 @@ in
         publishPorts = [
           "${toString cfg.port}:${toString cfg.port}"
         ];
-        labels = {
-          traefik = {
-            enable = true;
-            tcp = {
-              routers.rsyncd = {
-                rule = "HostSNI(`*`)";
-                entryPoints = "rsyncd";
-                service = "rsyncd";
-              };
-              routers.rsyncd-tls = {
-                rule = "HostSNI(`${cfg.tlsDomain}`)";
-                entryPoints = "rsyncd-tls";
-                service = "rsyncd";
-                tls = "true";
-                "tls.certresolver" = "letsencrypt";
-              };
-              services.rsyncd.loadbalancer.server.port = cfg.port;
-            };
-          };
-        };
       };
 
       volumes.codex = { };

@@ -35,23 +35,25 @@ in
       default = "nix-shield.trev.zip";
       description = "Domain routed to nix-shield.";
     };
+
+    port = mkOption {
+      type = types.port;
+      default = 3000;
+      description = "nix-shield port published on the host.";
+    };
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.nix-shield = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+    };
+
     virtualisation.quadlet.containers.nix-shield.containerConfig = mkContainer {
       image = cfg.image;
       pull = "missing";
-      publishPorts = [ "3000" ];
+      publishPorts = [ "${toString cfg.port}:3000" ];
       environments.NIX_SHIELD_ALLOWED_IPS = concatStringsSep "," cfg.allowedIPs;
-      labels = {
-        traefik = {
-          enable = true;
-          http.routers.nix-shield = {
-            rule = "Host(`${cfg.domain}`)";
-            middlewares = "secure@file";
-          };
-        };
-      };
     };
   };
 }

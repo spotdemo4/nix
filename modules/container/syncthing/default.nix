@@ -52,6 +52,22 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes = {
+      syncthing = {
+        domains = [ cfg.domain ];
+        port = 8384;
+        auth = "trev";
+      };
+      syncthing-tcp = {
+        protocol = "tcp";
+        port = 22000;
+      };
+      syncthing-udp = {
+        protocol = "udp";
+        port = 22000;
+      };
+    };
+
     virtualisation.quadlet = {
       containers.syncthing.containerConfig = mkContainer {
         image = cfg.image;
@@ -77,33 +93,6 @@ in
         healthInterval = "1m";
         healthTimeout = "10s";
         healthRetries = 3;
-        labels = {
-          traefik = {
-            enable = true;
-            http = {
-              routers.syncthing = {
-                rule = "Host(`${cfg.domain}`)";
-                middlewares = "secure-trev@file";
-              };
-              services.syncthing.loadbalancer.server.port = 8384;
-            };
-            tcp = {
-              routers.syncthing = {
-                rule = "HostSNI(`*`)";
-                entryPoints = "syncthing-tcp";
-                service = "syncthing";
-              };
-              services.syncthing.loadbalancer.server.port = 22000;
-            };
-            udp = {
-              routers.syncthing = {
-                entryPoints = "syncthing-udp";
-                service = "syncthing";
-              };
-              services.syncthing.loadbalancer.server.port = 22000;
-            };
-          };
-        };
       };
 
       volumes.syncthing = { };
