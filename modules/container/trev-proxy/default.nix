@@ -135,7 +135,7 @@ in
   options.trev.containers.trev-proxy = {
     enable = mkEnableOption "the trev-proxy container";
 
-    image = mkImageOption "trev.zip/llc/trev-proxy:0.3.0@sha256:e848bf1ae3ffdfbd54b0c1f1cab0d302b7f745e6fb8eab8a197c59bc9bfee528";
+    image = mkImageOption "trev.zip/llc/trev-proxy:0.3.1@sha256:d9a1ba227a0f77774ee7eb46638fec0bba0510243ee7e81d2dd9251af344ffe4";
 
     listenAddress = mkOption {
       type = types.str;
