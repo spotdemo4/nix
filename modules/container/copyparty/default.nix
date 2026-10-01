@@ -73,6 +73,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.copyparty = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+      transparent = true;
+    };
+
     virtualisation.quadlet = {
       secrets.${cfg.accountsSecret.ref} = cfg.accountsSecret;
 
@@ -93,17 +99,8 @@ in
           "${volumes.copyparty.ref}:/db"
         ];
         publishPorts = [
-          (toString cfg.port)
+          "${toString cfg.port}:3923"
         ];
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.copyparty = {
-              rule = "Host(`${cfg.domain}`)";
-              middlewares = "secure@file";
-            };
-          };
-        };
       };
 
       volumes.copyparty = { };

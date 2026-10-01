@@ -55,15 +55,18 @@ in
       default = "/mnt/pool/download/qbittorrent";
       description = "Host path for qBittorrent downloads.";
     };
-    domainPattern = mkOption {
-      type = types.str;
-      default = "qbittorrent.trev.(zip|kiwi)";
-      description = "Traefik HostRegexp pattern for qBittorrent.";
+    domains = mkOption {
+      type = types.listOf types.str;
+      default = [
+        "qbittorrent.trev.zip"
+        "qbittorrent.trev.kiwi"
+      ];
+      description = "Domains routed to qBittorrent.";
     };
     webUiPort = mkOption {
       type = types.port;
       default = 8185;
-      description = "qBittorrent Web UI port.";
+      description = "qBittorrent Web UI port, published on the host by its Gluetun instance.";
     };
     dockerMods = mkOption {
       type = types.str;
@@ -81,6 +84,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.qbittorrent = {
+      inherit (cfg) domains;
+      port = cfg.webUiPort;
+      auth = "trev";
+    };
+
     assertions = [
       {
         assertion = gluetunConfig.enable && gluetun.enable;
@@ -107,15 +116,6 @@ in
             "${cfg.downloadPath}:/pool/download/qbittorrent"
           ];
           networks = [ "container:${gluetun.ref}" ];
-          labels = {
-            traefik = {
-              enable = true;
-              http.routers.qbittorrent = {
-                rule = "HostRegexp(`${cfg.domainPattern}`)";
-                middlewares = "secure-trev@file";
-              };
-            };
-          };
         };
 
         unitConfig = {

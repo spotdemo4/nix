@@ -32,10 +32,16 @@ in
       description = "Domain routed to the TrevStack server.";
     };
 
+    port = mkOption {
+      type = types.port;
+      default = 8080;
+      description = "TrevStack port published on the host.";
+    };
+
     trustedProxyCIDRs = mkOption {
       type = types.listOf types.str;
       default = [ "10.10.10.105/32" ];
-      description = "Proxy CIDRs allowed to set X-Forwarded-For.";
+      description = "Proxy CIDRs allowed to send PROXY protocol headers and set X-Forwarded-For.";
     };
 
     jwtSecret = mkOption {
@@ -55,6 +61,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.stack = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+      proxyProtocol = true;
+    };
+
     virtualisation.quadlet = {
       secrets.${cfg.jwtSecret.ref} = cfg.jwtSecret;
 
@@ -68,6 +80,7 @@ in
           XDG_CONFIG_HOME = "/data";
           AUTH_COOKIE_SECURE = "true";
           TRUSTED_PROXY_CIDRS = concatStringsSep "," cfg.trustedProxyCIDRs;
+          PROXY_PROTOCOL = "true";
         };
         volumes = [
           "${volumes.${cfg.volumeName}.ref}:/data:U"
@@ -79,16 +92,7 @@ in
             target = "JWT_SECRET";
           }
         ];
-        publishPorts = [ "8080" ];
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.stack = {
-              rule = "Host(`${cfg.domain}`)";
-              middlewares = "secure@file";
-            };
-          };
-        };
+        publishPorts = [ "${toString cfg.port}:8080" ];
       };
 
       volumes.${cfg.volumeName} = { };

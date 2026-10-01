@@ -67,10 +67,14 @@ in
       default = "/mnt/fast/plex-data";
       description = "Host Plex transcode path.";
     };
-    domainPattern = mkOption {
-      type = types.str;
-      default = "plex.trev.(xyz|zip|kiwi)";
-      description = "Traefik HostRegexp pattern for Plex.";
+    domains = mkOption {
+      type = types.listOf types.str;
+      default = [
+        "plex.trev.xyz"
+        "plex.trev.zip"
+        "plex.trev.kiwi"
+      ];
+      description = "Domains routed to Plex.";
     };
     port = mkOption {
       type = types.port;
@@ -80,6 +84,17 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes = {
+      plex = {
+        inherit (cfg) domains port;
+      };
+      plex-tcp = {
+        protocol = "tcp";
+        inherit (cfg) port;
+        listen = 32400;
+      };
+    };
+
     virtualisation.quadlet = {
       containers.plex.containerConfig = mkContainer {
         image = cfg.image;
@@ -98,18 +113,8 @@ in
           "${cfg.musicPath}:/music"
           "${cfg.transcodePath}:/transcode"
         ];
-        publishPorts = [ (toString cfg.port) ];
+        publishPorts = [ "${toString cfg.port}:32400" ];
         networks = [ config.virtualisation.quadlet.networks.plex.ref ];
-        labels = {
-          traefik = {
-            enable = true;
-            tcp.routers.plex = {
-              rule = "HostSNI(`*`)";
-              entryPoints = "plex";
-            };
-            http.routers.plex.rule = "HostRegexp(`${cfg.domainPattern}`)";
-          };
-        };
       };
 
       volumes.plex = { };

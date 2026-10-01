@@ -249,6 +249,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.cliproxyapi = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+    };
+
     assertions = [
       {
         assertion = overriddenSettings == [ ];
@@ -279,20 +284,11 @@ in
         containerConfig = mkContainer {
           image = cfg.image;
           pull = "missing";
-          publishPorts = [ (toString cfg.port) ];
+          publishPorts = [ "${toString cfg.port}:${toString cfg.port}" ];
           volumes = [
             "/run/cliproxyapi/config.yaml:/CLIProxyAPI/config.yaml:ro"
             "${volumes.cliproxyapi.ref}:/root/.cli-proxy-api"
           ];
-          labels = {
-            traefik = {
-              enable = true;
-              http.routers.cliproxyapi = {
-                rule = "Host(`${cfg.domain}`)";
-                middlewares = "secure@file";
-              };
-            };
-          };
         };
 
         serviceConfig = {

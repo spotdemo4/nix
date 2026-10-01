@@ -10,7 +10,6 @@ let
     mkEnableOption
     mkIf
     mkOption
-    replaceStrings
     types
     ;
   inherit (import (self + /lib/container) { inherit lib; })
@@ -30,8 +29,6 @@ let
     admin_token_file = "/secrets/admin-token";
     metrics_token_file = "/secrets/metrics-token";
   };
-  s3DomainPattern = replaceStrings [ "." ] [ "\\." ] cfg.s3Domain;
-  webDomainPattern = replaceStrings [ "." ] [ "\\." ] cfg.webDomain;
 in
 {
   options.trev.containers.garage = {
@@ -97,6 +94,29 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes = {
+      garage-s3 = {
+        domains = [
+          cfg.s3Domain
+          "*.${cfg.s3Domain}"
+        ];
+        port = 3900;
+      };
+      garage-web = {
+        # cacheDomain is served as the website of the bucket aliased to it.
+        domains = [
+          cfg.webDomain
+          "*.${cfg.webDomain}"
+          cfg.cacheDomain
+        ];
+        port = 3901;
+      };
+      garage-admin = {
+        domains = [ cfg.adminDomain ];
+        port = 3902;
+      };
+    };
+
     virtualisation.quadlet = {
       containers.garage.serviceConfig = {
         LogRateLimitIntervalSec = "30s";
@@ -143,47 +163,6 @@ in
           "3901:3901" # web
           "3902:3902" # admin
         ];
-        labels = {
-          traefik = {
-            enable = true;
-            http = {
-              middlewares = {
-                nix-cache = {
-                  headers.customrequestheaders = {
-                    Host = "nix.${cfg.webDomain}";
-                    X-Forwarded-Host = "nix.${cfg.webDomain}";
-                  };
-                };
-              };
-              routers = {
-                garage-s3 = {
-                  rule = "Host(`${cfg.s3Domain}`) || HostRegexp(`^.+\\.${s3DomainPattern}$`)";
-                  service = "garage-s3";
-                };
-                garage-web = {
-                  rule = "Host(`${cfg.webDomain}`) || HostRegexp(`^.+\\.${webDomainPattern}$`)";
-                  service = "garage-web";
-                  middlewares = "secure@file";
-                };
-                garage-admin = {
-                  rule = "Host(`${cfg.adminDomain}`)";
-                  service = "garage-admin";
-                  middlewares = "secure@file";
-                };
-                nix-cache = {
-                  rule = "Host(`${cfg.cacheDomain}`)";
-                  service = "garage-web";
-                  middlewares = "nix-cache@redis";
-                };
-              };
-              services = {
-                garage-s3.loadbalancer.server.port = 3900;
-                garage-web.loadbalancer.server.port = 3901;
-                garage-admin.loadbalancer.server.port = 3902;
-              };
-            };
-          };
-        };
       };
 
       volumes.garage = { };

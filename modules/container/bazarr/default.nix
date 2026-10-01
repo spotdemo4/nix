@@ -50,10 +50,13 @@ in
       default = "/mnt/pool";
       description = "Host media pool path.";
     };
-    domainPattern = mkOption {
-      type = types.str;
-      default = "bazarr.trev.(zip|kiwi)";
-      description = "Traefik HostRegexp pattern for Bazarr.";
+    domains = mkOption {
+      type = types.listOf types.str;
+      default = [
+        "bazarr.trev.zip"
+        "bazarr.trev.kiwi"
+      ];
+      description = "Domains routed to Bazarr.";
     };
     port = mkOption {
       type = types.port;
@@ -69,6 +72,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.bazarr = {
+      inherit (cfg) domains port;
+      auth = "admin";
+    };
+
     assertions = [
       {
         assertion = sonarr.enable;
@@ -93,17 +101,8 @@ in
           "${volumes.bazarr.ref}:/config"
           "${cfg.poolPath}:/pool"
         ];
-        publishPorts = [ (toString cfg.port) ];
+        publishPorts = [ "${toString cfg.port}:6767" ];
         networks = cfg.networks;
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.bazarr = {
-              rule = "HostRegexp(`${cfg.domainPattern}`)";
-              middlewares = "secure-admin@file";
-            };
-          };
-        };
       };
 
       volumes.bazarr = { };

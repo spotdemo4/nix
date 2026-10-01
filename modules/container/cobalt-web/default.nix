@@ -41,9 +41,20 @@ in
       default = "cobalt.trev.zip";
       description = "Domain routed to the Cobalt web client.";
     };
+
+    port = mkOption {
+      type = types.port;
+      default = 8787;
+      description = "Cobalt web port published on the host.";
+    };
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.cobalt-web = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+    };
+
     assertions = [
       {
         assertion = cobalt.enable;
@@ -58,16 +69,7 @@ in
         WEB_DEFAULT_API = cfg.defaultApiUrl;
         WEB_HOST = cfg.webHost;
       };
-      publishPorts = [ "8787" ];
-      labels = {
-        traefik = {
-          enable = true;
-          http.routers.cobalt-web = {
-            rule = "Host(`${cfg.domain}`)";
-            middlewares = "secure@file";
-          };
-        };
-      };
+      publishPorts = [ "${toString cfg.port}:8787" ];
     };
   };
 }

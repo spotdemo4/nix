@@ -53,15 +53,19 @@ in
       default = "https://embed.trev.xyz";
       description = "Public URL advertised by Discord embedder.";
     };
-    domainPattern = mkOption {
-      type = types.str;
-      default = "embed.trev.(xyz|zip|kiwi)";
-      description = "Traefik HostRegexp pattern for Discord embedder.";
+    domains = mkOption {
+      type = types.listOf types.str;
+      default = [
+        "embed.trev.xyz"
+        "embed.trev.zip"
+        "embed.trev.kiwi"
+      ];
+      description = "Domains routed to Discord embedder.";
     };
     port = mkOption {
       type = types.port;
-      default = 8080;
-      description = "Discord embedder port published on the host.";
+      default = 8095;
+      description = "Discord embedder port, inside the container and published on the host.";
     };
     discordApplicationId = mkOption {
       type = types.str;
@@ -116,6 +120,10 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.discord-embedder = {
+      inherit (cfg) domains port;
+    };
+
     virtualisation.quadlet = {
       secrets = {
         ${cfg.discordSecret.ref} = cfg.discordSecret;
@@ -174,13 +182,7 @@ in
           "${cfg.filesPath}:/files"
           "${volumes.discord-embedder.ref}:/tmp"
         ];
-        publishPorts = [ (toString cfg.port) ];
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.embed.rule = "HostRegexp(`${cfg.domainPattern}`)";
-          };
-        };
+        publishPorts = [ "${toString cfg.port}:${toString cfg.port}" ];
       };
 
       volumes.discord-embedder = { };

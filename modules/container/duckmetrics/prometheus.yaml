@@ -13,20 +13,10 @@ scrape_configs:
           - "10.10.10.113:8069" # files
           - "10.10.10.114:8069" # etc
 
-  - job_name: traefik
-    static_configs:
-      - targets:
-          - "10.10.10.105:8080"
-
   - job_name: tor
     static_configs:
       - targets:
           - "10.10.10.105:9091"
-
-  - job_name: crowdsec
-    static_configs:
-      - targets:
-          - "10.10.10.114:6060"
 
   - job_name: node_exporter
     scrape_interval: 30s

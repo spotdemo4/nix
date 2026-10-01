@@ -41,6 +41,14 @@ in
   };
 
   config = mkIf cfg.enable {
+    # Requires the gateway in Stalwart's proxy.trusted-networks for its http
+    # listener, or Stalwart reads the PROXY header as garbage.
+    trev.proxy.routes.stalwart = {
+      domains = [ cfg.domain ];
+      port = 8080;
+      proxyProtocol = true;
+    };
+
     virtualisation.quadlet = {
       containers.stalwart.containerConfig = mkContainer {
         image = cfg.image;
@@ -61,18 +69,6 @@ in
         networks = [
           networks.stalwart.ref
         ];
-        labels = {
-          traefik = {
-            enable = true;
-            http = {
-              routers.stalwart = {
-                rule = "Host(`${cfg.domain}`)";
-                service = "stalwart";
-              };
-              services.stalwart.loadbalancer.server.port = 8080;
-            };
-          };
-        };
       };
 
       volumes = {

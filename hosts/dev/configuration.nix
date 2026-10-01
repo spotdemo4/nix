@@ -23,6 +23,19 @@ in
     (self + /modules/nixos/update)
   ];
 
+  trev.proxy.routes = {
+    dev = {
+      domains = [ "dev.trev.zip" ];
+      port = 8080;
+      auth = "trev";
+    };
+    t3 = {
+      domains = [ "t3.trev.zip" ];
+      port = 3773;
+      auth = "trev";
+    };
+  };
+
   environment.systemPackages = with pkgs; [
     attic-client
     codex

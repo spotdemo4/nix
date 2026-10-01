@@ -61,15 +61,14 @@ in
       default = "monero";
       description = "Quadlet network shared with P2Pool.";
     };
-
-    traefikNetworkName = mkOption {
-      type = types.str;
-      default = "traefik";
-      description = "Quadlet network shared with Traefik.";
-    };
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.monerod = {
+      domains = [ cfg.domain ];
+      port = cfg.rpcPort;
+    };
+
     virtualisation.quadlet = {
       containers.monerod.containerConfig = mkContainer {
         image = cfg.image;
@@ -79,7 +78,6 @@ in
         ];
         networks = [
           networks.${cfg.networkName}.ref
-          networks.${cfg.traefikNetworkName}.ref
         ];
         publishPorts = [
           "${toString cfg.p2pPort}:${toString cfg.p2pPort}"
@@ -98,25 +96,9 @@ in
           "--in-peers=50"
           "--out-peers=50"
         ];
-        labels = {
-          traefik = {
-            enable = true;
-            http = {
-              services.monero.loadbalancer.server.port = cfg.rpcPort;
-              routers.monero = {
-                rule = "Host(`${cfg.domain}`)";
-                service = "monero";
-                middlewares = "cors@file";
-              };
-            };
-          };
-        };
       };
 
-      networks = {
-        ${cfg.networkName} = { };
-        ${cfg.traefikNetworkName} = { };
-      };
+      networks.${cfg.networkName} = { };
     };
   };
 }

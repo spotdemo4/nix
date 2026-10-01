@@ -71,9 +71,16 @@ in
       description = "Minecraft server message of the day.";
     };
 
+    port = mkOption {
+      type = types.port;
+      default = 25565;
+      description = "Minecraft port published on the host.";
+    };
+
     publishPorts = mkOption {
       type = types.listOf types.str;
-      default = [ "25565" ];
+      default = [ "${toString cfg.port}:25565" ];
+      defaultText = lib.literalExpression ''[ "''${toString cfg.port}:25565" ]'';
       description = "Ports to publish from Minecraft.";
     };
 
@@ -85,6 +92,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.minecraft = {
+      protocol = "tcp";
+      inherit (cfg) port;
+      listen = 25565;
+    };
+
     virtualisation.quadlet = {
       secrets.${cfg.curseforgeSecret.ref} = cfg.curseforgeSecret;
 
@@ -110,15 +123,6 @@ in
           "${volumes.${cfg.volumeName}.ref}:/data"
         ];
         publishPorts = cfg.publishPorts;
-        labels = {
-          traefik = {
-            enable = true;
-            tcp.routers.minecraft = {
-              rule = "HostSNI(`*`)";
-              entryPoints = "minecraft";
-            };
-          };
-        };
       };
 
       volumes.${cfg.volumeName} = { };

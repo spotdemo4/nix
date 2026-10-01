@@ -37,9 +37,21 @@ in
       default = "tmail.trev.xyz";
       description = "Domain routed to TMail.";
     };
+
+    port = mkOption {
+      type = types.port;
+      default = 8096;
+      description = "TMail port published on the host.";
+    };
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.tmail = {
+      domains = [ cfg.domain ];
+      inherit (cfg) port;
+      auth = "admin";
+    };
+
     assertions = [
       {
         assertion = stalwart.enable;
@@ -51,19 +63,10 @@ in
       image = cfg.image;
       pull = "missing";
       environments.SERVER_URL = cfg.serverUrl;
-      publishPorts = [ "80" ];
+      publishPorts = [ "${toString cfg.port}:80" ];
       networks = [
         stalwartNetwork.ref
       ];
-      labels = {
-        traefik = {
-          enable = true;
-          http.routers.tmail = {
-            rule = "Host(`${cfg.domain}`)";
-            middlewares = "secure-admin@file";
-          };
-        };
-      };
     };
   };
 }

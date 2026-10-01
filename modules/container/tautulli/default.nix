@@ -43,10 +43,13 @@ in
       default = "America/Detroit";
       description = "Time zone used by Tautulli.";
     };
-    domainPattern = mkOption {
-      type = types.str;
-      default = "tautulli.trev.(zip|kiwi)";
-      description = "Traefik HostRegexp pattern for Tautulli.";
+    domains = mkOption {
+      type = types.listOf types.str;
+      default = [
+        "tautulli.trev.zip"
+        "tautulli.trev.kiwi"
+      ];
+      description = "Domains routed to Tautulli.";
     };
     port = mkOption {
       type = types.port;
@@ -59,6 +62,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    trev.proxy.routes.tautulli = {
+      inherit (cfg) domains port;
+      auth = "trev";
+    };
+
     assertions = [
       {
         assertion = plex.enable;
@@ -76,17 +84,8 @@ in
           TZ = cfg.timeZone;
         };
         volumes = [ "${volumes.tautulli.ref}:/config" ];
-        publishPorts = [ (toString cfg.port) ];
+        publishPorts = [ "${toString cfg.port}:8181" ];
         networks = cfg.networks;
-        labels = {
-          traefik = {
-            enable = true;
-            http.routers.tautulli = {
-              rule = "HostRegexp(`${cfg.domainPattern}`)";
-              middlewares = "secure-trev@file";
-            };
-          };
-        };
       };
 
       volumes.tautulli = { };
