@@ -94,12 +94,20 @@
       auth = {
         ca = ./devices-ca.pem;
         crl = ./devices.crl;
-        # null lets any device the CA issued a certificate to in; list device
-        # common names here once some devices shouldn't reach a group.
-        groups = {
-          trev = null;
-          admin = null;
-        };
+        # Device certificate common names allowed into each group.
+        groups =
+          let
+            devices = [
+              "desktop"
+              "dev"
+              "htpc"
+              "laptop"
+            ];
+          in
+          {
+            trev = devices;
+            admin = devices;
+          };
       };
     };
 
