@@ -38,6 +38,7 @@ in
     inputs.agenix.homeManagerModules.default
     (self + /modules/home-manager/claude)
     (self + /modules/home-manager/codex)
+    (self + /modules/home-manager/device-certificate)
     (self + /modules/home-manager/gpg)
     (self + /modules/home-manager/mcp)
     (self + /modules/home-manager/opencode)
@@ -166,6 +167,11 @@ in
     programs = {
       claude.enable = true;
       codex.enable = true;
+      device-certificate = {
+        enable = true;
+        certificate = ./device.pem;
+        key = self + /secrets/device-dev.age;
+      };
       gpg.enable = true;
       opencode.enable = true;
       starship.enable = true;

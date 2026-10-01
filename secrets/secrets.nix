@@ -84,6 +84,21 @@ in
   "gpg.age".publicKeys = keys.local ++ [ keys.devTrev ];
   "kagi.age".publicKeys = keys.development;
 
+  # trev-proxy device certificate keys
+  "device-desktop.age".publicKeys = [
+    keys.desktop
+    keys.devTrev
+  ];
+  "device-dev.age".publicKeys = [ keys.devTrev ];
+  "device-htpc.age".publicKeys = [
+    keys.devTrev
+    keys.htpc
+  ];
+  "device-laptop.age".publicKeys = [
+    keys.devTrev
+    keys.laptop
+  ];
+
   # local only
   "continue.age".publicKeys = keys.local;
   "mods.age".publicKeys = keys.local;
