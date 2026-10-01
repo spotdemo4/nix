@@ -247,6 +247,10 @@ in
         extraDomainNames = sans;
         dnsProvider = "cloudflare";
         dnsResolver = "1.1.1.1:53";
+        # The apex and wildcard share one TXT name, so a resolver can cache it with
+        # only one of the values past lego's timeout. Let's Encrypt only asks the
+        # authoritative servers, which lego still waits for.
+        extraLegoFlags = [ "--dns.propagation.disable-rns" ];
         credentialFiles.CF_DNS_API_TOKEN_FILE = config.age.secrets.${cfg.cloudflareDnsSecret}.path;
         postRun =
           let
@@ -274,6 +278,14 @@ in
       exec = [ "${configDir}/config.toml" ];
       stopTimeout = 35;
     };
+
+    # The registry may sit behind this proxy, so it is unreachable once the
+    # switch stops the old container. Pull while the old one still serves it.
+    system.preSwitchChecks.trev-proxy-image = ''
+      if [ "$2" != dry-activate ]; then
+        ${lib.getExe config.virtualisation.podman.package} pull --policy missing --quiet ${lib.escapeShellArg cfg.image}
+      fi
+    '';
 
     # Deliver replies from transparent upstreams to the proxy's sockets.
     systemd.services.trev-proxy-transparent = mkIf transparent {
