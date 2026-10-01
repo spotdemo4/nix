@@ -18,6 +18,7 @@
     (self + /modules/container/shlink)
     (self + /modules/container/shlink-web)
     (self + /modules/container/solid-toast)
+    (self + /modules/container/stack)
     (self + /modules/container/traefik-kop)
   ];
 
@@ -88,6 +89,7 @@
     shlink.enable = true;
     shlink-web.enable = true;
     solid-toast.enable = true;
+    stack.enable = true;
 
     gluetun = {
       enable = true;
