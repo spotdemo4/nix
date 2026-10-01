@@ -82,7 +82,7 @@ in
         {
           name = "discord-embedder";
           path = "~/dev/discord-embedder";
-          url = github "discord-embedder";
+          url = forgejo "llc" "discord-embedder";
         }
         {
           name = "DuckMetrics";
@@ -107,7 +107,7 @@ in
         {
           name = "nix-init";
           path = "~/dev/nix-init";
-          url = github "nix-init";
+          url = forgejo "llc" "nix-init";
         }
         {
           name = "nix-shield";
@@ -120,6 +120,11 @@ in
           url = forgejo "llc" "nixaws";
         }
         {
+          name = "osxsdk";
+          path = "~/dev/osxsdk";
+          url = forgejo "llc" "osxsdk";
+        }
+        {
           name = "oxc-zed";
           path = "~/dev/oxc-zed";
           url = github "oxc-zed";
@@ -130,24 +135,24 @@ in
           url = github "pangram-chrome";
         }
         {
-          name = "QuantaTrack";
-          path = "~/dev/QuantaTrack";
-          url = "https://git.quantadev.cc/Quanta/QuantaTrack";
+          name = "pi-action";
+          path = "~/dev/pi-action";
+          url = forgejo "llc" "pi-action";
         }
         {
-          name = "rsync-action";
-          path = "~/dev/rsync-action";
-          url = forgejo "llc" "rsync-action";
+          name = "pr-tracker";
+          path = "~/dev/pr-tracker";
+          url = forgejo "llc" "pr-tracker";
+        }
+        {
+          name = "QuantaTrack";
+          path = "~/dev/QuantaTrack";
+          url = forgejo "quanta" "QuantaTrack";
         }
         {
           name = "runner-images";
           path = "~/dev/runner-images";
           url = forgejo "llc" "runner-images";
-        }
-        {
-          name = "serialization-bench";
-          path = "~/dev/serialization-bench";
-          url = forgejo "llc" "serialization-bench";
         }
         {
           name = "shellHook";
@@ -158,11 +163,6 @@ in
           name = "solid-toast";
           path = "~/dev/solid-toast";
           url = forgejo "llc" "solid-toast";
-        }
-        {
-          name = "stack";
-          path = "~/dev/stack";
-          url = forgejo "llc" "stack";
         }
         {
           name = "template/cpp";
@@ -200,6 +200,11 @@ in
           url = forgejo "template" "rust";
         }
         {
+          name = "template/stack";
+          path = "~/dev/template/stack";
+          url = forgejo "template" "stack";
+        }
+        {
           name = "template/zig";
           path = "~/dev/template/zig";
           url = forgejo "template" "zig";
@@ -208,6 +213,11 @@ in
           name = "trev-mono";
           path = "~/dev/trev-mono";
           url = forgejo "llc" "trev-mono";
+        }
+        {
+          name = "trev-proxy";
+          path = "~/dev/trev-proxy";
+          url = forgejo "llc" "trev-proxy";
         }
         {
           name = "trevbar";
