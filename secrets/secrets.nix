@@ -26,6 +26,7 @@ in
   "protonvpn-cobalt.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink-postgresql.age".publicKeys = keys.local ++ [ keys.etc ];
+  "stack-jwt.age".publicKeys = keys.local ++ [ keys.etc ];
 
   # file server
   "copyparty.age".publicKeys = keys.local ++ [ keys.files ];
