@@ -25,6 +25,7 @@ let
   accounts = "/accounts.conf";
   configFile = pkgs.replaceVars ./copyparty.conf {
     accounts = accounts;
+    gateway = (import (self + /lib/lan)).addresses.gateway;
   };
 in
 {
@@ -76,7 +77,6 @@ in
     trev.proxy.routes.copyparty = {
       domains = [ cfg.domain ];
       inherit (cfg) port;
-      transparent = true;
     };
 
     virtualisation.quadlet = {

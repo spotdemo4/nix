@@ -70,28 +70,28 @@ let
     map (domain: "${route.name}: ${domain}") (
       builtins.filter (domain: certificateFor domain == "") route.domains
     )
-  ) (byProtocol "tls");
+  ) (byProtocol "http" ++ byProtocol "tls");
 
   upstream = route: "${route.address}:${toString route.port}";
   listen = route: "${cfg.listenAddress}:${toString route.listen}";
   common = route: {
-    inherit (route) transparent;
     proxy_protocol = route.proxyProtocol;
   };
 
-  # A tls route takes one certificate, so split its domains by certificate.
-  tlsRoutes =
-    route:
+  # An http or tls route takes one certificate, so split its domains by certificate.
+  certificateRoutes =
+    hostsKey: extra: route:
     let
       groups = groupBy certificateFor route.domains;
     in
     mapAttrsToList (
       certificate: domains:
       common route
+      // extra route
       // {
         name = if length (attrNames groups) == 1 then route.name else "${route.name}-${certificate}";
         listen = listen route;
-        sni = domains;
+        ${hostsKey} = domains;
         upstream = upstream route;
         cert = "${acmeDir}/${certificate}/fullchain.pem";
         key = "${acmeDir}/${certificate}/key.pem";
@@ -106,6 +106,13 @@ let
         }
       )
     ) groups;
+  httpRoutes = certificateRoutes "hosts" (route: {
+    inherit (route) http3;
+    upstream_protocol = route.upstreamProtocol;
+    forwarded_headers = route.forwardedHeaders;
+    request_headers = route.requestHeaders;
+  });
+  tlsRoutes = certificateRoutes "sni" (_: { });
 
   plainRoute =
     route:
@@ -120,6 +127,7 @@ let
 
   configFile = (pkgs.formats.toml { }).generate "trev-proxy.toml" (
     {
+      http = concatLists (map httpRoutes (byProtocol "http"));
       tls = concatLists (map tlsRoutes (byProtocol "tls"));
       tcp = map plainRoute (byProtocol "tcp");
       udp = map plainRoute (byProtocol "udp");
@@ -128,25 +136,17 @@ let
       telemetry.otlp_endpoint = cfg.otlpEndpoint;
     }
   );
-
-  transparent = any (route: route.transparent) routes;
 in
 {
   options.trev.containers.trev-proxy = {
     enable = mkEnableOption "the trev-proxy container";
 
-    image = mkImageOption "trev.zip/llc/trev-proxy:0.3.2@sha256:27a8c2dc2efccef5dce4835681616d8aed08083c42eb61ecf40f8be7c1aacfea";
+    image = mkImageOption "trev.zip/llc/trev-proxy:0.4.1@sha256:b06ede35f509b85840e0ee49ae790979f14858d984ae60a4a9560de5f9586eef";
 
     listenAddress = mkOption {
       type = types.str;
       default = "0.0.0.0";
       description = "Address trev-proxy listens on.";
-    };
-
-    interface = mkOption {
-      type = types.str;
-      default = "eth0";
-      description = "Interface that replies from transparent upstreams arrive on.";
     };
 
     otlpEndpoint = mkOption {
@@ -223,7 +223,9 @@ in
       message = "trev.proxy.routes.${route.name} on ${route.host} needs an address";
     }) routes
     ++ map (route: {
-      assertion = route.auth == null || route.protocol == "tls" && cfg.auth.groups ? ${route.auth};
+      assertion =
+        route.auth == null
+        || (route.protocol == "http" || route.protocol == "tls") && cfg.auth.groups ? ${route.auth};
       message = "trev.proxy.routes.${route.name} requires unknown device group ${toString route.auth}";
     }) routes;
 
@@ -270,7 +272,6 @@ in
       pull = "missing";
       # Host networking lets reloads bind new listeners without republishing ports.
       networks = [ "host" ];
-      addCapabilities = [ "CAP_NET_ADMIN" ];
       volumes = [
         "${configDir}:${configDir}:ro"
         "${acmeDir}:${acmeDir}:ro"
@@ -286,45 +287,5 @@ in
         ${lib.getExe config.virtualisation.podman.package} pull --policy missing --quiet ${lib.escapeShellArg cfg.image}
       fi
     '';
-
-    # Deliver replies from transparent upstreams to the proxy's sockets.
-    systemd.services.trev-proxy-transparent = mkIf transparent {
-      description = "Policy routing for trev-proxy transparent routes";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
-      path = with pkgs; [
-        iproute2
-        nftables
-      ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-      };
-      script = ''
-        nft -f - <<'EOF'
-        table inet trev-proxy
-        delete table inet trev-proxy
-        table inet trev-proxy {
-          chain prerouting {
-            type filter hook prerouting priority mangle;
-            socket transparent 1 meta mark set 0x7470
-          }
-        }
-        EOF
-        for family in -4 -6; do
-          ip "$family" rule del fwmark 0x7470 iif ${cfg.interface} lookup 7470 2>/dev/null || true
-          ip "$family" rule add fwmark 0x7470 iif ${cfg.interface} lookup 7470
-        done
-        ip -4 route replace local 0.0.0.0/0 dev lo table 7470
-        ip -6 route replace local ::/0 dev lo table 7470
-      '';
-      preStop = ''
-        nft delete table inet trev-proxy || true
-        for family in -4 -6; do
-          ip "$family" rule del fwmark 0x7470 iif ${cfg.interface} lookup 7470 || true
-          ip "$family" route flush table 7470 || true
-        done
-      '';
-    };
   };
 }

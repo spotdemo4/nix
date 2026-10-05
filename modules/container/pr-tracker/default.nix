@@ -80,7 +80,7 @@ in
     trev.proxy.routes.pr-tracker = {
       domains = [ cfg.domain ];
       inherit (cfg) port;
-      transparent = true;
+      upstreamProtocol = "h2c";
     };
 
     virtualisation.quadlet = {

@@ -53,6 +53,8 @@ in
     trev.proxy.routes.cobalt-web = {
       domains = [ cfg.domain ];
       inherit (cfg) port;
+      # static-web-server accepts h2c alongside HTTP/1.1.
+      upstreamProtocol = "h2c";
     };
 
     assertions = [

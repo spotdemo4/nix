@@ -74,7 +74,6 @@
 
     trev-proxy = {
       enable = true;
-      interface = "eth1";
       acmeEmail = "me@trev.xyz";
       certificates = {
         "trev.kiwi" = [ "*.trev.kiwi" ];

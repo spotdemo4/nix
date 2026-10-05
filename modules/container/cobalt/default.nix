@@ -56,7 +56,6 @@ in
     trev.proxy.routes.cobalt = {
       domains = [ cfg.domain ];
       inherit (cfg) port;
-      transparent = true;
     };
 
     assertions = [

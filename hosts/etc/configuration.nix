@@ -156,8 +156,6 @@
     user = "trev";
   };
 
-  trev.proxy.interface = "eth1";
-
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "24.05";
 }
