@@ -10,6 +10,7 @@
     ./hardware.nix
     ./containers.nix
     (self + /modules/nixos/podman-secrets)
+    (self + /modules/nixos/trev-proxy)
     (self + /modules/nixos/update)
   ];
 
@@ -142,11 +143,76 @@
     autoEscape = true;
     autoUpdate.enable = true;
   };
+  age.secrets.cloudflare-dns.file = self + /secrets/cloudflare-dns.age;
+  age.secrets.stalwart-certificates.file = self + /secrets/stalwart-certificates.age;
   trev = {
     update = {
       enable = true;
       hostname = hostname;
       user = "trev";
+    };
+
+    # Routes to upstreams outside this flake's hosts.
+    proxy.routes = {
+      windows = {
+        domains = [ "windows.trev.xyz" ];
+        address = "10.10.10.104";
+        port = 8085;
+        auth = "admin";
+      };
+      windows-udp = {
+        protocol = "udp";
+        address = "10.10.10.104";
+        port = 8085;
+      };
+    };
+
+    trev-proxy = {
+      enable = true;
+      acmeEmail = "me@trev.xyz";
+      certificates = {
+        "trev.kiwi" = [ "*.trev.kiwi" ];
+        "trev.rs" = [ "*.trev.rs" ];
+        "trev.xyz" = [ "*.trev.xyz" ];
+        "trev.zip" = [
+          "*.trev.zip"
+          "*.s3.trev.zip"
+          "*.web.trev.zip"
+        ];
+        # trev.コム
+        "trev.xn--tckwe" = [ "*.trev.xn--tckwe" ];
+      };
+      cloudflareDnsSecret = "cloudflare-dns";
+      certificatesExport = {
+        directory = "/mnt/certs";
+        stalwart = {
+          apiKeySecret = "stalwart-certificates";
+          certificates = [
+            "trev.kiwi"
+            "trev.xyz"
+            "trev.zip"
+          ];
+        };
+      };
+      otlpEndpoint = "http://10.10.10.109:4318";
+      auth = {
+        ca = ./devices-ca.pem;
+        crl = ./devices.crl;
+        # Device certificate common names allowed into each group.
+        groups =
+          let
+            devices = [
+              "desktop"
+              "dev"
+              "htpc"
+              "laptop"
+            ];
+          in
+          {
+            trev = devices;
+            admin = devices;
+          };
+      };
     };
   };
   nixpkgs.config.allowUnfree = true;

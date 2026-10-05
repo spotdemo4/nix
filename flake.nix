@@ -139,6 +139,20 @@
         trevpkgs.follows = "trevpkgs";
       };
     };
+
+    # trev-proxy
+    trev-proxy = {
+      type = "git";
+      url = "https://trev.zip/llc/trev-proxy";
+      ref = "main";
+      rev = "2543ed436c88f5783f687bda22260b9597e221ad";
+      shallow = true;
+      inputs = {
+        systems.follows = "systems";
+        nixpkgs.follows = "nixpkgs";
+        trevpkgs.follows = "trevpkgs";
+      };
+    };
   };
 
   outputs =
@@ -355,7 +369,7 @@
                   }
                 ];
               };
-              unit = nixos: nixos.config.virtualisation.quadlet.containers.trev-proxy._configText;
+              unit = nixos: nixos.config.systemd.units."trev-proxy.service".text;
               configFile = nixos: nixos.config.environment.etc."trev-proxy/config.toml".source;
             in
             if unit gateway != unit withRoute then

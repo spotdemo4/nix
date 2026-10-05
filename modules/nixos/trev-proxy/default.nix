@@ -1,5 +1,6 @@
 {
   self,
+  inputs,
   config,
   hostname,
   lib,
@@ -17,6 +18,7 @@ let
     groupBy
     hasPrefix
     length
+    listToAttrs
     mapAttrs
     mapAttrsToList
     mkEnableOption
@@ -29,14 +31,8 @@ let
     types
     unique
     ;
-  inherit (import (self + /lib/container) { inherit lib; })
-    mkImageOption
-    ;
-  cfg = config.trev.containers.trev-proxy;
+  cfg = config.trev.trev-proxy;
 
-  # The config directory is bind-mounted, not baked into the unit, so route
-  # changes reach the running proxy as a file rename and never restart it.
-  configDir = "/etc/trev-proxy";
   acmeDir = "/var/lib/acme";
 
   # Routes declared on every host, this one included.
@@ -89,6 +85,7 @@ let
       common route
       // extra route
       // {
+        inherit (route) protocol;
         name = if length (attrNames groups) == 1 then route.name else "${route.name}-${certificate}";
         listen = listen route;
         ${hostsKey} = domains;
@@ -98,8 +95,8 @@ let
       }
       // optionalAttrs (route.auth != null) (
         {
-          client_ca = "${configDir}/devices-ca.pem";
-          client_crl = "${configDir}/devices.crl";
+          client_ca = "${cfg.auth.ca}";
+          client_crl = "${cfg.auth.crl}";
         }
         // optionalAttrs (cfg.auth.groups.${route.auth} or null != null) {
           client_allow = cfg.auth.groups.${route.auth};
@@ -118,7 +115,7 @@ let
     route:
     common route
     // {
-      inherit (route) name;
+      inherit (route) name protocol;
       listen = listen route;
       upstream = upstream route;
     };
@@ -155,23 +152,17 @@ let
     '';
   };
 
-  configFile = (pkgs.formats.toml { }).generate "trev-proxy.toml" (
-    {
-      http = concatLists (map httpRoutes (byProtocol "http"));
-      tls = concatLists (map tlsRoutes (byProtocol "tls"));
-      tcp = map plainRoute (byProtocol "tcp");
-      udp = map plainRoute (byProtocol "udp");
-    }
-    // optionalAttrs (cfg.otlpEndpoint != null) {
-      telemetry.otlp_endpoint = cfg.otlpEndpoint;
-    }
+  proxyRoutes = concatLists (
+    map httpRoutes (byProtocol "http")
+    ++ map tlsRoutes (byProtocol "tls")
+    ++ map (route: [ (plainRoute route) ]) (byProtocol "tcp" ++ byProtocol "udp")
   );
 in
 {
-  options.trev.containers.trev-proxy = {
-    enable = mkEnableOption "the trev-proxy container";
+  imports = [ inputs.trev-proxy.nixosModules.default ];
 
-    image = mkImageOption "trev.zip/llc/trev-proxy:0.4.1@sha256:b06ede35f509b85840e0ee49ae790979f14858d984ae60a4a9560de5f9586eef";
+  options.trev.trev-proxy = {
+    enable = mkEnableOption "trev-proxy, routing every host's trev.proxy.routes";
 
     listenAddress = mkOption {
       type = types.str;
@@ -287,23 +278,22 @@ in
       message = "trev.proxy.routes.${route.name} requires unknown device group ${toString route.auth}";
     }) routes;
 
-    environment.etc =
-      mapAttrs
-        (_: source: {
-          inherit source;
-          # Copy rather than symlink, so activation renames the file and the proxy reloads it.
-          mode = "0444";
-        })
-        {
-          "trev-proxy/config.toml" = configFile;
-          "trev-proxy/devices-ca.pem" = cfg.auth.ca;
-          "trev-proxy/devices.crl" = cfg.auth.crl;
-        };
+    services.trev-proxy = {
+      enable = true;
+      settings.telemetry.otlp_endpoint = cfg.otlpEndpoint;
+      routes = listToAttrs (
+        map (route: {
+          inherit (route) name;
+          value = route;
+        }) proxyRoutes
+      );
+    };
 
     security.acme = {
       acceptTerms = true;
       certs = mapAttrs (domain: sans: {
         email = cfg.acmeEmail;
+        inherit (config.services.trev-proxy) group;
         extraDomainNames = sans;
         dnsProvider = "cloudflare";
         dnsResolver = "1.1.1.1:53";
@@ -329,26 +319,5 @@ in
           '';
       }) cfg.certificates;
     };
-
-    virtualisation.quadlet.containers.trev-proxy.containerConfig = {
-      image = cfg.image;
-      pull = "missing";
-      # Host networking lets reloads bind new listeners without republishing ports.
-      networks = [ "host" ];
-      volumes = [
-        "${configDir}:${configDir}:ro"
-        "${acmeDir}:${acmeDir}:ro"
-      ];
-      exec = [ "${configDir}/config.toml" ];
-      stopTimeout = 35;
-    };
-
-    # The registry may sit behind this proxy, so it is unreachable once the
-    # switch stops the old container. Pull while the old one still serves it.
-    system.preSwitchChecks.trev-proxy-image = ''
-      if [ "$2" != dry-activate ]; then
-        ${lib.getExe config.virtualisation.podman.package} pull --policy missing --quiet ${lib.escapeShellArg cfg.image}
-      fi
-    '';
   };
 }
