@@ -125,6 +125,36 @@ let
 
   byProtocol = protocol: builtins.filter (route: route.protocol == protocol) routes;
 
+  # Stalwart keeps certificates in its database, so a renewal must be pushed to it.
+  stalwartPush = pkgs.writeShellApplication {
+    name = "stalwart-certificate-push";
+    runtimeInputs = [
+      pkgs.jq
+      pkgs.stalwart-cli
+    ];
+    text = ''
+      domain="$1"
+      STALWART_URL=${lib.escapeShellArg cfg.certificatesExport.stalwart.url}
+      STALWART_TOKEN="$(< "$2")"
+      export STALWART_URL STALWART_TOKEN
+
+      ids="$(stalwart-cli query Certificate --json --fields subjectAlternativeNames |
+        jq -r --arg domain "$domain" \
+          'select(.subjectAlternativeNames | if type == "object" then keys else . end | index($domain)) | .id')"
+      if [ -z "$ids" ]; then
+        echo "no Stalwart certificate covers $domain" >&2
+        exit 1
+      fi
+
+      for id in $ids; do
+        jq -n --rawfile cert fullchain.pem --rawfile key key.pem \
+          '{certificate: {"@type": "Text", value: $cert}, privateKey: {"@type": "Text", secret: $key}}' |
+          stalwart-cli update Certificate "$id" --stdin
+      done
+      stalwart-cli create Action --json '{"@type": "ReloadTlsCertificates"}'
+    '';
+  };
+
   configFile = (pkgs.formats.toml { }).generate "trev-proxy.toml" (
     {
       http = concatLists (map httpRoutes (byProtocol "http"));
@@ -188,6 +218,24 @@ in
         default = 1000;
         description = "GID owning exported certificates.";
       };
+
+      stalwart = {
+        url = mkOption {
+          type = types.str;
+          default = "https://mail.trev.xyz";
+          description = "Stalwart endpoint that renewed certificates are pushed to.";
+        };
+        apiKeySecret = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          description = "Name of the agenix secret containing a Stalwart API key that can query and update certificates and reload TLS.";
+        };
+        certificates = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+          description = "Certificates replacing the Stalwart certificate covering the same domain after each renewal.";
+        };
+      };
     };
 
     auth = {
@@ -217,7 +265,17 @@ in
         assertion = uncovered == [ ];
         message = "trev-proxy has no certificate for: ${concatStringsSep ", " uncovered}";
       }
+      {
+        assertion =
+          cfg.certificatesExport.stalwart.certificates == [ ]
+          || cfg.certificatesExport.stalwart.apiKeySecret != null;
+        message = "trev-proxy needs certificatesExport.stalwart.apiKeySecret to push certificates to Stalwart";
+      }
     ]
+    ++ map (certificate: {
+      assertion = cfg.certificates ? ${certificate};
+      message = "trev-proxy cannot push unknown certificate ${certificate} to Stalwart";
+    }) cfg.certificatesExport.stalwart.certificates
     ++ map (route: {
       assertion = route.address != null;
       message = "trev.proxy.routes.${route.name} on ${route.host} needs an address";
@@ -263,6 +321,11 @@ in
             install -d -m 0755 -o ${toString uid} -g ${toString gid} ${target}
             install -m 0644 -o ${toString uid} -g ${toString gid} fullchain.pem ${target}/cert.pem
             install -m 0640 -o ${toString uid} -g ${toString gid} key.pem ${target}/key.pem
+          ''
+          + lib.optionalString (builtins.elem domain cfg.certificatesExport.stalwart.certificates) ''
+            ${lib.getExe stalwartPush} ${lib.escapeShellArg domain} ${
+              config.age.secrets.${cfg.certificatesExport.stalwart.apiKeySecret}.path
+            }
           '';
       }) cfg.certificates;
     };

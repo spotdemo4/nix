@@ -14,6 +14,7 @@
   ];
 
   age.secrets.cloudflare-dns.file = self + /secrets/cloudflare-dns.age;
+  age.secrets.stalwart-certificates.file = self + /secrets/stalwart-certificates.age;
 
   virtualisation.quadlet = {
     secrets = {
@@ -88,8 +89,17 @@
         "trev.xn--tckwe" = [ "*.trev.xn--tckwe" ];
       };
       cloudflareDnsSecret = "cloudflare-dns";
-      # Stalwart on the mail host reads these.
-      certificatesExport.directory = "/mnt/certs";
+      certificatesExport = {
+        directory = "/mnt/certs";
+        stalwart = {
+          apiKeySecret = "stalwart-certificates";
+          certificates = [
+            "trev.kiwi"
+            "trev.xyz"
+            "trev.zip"
+          ];
+        };
+      };
       otlpEndpoint = "http://10.10.10.109:4318";
       auth = {
         ca = ./devices-ca.pem;

@@ -50,6 +50,7 @@ in
 
   # gateway server
   "cloudflare-dns.age".publicKeys = keys.local ++ [ keys.gateway ];
+  "stalwart-certificates.age".publicKeys = keys.local ++ [ keys.gateway ];
   "wireguard-server.age".publicKeys = keys.local ++ [
     keys.devTrev
     keys.gateway
