@@ -25,7 +25,7 @@ in
   options.trev.containers.stalwart = {
     enable = mkEnableOption "Stalwart mail server container";
 
-    image = mkImageOption "docker.io/stalwartlabs/stalwart:v0.15.5-alpine@sha256:0620ceba9165c104789d5cacb0aa209e7f16295f54edead631b1925b1ccc1ccf";
+    image = mkImageOption "docker.io/stalwartlabs/stalwart:v0.16.25-alpine@sha256:0aa9cc1759fcaaf39d87bc0068bd8f6c75304948d971db819768eb5873a8d4b5";
 
     certificatesPath = mkOption {
       type = types.str;
@@ -54,7 +54,6 @@ in
         image = cfg.image;
         pull = "missing";
         volumes = [
-          "${volumes.stalwart.ref}:/opt/stalwart"
           "${volumes.stalwart-conf.ref}:/etc/stalwart"
           "${volumes.stalwart-data.ref}:/var/lib/stalwart"
           "${cfg.certificatesPath}:/data/certs:ro"
@@ -72,7 +71,6 @@ in
       };
 
       volumes = {
-        stalwart = { };
         stalwart-conf = { };
         stalwart-data = { };
       };
