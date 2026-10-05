@@ -9,31 +9,12 @@
     (self + /modules/container/p2pool)
     (self + /modules/container/portainer)
     (self + /modules/container/tor)
-    (self + /modules/container/trev-proxy)
     (self + /modules/container/wireguard)
   ];
-
-  age.secrets.cloudflare-dns.file = self + /secrets/cloudflare-dns.age;
-  age.secrets.stalwart-certificates.file = self + /secrets/stalwart-certificates.age;
 
   virtualisation.quadlet = {
     secrets = {
       "wireguard-server".file = self + /secrets/wireguard-server.age;
-    };
-  };
-
-  # Routes to upstreams outside this flake's hosts.
-  trev.proxy.routes = {
-    windows = {
-      domains = [ "windows.trev.xyz" ];
-      address = "10.10.10.104";
-      port = 8085;
-      auth = "admin";
-    };
-    windows-udp = {
-      protocol = "udp";
-      address = "10.10.10.104";
-      port = 8085;
     };
   };
 
@@ -71,54 +52,6 @@
       metricsPort = 9091;
       metricsHostIP = "10.10.10.105";
       metricsAllowedIP = "10.10.10.109";
-    };
-
-    trev-proxy = {
-      enable = true;
-      acmeEmail = "me@trev.xyz";
-      certificates = {
-        "trev.kiwi" = [ "*.trev.kiwi" ];
-        "trev.rs" = [ "*.trev.rs" ];
-        "trev.xyz" = [ "*.trev.xyz" ];
-        "trev.zip" = [
-          "*.trev.zip"
-          "*.s3.trev.zip"
-          "*.web.trev.zip"
-        ];
-        # trev.コム
-        "trev.xn--tckwe" = [ "*.trev.xn--tckwe" ];
-      };
-      cloudflareDnsSecret = "cloudflare-dns";
-      certificatesExport = {
-        directory = "/mnt/certs";
-        stalwart = {
-          apiKeySecret = "stalwart-certificates";
-          certificates = [
-            "trev.kiwi"
-            "trev.xyz"
-            "trev.zip"
-          ];
-        };
-      };
-      otlpEndpoint = "http://10.10.10.109:4318";
-      auth = {
-        ca = ./devices-ca.pem;
-        crl = ./devices.crl;
-        # Device certificate common names allowed into each group.
-        groups =
-          let
-            devices = [
-              "desktop"
-              "dev"
-              "htpc"
-              "laptop"
-            ];
-          in
-          {
-            trev = devices;
-            admin = devices;
-          };
-      };
     };
 
     wireguard = {

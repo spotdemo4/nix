@@ -449,6 +449,7 @@
         "nur": "nur",
         "quadlet-nix": "quadlet-nix",
         "systems": "systems",
+        "trev-proxy": "trev-proxy",
         "trevbar": "trevbar",
         "trevpkgs": "trevpkgs",
         "zen-browser": "zen-browser"
@@ -504,6 +505,35 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "type": "github"
+      }
+    },
+    "trev-proxy": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": [
+          "systems"
+        ],
+        "trevpkgs": [
+          "trevpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791205621,
+        "narHash": "sha256-zHKK5Yx806zpiORJWFQu0ItcYBQgUfCjN4zBhVdRrig=",
+        "ref": "main",
+        "rev": "2543ed436c88f5783f687bda22260b9597e221ad",
+        "shallow": true,
+        "type": "git",
+        "url": "https://trev.zip/llc/trev-proxy"
+      },
+      "original": {
+        "ref": "main",
+        "rev": "2543ed436c88f5783f687bda22260b9597e221ad",
+        "shallow": true,
+        "type": "git",
+        "url": "https://trev.zip/llc/trev-proxy"
       }
     },
     "trevbar": {
