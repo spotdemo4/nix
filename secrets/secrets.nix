@@ -56,6 +56,7 @@ in
   ];
 
   # media server
+  "embedder-cookies.age".publicKeys = keys.local ++ [ keys.media ];
   "embedder-discord.age".publicKeys = keys.local ++ [ keys.media ];
   "embedder-instagram.age".publicKeys = keys.local ++ [ keys.media ];
   "embedder-reddit.age".publicKeys = keys.local ++ [ keys.media ];

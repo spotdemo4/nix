@@ -24,7 +24,7 @@ in
 {
   options.trev.containers.discord-embedder = {
     enable = mkEnableOption "Discord embedder container";
-    image = mkImageOption "ghcr.io/spotdemo4/discord-embedder:0.6.1@sha256:fa117c5674afa7e79d710ef3435568087cd09d8fce013b194b047911b2cf18e7";
+    image = mkImageOption "ghcr.io/spotdemo4/discord-embedder:0.7.0@sha256:a9c010f7514af0055e29ed8b0237167a35188342885745c3d8d0a857f96eece3";
     uid = mkOption {
       type = types.int;
       default = 1000;
@@ -77,6 +77,14 @@ in
       default = "150459222637805570";
       description = "Comma-separated Discord channel IDs.";
     };
+    cookiesSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "embedder-cookies";
+        file = self + /secrets/embedder-cookies.age;
+      };
+      description = "Key used to encrypt saved cookies.";
+    };
     discordSecret = mkOption {
       type = secretType;
       default = {
@@ -126,6 +134,7 @@ in
 
     virtualisation.quadlet = {
       secrets = {
+        ${cfg.cookiesSecret.ref} = cfg.cookiesSecret;
         ${cfg.discordSecret.ref} = cfg.discordSecret;
         ${cfg.instagramSecret.ref} = cfg.instagramSecret;
         ${cfg.redditSecret.ref} = cfg.redditSecret;
@@ -143,6 +152,7 @@ in
           DISCORD_CHANNEL_IDS = cfg.discordChannelIds;
           FILES_DIR = "/files";
           TMP_DIR = "/tmp";
+          COOKIES_DIR = "/cookies";
           HOST = cfg.publicUrl;
           PORT = toString cfg.port;
           QUICKSYNC = "true";
@@ -152,6 +162,11 @@ in
           X_USERNAME = "embedder@trev.xyz";
         };
         secrets = [
+          {
+            inherit (cfg.cookiesSecret) ref;
+            type = "env";
+            target = "COOKIES_KEY";
+          }
           {
             inherit (cfg.discordSecret) ref;
             type = "env";
@@ -181,11 +196,13 @@ in
         volumes = [
           "${cfg.filesPath}:/files"
           "${volumes.discord-embedder.ref}:/tmp"
+          "${volumes.discord-embedder-cookies.ref}:/cookies:U"
         ];
         publishPorts = [ "${toString cfg.port}:${toString cfg.port}" ];
       };
 
       volumes.discord-embedder = { };
+      volumes.discord-embedder-cookies = { };
     };
   };
 }
