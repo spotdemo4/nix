@@ -10,8 +10,8 @@
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
   # Pin legacy `nix-shell -p ...`, `nix-shell '<nixpkgs>'` and `import <nixpkgs>`
-  # which resolve via NIX_PATH / nix.nixPath / nix.settings.nix-path, not the
+  # which resolve via NIX_PATH / nix.settings.nix-path, not the
   # flake registry. Without this, nix-shell uses Determinate's
   # extra-nix-path=nixpkgs=flake:https://flakehub.com/...
-  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+  nix.settings.nix-path = [ "nixpkgs=${inputs.nixpkgs}" ];
 }
