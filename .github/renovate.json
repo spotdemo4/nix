@@ -35,9 +35,9 @@
       "description": "Forgejo runner label docker images",
       "managerFilePatterns": ["/.*.nix$/"],
       "matchStrings": [
-        "\"(?<depName>[^\"\\s:]+):docker://(?<packageName>[^\\s:@\"]+):(?<currentValue>[^@\\s\"]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?\"\\s*(?:#\\s*arch=(?<arch>\\S+))?"
+        "\"(?<depName>[^\"\\s:]+):docker://(?<packageName>[^\\s:@\"]+):(?<currentValue>[^@\\s\"]+)(?:@(?<currentDigest>sha256:[a-fA-F0-9]+))?\""
       ],
-      "autoReplaceStringTemplate": "\"{{{depName}}}:docker://{{{packageName}}}:{{#if newValue}}{{{newValue}}}{{else}}{{{currentValue}}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"{{#if arch}} # arch={{{arch}}}{{/if}}",
+      "autoReplaceStringTemplate": "\"{{{depName}}}:docker://{{{packageName}}}:{{#if newValue}}{{{newValue}}}{{else}}{{{currentValue}}}{{/if}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\"",
       "depTypeTemplate": "image",
       "datasourceTemplate": "docker"
     }
