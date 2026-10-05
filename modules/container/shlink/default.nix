@@ -78,7 +78,14 @@ in
     trev.proxy.routes.shlink = {
       domains = [ cfg.domain ];
       inherit (cfg) port;
-      transparent = true;
+      # Shlink reads these before X-Forwarded-For, and trev-proxy doesn't set them.
+      requestHeaders = {
+        CF-Connecting-IP = "";
+        X-Forwarded = "";
+        True-Client-IP = "";
+        X-Cluster-Client-Ip = "";
+        Client-Ip = "";
+      };
     };
 
     assertions = [
@@ -126,6 +133,7 @@ in
           environments = {
             DEFAULT_DOMAIN = cfg.domain;
             IS_HTTPS_ENABLED = "true";
+            TRUSTED_PROXIES = (import (self + /lib/lan)).addresses.gateway;
 
             DB_DRIVER = "postgres";
             DB_NAME = database.database;

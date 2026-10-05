@@ -41,7 +41,7 @@ in
     trustedProxyCIDRs = mkOption {
       type = types.listOf types.str;
       default = [ "10.10.10.105/32" ];
-      description = "Proxy CIDRs allowed to send PROXY protocol headers and set X-Forwarded-For.";
+      description = "Proxy CIDRs allowed to set X-Forwarded-For.";
     };
 
     jwtSecret = mkOption {
@@ -64,7 +64,7 @@ in
     trev.proxy.routes.stack = {
       domains = [ cfg.domain ];
       inherit (cfg) port;
-      proxyProtocol = true;
+      upstreamProtocol = "h2c";
     };
 
     virtualisation.quadlet = {
@@ -80,7 +80,6 @@ in
           XDG_CONFIG_HOME = "/data";
           AUTH_COOKIE_SECURE = "true";
           TRUSTED_PROXY_CIDRS = concatStringsSep "," cfg.trustedProxyCIDRs;
-          PROXY_PROTOCOL = "true";
         };
         volumes = [
           "${volumes.${cfg.volumeName}.ref}:/data:U"

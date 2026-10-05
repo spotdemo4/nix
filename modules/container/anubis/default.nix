@@ -96,7 +96,14 @@ in
         domains = [ instance.domain ];
         address = instance.hostIp;
         inherit (instance) port;
-        transparent = true;
+        # Anubis only takes public addresses from X-Forwarded-For, so LAN
+        # clients would have no X-Real-IP.
+        forwardedHeaders = [
+          "x-forwarded-for"
+          "x-forwarded-proto"
+          "x-forwarded-host"
+          "x-real-ip"
+        ];
       }
     ) enabledInstances;
 
@@ -134,8 +141,6 @@ in
               PUBLIC_URL = "https://${instance.domain}";
               REDIRECT_DOMAINS = instance.domain;
               TARGET = instance.target;
-              # trev-proxy connects transparently, so the peer is the client.
-              USE_REMOTE_ADDRESS = "true";
             };
             volumes = [
               "${volumes.${containerName}.ref}:/data:U"

@@ -62,6 +62,7 @@ in
         listen = 873;
       };
       rsyncd-tls = {
+        protocol = "tls";
         domains = [ cfg.tlsDomain ];
         inherit (cfg) port;
         listen = 874;
