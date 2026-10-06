@@ -78,10 +78,6 @@
       "groupName": "opencode dependencies"
     },
     {
-      "matchPackageNames": ["docker.io/stalwartlabs/stalwart"],
-      "enabled": false
-    },
-    {
       "description": "disable single-arch pin - must be updated via skopeo to per-arch manifest, not index",
       "matchManagers": ["custom.regex"],
       "matchDepNames": ["ubuntu-24.04-arm"],
