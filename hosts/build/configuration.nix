@@ -8,6 +8,12 @@
 }:
 let
   keys = import (self + /secrets/keys.nix);
+
+  # expose /dev/kvm (passed through from proxmox) to sandboxed github runners
+  kvm = {
+    PrivateDevices = false;
+    DeviceAllow = [ "/dev/kvm rw" ];
+  };
 in
 {
   imports = [
@@ -147,7 +153,10 @@ in
     github-runner = {
       isNormalUser = true;
       description = "github runner user";
-      extraGroups = [ "docker" ];
+      extraGroups = [
+        "docker"
+        "kvm"
+      ];
     };
   };
 
@@ -223,6 +232,7 @@ in
       nodeRuntimes = [
         "node24"
       ];
+      serviceOverrides = kvm;
     };
     chromium-android-desktop = {
       enable = true;
@@ -249,6 +259,7 @@ in
       nodeRuntimes = [
         "node24"
       ];
+      serviceOverrides = kvm;
     };
   };
 
