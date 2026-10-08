@@ -264,6 +264,7 @@ in
     };
     tailscale.enable = true;
     upower.enable = true;
+    fwupd.enable = true;
   };
 
   hardware.bluetooth = {
