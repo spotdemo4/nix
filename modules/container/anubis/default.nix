@@ -34,7 +34,7 @@ in
 {
   options.trev.containers.anubis = {
     enable = mkEnableOption "Anubis container instances";
-    image = mkImageOption "ghcr.io/techarohq/anubis:v1.27.0@sha256:8828275668b7bc675679f100970f9714f731388fbbf66ae94de8aca952e3fc4a";
+    image = mkImageOption "ghcr.io/techarohq/anubis:v1.28.0@sha256:48deacf791149e27c2cf6f5d8b4243e1a3db7a5816a168de0af6e58d9a519e2e";
 
     instances = mkOption {
       default = { };
