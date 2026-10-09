@@ -138,7 +138,8 @@ in
               BIND = ":8080";
               ED25519_PRIVATE_KEY_HEX_FILE = "/run/secrets/anubis-signing-key";
               POLICY_FNAME = "/etc/anubis/policy.yaml";
-              PUBLIC_URL = "https://${instance.domain}";
+              # No PUBLIC_URL: it's for forwardAuth, and as the protected
+              # domain itself, the challenge page redirects every path to /.
               REDIRECT_DOMAINS = instance.domain;
               TARGET = instance.target;
             };
