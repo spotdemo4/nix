@@ -46,5 +46,18 @@ jobs:
         with:
           shell: check
 
+      # TODO: remove evaluation diagnostics
+      - name: Runner resources
+        run: |
+          nproc
+          lscpu | grep -E 'Model name|^CPU\(s\)|Thread|MHz'
+          free -m
+          swapon --show
+          nohup vmstat -t -w 5 > "$RUNNER_TEMP/vmstat.log" 2>&1 &
+
       - name: Build packages
         uses: $/.github/actions/build
+
+      - name: Resource usage
+        if: ${{ always() }}
+        run: cat "$RUNNER_TEMP/vmstat.log"

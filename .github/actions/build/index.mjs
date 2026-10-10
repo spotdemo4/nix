@@ -228,6 +228,16 @@ export async function main() {
       ],
       { cwd, capture: true },
     );
+
+    // TODO: remove evaluation diagnostics
+    for (const line of stdout.split(/\r?\n/)) {
+      if (line.trim() === "") continue;
+      const { attr, stats } = JSON.parse(line);
+      console.log(
+        `${attr}: ${stats?.wallMs}ms, ${Math.round((stats?.allocBytes ?? 0) / 2 ** 20)} MiB allocated`,
+      );
+    }
+
     return parseEvalJobs(stdout);
   });
 
