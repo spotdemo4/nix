@@ -1,7 +1,39 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { normalizeGraph, parseBuildPlan, pruneGraph } from "./index.mjs";
+import { normalizeGraph, parseBuildPlan, parseEvalJobs, pruneGraph } from "./index.mjs";
+
+test("parses nix-eval-jobs assemblies", () => {
+  const assemblies =
+    parseEvalJobs(`{"attr":"desktop","drvPath":"/store/desktop.drv","extraValue":{"systemPath":"/store/system-path.drv","etc":"/store/etc.drv","homeManager":["/store/hm.drv"]}}
+{"attr":"server","drvPath":"/store/server.drv","extraValue":{"systemPath":"/store/server-path.drv","etc":"/store/server-etc.drv","homeManager":[]}}
+`);
+
+  assert.deepEqual(assemblies, {
+    desktop: {
+      toplevel: "/store/desktop.drv",
+      systemPath: "/store/system-path.drv",
+      etc: "/store/etc.drv",
+      homeManager: ["/store/hm.drv"],
+    },
+    server: {
+      toplevel: "/store/server.drv",
+      systemPath: "/store/server-path.drv",
+      etc: "/store/server-etc.drv",
+      homeManager: [],
+    },
+  });
+});
+
+test("reports nix-eval-jobs evaluation errors", () => {
+  assert.throws(
+    () =>
+      parseEvalJobs(`{"attr":"desktop","drvPath":"/store/desktop.drv","extraValue":{}}
+{"attr":"broken","error":"error: boom"}
+`),
+    /broken: error: boom/,
+  );
+});
 
 test("normalizes versioned derivation JSON", () => {
   const graph = normalizeGraph({

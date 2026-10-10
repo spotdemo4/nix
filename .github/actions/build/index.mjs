@@ -5,20 +5,48 @@ import { pathToFileURL } from "node:url";
 
 const assemblyExpression = `
   configurations:
-  builtins.mapAttrs (_: configuration: {
-    toplevel = configuration.config.system.build.toplevel.drvPath;
-    systemPath = configuration.config.system.path.drvPath;
-    etc = configuration.config.system.build.etc.drvPath;
-    homeManager = builtins.concatLists (
-      builtins.attrValues (
-        builtins.mapAttrs (_: user: [
-          user.home.activationPackage.drvPath
-          user.home.path.drvPath
-        ]) configuration.config.home-manager.users
-      )
-    );
-  }) configurations
+  builtins.mapAttrs (
+    _: configuration:
+    configuration.config.system.build.toplevel
+    // {
+      assemblies = {
+        systemPath = configuration.config.system.path.drvPath;
+        etc = configuration.config.system.build.etc.drvPath;
+        homeManager = builtins.concatLists (
+          builtins.attrValues (
+            builtins.mapAttrs (_: user: [
+              user.home.activationPackage.drvPath
+              user.home.path.drvPath
+            ]) configuration.config.home-manager.users
+          )
+        );
+      };
+    }
+  ) configurations
 `;
+
+export function parseEvalJobs(output) {
+  const assemblies = {};
+  const errors = [];
+
+  for (const line of output.split(/\r?\n/)) {
+    if (line.trim() === "") continue;
+
+    const job = JSON.parse(line);
+    if (job.error) {
+      errors.push(`${job.attr}: ${job.error}`);
+      continue;
+    }
+
+    assemblies[job.attr] = { toplevel: job.drvPath, ...job.extraValue };
+  }
+
+  if (errors.length > 0) {
+    throw new Error(`Failed to evaluate NixOS configurations:\n${errors.join("\n")}`);
+  }
+
+  return assemblies;
+}
 
 export function pruneGraph(graph, assemblyPaths) {
   const excluded = new Set(assemblyPaths);
@@ -179,15 +207,28 @@ async function writeSummary({ hosts, graph, candidates, excluded, plan, planOnly
 export async function main() {
   const cwd = process.env.GITHUB_WORKSPACE ?? process.cwd();
   const flake = getInput("flake", ".");
+  const workers = getInput("workers", "3");
+  const maxMemorySize = getInput("max-memory-size", "5000");
   const planOnly = getBooleanInput("plan-only", false);
 
   const assemblies = await group("Evaluate NixOS configurations", async () => {
     const { stdout } = await run(
-      "nix",
-      ["eval", "--json", `${flake}#nixosConfigurations`, "--apply", assemblyExpression],
+      "nix-eval-jobs",
+      [
+        "--flake",
+        `${flake}#nixosConfigurations`,
+        "--select",
+        assemblyExpression,
+        "--apply",
+        "drv: drv.assemblies",
+        "--workers",
+        workers,
+        "--max-memory-size",
+        maxMemorySize,
+      ],
       { cwd, capture: true },
     );
-    return JSON.parse(stdout);
+    return parseEvalJobs(stdout);
   });
 
   const hostAssemblies = Object.values(assemblies);

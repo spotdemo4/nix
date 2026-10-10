@@ -43,6 +43,8 @@ jobs:
     steps:
       - name: Initialize
         uses: spotdemo4/nix-init@da72d9fd57cb3eaddec8dd579373dea7a1a6f35a # v1.68.0
+        with:
+          shell: check
 
       - name: Build packages
         uses: $/.github/actions/build

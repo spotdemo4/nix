@@ -227,6 +227,12 @@
             ];
           };
 
+          check = pkgs.mkShell {
+            packages = with pkgs; [
+              nix-eval-jobs
+            ];
+          };
+
           update = pkgs.mkShell {
             packages = with pkgs; [
               renovate
