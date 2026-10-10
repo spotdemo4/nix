@@ -31,9 +31,21 @@
           stylus
           ublock-origin
         ];
-        userChrome = builtins.readFile "${pkgs.trev.catppuccin-zen-browser}/Mocha/Sky/userChrome.css";
-        userContent = builtins.readFile "${pkgs.trev.catppuccin-zen-browser}/Mocha/Sky/userContent.css";
       };
     };
+
+    # Link the theme instead of setting userChrome/userContent: those treat a
+    # store path string as CSS text, so they would need the theme read (and
+    # built) during evaluation
+    home.file =
+      let
+        cfg = config.programs.zen-browser;
+        chrome = "${cfg.profilesPath}/${cfg.profiles.default.path}/chrome";
+        theme = "${pkgs.trev.catppuccin-zen-browser}/Mocha/Sky";
+      in
+      {
+        "${chrome}/userChrome.css".source = "${theme}/userChrome.css";
+        "${chrome}/userContent.css".source = "${theme}/userContent.css";
+      };
   };
 }
