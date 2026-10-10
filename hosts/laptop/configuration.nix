@@ -192,7 +192,10 @@ in
       };
     };
     gnupg.agent.enable = true;
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      portalPackage = pkgs.trev.xdg-desktop-portal-hyprland;
+    };
     nix-ld.enable = true;
     steam = {
       enable = true;

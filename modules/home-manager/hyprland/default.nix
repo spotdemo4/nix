@@ -15,6 +15,7 @@ in
     wayland.windowManager.hyprland = {
       enable = true;
       configType = "lua";
+      portalPackage = pkgs.trev.xdg-desktop-portal-hyprland;
       extraConfig = builtins.readFile ./settings.lua;
     };
 
@@ -40,14 +41,13 @@ in
       enable = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
-        xdg-desktop-portal-luminous
       ];
       config.hyprland = {
         default = [
           "hyprland"
           "gtk"
         ];
-        "org.freedesktop.impl.portal.RemoteDesktop" = "luminous";
+        "org.freedesktop.impl.portal.RemoteDesktop" = "hyprland";
         "org.freedesktop.impl.portal.ScreenCast" = "hyprland";
       };
     };
