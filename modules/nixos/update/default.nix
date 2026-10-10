@@ -54,13 +54,11 @@ in
           nixos-rebuild
         ];
 
-        text = builtins.readFile (
-          pkgs.replaceVars ./update.sh {
-            hostname = cfg.hostname;
-            inherit stateDirectory;
-            user = cfg.user;
-          }
-        );
+        text =
+          lib.replaceStrings
+            [ "@hostname@" "@stateDirectory@" "@user@" ]
+            [ cfg.hostname stateDirectory cfg.user ]
+            (builtins.readFile ./update.sh);
       };
 
       updateListener = pkgs.writeShellApplication {
@@ -71,10 +69,8 @@ in
           pkgs.systemd
         ];
 
-        text = builtins.readFile (
-          pkgs.replaceVars ./update-listener.sh {
-            ntfyUrl = lib.escapeShellArg cfg.ntfyUrl;
-          }
+        text = lib.replaceStrings [ "@ntfyUrl@" ] [ (lib.escapeShellArg cfg.ntfyUrl) ] (
+          builtins.readFile ./update-listener.sh
         );
       };
 
