@@ -207,8 +207,8 @@ async function writeSummary({ hosts, graph, candidates, excluded, plan, planOnly
 export async function main() {
   const cwd = process.env.GITHUB_WORKSPACE ?? process.cwd();
   const flake = getInput("flake", ".");
-  const workers = getInput("workers", "3");
-  const maxMemorySize = getInput("max-memory-size", "5000");
+  const workers = getInput("workers", "2");
+  const maxMemorySize = getInput("max-memory-size", "5500");
   const planOnly = getBooleanInput("plan-only", false);
 
   const assemblies = await group("Evaluate NixOS configurations", async () => {

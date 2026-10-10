@@ -7,10 +7,10 @@ inputs:
     default: "."
   workers:
     description: Number of nix-eval-jobs evaluation workers
-    default: "3"
+    default: "2"
   max-memory-size:
     description: Memory budget per nix-eval-jobs worker in MiB
-    default: "5000"
+    default: "5500"
   plan-only:
     description: Report uncached dependencies without building them
     default: "false"
