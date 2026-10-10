@@ -108,7 +108,7 @@
       type = "github";
       owner = "spotdemo4";
       repo = "trevpkgs";
-      rev = "0937cf0ada7ac483195e079e9e0e474c8408a6a1";
+      rev = "8f1504e13efd4cb8e8d8169235f396f66adaa67d";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
