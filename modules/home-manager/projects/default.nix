@@ -18,7 +18,7 @@ let
         "ssh://${cfg.sshHost}:${project.path}"
       ];
       browserCommand = lib.escapeShellArgs [
-        (lib.getExe pkgs.trev.helium)
+        (lib.getExe config.programs.chromium.package)
         "--new-window"
         project.url
       ];
@@ -245,7 +245,7 @@ in
         name = "zed-${lib.replaceStrings [ "/" ] [ "-" ] project.name}";
         value = {
           name = "Zed: ${project.name}";
-          genericName = "Zed and Helium project";
+          genericName = "Zed and Chromium project";
           exec = lib.getExe (openProject project);
           icon = "zed";
           terminal = false;

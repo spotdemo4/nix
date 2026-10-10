@@ -28,7 +28,7 @@ start_project = function(editor_command, browser_command)
 
     local browser_subscription
     browser_subscription = hl.on("window.open", function(browser_window)
-        if not string.find(string.lower(browser_window.class), "helium", 1, true) then
+        if not string.find(string.lower(browser_window.class), "chromium", 1, true) then
             return
         end
 
@@ -80,7 +80,7 @@ start_project = function(editor_command, browser_command)
     hl.timer(function()
         if browser_subscription:is_active() then
             browser_subscription:remove()
-            notify_project_error("Timed out waiting for Helium")
+            notify_project_error("Timed out waiting for Chromium")
             finish_project_launch()
         end
     end, { timeout = 15000, type = "oneshot" })
