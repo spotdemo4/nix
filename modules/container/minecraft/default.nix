@@ -24,7 +24,7 @@ in
 {
   options.trev.containers.minecraft = {
     enable = mkEnableOption "the Minecraft container";
-    image = mkImageOption "docker.io/itzg/minecraft-server:latest@sha256:2a7f76eb43b4b4f45f73d01a8dd95a90ca7b7ea375187fb8407b74ac8b0b56d4";
+    image = mkImageOption "docker.io/itzg/minecraft-server:latest@sha256:fb80ef4ee5b915d79d91f9780ce4d52a51c29ce7aafc879fa446587320aef930";
 
     curseforgeSecret = mkOption {
       type = secretType;
