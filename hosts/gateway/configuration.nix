@@ -158,7 +158,6 @@
         domains = [ "windows.trev.xyz" ];
         address = "10.10.10.104";
         port = 8085;
-        auth = "admin";
       };
       windows-udp = {
         protocol = "udp";
