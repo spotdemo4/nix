@@ -41,7 +41,7 @@
     "dock": "right"
   },
   "edit_predictions": {
-    "provider": "zed"
+    "provider": "none"
   },
   "languages": {
     "SQL": {
