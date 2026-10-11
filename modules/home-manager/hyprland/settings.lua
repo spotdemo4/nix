@@ -244,6 +244,14 @@ hl.animation({ leaf = "borderangle", enabled = true, speed = 8, bezier = "defaul
 hl.animation({ leaf = "fade", enabled = true, speed = 7, bezier = "default" })
 hl.animation({ leaf = "workspaces", enabled = true, speed = 6, bezier = "default" })
 
+hl.window_rule({
+    name = "float-bitwarden-popout",
+    match = { class = "^chrome-nngceckbapebfimnlniiiahkandclblb-.*$" },
+
+    float = true,
+    center = true,
+})
+
 hl.bind(mod .. " + C", hl.dsp.window.close())
 hl.bind(mod .. " + SPACE", hl.dsp.exec_cmd(menu))
 hl.bind(mod .. " + V", hl.dsp.window.float({ action = "toggle" }))
