@@ -16,7 +16,9 @@ For a `github.com` remote, use `gh`. For any other remote, assume Forgejo and us
 3. Run any checks the repo requires before work is done, and fix failures before continuing.
 4. Stage the changes that belong to this work and commit them. Without repo rules, match the commit message style from `git log`.
 5. Push the branch with upstream tracking.
-6. Open a pull request against the default branch, unless one is already open for this branch, in which case the push updates it. If the repo has a pull request template, follow it for the description. Share the PR URL.
+6. Open a pull request against the default branch, unless one is already open for this branch, in which case the push updates it. Share the PR URL.
+   - Look for a pull request template first with `git ls-files | grep -i pull_request_template`. Templates can live in the repo root, `docs/`, `.github/`, `.gitea/`, or `.forgejo/`, either as a single file or as several files in a `PULL_REQUEST_TEMPLATE/` directory.
+   - If there is one, write the description by filling in its sections and checklists. Don't paste it in unfilled. If there are several, pick the one that fits the change. `gh pr create` and the forgejo MCP tools don't apply templates for you.
 7. Enable auto-merge on the PR. Without repo rules, use the repo's default merge method (`viewerDefaultMergeMethod` from `gh repo view`, or `default_merge_style` from the Forgejo repo).
    - GitHub: `gh pr merge <pr> --auto` with the matching `--squash`, `--merge`, or `--rebase` flag.
    - Forgejo: merge with `merge_when_checks_succeed` set. Forgejo schedules this without looking at the checks, and it only acts on the schedule when a check status changes. So if the schedule lands after the checks have finished, it never fires. Step 8 catches that case.
