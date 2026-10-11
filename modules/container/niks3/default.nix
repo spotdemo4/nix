@@ -50,7 +50,7 @@ in
 {
   options.trev.containers.niks3 = {
     enable = mkEnableOption "Niks3 container";
-    image = mkImageOption "ghcr.io/mic92/niks3:main@sha256:fc9b91d0b6a8b91b07fe574b3e9580a433e81a916775b17008289208f2946f67";
+    image = mkImageOption "ghcr.io/mic92/niks3:main@sha256:e8aaea2aa7bba58b85c95217b13be13394b75c74ad8f31420252790da7ae157f";
 
     domain = mkOption {
       type = types.str;
