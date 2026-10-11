@@ -57,8 +57,8 @@
               alias = "gpt-6-luna";
             }
             {
-              name = "anthropic/claude-haiku-4.5";
-              alias = "claude-haiku-4-5-20251001";
+              name = "anthropic/claude-haiku-5.5";
+              alias = "claude-haiku-5-5";
             }
             {
               name = "anthropic/claude-opus-5.5";

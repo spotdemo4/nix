@@ -259,7 +259,7 @@
                   "gpt-6-astra" = "openai/gpt-6-astra";
                   "gpt-6-sol" = "openai/gpt-6-sol";
                   "gpt-6-luna" = "openai/gpt-6-luna";
-                  "claude-haiku-4-5-20251001" = "anthropic/claude-haiku-4.5";
+                  "claude-haiku-5-5" = "anthropic/claude-haiku-5.5";
                   "claude-opus-5-5" = "anthropic/claude-opus-5.5";
                   "claude-sonnet-5-5" = "anthropic/claude-sonnet-5.5";
                   "claude-fable-5-1" = "anthropic/claude-fable-5.1";
