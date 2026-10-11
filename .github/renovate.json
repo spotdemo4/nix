@@ -66,6 +66,14 @@
       "pinDigests": true
     },
     {
+      "description": "minecraft server image digest changes frequently",
+      "matchManagers": ["custom.regex"],
+      "matchDepNames": ["docker.io/itzg/minecraft-server"],
+      "groupName": "minecraft server",
+      "schedule": ["* * * * 0"], // sunday
+      "updateNotScheduled": false
+    },
+    {
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
       "addLabels": ["actions"]
