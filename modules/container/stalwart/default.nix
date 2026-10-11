@@ -25,7 +25,7 @@ in
   options.trev.containers.stalwart = {
     enable = mkEnableOption "Stalwart mail server container";
 
-    image = mkImageOption "docker.io/stalwartlabs/stalwart:v0.16.25-alpine@sha256:0aa9cc1759fcaaf39d87bc0068bd8f6c75304948d971db819768eb5873a8d4b5";
+    image = mkImageOption "docker.io/stalwartlabs/stalwart:v0.16.26-alpine@sha256:3f6cfcd6ddae9a4ba1e2057e334bb2395c2c7ecceecfffc2bf639717b55b1478";
 
     certificatesPath = mkOption {
       type = types.str;
