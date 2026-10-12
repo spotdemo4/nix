@@ -1,14 +1,17 @@
 # shellcheck shell=bash
 
-# Waits until a Forgejo pull request merges, closes, fails a check, or stops progressing.
+# Waits until a Forgejo pull request merges, closes, fails a check, gets changes requested,
+# or stops progressing.
 # FORGEJO_URL and FORGEJO_TOKEN_FILE are set by the Nix wrapper.
 #
 # Exit codes:
 #   0  merged
 #   1  a check failed
-#   2  not merging: checks passed (or none were reported) but the PR stayed open
+#   2  not merging: checks passed (or none were reported) and no review is pending, but the
+#      PR stayed open
 #   3  closed without merging
 #   4  stale auto-merge: scheduled only after the checks settled, so it will never fire
+#   5  changes requested: a reviewer's latest verdict on the head commit requests changes
 #   64 usage error
 
 usage() {
@@ -83,18 +86,31 @@ statuses() {
   printf '%s\n' "$all"
 }
 
-# The last auto-merge schedule or cancellation in the PR timeline, or null, paginated.
-last_schedule() {
-  local page=1 last='null' body
+# Every item from an endpoint that returns a paginated JSON array.
+paginate() {
+  local page=1 all='[]' body
   while :; do
-    body="$(api "issues/$pr/timeline?limit=50&page=$page")"
+    body="$(api "$1?limit=50&page=$page")"
     [[ "$(jq length <<<"$body")" != 0 ]] || break
-    last="$(jq --argjson last "$last" \
-      '[$last] + [.[] | select(.type == "pull_scheduled_merge" or .type == "pull_cancel_scheduled_merge")] | last' \
-      <<<"$body")"
+    all="$(jq --argjson all "$all" '$all + .' <<<"$body")"
     page=$((page + 1))
   done
-  printf '%s\n' "$last"
+  printf '%s\n' "$all"
+}
+
+# The last auto-merge schedule or cancellation in the PR timeline, or null.
+last_schedule() {
+  paginate "issues/$pr/timeline" |
+    jq '[.[] | select(.type == "pull_scheduled_merge" or .type == "pull_cancel_scheduled_merge")] | last'
+}
+
+# Each user's latest verdict or review request. Comments, drafts, and dismissed reviews
+# don't change it, and team requests are skipped because a member's review doesn't clear them.
+latest_reviews() {
+  paginate "pulls/$pr/reviews" |
+    jq '[.[] | select((.dismissed | not) and .user != null and
+      (.state == "APPROVED" or .state == "REQUEST_CHANGES" or .state == "REQUEST_REVIEW"))]
+      | group_by(.user.id) | map(max_by(.id))'
 }
 
 print_statuses() {
@@ -103,7 +119,11 @@ print_statuses() {
     <<<"$1"
 }
 
-# After the checks settle, give auto-merge (or a late CI run) this long to act.
+print_reviews() {
+  jq -r '.[] | "  \(.user.login): \(.state) \(.html_url)"' <<<"$1"
+}
+
+# After the checks and reviews settle, give auto-merge (or a late CI run) this long to act.
 grace=120
 interval=5
 max_interval=30
@@ -132,7 +152,19 @@ while :; do
     exit 1
   fi
 
-  if [[ "$(jq '[.[] | select(.status == "pending")] | length' <<<"$checks")" == 0 ]]; then
+  reviews="$(latest_reviews)"
+  rejected="$(jq --arg sha "$sha" '[.[] | select(.state == "REQUEST_CHANGES" and .commit_id == $sha)]' <<<"$reviews")"
+  if [[ "$(jq length <<<"$rejected")" != 0 ]]; then
+    printf 'changes requested on %s:\n' "$sha"
+    jq -r '.[] | "  \(.user.login) (review \(.id), \(.comments_count) inline comments): \(.html_url)",
+      (.body // "" | select(. != "") | split("\n")[] | "    " + .)' <<<"$rejected"
+    exit 5
+  fi
+
+  # A requested review, or a change request on an older commit, still needs a reviewer to act.
+  awaiting="$(jq '[.[] | select(.state != "APPROVED")] | length' <<<"$reviews")"
+
+  if [[ "$(jq '[.[] | select(.status == "pending")] | length' <<<"$checks")" == 0 && "$awaiting" == 0 ]]; then
     settled_since="${settled_since:-$SECONDS}"
     if ((SECONDS - settled_since >= grace)); then
       schedule="$(last_schedule)"
@@ -156,6 +188,10 @@ while :; do
         printf 'not merging: checks passed on %s\n' "$sha"
       fi
       print_statuses "$checks"
+      if [[ "$(jq length <<<"$reviews")" != 0 ]]; then
+        printf 'reviews:\n'
+        print_reviews "$reviews"
+      fi
       if [[ "$scheduled" == true ]]; then
         printf 'auto-merge: scheduled at %s\n' "$(jq -r .created_at <<<"$schedule")"
       else
