@@ -520,17 +520,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1791788798,
-        "narHash": "sha256-EMB+H/+/6UHIZ6mH5E/3mfhIdB3KcSqIuP3JLbqFhHM=",
+        "lastModified": 1791789011,
+        "narHash": "sha256-K1mBUeoQrMrHHxh7z6dNIue7dgtRL3wmcfjxMr+k8x8=",
         "ref": "main",
-        "rev": "ac9b5a211b71aa788189159b8f52a628e9f505f9",
+        "rev": "6552646701fec39cb9dcb25f662c8d75c0d3bce9",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/trev-proxy"
       },
       "original": {
         "ref": "main",
-        "rev": "ac9b5a211b71aa788189159b8f52a628e9f505f9",
+        "rev": "6552646701fec39cb9dcb25f662c8d75c0d3bce9",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/trev-proxy"
