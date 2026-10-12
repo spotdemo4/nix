@@ -26,6 +26,7 @@ let
   };
   forgejoRunner = runner // {
     url = "https://trev.zip/";
+    capacity = 4;
     labels = map (
       label: label + lib.optionalString (lib.hasInfix "-arm:" label) "?platform=linux/arm64"
     ) labels;
