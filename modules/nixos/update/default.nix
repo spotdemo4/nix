@@ -74,6 +74,22 @@ in
         );
       };
 
+      updateNow = pkgs.writeShellApplication {
+        name = "update";
+        runtimeInputs = [
+          pkgs.coreutils
+          pkgs.systemd
+        ];
+        text = ''
+          since="$(date '+%Y-%m-%d %H:%M:%S.%6N')"
+          journalctl --follow --output cat --since "$since" --identifier update &
+          journal_pid=$!
+          trap 'sleep 1; kill "$journal_pid" 2>/dev/null || true' EXIT
+
+          systemctl start update.service
+        '';
+      };
+
       updateLogs = pkgs.writeShellApplication {
         name = "update-logs";
         runtimeInputs = [ pkgs.systemd ];
@@ -86,7 +102,10 @@ in
       };
     in
     lib.mkIf cfg.enable {
-      environment.systemPackages = [ updateLogs ];
+      environment.systemPackages = [
+        updateNow
+        updateLogs
+      ];
 
       systemd.services.update = {
         description = "Update NixOS";
