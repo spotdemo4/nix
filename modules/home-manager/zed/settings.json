@@ -25,6 +25,7 @@
     "tombi": true,
     "toml": true,
     "tsgo": true,
+    "wgsl": true,
     "zig": true
   },
   "theme": {

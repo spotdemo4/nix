@@ -64,6 +64,7 @@ in
         "tombi"
         "toml"
         "tsgo"
+        "wgsl"
         "zig"
       ];
       mutableUserSettings = false;
