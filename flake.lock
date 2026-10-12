@@ -551,17 +551,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1791714651,
-        "narHash": "sha256-APZvJPGgXUZm3Uec5jfUDZZcB4heLHdtM+wtyaLLf1g=",
+        "lastModified": 1791797534,
+        "narHash": "sha256-Lrn7gYRuHvYBFuZhaOaH85emmJEslHzFrFWJAYHaBh4=",
         "owner": "spotdemo4",
         "repo": "trevbar",
-        "rev": "db391216f325a48479b6451ce1ba952f6f955351",
+        "rev": "29be1c27298c0776546095452055dfb5588e9792",
         "type": "github"
       },
       "original": {
         "owner": "spotdemo4",
         "repo": "trevbar",
-        "rev": "db391216f325a48479b6451ce1ba952f6f955351",
+        "rev": "29be1c27298c0776546095452055dfb5588e9792",
         "type": "github"
       }
     },
