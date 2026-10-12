@@ -497,16 +497,27 @@
             '';
           };
 
-          lua = {
-            root = ./.;
-            filter = file: file.hasExt "lua";
-            packages = with pkgs; [
-              lua
-            ];
-            script = ''
-              luac -p "$file"
-            '';
-          };
+          lua =
+            let
+              # The editor config, with Hyprland's stubs from the store instead of the profile
+              luarc = pkgs.writeText "luarc.json" (
+                builtins.toJSON (
+                  pkgs.lib.recursiveUpdate (builtins.fromJSON (builtins.readFile ./.luarc.json)) {
+                    workspace.library = [ "${pkgs.hyprland}/share/hypr/stubs" ];
+                  }
+                )
+              );
+            in
+            {
+              root = ./.;
+              filter = file: file.hasExt "lua";
+              packages = with pkgs; [
+                lua-language-server
+              ];
+              script = ''
+                lua-language-server --check . --configpath=${luarc} --logpath="$TMPDIR/lua-language-server"
+              '';
+            };
 
           renovate = {
             root = ./.github;

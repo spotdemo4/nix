@@ -17,6 +17,8 @@ let
     "--no-usage-statistics"
     "--isolated"
     "--executable-path=${pkgs.chromium}/bin/chromium"
+    # Lets Hyprland move the window next to the agent that opened it
+    "--chrome-arg=--class=chrome-devtools-mcp"
   ]
   ++ lib.optional config.trev.mcp.chromeHeadless "--headless=true";
   kagiWrapper = pkgs.writeShellApplication {

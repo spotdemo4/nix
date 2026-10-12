@@ -105,6 +105,120 @@ _G.open_project = function(editor_command, browser_command)
     start_project(editor_command, browser_command)
 end
 
+-- Matches the --class passed to Chromium by the chrome-devtools MCP server
+local devtools_class = "chrome-devtools-mcp"
+
+local function read_proc(pid, name)
+    local file = io.open("/proc/" .. pid .. "/" .. name, "rb")
+    if file == nil then
+        return nil
+    end
+
+    local content = file:read("a")
+    file:close()
+    return content
+end
+
+local function parent_pid(pid)
+    local stat = read_proc(pid, "stat")
+    if stat == nil then
+        return nil
+    end
+
+    -- The command name may contain ")", so match after the last one
+    return tonumber(stat:match(".*%)%s+%S+%s+(%d+)"))
+end
+
+local function project_name(pid)
+    local environ = read_proc(pid, "environ")
+    if environ == nil then
+        return nil
+    end
+
+    local pwd = ("\0" .. environ):match("\0PWD=([^\0]*)")
+    return pwd and pwd:match("([^/]+)/*$")
+end
+
+local function title_matches_project(title, name)
+    local prefix = title:sub(1, #name + 1)
+    return title == name or prefix == name .. " " or prefix == name .. ","
+end
+
+-- Finds the window owned by the closest ancestor process of the given window.
+-- Zed runs every window in one process, so when an ancestor owns several
+-- windows, pick the one titled after the project directory of its terminal.
+local function find_launcher_window(window)
+    local windows_by_pid = {}
+    for _, candidate in ipairs(hl.get_windows()) do
+        if candidate.class ~= devtools_class then
+            windows_by_pid[candidate.pid] = windows_by_pid[candidate.pid] or {}
+            table.insert(windows_by_pid[candidate.pid], candidate)
+        end
+    end
+
+    local child = window.pid
+    local pid = parent_pid(child)
+    while pid ~= nil and pid > 1 do
+        local windows = windows_by_pid[pid]
+        if windows ~= nil then
+            if #windows == 1 then
+                return windows[1]
+            end
+
+            local name = project_name(child)
+            if name == nil then
+                return nil
+            end
+
+            local match
+            for _, candidate in ipairs(windows) do
+                if title_matches_project(candidate.title, name) then
+                    if match ~= nil then
+                        return nil
+                    end
+                    match = candidate
+                end
+            end
+            return match
+        end
+
+        child = pid
+        pid = parent_pid(pid)
+    end
+
+    return nil
+end
+
+-- DevTools windows open on a hidden special workspace (see the window rule
+-- below), then move next to the editor or terminal that started the agent
+hl.on("window.open", function(window)
+    if window.class ~= devtools_class then
+        return
+    end
+
+    local launcher = find_launcher_window(window)
+    local group = launcher and launcher.group
+
+    if launcher ~= nil and group ~= nil then
+        local current_index = group.current_index
+        if pcall(group.add, group, window) then
+            -- Keep the launcher in front instead of switching to the browser
+            hl.dispatch(hl.dsp.group.active({
+                index = current_index,
+                window = "address:" .. launcher.address,
+            }))
+            return
+        end
+    end
+
+    local workspace = launcher and launcher.workspace or hl.get_active_workspace()
+    hl.dispatch(hl.dsp.window.move({
+        workspace = workspace,
+        follow = false,
+        window = "address:" .. window.address,
+    }))
+end)
+
 hl.on("hyprland.start", function()
     hl.exec_cmd("nm-applet --indicator")
     hl.exec_cmd("blueman-applet")
@@ -250,6 +364,14 @@ hl.window_rule({
 
     float = true,
     center = true,
+})
+
+hl.window_rule({
+    name = "stage-chrome-devtools-mcp",
+    match = { class = "^" .. devtools_class .. "$" },
+
+    workspace = "special:" .. devtools_class .. " silent",
+    no_initial_focus = true,
 })
 
 hl.bind(mod .. " + C", hl.dsp.window.close())
