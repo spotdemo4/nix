@@ -13,6 +13,7 @@
     (self + /modules/container/nix-shield)
     (self + /modules/container/portainer-agent)
     (self + /modules/container/pr-tracker)
+    (self + /modules/container/pyrowave-webgpu)
     (self + /modules/container/postgresql)
     (self + /modules/container/shlink)
     (self + /modules/container/shlink-web)
@@ -83,6 +84,7 @@
       # Needed to create the first account; turn off afterwards.
       signupEnabled = true;
     };
+    pyrowave-webgpu.enable = true;
     shlink.enable = true;
     shlink-web.enable = true;
     solid-toast.enable = true;
