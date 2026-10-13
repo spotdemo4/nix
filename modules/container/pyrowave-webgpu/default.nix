@@ -21,7 +21,7 @@ in
   options.trev.containers.pyrowave-webgpu = {
     enable = mkEnableOption "pyrowave-webgpu demo container";
 
-    image = mkImageOption "trev.zip/llc/pyrowave-webgpu/demo:0.3.0@sha256:deef119a6c238769c27dbccdb9e5e9290728e837db313c3e2fc813cc80e1809f";
+    image = mkImageOption "trev.zip/llc/pyrowave-webgpu/demo:0.4.0@sha256:a3753756cb3ab53c292e679e07430feb7cb4939067d5468301016cacfa7dc33b";
 
     domain = mkOption {
       type = types.str;
