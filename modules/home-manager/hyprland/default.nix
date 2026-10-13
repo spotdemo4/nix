@@ -47,6 +47,7 @@ in
           "hyprland"
           "gtk"
         ];
+        "org.freedesktop.impl.portal.Clipboard" = "hyprland";
         "org.freedesktop.impl.portal.RemoteDesktop" = "hyprland";
         "org.freedesktop.impl.portal.ScreenCast" = "hyprland";
       };
