@@ -41,7 +41,7 @@ in
             options = {
               enable = mkEnableOption "the ${name} MySQL container";
 
-              image = mkImageOption "docker.io/mysql:26.7.0@sha256:9d48c42f8341068f199116dfccb919b607c99765b5c61e549a548a43033471a4";
+              image = mkImageOption "docker.io/mysql:26.7.0@sha256:893418c8a7a34c60d2d961cc30ef136095da141478562ed2101ae3f5faba9c3f";
 
               database = mkOption {
                 type = types.str;
