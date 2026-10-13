@@ -64,8 +64,9 @@ if [[ -z "$token" || "$token" == *$'\n'* ]]; then
   exit 1
 fi
 
+# Timeouts make a stalled connection fail, and --retry treats that failure as transient.
 api() {
-  curl --silent --show-error --fail --retry 3 \
+  curl --silent --show-error --fail --retry 3 --connect-timeout 10 --max-time 30 \
     --header "Authorization: token $token" \
     --header "Accept: application/json" \
     "$FORGEJO_URL/api/v1/repos/$repo/$1"
