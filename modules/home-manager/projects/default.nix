@@ -253,6 +253,11 @@ in
           url = github "trevpkgs";
         }
         {
+          name = "TrevDesk";
+          path = "~/dev/TrevDesk";
+          url = forgejo "llc" "TrevDesk";
+        }
+        {
           name = "TrevRPC";
           path = "~/dev/TrevRPC";
           url = forgejo "llc" "TrevRPC";
