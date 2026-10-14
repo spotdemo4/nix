@@ -9,25 +9,41 @@ let
   forgejo = owner: repo: "https://trev.zip/${owner}/${repo}";
   github = repo: "https://github.com/spotdemo4/${repo}";
   hyprctl = lib.getExe' config.wayland.windowManager.hyprland.package "hyprctl";
+  hyprlauncher = lib.getExe config.services.hyprlauncher.package;
+  zed = lib.getExe config.programs.zed-editor.package;
   openProject =
     project:
     let
-      editorCommand = lib.escapeShellArgs [
-        (lib.getExe config.programs.zed-editor.package)
-        "--new"
-        "ssh://${cfg.sshHost}:${project.path}"
-      ];
+      localPath = "${cfg.localRoot}/${project.name}";
       browserCommand = lib.escapeShellArgs [
         (lib.getExe config.programs.chromium.package)
         "--new-window"
         project.url
       ];
-      luaExpression = "open_project(${builtins.toJSON editorCommand}, ${builtins.toJSON browserCommand})";
+      luaExpression =
+        target:
+        let
+          editorCommand = lib.escapeShellArgs [
+            zed
+            "--new"
+            target
+          ];
+        in
+        lib.escapeShellArg "open_project(${builtins.toJSON editorCommand}, ${builtins.toJSON browserCommand})";
     in
     pkgs.writeShellApplication {
       name = "open-project-${lib.replaceStrings [ "/" ] [ "-" ] project.name}";
       text = ''
-        exec ${hyprctl} eval ${lib.escapeShellArg luaExpression}
+        if [ -d ${lib.escapeShellArg localPath} ]; then
+          choice=$(printf 'Local\nRemote (%s)\n' ${lib.escapeShellArg cfg.sshHost} | ${hyprlauncher} --dmenu)
+          case "$choice" in
+            Local) exec ${hyprctl} eval ${luaExpression localPath} ;;
+            Remote*) ;;
+            *) exit 0 ;;
+          esac
+        fi
+
+        exec ${hyprctl} eval ${luaExpression "ssh://${cfg.sshHost}:${project.path}"}
       '';
     };
 in
@@ -37,6 +53,13 @@ in
       type = lib.types.str;
       default = "dev";
       description = "SSH host containing the development projects";
+    };
+
+    localRoot = lib.mkOption {
+      type = lib.types.str;
+      default = "${config.home.homeDirectory}/dev";
+      defaultText = lib.literalExpression ''"''${config.home.homeDirectory}/dev"'';
+      description = "Local directory checked for project checkouts before falling back to the SSH host";
     };
 
     entries = lib.mkOption {
