@@ -383,30 +383,6 @@
             else
               pkgs.runCommand "runner-docker" { } "touch $out";
 
-          trev-proxy-reload =
-            let
-              gateway = self.nixosConfigurations.gateway;
-              # Routes on other hosts reach the gateway the same way as this one.
-              withRoute = gateway.extendModules {
-                modules = [
-                  {
-                    trev.proxy.routes.reload-check = {
-                      domains = [ "reload-check.trev.zip" ];
-                      port = 1;
-                    };
-                  }
-                ];
-              };
-              unit = nixos: nixos.config.systemd.units."trev-proxy.service".text;
-              configFile = nixos: nixos.config.environment.etc."trev-proxy/config.toml".source;
-            in
-            if unit gateway != unit withRoute then
-              throw "trev-proxy's unit must not change with its routes, or route changes restart it"
-            else if configFile gateway == configFile withRoute then
-              throw "trev-proxy's config must change with its routes"
-            else
-              pkgs.runCommand "trev-proxy-reload" { } "touch $out";
-
           flake-root-paths =
             let
               flakeRoot = builtins.unsafeDiscardStringContext (toString self.outPath);
