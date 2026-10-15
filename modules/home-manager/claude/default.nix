@@ -339,6 +339,8 @@ in
       package = null;
       enableMcpIntegration = true;
       inherit skills;
+      # Draws a progress bar under foreground `nix flake check` Bash calls.
+      plugins.nix-check-progress = ./plugins/nix-check-progress;
 
       context = ''
         You run inside Claude Code through CLIProxyAPI, which serves both Anthropic Claude and OpenAI GPT models. Claude Code is the host application, not your model identity.
