@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   self,
@@ -339,6 +340,7 @@ in
       package = null;
       enableMcpIntegration = true;
       inherit skills;
+      plugins.nix-progress = inputs.nix-progress.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
       context = ''
         You run inside Claude Code through CLIProxyAPI, which serves both Anthropic Claude and OpenAI GPT models. Claude Code is the host application, not your model identity.
