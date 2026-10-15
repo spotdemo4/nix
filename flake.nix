@@ -154,6 +154,20 @@
       };
     };
 
+    # nix-progress
+    nix-progress = {
+      type = "git";
+      url = "https://trev.zip/llc/nix-progress";
+      ref = "main";
+      rev = "87fc5ced3c9fcbdd17d7379e5de5c02f2d35659d";
+      shallow = true;
+      inputs = {
+        systems.follows = "systems";
+        nixpkgs.follows = "nixpkgs";
+        trevpkgs.follows = "trevpkgs";
+      };
+    };
+
     # trevdesk
     trevdesk = {
       type = "git";

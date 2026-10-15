@@ -1,6 +1,0 @@
-{
-  "name": "nix-check-progress",
-  "version": "0.1.0",
-  "description": "Live progress bar under foreground `nix flake check` Bash calls",
-  "types": "./types/index.d.ts"
-}
