@@ -346,6 +346,14 @@ in
         Use the current runtime model ID to identify yourself, for example from "You are powered by the model <model-id>." When asked which model you are, answer with that exact model ID. After a /model switch, use the updated runtime model information rather than the startup default or earlier responses.
 
         A runtime model ID starting with `claude-` identifies an Anthropic Claude model; one starting with `gpt-` identifies an OpenAI GPT model. Either provider may be active. Do not infer model identity from the Claude Code name, tool names, API format, alias labels, or previous responses. If no reliable runtime model ID is provided, say that the model identity is unknown instead of guessing.
+
+        ## Running `nix flake check`
+
+        - Run it in the foreground with the Bash tool's maximum timeout (600000 ms), sending all output to a log and printing the exit status: `log=$(mktemp); nix flake check -L >"$log" 2>&1; echo "exit: $? log: $log"`. Then read the end of the log, and search it for the error if the check failed.
+        - Judge the result by the exit status, not by the output. Warnings such as "Git tree is dirty" or "unknown flake output" are not failures.
+        - Do not pipe the check straight into `tail`, `head` or `grep`: the pipeline reports the last command's exit status, which hides failures, and `head` can cut the check off.
+        - If the check may outlast the timeout, start it with `run_in_background` and wait for its completion notification. Do not poll for it with `sleep` loops, and never wait with `pgrep -f "nix flake check"`: the pattern also matches the waiting shell's own command line, so the loop never ends.
+        - Flakes only see files tracked by Git. Intent-to-add new files (`git add -N`) before checking, or the check will not see them.
       '';
 
       settings = {
