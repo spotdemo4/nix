@@ -45,7 +45,7 @@ in
 {
   options.trev.containers.immich = {
     enable = mkEnableOption "Immich container";
-    image = mkImageOption "ghcr.io/imagegenius/immich:3.3.1@sha256:6bf42e44b8385d9e3851d4b68a6598dab49376ecc187fa90b737d0436620a5fb";
+    image = mkImageOption "ghcr.io/imagegenius/immich:3.3.1@sha256:77b7fb083a2bac99410b1f238af14d1b999509d6b2f6c625bbb292704d7402e0";
 
     photosPath = mkOption {
       type = types.str;
