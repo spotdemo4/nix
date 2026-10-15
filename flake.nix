@@ -173,7 +173,7 @@
       type = "git";
       url = "https://trev.zip/llc/TrevDesk";
       ref = "main";
-      rev = "30d6b9b306582948eef6743f939c5ac4982a0fff";
+      rev = "bb391049988e5f639aa2c6edac0ade6e26140576";
       shallow = true;
       inputs = {
         systems.follows = "systems";
