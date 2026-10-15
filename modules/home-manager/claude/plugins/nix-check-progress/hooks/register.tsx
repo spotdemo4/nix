@@ -1,10 +1,9 @@
 import type { Register } from "claude-code";
 
 import type { Progress } from "../types";
-import { Lines, Tracker, bar } from "./parse";
+import { Lines, Tracker, bar, findCheck, flakeKey } from "./parse";
 
 const RUNS = { plugin: "nix-check-progress", key: "runs" } as const;
-const CHECK = /\bnix\s+flake\s+check\b/;
 const FLUSH_MS = 250;
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -41,16 +40,19 @@ const details = (p: Progress): string => {
 
 export const register: Register = (on) => {
   on("tool.call", { tool: "Bash" }, async ($, e, next) => {
-    const isCheck =
-      e.run_in_background !== true && CHECK.test(e.command) && !e.command.includes("json-log-path");
-    if (!isCheck) {
+    const check = findCheck(e.command);
+    if (
+      check === undefined ||
+      e.run_in_background === true ||
+      e.command.includes("json-log-path")
+    ) {
       return next(e);
     }
 
     const id = e.tool_use_id;
     const path = `${(await $.env.get("TMPDIR")) ?? "/tmp"}/nix-check-progress-${id}.jsonl`;
-    // The last clean check in the same directory sets the bar's total.
-    const totalKey = `total:${await $.session.cwd()}`.slice(0, 256);
+    // The last clean check of the same flake sets the bar's total.
+    const totalKey = `total:${flakeKey(await $.session.cwd(), e.command)}`.slice(0, 256);
     const stored = await $.store.get(totalKey);
     const tracker = new Tracker(typeof stored === "number" ? stored : null);
     const ref = { ...RUNS, id };
@@ -81,7 +83,10 @@ export const register: Register = (on) => {
     try {
       const ran = await next({
         ...e,
-        command: e.command.replace(CHECK, (match) => `${match} --option json-log-path '${path}'`),
+        command:
+          e.command.slice(0, check.end) +
+          ` --option json-log-path '${path}'` +
+          e.command.slice(check.end),
       });
 
       // Let tail deliver the last records before judging the run.
