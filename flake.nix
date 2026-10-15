@@ -108,7 +108,7 @@
       type = "github";
       owner = "spotdemo4";
       repo = "trevpkgs";
-      rev = "33aeff24496d17becf36b6541a4ca82884342e5d";
+      rev = "bb92b6a08a3693795aec751b09681b6760a35e43";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -159,7 +159,7 @@
       type = "git";
       url = "https://trev.zip/llc/nix-progress";
       ref = "main";
-      rev = "2146e1175351fc419991aa095273721e9850d046";
+      rev = "9f6093acaed6b0d70ad1b38ddbae27b861d56830";
       shallow = true;
       inputs = {
         systems.follows = "systems";

@@ -324,17 +324,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1792034557,
-        "narHash": "sha256-2auWZI9RWQGsVQ11UbJXA7DjZyw5tuqo5sZbsQmLvC0=",
+        "lastModified": 1792035388,
+        "narHash": "sha256-JTUkK02BiWI3iR6qt5JQAkngfIOcp+rr976JQjWYmbs=",
         "ref": "main",
-        "rev": "2146e1175351fc419991aa095273721e9850d046",
+        "rev": "9f6093acaed6b0d70ad1b38ddbae27b861d56830",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/nix-progress"
       },
       "original": {
         "ref": "main",
-        "rev": "2146e1175351fc419991aa095273721e9850d046",
+        "rev": "9f6093acaed6b0d70ad1b38ddbae27b861d56830",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/nix-progress"
@@ -636,17 +636,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1792018871,
-        "narHash": "sha256-3Nj0HUfwf18a3wthNPvQs/4/kOt85pmX/HXN/hU9hfE=",
+        "lastModified": 1792038964,
+        "narHash": "sha256-3ndDBCYxu8Z5BLsIIC16IqRShHF42fk3R7DPS52EdII=",
         "owner": "spotdemo4",
         "repo": "trevpkgs",
-        "rev": "33aeff24496d17becf36b6541a4ca82884342e5d",
+        "rev": "bb92b6a08a3693795aec751b09681b6760a35e43",
         "type": "github"
       },
       "original": {
         "owner": "spotdemo4",
         "repo": "trevpkgs",
-        "rev": "33aeff24496d17becf36b6541a4ca82884342e5d",
+        "rev": "bb92b6a08a3693795aec751b09681b6760a35e43",
         "type": "github"
       }
     },
