@@ -15,6 +15,7 @@ in
     (self + /modules/nixos/gnome-auth-agent)
     (self + /modules/nixos/niks3)
     (self + /modules/nixos/update)
+    inputs.trevdesk.nixosModules.default
   ];
 
   environment.systemPackages = with pkgs; [
@@ -269,6 +270,11 @@ in
       };
     };
     tailscale.enable = true;
+    trevdesk = {
+      enable = true;
+      user = "trev";
+      port = 8085;
+    };
   };
 
   hardware.sane = {
