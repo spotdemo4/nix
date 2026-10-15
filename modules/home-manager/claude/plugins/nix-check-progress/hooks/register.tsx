@@ -9,7 +9,8 @@ const FLUSH_MS = 250;
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 const headline = (p: Progress): { ratio: number | null; label: string } => {
-  if (p.total !== null && p.total > 0) {
+  // A saved total the run has outgrown is stale (the flake gained outputs).
+  if (p.total !== null && p.total >= p.outputs && p.total > 0) {
     return { ratio: p.outputs / p.total, label: `${p.outputs}/${p.total} outputs` };
   }
   if (p.phase === "build" && p.builds.expected > 0) {
