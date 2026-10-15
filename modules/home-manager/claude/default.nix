@@ -335,12 +335,17 @@ in
       claudePackage
     ];
 
+    # Not programs.claude-code.plugins: it links each top-level entry separately,
+    # and Claude Code refuses a hooks module that resolves outside the plugin's
+    # own directory. One link to the whole package keeps the hooks inside it.
+    home.file."${config.programs.claude-code.configDir}/skills/nix-progress".source =
+      inputs.nix-progress.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
     programs.claude-code = {
       enable = true;
       package = null;
       enableMcpIntegration = true;
       inherit skills;
-      plugins.nix-progress = inputs.nix-progress.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
       context = ''
         You run inside Claude Code through CLIProxyAPI, which serves both Anthropic Claude and OpenAI GPT models. Claude Code is the host application, not your model identity.
