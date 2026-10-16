@@ -609,17 +609,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1792140762,
-        "narHash": "sha256-4RWJjei4pmBdujq6aKWYhlt/7K23o4N559eEXH5B/iI=",
+        "lastModified": 1792143755,
+        "narHash": "sha256-o3sJWBgsyM6us89C1eS1wbCSMj7LVOqqFFr8WgShOsI=",
         "ref": "main",
-        "rev": "f401920e1be0403548ce415417d78b1452f97d21",
+        "rev": "f38cfe83df8f7754d7cf28a2d203a8d0d1254d6e",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/TrevDesk"
       },
       "original": {
         "ref": "main",
-        "rev": "f401920e1be0403548ce415417d78b1452f97d21",
+        "rev": "f38cfe83df8f7754d7cf28a2d203a8d0d1254d6e",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/TrevDesk"
