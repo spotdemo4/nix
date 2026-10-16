@@ -177,6 +177,7 @@ in
         "podman"
         "video"
         "render"
+        "kvm" # /dev/kvm is passed through from proxmox
       ];
       shell = pkgs.zsh;
       linger = true;
