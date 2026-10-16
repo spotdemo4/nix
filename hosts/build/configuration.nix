@@ -205,6 +205,14 @@ in
     CPUWeight = 20;
   };
 
+  # cap disk IO so builds don't starve the other containers on the hypervisor's nvme
+  # "/" resolves to the rootfs block device at runtime; everything heavy runs under system.slice
+  systemd.slices.system.sliceConfig = {
+    IOReadBandwidthMax = "/ 200M";
+    IOWriteBandwidthMax = "/ 150M";
+    IOReadIOPSMax = "/ 8000";
+  };
+
   # Github runners
   age.secrets."github-runner".file = self + /secrets/github-runner.age;
   services.github-runners = {
