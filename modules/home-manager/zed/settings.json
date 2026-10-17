@@ -8,6 +8,7 @@
     "emmet": true,
     "git-firefly": true,
     "gleam": true,
+    "golangci-lint": true,
     "html": true,
     "ini": true,
     "kotlin": true,

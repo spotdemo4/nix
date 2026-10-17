@@ -46,6 +46,7 @@ in
         "emmet"
         "git-firefly"
         "gleam"
+        "golangci-lint"
         "html"
         "ini"
         "kotlin"
