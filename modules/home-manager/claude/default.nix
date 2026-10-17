@@ -24,11 +24,13 @@ let
         type = "command";
         # Reloading direnv restores the PATH from before the inherited DIRENV_DIFF,
         # which drops the wrapper runtime inputs, so append them again.
+        # Overlapping runs share the file, so write it whole and rename it into place;
+        # truncating it directly can leave the tail of a longer run behind.
         command = ''
           {
             ${lib.getExe pkgs.direnv} export bash
             printf '\ncase ":$PATH:" in *:%s:*) ;; *) export PATH="$PATH:%s" ;; esac\n' ${claudeRuntimePath} ${claudeRuntimePath}
-          } > "$CLAUDE_ENV_FILE"
+          } > "$CLAUDE_ENV_FILE.$$" && mv -f "$CLAUDE_ENV_FILE.$$" "$CLAUDE_ENV_FILE"
         '';
       }
     ];
