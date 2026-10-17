@@ -106,6 +106,11 @@ in
   age.secrets = {
     "builder-key".file = self + /secrets/builder-key.age;
     "wireguard-dev".file = self + /secrets/wireguard-desktop.age;
+    "nix-access-tokens" = {
+      file = self + /secrets/nix-access-tokens.age;
+      owner = "trev";
+      mode = "0400";
+    };
   };
   age.identityPaths = [ "/home/trev/.ssh/id_ed25519" ];
 
@@ -145,6 +150,7 @@ in
   };
   nix.extraOptions = ''
     warn-dirty = false
+    !include ${config.age.secrets.nix-access-tokens.path}
   '';
 
   networking = {

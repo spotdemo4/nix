@@ -86,6 +86,7 @@ in
     };
     extraOptions = ''
       warn-dirty = false
+      !include ${config.age.secrets.nix-access-tokens.path}
     '';
   };
 
@@ -190,7 +191,7 @@ in
     owner = "trev";
     group = "trev";
     mode = "0400";
-  }) mcpSecretFiles;
+  }) (mcpSecretFiles // { nix-access-tokens = self + /secrets/nix-access-tokens.age; });
 
   home-manager = {
     useGlobalPkgs = true;
