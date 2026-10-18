@@ -145,7 +145,7 @@
       type = "git";
       url = "https://trev.zip/llc/trev-proxy";
       ref = "main";
-      rev = "a30f6a7a2193b598eff2365997c39c8208fe9abb";
+      rev = "974606731acc1839ba1280378855ff7870ba24c6";
       shallow = true;
       inputs = {
         systems.follows = "systems";
