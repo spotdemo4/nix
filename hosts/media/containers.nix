@@ -23,7 +23,6 @@
     discord-embedder.enable = true;
     plex.enable = true;
     portainer-agent.enable = true;
-    prowlarr.enable = true;
     qbittorrent.enable = true;
     qbittorrent-port-glue.enable = true;
     qui.enable = true;
@@ -33,6 +32,15 @@
     sonarr.enable = true;
     tautulli.enable = true;
     unpackerr.enable = true;
+
+    prowlarr = {
+      enable = true;
+      networks = [
+        config.virtualisation.quadlet.networks.sonarr.ref
+        config.virtualisation.quadlet.networks.radarr.ref
+        config.virtualisation.quadlet.networks.qui.ref
+      ];
+    };
 
     gluetun = {
       enable = true;
