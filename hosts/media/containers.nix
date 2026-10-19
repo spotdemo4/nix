@@ -9,6 +9,7 @@
     (self + /modules/container/prowlarr)
     (self + /modules/container/qbittorrent)
     (self + /modules/container/qbittorrent-port-glue)
+    (self + /modules/container/qui)
     (self + /modules/container/radarr)
     (self + /modules/container/sabnzbd)
     (self + /modules/container/seerr)
@@ -25,6 +26,7 @@
     prowlarr.enable = true;
     qbittorrent.enable = true;
     qbittorrent-port-glue.enable = true;
+    qui.enable = true;
     radarr.enable = true;
     sabnzbd.enable = true;
     seerr.enable = true;
@@ -48,6 +50,7 @@
         networks = [
           config.virtualisation.quadlet.networks.sonarr.ref
           config.virtualisation.quadlet.networks.radarr.ref
+          config.virtualisation.quadlet.networks.qui.ref
         ];
       };
     };
