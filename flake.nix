@@ -60,7 +60,7 @@
       type = "github";
       owner = "nix-community";
       repo = "NUR";
-      rev = "de6bfd86b8932010be8532486b9bd461d357ad37";
+      rev = "25c7c84df19b1b66c4266812f9a0d39417a69082";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
