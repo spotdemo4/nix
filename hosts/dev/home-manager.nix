@@ -193,7 +193,4 @@ in
       ${pkgs.tmux}/bin/tmux source-file "${config.xdg.configHome}/tmux/tmux.conf"
     fi
   '';
-
-  # https://github.com/nix-community/home-manager/issues/7935
-  manual.manpages.enable = false;
 }
