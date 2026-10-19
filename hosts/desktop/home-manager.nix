@@ -45,7 +45,6 @@
       codium = "code";
       logs = "journalctl -b -e -u";
       ls = "eza";
-      qc = "codex-commit";
       temp = "cd $(mktemp -d)";
       top = "btop";
       zed = "zeditor";

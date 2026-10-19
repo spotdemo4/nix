@@ -61,7 +61,6 @@
     stunnel
     thunderbird
     tor-browser
-    trev.codex-commit
     trev.helium
     unzip
     vesktop

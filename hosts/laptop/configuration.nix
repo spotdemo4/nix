@@ -65,7 +65,6 @@ in
     t3code
     thunderbird
     tor-browser
-    trev.codex-commit
     trev.helium
     unzip
     vesktop
