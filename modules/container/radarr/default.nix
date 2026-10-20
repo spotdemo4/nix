@@ -23,7 +23,7 @@ in
 {
   options.trev.containers.radarr = {
     enable = mkEnableOption "Radarr container";
-    image = mkImageOption "lscr.io/linuxserver/radarr:6.4.4@sha256:ff4430fe2d6159b4dbaac9903acfecee5aa68dec8c929259e2f3114c63f7a09e";
+    image = mkImageOption "lscr.io/linuxserver/radarr:6.4.4@sha256:fc0ae3c50f8128b97e84381903ec8d6845c3a569641cb7117c124376cccb57c1";
     uid = mkOption {
       type = types.int;
       default = 1000;
