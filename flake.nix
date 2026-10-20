@@ -159,7 +159,7 @@
       type = "git";
       url = "https://trev.zip/llc/nix-progress";
       ref = "main";
-      rev = "84d8d57756e4bb09da85e3c546bbe2be166fd2b6";
+      rev = "eb59749dcc1784634ae778e15c7bfff4e6a6a6a3";
       shallow = true;
       inputs = {
         systems.follows = "systems";
