@@ -87,7 +87,7 @@
       type = "github";
       owner = "ryantm";
       repo = "agenix";
-      rev = "847720f0e73a77ce6503b63fba6c357c742c28a7";
+      rev = "5e5b88a0c8e56f291a108c2fe9934054d9745b2e";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
