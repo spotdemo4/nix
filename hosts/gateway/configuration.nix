@@ -197,20 +197,18 @@
       auth = {
         ca = ./devices-ca.pem;
         crl = ./devices.crl;
-        # Device certificate common names allowed into each group.
-        groups =
-          let
-            devices = [
-              "desktop"
-              "dev"
-              "htpc"
-              "laptop"
-            ];
-          in
-          {
-            trev = devices;
-            admin = devices;
-          };
+        # Device certificate common names allowed into each group; every trev
+        # device is also an admin device.
+        groups = rec {
+          trev = [
+            "desktop"
+            "dev"
+            "htpc"
+            "laptop"
+            "phone"
+          ];
+          admin = trev ++ [ "logan" ];
+        };
       };
     };
   };
