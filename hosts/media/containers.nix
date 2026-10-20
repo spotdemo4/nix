@@ -3,6 +3,7 @@
   imports = [
     (self + /modules/container/bazarr)
     (self + /modules/container/discord-embedder)
+    (self + /modules/container/dispatcharr)
     (self + /modules/container/gluetun)
     (self + /modules/container/plex)
     (self + /modules/container/portainer-agent)
@@ -21,6 +22,7 @@
   trev.containers = {
     bazarr.enable = true;
     discord-embedder.enable = true;
+    dispatcharr.enable = true;
     plex.enable = true;
     portainer-agent.enable = true;
     qbittorrent.enable = true;
@@ -47,7 +49,10 @@
       instances.qbittorrent = {
         enable = true;
         secret = config.trev.containers.qbittorrent.protonVpnSecret;
-        ports = [ "8185:8185" ];
+        ports = [
+          "8185:8185"
+          "9191:9191"
+        ];
         environments = {
           VPN_SERVICE_PROVIDER = "protonvpn";
           VPN_TYPE = "wireguard";
