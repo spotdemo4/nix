@@ -24,7 +24,7 @@ in
   options.trev.containers.monerod = {
     enable = mkEnableOption "the Monero daemon container";
 
-    image = mkImageOption "ghcr.io/sethforprivacy/simple-monerod:v0.18.5.4@sha256:272ca78d28f6090bccd915447fa62038b40f9661c52ce585cd26bc23bb8acb3f";
+    image = mkImageOption "ghcr.io/sethforprivacy/simple-monerod:v0.18.5.4@sha256:e958c62160e02b1777cb921b5daa88381dd291f93de6be0219c58498e9f3bbf2";
 
     dataDir = mkOption {
       type = types.str;
