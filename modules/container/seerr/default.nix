@@ -31,7 +31,7 @@ in
 {
   options.trev.containers.seerr = {
     enable = mkEnableOption "Seerr container";
-    image = mkImageOption "ghcr.io/seerr-team/seerr:v3.5.0@sha256:27602401178d54f1964442287b9f23f67a3fa2252645ee8065839ea1c3f69e45";
+    image = mkImageOption "ghcr.io/seerr-team/seerr:v3.5.1@sha256:d8fab675b55ad293ded98fd71efcfd46054cbad9746534ae1cc4794a88c0b3be";
     timeZone = mkOption {
       type = types.str;
       default = "America/Detroit";
