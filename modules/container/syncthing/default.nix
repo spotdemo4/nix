@@ -24,7 +24,7 @@ in
 {
   options.trev.containers.syncthing = {
     enable = mkEnableOption "Syncthing container";
-    image = mkImageOption "docker.io/syncthing/syncthing:2.1.6@sha256:4d0281bdcb4ed9baf503d251d0544ddd856f49fce3f114056257ae172b7fb670";
+    image = mkImageOption "docker.io/syncthing/syncthing:2.1.7@sha256:2b71da7c0d0a91a6ae5285ad079226fecc0a365d08b27720e1f7037b018f7546";
 
     domain = mkOption {
       type = types.str;
