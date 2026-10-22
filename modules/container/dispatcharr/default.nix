@@ -69,7 +69,6 @@ in
   config = mkIf cfg.enable {
     trev.proxy.routes.dispatcharr = {
       inherit (cfg) domains port;
-      auth = "trev";
     };
 
     assertions = [
