@@ -29,7 +29,7 @@ in
 {
   options.trev.containers.sabnzbd = {
     enable = mkEnableOption "SABnzbd container";
-    image = mkImageOption "lscr.io/linuxserver/sabnzbd:5.1.3@sha256:7a13af91cf296399e302d2fb6fc709d6e2ea15e3094f220684611fbe1dd43625";
+    image = mkImageOption "lscr.io/linuxserver/sabnzbd:5.1.3@sha256:3ac1c9ea03bafa2588dd8acdcb809857bae305e71d2d90e11d689c78076a9c01";
     uid = mkOption {
       type = types.int;
       default = 1000;
