@@ -21,7 +21,7 @@ in
   options.trev.containers.solid-toast = {
     enable = mkEnableOption "solid-toast example container";
 
-    image = mkImageOption "trev.zip/llc/solid-toast/example:1.2.5@sha256:debe9c6226f97fe37e77709fe79695917662bc7d911e5975700ed4cc5245e38f";
+    image = mkImageOption "trev.zip/llc/solid-toast/example:1.2.6@sha256:582d73fbd113f2bfa34ae281f1bc38430356a2b7436841f3866c1c3a8c36ab3a";
 
     domain = mkOption {
       type = types.str;

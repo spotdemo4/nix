@@ -49,7 +49,7 @@ in
             options = {
               enable = mkEnableOption "the ${name} Gitea runner container";
 
-              image = mkImageOption "docker.io/gitea/runner:5.2.0@sha256:f4db24cc5f682483ffd01b8de6a6c6d15e6fd9320a0ce27fd18d4398db421eae";
+              image = mkImageOption "docker.io/gitea/runner:5.2.2@sha256:054a025c80003397dccb08d4462c6b0ef8b63bedf651555e54440392e94878c6";
 
               url = mkOption {
                 type = types.str;
