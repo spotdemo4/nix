@@ -49,10 +49,7 @@
       instances.qbittorrent = {
         enable = true;
         secret = config.trev.containers.qbittorrent.protonVpnSecret;
-        ports = [
-          "8185:8185"
-          "9191:9191"
-        ];
+        ports = [ "8185:8185" ];
         environments = {
           VPN_SERVICE_PROVIDER = "protonvpn";
           VPN_TYPE = "wireguard";
@@ -65,6 +62,18 @@
           config.virtualisation.quadlet.networks.radarr.ref
           config.virtualisation.quadlet.networks.qui.ref
         ];
+      };
+      instances.dispatcharr = {
+        enable = true;
+        secret = config.trev.containers.dispatcharr.protonVpnSecret;
+        ports = [ "9191:9191" ];
+        environments = {
+          VPN_SERVICE_PROVIDER = "protonvpn";
+          VPN_TYPE = "wireguard";
+          SERVER_CITIES = "Detroit,Chicago";
+          SERVER_SELECTION_MODE = "ordered";
+          VPN_PORT_FORWARDING = "off";
+        };
       };
     };
 

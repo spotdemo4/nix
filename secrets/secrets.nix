@@ -64,6 +64,7 @@ in
   "embedder-tiktok.age".publicKeys = keys.local ++ [ keys.media ];
   "embedder-x.age".publicKeys = keys.local ++ [ keys.media ];
   "password.age".publicKeys = keys.local ++ [ keys.media ];
+  "protonvpn-dispatcharr.age".publicKeys = keys.local ++ [ keys.media ];
   "protonvpn-qbittorrent.age".publicKeys = keys.local ++ [ keys.media ];
   "radarr.age".publicKeys = keys.local ++ [ keys.media ];
   "sonarr.age".publicKeys = keys.local ++ [ keys.media ];

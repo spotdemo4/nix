@@ -14,6 +14,7 @@ let
   inherit (import (self + /lib/container) { inherit lib; })
     mkContainer
     mkImageOption
+    secretType
     ;
   inherit (config.virtualisation.quadlet)
     containers
@@ -61,8 +62,16 @@ in
     };
     gluetunInstance = mkOption {
       type = types.str;
-      default = "qbittorrent";
+      default = "dispatcharr";
       description = "Gluetun instance whose network namespace Dispatcharr joins.";
+    };
+    protonVpnSecret = mkOption {
+      type = secretType;
+      default = {
+        ref = "protonvpn-dispatcharr";
+        file = self + /secrets/protonvpn-dispatcharr.age;
+      };
+      description = "Proton VPN WireGuard private key secret.";
     };
   };
 
@@ -79,6 +88,8 @@ in
     ];
 
     virtualisation.quadlet = {
+      secrets.${cfg.protonVpnSecret.ref} = cfg.protonVpnSecret;
+
       containers.dispatcharr = {
         containerConfig = mkContainer {
           image = cfg.image;
