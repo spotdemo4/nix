@@ -9,13 +9,13 @@
   },
   "dependencies": {
     "@opencode-ai/plugin": "1.19.4",
-    "@opentui/core": "0.6.6",
-    "@opentui/keymap": "0.6.6",
-    "@opentui/solid": "0.6.6",
+    "@opentui/core": "0.6.7",
+    "@opentui/keymap": "0.6.7",
+    "@opentui/solid": "0.6.7",
     "solid-js": "1.9.17"
   },
   "devDependencies": {
-    "@types/bun": "1.4.3",
+    "@types/bun": "1.4.4",
     "@types/node": "26.6.5",
     "typescript": "7.0.2"
   }
