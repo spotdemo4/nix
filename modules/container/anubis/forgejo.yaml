@@ -1,4 +1,9 @@
 bots:
+  # Editors fetch JSON schemas without a User-Agent, which the default config
+  # denies, so this must come before it.
+  - name: allow-raw-json-schemas
+    action: ALLOW
+    path_regex: ^/[^/]+/[^/]+/raw/.+\.schema\.json$
   - import: (data)/meta/default-config.yaml
   - import: (data)/clients/git.yaml
   - import: (data)/clients/go-get.yaml
