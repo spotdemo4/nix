@@ -128,6 +128,10 @@ in
     builders-use-substitutes = true;
     eval-cores = 0;
   };
+  # only give local builds CPU time when nothing else (e.g. chromium) wants it
+  # the cpu controller is enabled, so this has to be the cgroup cpu.idle rather than nix.daemonCPUSchedPolicy
+  systemd.services.nix-daemon.serviceConfig.CPUWeight = "idle";
+
   nix.buildMachines = [
     {
       hostName = "build";
