@@ -324,17 +324,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1792835357,
-        "narHash": "sha256-XPi/bk6HIqdk+8k6BABruu5KdB1pbjd3mpOGsOZ/wVo=",
+        "lastModified": 1792922498,
+        "narHash": "sha256-O0nQBQNAlgF7SVwMKzG8gdKT9YaaZbPKYhUnBB27gAY=",
         "ref": "main",
-        "rev": "1f6829160e165ffdb51a213eb9cf78d1c3c42f5e",
+        "rev": "cc41f5daa0cb632322dee09b5188ae7fdf46444e",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/nix-progress"
       },
       "original": {
         "ref": "main",
-        "rev": "1f6829160e165ffdb51a213eb9cf78d1c3c42f5e",
+        "rev": "cc41f5daa0cb632322dee09b5188ae7fdf46444e",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/nix-progress"
