@@ -132,7 +132,7 @@
       type = "github";
       owner = "spotdemo4";
       repo = "trevbar";
-      rev = "803bfce0bad49d68c35769923de5f7e89e6698ec";
+      rev = "c3d64961443d29f0b7d4cd601b758c60b8139bd1";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
