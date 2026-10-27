@@ -25,7 +25,7 @@ in
   options.trev.containers.pr-tracker = {
     enable = mkEnableOption "pr-tracker server container";
 
-    image = mkImageOption "trev.zip/llc/pr-tracker/server:0.2.2@sha256:fcf7c69785fbfaf47c29435d2ee1a72a81ca3f9c80df8ea8447da97d157dad9d";
+    image = mkImageOption "trev.zip/llc/pr-tracker/server:0.2.3@sha256:6b5f2e24a414a635765b55391096ef6aa73e937d061566427de7df9f02d26f8d";
 
     domain = mkOption {
       type = types.str;
