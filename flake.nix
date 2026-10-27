@@ -230,7 +230,6 @@
           default = pkgs.mkShell {
             shellHook = pkgs.shellhook.ref;
             packages = with pkgs; [
-              bun
               podlet
               (pkgs.writeShellApplication {
                 name = "secret";
@@ -259,7 +258,6 @@
             packages = with pkgs; [
               renovate
               nodejs_24
-              bun
             ];
           };
 

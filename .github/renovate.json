@@ -83,10 +83,6 @@
       "addLabels": ["node"]
     },
     {
-      "matchFileNames": ["modules/home-manager/opencode/package.json"],
-      "groupName": "opencode dependencies"
-    },
-    {
       "description": "disable single-arch pin - must be updated via skopeo to per-arch manifest, not index",
       "matchManagers": ["custom.regex"],
       "matchDepNames": ["ubuntu-24.04-arm"],
