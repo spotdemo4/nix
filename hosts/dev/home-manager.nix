@@ -41,7 +41,6 @@ in
     (self + /modules/home-manager/device-certificate)
     (self + /modules/home-manager/gpg)
     (self + /modules/home-manager/mcp)
-    (self + /modules/home-manager/opencode)
     (self + /modules/home-manager/ssh)
     (self + /modules/home-manager/starship)
     (self + /modules/home-manager/t3code)
@@ -173,7 +172,6 @@ in
         key = self + /secrets/device-dev.age;
       };
       gpg.enable = true;
-      opencode.enable = true;
       starship.enable = true;
       ssh = {
         enable = true;
