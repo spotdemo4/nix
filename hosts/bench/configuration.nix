@@ -11,6 +11,11 @@ in
 {
   imports = [ ./hardware.nix ];
 
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
+
   determinate.enable = false;
   documentation.enable = false;
 
@@ -50,6 +55,9 @@ in
       warn-dirty = false
     '';
   };
+
+  # pin clocks at max frequency so benchmark results are stable
+  powerManagement.cpuFreqGovernor = "performance";
 
   networking = {
     hostName = hostname;
