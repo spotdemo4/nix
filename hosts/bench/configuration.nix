@@ -11,6 +11,11 @@ in
 {
   imports = [ ./hardware.nix ];
 
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
+
   determinate.enable = false;
   documentation.enable = false;
 
@@ -51,6 +56,9 @@ in
     '';
   };
 
+  # pin clocks at max frequency so benchmark results are stable
+  powerManagement.cpuFreqGovernor = "performance";
+
   networking = {
     hostName = hostname;
     firewall = {
@@ -74,6 +82,7 @@ in
         KbdInteractiveAuthentication = false;
       };
     };
+    tailscale.enable = true;
   };
 
   systemd = {
@@ -94,5 +103,5 @@ in
     };
   };
 
-  system.stateVersion = "24.05";
+  system.stateVersion = "26.05";
 }

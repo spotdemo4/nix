@@ -28,12 +28,6 @@ in
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
         };
-        "bench" = {
-          HostName = lan.addresses.bench;
-          User = "trev";
-          IdentityFile = "/home/trev/.ssh/id_ed25519";
-          ProxyJump = cfg.proxyJump;
-        };
         "build" = {
           HostName = lan.addresses.build;
           User = "trev";

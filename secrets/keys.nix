@@ -14,7 +14,7 @@ rec {
   sshClients = local;
 
   # Keys for servers
-  bench = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII4DjeXkDXdEEe0vAHXf43Mf/VRTqmURJbAGcDUmIOZP root@bench";
+  bench = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBfXhjJcnSHoSiv2/bPCl6PBk08w5XCkYDuuWAI02zTB root@bench";
   build = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAxD3eccbwfEkahm6zLR+JIVnshwSBFO3dX3roFHndgp root@build";
   dev = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIwyDBj9JupkwRRNAgwOpAYpQ4CoDnz4YuSYCNF73c18 root@dev";
   etc = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOZQ2A2h0VZLdBFb8XwgaBCuHryIFq8CWHE3r+H/fo1Q root@etc";
