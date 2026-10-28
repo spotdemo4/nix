@@ -25,7 +25,7 @@ in
   options.trev.containers.stalwart = {
     enable = mkEnableOption "Stalwart mail server container";
 
-    image = mkImageOption "docker.io/stalwartlabs/stalwart:v0.16.27-alpine@sha256:c3e333637e56942ee47afb599dfc1d2e6fd2147260d2b1a49f12fda1fb684446";
+    image = mkImageOption "docker.io/stalwartlabs/stalwart:v1.0.0-alpine@sha256:d870b94369777d1bfa27dff509de724410fc1f1cef41d131e0fd4db44640f228";
 
     certificatesPath = mkOption {
       type = types.str;
@@ -53,9 +53,11 @@ in
       containers.stalwart.containerConfig = mkContainer {
         image = cfg.image;
         pull = "missing";
+        # The 1.0 store was migrated from 0.16 with stalwart-migrate into new
+        # volumes; its config.json names /var/lib/stalwart-v1.
         volumes = [
-          "${volumes.stalwart-conf.ref}:/etc/stalwart"
-          "${volumes.stalwart-data.ref}:/var/lib/stalwart"
+          "${volumes.stalwart-v1-conf.ref}:/etc/stalwart"
+          "${volumes.stalwart-v1-data.ref}:/var/lib/stalwart-v1"
           "${cfg.certificatesPath}:/data/certs:ro"
         ];
         publishPorts = [
@@ -71,8 +73,11 @@ in
       };
 
       volumes = {
+        # 0.16 store, kept for rollback.
         stalwart-conf = { };
         stalwart-data = { };
+        stalwart-v1-conf = { };
+        stalwart-v1-data = { };
       };
 
       networks.stalwart = { };
