@@ -27,7 +27,7 @@ in
 {
   options.trev.containers.unpackerr = {
     enable = mkEnableOption "Unpackerr container";
-    image = mkImageOption "ghcr.io/unpackerr/unpackerr:v0.16.1@sha256:406586865431b40b29353d899fb75a788f5384743f7f381444db5fe55d206914";
+    image = mkImageOption "ghcr.io/unpackerr/unpackerr:v1.0.1@sha256:22b4693fbeaae4bd927905d63b59b8f67b4a1446682d965ac876c61a48976658";
     uid = mkOption {
       type = types.int;
       default = 1000;
