@@ -24,7 +24,7 @@ in
   options.trev.containers.stack = {
     enable = mkEnableOption "TrevStack server container";
 
-    image = mkImageOption "trev.zip/template/stack/server:1.4.0@sha256:238c71e09edb3ffe2139f34de16b060c1af3ad6420e493e125345473e8a181d6";
+    image = mkImageOption "trev.zip/template/stack/server:1.4.1@sha256:0e51999313719f6bf94eb414fe2a1daf4b7d7c44bb85485fa052c0e7cbea2c3a";
 
     domain = mkOption {
       type = types.str;
