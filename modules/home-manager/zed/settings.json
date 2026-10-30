@@ -6,6 +6,7 @@
     "catppuccin-icons": true,
     "dockerfile": true,
     "emmet": true,
+    "erlang": true,
     "git-firefly": true,
     "gleam": true,
     "golangci-lint": true,

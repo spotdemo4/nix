@@ -44,6 +44,7 @@ in
         "bash"
         "dockerfile"
         "emmet"
+        "erlang"
         "git-firefly"
         "gleam"
         "golangci-lint"
