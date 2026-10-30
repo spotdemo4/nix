@@ -118,6 +118,11 @@ in
           url = forgejo "llc" "flake-release";
         }
         {
+          name = "glquic";
+          path = "~/dev/glquic";
+          url = forgejo "llc" "glquic";
+        }
+        {
           name = "nix";
           path = "~/dev/nix";
           url = github "nix";
