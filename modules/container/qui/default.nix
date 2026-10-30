@@ -28,7 +28,7 @@ in
 {
   options.trev.containers.qui = {
     enable = mkEnableOption "qui container";
-    image = mkImageOption "ghcr.io/autobrr/qui:v1.33.1@sha256:c83ce0370ab372c931ccb3f0ddd0eb1bc850026ce9eafc13ce94443f6f2a2cd3";
+    image = mkImageOption "ghcr.io/autobrr/qui:v1.34.0@sha256:e320bfff0780caff49fee18a6738659c629f863f2dd9347f32b41d287eddde25";
     uid = mkOption {
       type = types.int;
       default = 1000;
