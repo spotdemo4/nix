@@ -27,7 +27,7 @@ in
   options.trev.containers.shlink-web = {
     enable = mkEnableOption "Shlink web client container";
 
-    image = mkImageOption "docker.io/shlinkio/shlink-web-client:4.8.1@sha256:dc8bf3565a25bd0602ff11ee352920830ce457ab58a2b2c62f2ebb23e8c8b9ee";
+    image = mkImageOption "docker.io/shlinkio/shlink-web-client:4.9.0@sha256:9ea53f612d361de240555036065e2b8ea0cd0411b0125afaf2f7d39f2a928f18";
 
     serverUrl = mkOption {
       type = types.str;
