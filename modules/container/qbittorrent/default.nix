@@ -34,7 +34,7 @@ in
 {
   options.trev.containers.qbittorrent = {
     enable = mkEnableOption "qBittorrent container";
-    image = mkImageOption "lscr.io/linuxserver/qbittorrent:latest@sha256:75ecbb1c89ab7b0a21c4bde40b4820e4f1649d2d56d83b91913422155e8d2a5f";
+    image = mkImageOption "lscr.io/linuxserver/qbittorrent:latest@sha256:05c1454f9a32967affc1f34f67f8cc0cc57dd805dca45489fe797095a6286556";
     uid = mkOption {
       type = types.int;
       default = 1000;
