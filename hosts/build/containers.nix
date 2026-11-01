@@ -6,8 +6,8 @@
 }:
 let
   labels = [
-    "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest@sha256:3e08659a2bc60362b804d50589a1c593c1707288f20e4dea554f83c99cca2fcb"
-    "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04@sha256:3e08659a2bc60362b804d50589a1c593c1707288f20e4dea554f83c99cca2fcb"
+    "ubuntu-latest:docker://gitea/runner-images:ubuntu-latest@sha256:8cf448c87dacc9bad1f0d933197f51020727ec250bd3e9b2eb873b2d319b28b8"
+    "ubuntu-24.04:docker://gitea/runner-images:ubuntu-24.04@sha256:8cf448c87dacc9bad1f0d933197f51020727ec250bd3e9b2eb873b2d319b28b8"
     "ubuntu-24.04-arm:docker://gitea/runner-images:ubuntu-24.04@sha256:e34fb27ad655bf1fb20d1ae6bbb71650ca29f286b3cf67e3e86dd91a90fd2976" # arch=arm64
     "ubuntu-26.04:docker://trev.zip/llc/runner-images:ubuntu-26.04@sha256:6def40a3d1ffaa80305231f3b1a08c12a8b3ea00040598c040a027f466ee975e"
     "ubuntu-26.04-arm:docker://trev.zip/llc/runner-images:ubuntu-26.04-arm@sha256:befde8e9e7fbfe5f0bca166829e226362869478b97bdc25a19eceba6bf215980" # arch=arm64
