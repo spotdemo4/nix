@@ -19,13 +19,11 @@
       type = "github";
       owner = "spotdemo4";
       repo = "systems";
-      rev = "7759b373a7b0119835939988964a9b49bc3023af";
     };
     nixpkgs = {
       type = "git";
       url = "https://github.com/nixos/nixpkgs";
       ref = "nixos-unstable";
-      rev = "31ecbaca1bdefa45dffc409f0250bd8039ea0010";
       shallow = true;
     };
 
@@ -34,7 +32,6 @@
       type = "github";
       owner = "SEIAROTg";
       repo = "quadlet-nix";
-      rev = "db3af9df6943692c78cf9a05e3bfeb7d82e94cf3";
     };
 
     # determinate nix
@@ -42,7 +39,6 @@
       type = "github";
       owner = "DeterminateSystems";
       repo = "determinate";
-      rev = "7dce88a77ee0f714f81f988fd35329dc9b54cdfa";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -51,7 +47,6 @@
       type = "github";
       owner = "nix-community";
       repo = "home-manager";
-      rev = "095fef2f265c3c0da4fe315efba8f8a04495ab34";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -60,7 +55,6 @@
       type = "github";
       owner = "nix-community";
       repo = "NUR";
-      rev = "fc0869f28858c05bdfc3a580f827859255ac2350";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -69,7 +63,6 @@
       type = "github";
       owner = "catppuccin";
       repo = "nix";
-      rev = "ddfe53d3304399d50a89ef6503b6ca1be9349fab";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -78,7 +71,6 @@
       type = "github";
       owner = "spotdemo4";
       repo = "zed-icons";
-      rev = "8515fcf76ce55bfe68840a6aa17ef1fe9eff64f6";
       flake = false;
     };
 
@@ -87,7 +79,6 @@
       type = "github";
       owner = "Mic92";
       repo = "niks3";
-      rev = "dc7c043c9ed5e03b838cf2f6082b368cdc24c5eb";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -96,7 +87,6 @@
       type = "github";
       owner = "ryantm";
       repo = "agenix";
-      rev = "5e5b88a0c8e56f291a108c2fe9934054d9745b2e";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -105,7 +95,6 @@
       type = "github";
       owner = "nix-community";
       repo = "nix4vscode";
-      rev = "6fa9701baa69bc507bcb7a61367f2be7a3427a78";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -117,7 +106,6 @@
       type = "github";
       owner = "spotdemo4";
       repo = "trevpkgs";
-      rev = "b808cef9326417dcb7eb3e124dee820f90fc1a20";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -129,7 +117,6 @@
       type = "github";
       owner = "0xc000022070";
       repo = "zen-browser-flake";
-      rev = "4434539379bc839480edb8b919de9b67f70cb520";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
@@ -141,7 +128,6 @@
       type = "github";
       owner = "spotdemo4";
       repo = "trevbar";
-      rev = "c9eb6a13f64ff293e1c56b6a23b69eba8dbe2722";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -154,7 +140,6 @@
       type = "git";
       url = "https://trev.zip/llc/trev-proxy";
       ref = "main";
-      rev = "6728257aa8135d017938661ae659c325ff0cd4f2";
       shallow = true;
       inputs = {
         systems.follows = "systems";
@@ -168,7 +153,6 @@
       type = "git";
       url = "https://trev.zip/llc/nix-progress";
       ref = "main";
-      rev = "3ddac85fe35bf3ad97d4d28ea608c415c57208be";
       shallow = true;
       inputs = {
         systems.follows = "systems";
@@ -182,7 +166,6 @@
       type = "git";
       url = "https://trev.zip/llc/TrevDesk";
       ref = "main";
-      rev = "38a8bd6821705043fa35428377d4e0b482d4b8f2";
       shallow = true;
       inputs = {
         systems.follows = "systems";
