@@ -1,0 +1,35 @@
+--- a/src/_theme.scss
++++ b/src/_theme.scss
+@@ -413,32 +413,6 @@
+   color: var(--color-tooltip-text);
+ }
+ 
+-/*
+- * admonitions are using *-text variables for border/text colour
+- * can't change values of the *-text variables without breaking
+- * readability on accented backgrounds
+- */
+-blockquote {
+-  &.attention-tip {
+-    border-left-color: var(--color-success-bg);
+-  }
+-
+-  &.attention-warning {
+-    border-left-color: var(--color-warning-bg);
+-  }
+-}
+-
+-svg,
+-strong {
+-  &.attention-tip {
+-    color: var(--color-success-bg);
+-  }
+-
+-  &.attention-warning {
+-    color: var(--color-warning-bg);
+-  }
+-}
+-
+ .inline-code-block {
+   color: #{$crust};
+ }
