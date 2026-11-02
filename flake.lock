@@ -105,6 +105,23 @@
         "type": "github"
       }
     },
+    "catppuccin-zed-icons": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793598154,
+        "narHash": "sha256-ZU9qHh7L/gRpYJrevzwMGuzXd+IpCGmDO61ov+19NYY=",
+        "owner": "spotdemo4",
+        "repo": "zed-icons",
+        "rev": "8515fcf76ce55bfe68840a6aa17ef1fe9eff64f6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "spotdemo4",
+        "repo": "zed-icons",
+        "rev": "8515fcf76ce55bfe68840a6aa17ef1fe9eff64f6",
+        "type": "github"
+      }
+    },
     "determinate": {
       "inputs": {
         "determinate-nixd-aarch64-darwin": "determinate-nixd-aarch64-darwin",
@@ -470,6 +487,7 @@
       "inputs": {
         "agenix": "agenix",
         "catppuccin": "catppuccin",
+        "catppuccin-zed-icons": "catppuccin-zed-icons",
         "determinate": "determinate",
         "home-manager": "home-manager",
         "niks3": "niks3",

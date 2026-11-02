@@ -73,6 +73,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # catppuccin zed icons
+    catppuccin-zed-icons = {
+      type = "github";
+      owner = "spotdemo4";
+      repo = "zed-icons";
+      rev = "8515fcf76ce55bfe68840a6aa17ef1fe9eff64f6";
+      flake = false;
+    };
+
     # niks3
     niks3 = {
       type = "github";

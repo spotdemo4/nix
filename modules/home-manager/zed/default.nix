@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   ...
 }:
@@ -90,5 +91,8 @@ in
         flavor = "mocha";
       };
     };
+
+    # symlinked extensions are loaded as dev extensions, which zed doesn't auto-update
+    xdg.dataFile."zed/extensions/installed/catppuccin-icons".source = inputs.catppuccin-zed-icons;
   };
 }
