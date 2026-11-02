@@ -335,10 +335,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1793612965,
-        "narHash": "sha256-S71llpbegcH6MmnYz7mTmWl0KPSvZmpLImevrVziYfE=",
+        "lastModified": 1793620515,
+        "narHash": "sha256-dEfugy3aK/hLe3DxkpbZ80EyH9w0hj9f7fY7DK1pxpc=",
         "ref": "main",
-        "rev": "cf6032358bef3ad65b400118397fdb47794d01e9",
+        "rev": "64287402440eed2a6e309584e9b110719ec27171",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/nix-progress"
