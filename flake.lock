@@ -106,11 +106,11 @@
     "catppuccin-zed-icons": {
       "flake": false,
       "locked": {
-        "lastModified": 1793610657,
-        "narHash": "sha256-CiuQfga/n2cj4MNHQWThUifPP81tdcCB+OoqU+3VPAg=",
+        "lastModified": 1793617440,
+        "narHash": "sha256-NbfTfJdtb1z80fcmmRHTWX4u9RKC4x7021sNRyndZzM=",
         "owner": "spotdemo4",
         "repo": "zed-icons",
-        "rev": "a7d0f7fc893b952a9b80b6ed1f0767008973aae0",
+        "rev": "9bbe998dfda06471abed90c4831013fe62033e4a",
         "type": "github"
       },
       "original": {
