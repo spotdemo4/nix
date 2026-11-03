@@ -8,7 +8,6 @@
     (self + /modules/container/monero)
     (self + /modules/container/p2pool)
     (self + /modules/container/portainer)
-    (self + /modules/container/tor)
     (self + /modules/container/wireguard)
   ];
 
@@ -41,17 +40,6 @@
       enable = true;
       podmanSocket = "/run/podman/podman.sock";
       servicePort = 9000;
-    };
-
-    tor = {
-      enable = true;
-      nickname = "trevrelay";
-      contactInfo = "tor AT trev DOT kiwi";
-      bandwidthRate = "20 MBytes";
-      orPort = 9090;
-      metricsPort = 9091;
-      metricsHostIP = "10.10.10.105";
-      metricsAllowedIP = "10.10.10.109";
     };
 
     wireguard = {
