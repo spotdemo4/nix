@@ -587,11 +587,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793623605,
-        "narHash": "sha256-VjEGFJ9xZTntVPyU6YAKOhRAkB+hT0xCJnQ9lI43AE0=",
+        "lastModified": 1793698564,
+        "narHash": "sha256-Gut1LjFKQbJ913amdk7413gM7Lx2Hm5Hwm5oyyTWdDo=",
         "owner": "spotdemo4",
         "repo": "trevbar",
-        "rev": "16737d0a5aa66fde718b95d2ea22c60e8e3b5f9e",
+        "rev": "1d62f1042338398941bebe7134f17516b99a3047",
         "type": "github"
       },
       "original": {
