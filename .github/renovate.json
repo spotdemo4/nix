@@ -59,6 +59,12 @@
       "updateNotScheduled": false
     },
     {
+      "description": "trevdesk also tags web/v* releases",
+      "matchManagers": ["nix"],
+      "matchDepNames": ["trevdesk"],
+      "allowedVersions": "/^v/"
+    },
+    {
       "matchManagers": ["custom.regex"],
       "matchDepTypes": ["image"],
       "groupName": "docker images",

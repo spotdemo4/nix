@@ -16,85 +16,62 @@
 
   inputs = {
     systems = {
-      type = "github";
-      owner = "spotdemo4";
-      repo = "systems";
+      url = "github:spotdemo4/systems";
     };
     nixpkgs = {
-      type = "git";
-      url = "https://github.com/nixos/nixpkgs";
-      ref = "nixos-unstable";
-      shallow = true;
+      url = "github:nixos/nixpkgs/nixos-unstable";
     };
 
     # quadlet nix
     quadlet-nix = {
-      type = "github";
-      owner = "SEIAROTg";
-      repo = "quadlet-nix";
+      url = "github:SEIAROTg/quadlet-nix";
     };
 
     # determinate nix
     determinate = {
-      type = "github";
-      owner = "DeterminateSystems";
-      repo = "determinate";
+      url = "github:DeterminateSystems/determinate/v3.24.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # home manager
     home-manager = {
-      type = "github";
-      owner = "nix-community";
-      repo = "home-manager";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # nix user repository
     nur = {
-      type = "github";
-      owner = "nix-community";
-      repo = "NUR";
+      url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # catppuccin nix
     catppuccin = {
-      type = "github";
-      owner = "catppuccin";
-      repo = "nix";
+      url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # catppuccin zed icons
     catppuccin-zed-icons = {
-      type = "github";
-      owner = "spotdemo4";
-      repo = "zed-icons";
+      url = "github:spotdemo4/zed-icons";
       flake = false;
     };
 
     # niks3
     niks3 = {
-      type = "github";
-      owner = "Mic92";
-      repo = "niks3";
+      url = "github:Mic92/niks3/v1.16.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # agenix
     agenix = {
-      type = "github";
-      owner = "ryantm";
-      repo = "agenix";
+      url = "github:ryantm/agenix/0.18.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # nix vscode extensions
     nix4vscode = {
-      type = "github";
-      owner = "nix-community";
-      repo = "nix4vscode";
+      url = "github:nix-community/nix4vscode";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -103,9 +80,7 @@
 
     # trev's repository
     trevpkgs = {
-      type = "github";
-      owner = "spotdemo4";
-      repo = "trevpkgs";
+      url = "github:spotdemo4/trevpkgs";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -114,9 +89,7 @@
 
     # zen browser
     zen-browser = {
-      type = "github";
-      owner = "0xc000022070";
-      repo = "zen-browser-flake";
+      url = "github:0xc000022070/zen-browser-flake";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
@@ -125,9 +98,7 @@
 
     # trevbar
     trevbar = {
-      type = "github";
-      owner = "spotdemo4";
-      repo = "trevbar";
+      url = "github:spotdemo4/trevbar/v0.8.6";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -137,10 +108,7 @@
 
     # trev-proxy
     trev-proxy = {
-      type = "git";
-      url = "https://trev.zip/llc/trev-proxy";
-      ref = "main";
-      shallow = true;
+      url = "git+https://trev.zip/llc/trev-proxy?ref=refs/tags/v0.8.0&shallow=1";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -150,10 +118,7 @@
 
     # nix-progress
     nix-progress = {
-      type = "git";
-      url = "https://trev.zip/llc/nix-progress";
-      ref = "main";
-      shallow = true;
+      url = "git+https://trev.zip/llc/nix-progress?ref=refs/tags/v0.3.0&shallow=1";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
@@ -163,10 +128,7 @@
 
     # trevdesk
     trevdesk = {
-      type = "git";
-      url = "https://trev.zip/llc/TrevDesk";
-      ref = "main";
-      shallow = true;
+      url = "git+https://trev.zip/llc/TrevDesk?ref=refs/tags/v0.5.5&shallow=1";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
