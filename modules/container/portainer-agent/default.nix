@@ -19,7 +19,7 @@ in
 {
   options.trev.containers.portainer-agent = {
     enable = mkEnableOption "the Portainer Agent container";
-    image = mkImageOption "docker.io/portainer/agent:3.0.0@sha256:cd22e4f904ff0e957a1421d1e9e9b8ca0523ed6b5f79f4d12b2ed0809ef3d734";
+    image = mkImageOption "docker.io/portainer/agent:3.0.1@sha256:71e402b87bd9159aa018ef7b88a71cb4549da2fd1bf24bc918b34a0f4e97c005";
 
     podmanSocket = mkOption {
       type = types.str;
