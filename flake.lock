@@ -613,10 +613,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1793620054,
-        "narHash": "sha256-XWGSBNHU8Bw0+iP70E/fC4BPLC3BjAj6/Wrd/LMN2fo=",
+        "lastModified": 1793699779,
+        "narHash": "sha256-e+8RDPL4vwOgvsgQgMH9jq6d7Dlo4hldos1znOGVI60=",
         "ref": "main",
-        "rev": "31c55351e2d8435ccbd76e034d4adf87918bd5ba",
+        "rev": "a31c17fc4db15bf9c8c5dcc451e1a796e2e58356",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/TrevDesk"
