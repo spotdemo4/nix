@@ -2,20 +2,23 @@
   "nodes": {
     "agenix": {
       "inputs": {
+        "darwin": "darwin",
+        "home-manager": "home-manager",
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1792507013,
-        "narHash": "sha256-8tKjSQajD3mUND1GaAuaWTcuyUpgcGsh5V+l4ibzC7U=",
+        "lastModified": 1790530381,
+        "narHash": "sha256-/FjF9A8HVLVftjdmz1MPA2G0wSYWRaC628NTAsCqeyI=",
         "owner": "ryantm",
         "repo": "agenix",
-        "rev": "5e5b88a0c8e56f291a108c2fe9934054d9745b2e",
+        "rev": "9353cb29366a8535ac9483065284785fd48012a2",
         "type": "github"
       },
       "original": {
         "owner": "ryantm",
+        "ref": "0.18.0",
         "repo": "agenix",
         "type": "github"
       }
@@ -119,6 +122,28 @@
         "type": "github"
       }
     },
+    "darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "agenix",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783744694,
+        "narHash": "sha256-2cp6N3rrwnGYLTx9l6N+NI+kwrCWxvJUbj5WJhvB29A=",
+        "owner": "nix-darwin",
+        "repo": "nix-darwin",
+        "rev": "c3e90c89649b07d1a96e4b9dd6cd0d6e44b91a74",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-darwin",
+        "ref": "nix-darwin-26.05",
+        "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
     "determinate": {
       "inputs": {
         "determinate-nixd-aarch64-darwin": "determinate-nixd-aarch64-darwin",
@@ -139,6 +164,7 @@
       },
       "original": {
         "owner": "DeterminateSystems",
+        "ref": "v3.24.1",
         "repo": "determinate",
         "type": "github"
       }
@@ -262,6 +288,28 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
+          "agenix",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790215976,
+        "narHash": "sha256-VkR1rMGyjU9jtw8ISFx5uqR9e+LEaOlhHwrseFkiIVk=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "a6631107a83ceab5872f298a2ea710859c80c4cb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "release-26.05",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "home-manager_2": {
+      "inputs": {
+        "nixpkgs": [
           "nixpkgs"
         ]
       },
@@ -287,15 +335,16 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1793693699,
-        "narHash": "sha256-rJLLSdzk33iyKVIhG0UuCKjI6RGWMSTZD6qhuVIbbqg=",
+        "lastModified": 1793555647,
+        "narHash": "sha256-tTcoDWiraSB1FlnYlhdBv9ZylcGhGTiU1lbi5OZN5Gw=",
         "owner": "Mic92",
         "repo": "niks3",
-        "rev": "2ae7fce37ce1c8d9029ba0a180bb67606baf151e",
+        "rev": "b8ab8359e51e7f6b70a879a5aae2f778f2e4137d",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
+        "ref": "v1.16.0",
         "repo": "niks3",
         "type": "github"
       }
@@ -335,16 +384,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1793698914,
-        "narHash": "sha256-ZVLQa5u+3vHH5FqFHgKMQt8DLFTtq3hO1ZAeWyup5vE=",
-        "ref": "main",
-        "rev": "dfda0d342d225be64a95fb3d2a0602f6acc57ea4",
+        "lastModified": 1792035388,
+        "narHash": "sha256-JTUkK02BiWI3iR6qt5JQAkngfIOcp+rr976JQjWYmbs=",
+        "ref": "refs/tags/v0.3.0",
+        "rev": "9f6093acaed6b0d70ad1b38ddbae27b861d56830",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/nix-progress"
       },
       "original": {
-        "ref": "main",
+        "ref": "refs/tags/v0.3.0",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/nix-progress"
@@ -423,17 +472,16 @@
       "locked": {
         "lastModified": 1793110635,
         "narHash": "sha256-dhoW6VgFWlaodSY5jrBn+CF2FLmaUvDVgM7+C7T2+NM=",
-        "ref": "nixos-unstable",
+        "owner": "nixos",
+        "repo": "nixpkgs",
         "rev": "31ecbaca1bdefa45dffc409f0250bd8039ea0010",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/nixos/nixpkgs"
+        "type": "github"
       },
       "original": {
+        "owner": "nixos",
         "ref": "nixos-unstable",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/nixos/nixpkgs"
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nur": {
@@ -478,7 +526,7 @@
         "catppuccin": "catppuccin",
         "catppuccin-zed-icons": "catppuccin-zed-icons",
         "determinate": "determinate",
-        "home-manager": "home-manager",
+        "home-manager": "home-manager_2",
         "niks3": "niks3",
         "nix-progress": "nix-progress",
         "nix4vscode": "nix4vscode",
@@ -557,16 +605,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1793698682,
-        "narHash": "sha256-YT6lRh7N3OKYkD2cLlauuPaOiXkYEKLw729rj/azKdY=",
-        "ref": "main",
-        "rev": "8c0f974904ece801fd2fe5f0b9d3f5a12071800e",
+        "lastModified": 1793052097,
+        "narHash": "sha256-bABXy9yiyJ8bfw/roPd3tvQJWWiBUuVxx+7GWnwB724=",
+        "ref": "refs/tags/v0.8.0",
+        "rev": "700a35e26b7b87ef66d59b256e58199e40827166",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/trev-proxy"
       },
       "original": {
-        "ref": "main",
+        "ref": "refs/tags/v0.8.0",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/trev-proxy"
@@ -587,15 +635,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1793698564,
-        "narHash": "sha256-Gut1LjFKQbJ913amdk7413gM7Lx2Hm5Hwm5oyyTWdDo=",
+        "lastModified": 1793397789,
+        "narHash": "sha256-XUySCXBE+roSW5eNuG5BisLzOckpJ9kMpRmCCJE3RT8=",
         "owner": "spotdemo4",
         "repo": "trevbar",
-        "rev": "1d62f1042338398941bebe7134f17516b99a3047",
+        "rev": "9608ec280bdd5140160408d2628541b49be05685",
         "type": "github"
       },
       "original": {
         "owner": "spotdemo4",
+        "ref": "v0.8.6",
         "repo": "trevbar",
         "type": "github"
       }
@@ -613,16 +662,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1793699779,
-        "narHash": "sha256-e+8RDPL4vwOgvsgQgMH9jq6d7Dlo4hldos1znOGVI60=",
-        "ref": "main",
-        "rev": "a31c17fc4db15bf9c8c5dcc451e1a796e2e58356",
+        "lastModified": 1793397785,
+        "narHash": "sha256-ZkOuc9tFSDB9rXpFp44nZ+XuZ6k02V66b5SxFUrvzO4=",
+        "ref": "refs/tags/v0.5.5",
+        "rev": "4d8bf5e0fa2cd91109971bd5b4b67c4522361d10",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/TrevDesk"
       },
       "original": {
-        "ref": "main",
+        "ref": "refs/tags/v0.5.5",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/TrevDesk"
