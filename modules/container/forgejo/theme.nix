@@ -19,12 +19,9 @@ stdenvNoCC.mkDerivation {
   patches = [
     # https://github.com/catppuccin/gitea/pull/92
     (fetchpatch {
-      url = "https://github.com/cometship/gitea/compare/6a789704686ec13178a13cd84bf1e30db191a437...0efa21346d86824666d3bf460810467d2949e72c.diff";
-      hash = "sha256-V91ydf3GGwImLkF4oQJFJvG6P/Q5ugHQJ07zn72un30=";
+      url = "https://github.com/cometship/gitea/compare/6a789704686ec13178a13cd84bf1e30db191a437...52748d2ffc29cf40cc7c8595a7616ee1363af119.diff";
+      hash = "sha256-/xdLFqgzJw8mNjMkOCJnbY6FTeyv3q2+Y4VXaWBiGts=";
     })
-    # drop admonition overrides that use the now-translucent *-bg colors as text
-    # remove once https://github.com/catppuccin/gitea/pull/92 is updated
-    ./admonitions.patch
   ];
 
   palette = fetchurl {
