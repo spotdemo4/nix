@@ -24,7 +24,7 @@ in
 {
   options.trev.containers.discord-embedder = {
     enable = mkEnableOption "Discord embedder container";
-    image = mkImageOption "ghcr.io/spotdemo4/discord-embedder:0.11.0@sha256:32d26ea6320997ba1a7d95a7adaaa85c1cc4c0e33a35058600fbd6f8e45b6afd";
+    image = mkImageOption "ghcr.io/spotdemo4/discord-embedder:0.11.1@sha256:a05d6fee25195db6c671c3a13f874ada3d7c3a5bf46951eef2021d68df026eff";
     uid = mkOption {
       type = types.int;
       default = 1000;
