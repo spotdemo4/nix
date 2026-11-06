@@ -22,7 +22,7 @@ in
   options.trev.containers.nix-shield = {
     enable = mkEnableOption "nix-shield container";
 
-    image = mkImageOption "trev.zip/llc/nix-shield:0.4.2@sha256:bdb84cd1388a593ce791e7f50ebaf7cd5c3805963da2848808e65180389cb6cc";
+    image = mkImageOption "trev.zip/llc/nix-shield:0.5.0@sha256:042c6a7a51c7cfc62d01a121bac6ae34697f5eb2b1303e06238f8574d0f0a71a";
 
     allowedIPs = mkOption {
       type = types.listOf types.str;
@@ -34,6 +34,12 @@ in
       type = types.str;
       default = "nix-shield.trev.zip";
       description = "Domain routed to nix-shield.";
+    };
+
+    shieldsUrl = mkOption {
+      type = types.str;
+      default = "https://shields.trev.zip";
+      description = "Base URL of the Shields instance that shortcut badges redirect to.";
     };
 
     port = mkOption {
@@ -53,7 +59,10 @@ in
       image = cfg.image;
       pull = "missing";
       publishPorts = [ "${toString cfg.port}:3000" ];
-      environments.NIX_SHIELD_ALLOWED_IPS = concatStringsSep "," cfg.allowedIPs;
+      environments = {
+        NIX_SHIELD_ALLOWED_IPS = concatStringsSep "," cfg.allowedIPs;
+        NIX_SHIELD_SHIELDS_URL = cfg.shieldsUrl;
+      };
     };
   };
 }
