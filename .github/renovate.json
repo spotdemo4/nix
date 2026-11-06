@@ -80,6 +80,12 @@
       "updateNotScheduled": false
     },
     {
+      "description": "shields only publishes date-tagged server snapshots",
+      "matchManagers": ["custom.regex"],
+      "matchDepNames": ["docker.io/shieldsio/shields"],
+      "versioning": "regex:^server-(?<major>\\d{4})-(?<minor>\\d{2})-(?<patch>\\d{2})$"
+    },
+    {
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
       "addLabels": ["actions"]

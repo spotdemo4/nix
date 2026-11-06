@@ -17,6 +17,7 @@
     (self + /modules/container/postgresql)
     (self + /modules/container/shlink)
     (self + /modules/container/shlink-web)
+    (self + /modules/container/shields)
     (self + /modules/container/solid-toast)
     (self + /modules/container/stack)
   ];
@@ -87,6 +88,13 @@
     pyrowave-webgpu.enable = true;
     shlink.enable = true;
     shlink-web.enable = true;
+    shields = {
+      enable = true;
+      githubTokenSecret = {
+        ref = "shields-github";
+        file = self + /secrets/shields-github.age;
+      };
+    };
     solid-toast.enable = true;
     stack.enable = true;
 
