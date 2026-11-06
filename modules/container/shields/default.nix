@@ -8,12 +8,14 @@
 let
   inherit (lib)
     concatMapStringsSep
+    hasPrefix
     mkEnableOption
     mkIf
     mkOption
     optional
     optionalAttrs
     optionalString
+    removePrefix
     replaceStrings
     types
     ;
@@ -25,7 +27,15 @@ let
   inherit (config.virtualisation.quadlet) containers networks;
   cfg = config.trev.containers.shields;
 
-  hostPattern = concatMapStringsSep "|" (replaceStrings [ "." ] [ "\\\\." ]) cfg.allowedUrlHosts;
+  # Regex for an allowed host, escaped for a CEL string in the Caddyfile;
+  # `*.example.com` matches any subdomain of example.com but not example.com.
+  hostRegex =
+    host:
+    let
+      escaped = replaceStrings [ "." ] [ "\\\\." ] (removePrefix "*." host);
+    in
+    if hasPrefix "*." host then "([a-z0-9-]+\\\\.)+${escaped}" else escaped;
+  hostPattern = concatMapStringsSep "|" hostRegex cfg.allowedUrlHosts;
 
   # Shields has no allowlist for the URLs Dynamic, Endpoint and other badges
   # fetch, so Caddy checks the `url` query parameter before Shields sees it.
@@ -80,12 +90,14 @@ in
     };
 
     allowedUrlHosts = mkOption {
-      type = types.listOf (types.strMatching "[a-z0-9.-]+");
+      type = types.listOf (types.strMatching "(\\*\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+");
       default = [
         "trev.zip"
         "nix-shield.trev.zip"
+        "github.com"
+        "*.githubusercontent.com"
       ];
-      description = "Hosts that badges taking a `url` query parameter, such as Dynamic and Endpoint badges, may fetch over HTTPS; subdomains must be listed separately.";
+      description = "Hosts that badges taking a `url` query parameter, such as Dynamic and Endpoint badges, may fetch over HTTPS; `*.example.com` allows every subdomain of example.com, and other subdomains must be listed separately.";
     };
 
     redirectUrl = mkOption {
