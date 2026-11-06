@@ -96,6 +96,7 @@ in
         "nix-shield.trev.zip"
         "github.com"
         "*.githubusercontent.com"
+        "pkg.go.dev"
       ];
       description = "Hosts that badges taking a `url` query parameter, such as Dynamic and Endpoint badges, may fetch over HTTPS; `*.example.com` allows every subdomain of example.com, and other subdomains must be listed separately.";
     };
