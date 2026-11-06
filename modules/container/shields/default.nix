@@ -75,7 +75,7 @@ in
 
     image = mkImageOption "docker.io/shieldsio/shields:server-2026-08-21@sha256:4d6e9cca61dcd97240d9887fe050a72eab2cc9469a3db4dfc49f3c308c1f5113";
 
-    filter.image = mkImageOption "docker.io/library/caddy:2.11.9-alpine@sha256:71d41fe4b1ae92a058abc87afe614178b996d8a6b96d0f4c71ae30606e5927e3";
+    filter.image = mkImageOption "docker.io/library/caddy:2.11.9-alpine@sha256:0bbb055bda6793c999bde78b1b5ce3e89f829fb031af2cf50056ea1246559fee";
 
     domain = mkOption {
       type = types.str;
