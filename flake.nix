@@ -59,7 +59,7 @@
 
     # niks3
     niks3 = {
-      url = "github:Mic92/niks3/v1.16.1";
+      url = "github:Mic92/niks3/v1.16.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
