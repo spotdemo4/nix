@@ -40,6 +40,11 @@ in
           IdentityFile = "/home/trev/.ssh/id_ed25519";
           ProxyJump = cfg.proxyJump;
         };
+        "desktop" = {
+          HostName = "nixos-desktop"; # Tailscale MagicDNS
+          User = "trev";
+          IdentityFile = "/home/trev/.ssh/id_ed25519";
+        };
         "etc" = {
           HostName = lan.addresses.etc;
           User = "trev";

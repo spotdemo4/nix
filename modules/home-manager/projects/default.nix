@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  osConfig,
   pkgs,
   ...
 }:
@@ -10,7 +11,11 @@ let
   github = repo: "https://github.com/spotdemo4/${repo}";
   hyprctl = lib.getExe' config.wayland.windowManager.hyprland.package "hyprctl";
   hyprlauncher = lib.getExe config.services.hyprlauncher.package;
+  awk = lib.getExe pkgs.gawk;
+  notify-send = lib.getExe pkgs.libnotify;
+  ssh = lib.getExe' pkgs.openssh "ssh";
   zed = lib.getExe config.programs.zed-editor.package;
+
   openProject =
     project:
     let
@@ -30,36 +35,95 @@ let
           ];
         in
         lib.escapeShellArg "open_project(${builtins.toJSON editorCommand}, ${builtins.toJSON browserCommand})";
+      remoteLabel = host: "Remote (${host})";
+      # SSH sessions start in the home directory, so a "~/" path works relative to it.
+      remoteTest = "test -d ${lib.escapeShellArg (lib.removePrefix "~/" project.path)}";
     in
     pkgs.writeShellApplication {
       name = "open-project-${lib.replaceStrings [ "/" ] [ "-" ] project.name}";
       text = ''
-        if [ -d ${lib.escapeShellArg localPath} ]; then
-          choice=$(printf 'Local\nRemote (%s)\n' ${lib.escapeShellArg cfg.sshHost} | ${hyprlauncher} --dmenu)
-          case "$choice" in
-            Local) exec ${hyprctl} eval ${luaExpression localPath} ;;
-            Remote*) ;;
-            *) exit 0 ;;
-          esac
-        fi
+        # Prints the address SSH connects to first for an alias: the jump host when the alias
+        # uses ProxyJump, otherwise its own HostName. Aliases may not exist in DNS.
+        first_hop() {
+          local config jump
+          config=$(${ssh} -G "$1" 2>/dev/null)
+          jump=$(${awk} '$1 == "proxyjump" { print $2 }' <<<"$config")
+          if [ -n "$jump" ] && [ "$jump" != none ]; then
+            jump=''${jump%%,*} # first jump of a chain
+            jump=''${jump#*@}  # drop user@
+            jump=''${jump%:*}  # drop :port
+            config=$(${ssh} -G "$jump" 2>/dev/null)
+          fi
+          ${awk} '$1 == "hostname" { print $2 }' <<<"$config"
+        }
 
-        exec ${hyprctl} eval ${luaExpression "ssh://${cfg.sshHost}:${project.path}"}
+        # A quick ping first avoids waiting for SSH to time out when the host is offline.
+        host_has_project() {
+          ping -c 1 -W 1 "$(first_hop "$1")" >/dev/null 2>&1 \
+            && ${ssh} -n -o BatchMode=yes -o ConnectTimeout=3 "$1" ${lib.escapeShellArg remoteTest} 2>/dev/null
+        }
+
+        # Check every host in parallel, then collect them in the configured order.
+        hosts=(${lib.escapeShellArgs cfg.sshHosts})
+        pids=()
+        for host in "''${hosts[@]}"; do
+          host_has_project "$host" &
+          pids+=("$!")
+        done
+
+        choices=()
+        if [ -d ${lib.escapeShellArg localPath} ]; then
+          choices+=(Local)
+        fi
+        for i in "''${!hosts[@]}"; do
+          if wait "''${pids[$i]}"; then
+            choices+=("Remote (''${hosts[$i]})")
+          fi
+        done
+
+        case "''${#choices[@]}" in
+          0)
+            ${notify-send} ${lib.escapeShellArg "Can't open ${project.name}"} \
+              ${lib.escapeShellArg "It isn't checked out locally or on any reachable SSH host."}
+            exit 1
+            ;;
+          1) choice=''${choices[0]} ;;
+          *) choice=$(printf '%s\n' "''${choices[@]}" | ${hyprlauncher} --dmenu) ;;
+        esac
+
+        case "$choice" in
+          Local) exec ${hyprctl} eval ${luaExpression localPath} ;;
+          ${lib.concatMapStringsSep "\n  " (
+            host:
+            "${lib.escapeShellArg (remoteLabel host)}) exec ${hyprctl} eval ${luaExpression "ssh://${host}:${project.path}"} ;;"
+          ) cfg.sshHosts}
+          *) exit 0 ;;
+        esac
       '';
     };
 in
 {
   options.trev.projects = {
-    sshHost = lib.mkOption {
-      type = lib.types.str;
-      default = "dev";
-      description = "SSH host containing the development projects";
+    sshHosts = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = lib.filter (host: host != osConfig.networking.hostName) [
+        "dev"
+        "desktop"
+      ];
+      defaultText = lib.literalExpression ''
+        lib.filter (host: host != osConfig.networking.hostName) [ "dev" "desktop" ]
+      '';
+      description = ''
+        SSH hosts containing the development projects, in the order they are offered. A host is
+        only offered when it (or its ProxyJump host) answers a ping and contains the project.
+      '';
     };
 
     localRoot = lib.mkOption {
       type = lib.types.str;
       default = "${config.home.homeDirectory}/dev";
       defaultText = lib.literalExpression ''"''${config.home.homeDirectory}/dev"'';
-      description = "Local directory checked for project checkouts before falling back to the SSH host";
+      description = "Local directory checked for project checkouts";
     };
 
     entries = lib.mkOption {
@@ -72,7 +136,7 @@ in
             };
             path = lib.mkOption {
               type = lib.types.str;
-              description = "Project path on the SSH host";
+              description = "Project path on the SSH hosts";
             };
             url = lib.mkOption {
               type = lib.types.str;
