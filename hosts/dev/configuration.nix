@@ -164,6 +164,7 @@ in
         Compression = "no";
       };
     };
+    tailscale.enable = true; # /dev/net/tun is passed through from proxmox
   };
 
   users = {
