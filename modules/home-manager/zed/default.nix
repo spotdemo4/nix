@@ -13,13 +13,11 @@ let
   ] { enable = false; } config;
   settings = lib.recursiveUpdate (builtins.fromJSON (builtins.readFile ./settings.json)) (
     {
-      ssh_connections = [
-        {
-          host = projects.sshHost;
-          nickname = projects.sshHost;
-          projects = map (project: { paths = [ project.path ]; }) projects.entries;
-        }
-      ];
+      ssh_connections = map (host: {
+        inherit host;
+        nickname = host;
+        projects = map (project: { paths = [ project.path ]; }) projects.entries;
+      }) projects.sshHosts;
     }
     // lib.optionalAttrs claude.enable {
       agent_servers.claude-acp = {
