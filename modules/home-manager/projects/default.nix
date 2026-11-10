@@ -130,7 +130,7 @@ in
         {
           name = "nix-fix-hash";
           path = "~/dev/nix-fix-hash";
-          url = github "nix-fix-hash";
+          url = forgejo "llc" "nix-fix-hash";
         }
         {
           name = "nix-init";
