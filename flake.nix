@@ -108,7 +108,7 @@
 
     # trev-proxy
     trev-proxy = {
-      url = "git+https://trev.zip/llc/trev-proxy?ref=refs/tags/v0.9.1&shallow=1";
+      url = "git+https://trev.zip/llc/trev-proxy?ref=refs/tags/v0.9.2&shallow=1";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
