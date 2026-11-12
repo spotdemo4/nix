@@ -122,6 +122,34 @@
         "type": "github"
       }
     },
+    "claude-unstuck": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": [
+          "systems"
+        ],
+        "trevpkgs": [
+          "trevpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794501774,
+        "narHash": "sha256-2br16z+aDpeoSQlxlTsU1pNVp0Tr5IcA8W4SY50k7s0=",
+        "ref": "refs/tags/v0.1.0",
+        "rev": "c62da008308d1ea42b28ceb30022452c2eb129c5",
+        "shallow": true,
+        "type": "git",
+        "url": "https://trev.zip/llc/claude-unstuck"
+      },
+      "original": {
+        "ref": "refs/tags/v0.1.0",
+        "shallow": true,
+        "type": "git",
+        "url": "https://trev.zip/llc/claude-unstuck"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -525,6 +553,7 @@
         "agenix": "agenix",
         "catppuccin": "catppuccin",
         "catppuccin-zed-icons": "catppuccin-zed-icons",
+        "claude-unstuck": "claude-unstuck",
         "determinate": "determinate",
         "home-manager": "home-manager_2",
         "niks3": "niks3",
