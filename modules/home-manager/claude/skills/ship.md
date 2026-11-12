@@ -42,8 +42,9 @@ For a `github.com` remote, use `gh`. For any other remote, assume Forgejo and us
 12. If a reviewer requests changes on the head commit, address them yourself instead of stopping to ask.
     - Read the review body and every inline comment. Forgejo: the `forgejo-pr-wait` output gives each review's ID, so read its inline comments with the forgejo review comment tools. GitHub: `gh api repos/{owner}/{repo}/pulls/<pr>/reviews/<review-id>/comments`.
     - If any comment is a question, is ambiguous, asks for something you think is wrong, or reaches beyond this PR, stop and report the review with your take on each comment. Don't push a partial fix, since auto-merge could merge it before the rest is settled.
-    - Otherwise make the requested changes, run the checks from step 5, and commit the result as new commits. Push without rebasing or force-pushing, so the reviewer can see what changed since their review. Don't reply to or resolve the review threads. The push notifies the reviewer, and resolving is theirs to do.
-    - Then go back to step 9. On Forgejo, `forgejo-pr-wait` keeps waiting while the change request predates the head commit, so it waits for the re-review. On GitHub, `gh` can't wait for a re-review, so once the checks pass and the PR is only waiting on the reviewer, stop and report that the fixes are pushed.
+    - Otherwise make the requested changes, run the checks from step 5, and commit the result as new commits. Push without rebasing or force-pushing, so the reviewer can see what changed since their review. Don't reply to or resolve the review threads, since resolving is the reviewer's to do.
+    - After pushing, re-request a review from each reviewer whose change request you addressed. A push alone doesn't put the PR back in their queue. Forgejo: the forgejo `create_review_requests` tool with their logins in `reviewers`. GitHub: `gh pr edit <pr> --add-reviewer <login>`.
+    - Then go back to step 9. On Forgejo, `forgejo-pr-wait` keeps waiting while a review is requested, so it waits for the re-review. On GitHub, `gh` can't wait for a re-review, so once the checks pass and the PR is only waiting on the reviewer, stop and report that the fixes are pushed.
     - Follow up on at most 3 rounds of requested changes. After that, stop and report what the reviewer is still asking for.
 
 Additional notes from the user: $ARGUMENTS
