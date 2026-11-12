@@ -31,13 +31,7 @@ in
 {
   options.trev.containers.duckmetrics = {
     enable = mkEnableOption "the DuckMetrics container";
-    image = mkImageOption "trev.zip/llc/duckmetrics:2.7.0@sha256:a5ec1c8a0d4efa7d58ba9c90259f5e89058197fd4d09e3e6a30c4f106ddfc594";
-
-    domain = mkOption {
-      type = types.str;
-      default = "metrics.trev.xyz";
-      description = "Domain routed to the DuckMetrics dashboard.";
-    };
+    image = mkImageOption "trev.zip/llc/duckmetrics:3.0.2@sha256:255dd6a0d5d2361aa506c68debf798a23645ef57c371ebae8e63136588e26f79";
 
     prometheusConfigFile = mkOption {
       type = types.path;
@@ -57,7 +51,6 @@ in
     publishPorts = mkOption {
       type = types.listOf types.str;
       default = [
-        "8080:8080"
         "4317:4317"
         "4318:4318"
       ];
@@ -84,15 +77,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    # The dashboard only accepts its listen address as the Host, which a TLS
-    # proxy can't rewrite, so it answers 403 here until DuckMetrics can allow
-    # another Host.
-    trev.proxy.routes.duckmetrics = {
-      domains = [ cfg.domain ];
-      port = 8080;
-      auth = "trev";
-    };
-
     assertions = [
       {
         assertion = cfg.prometheusConfigFile != ./prometheus.yaml || jsonExporter.enable;
@@ -130,9 +114,11 @@ in
             target = "DUCKMETRICS_QUACK_TOKEN";
           }
         ];
+        # v3 can't open the v2 database, so it starts a new one. The v2 file
+        # stays at /data/duckmetrics.duckdb for rollback or direct querying.
         exec = [
           "--duckdb"
-          "/data/duckmetrics.duckdb"
+          "/data/duckmetrics-v3.duckdb"
           "--otlp.grpc-endpoint"
           "0.0.0.0:4317"
           "--otlp.http-endpoint"
@@ -144,9 +130,6 @@ in
           "--quack"
           "--quack.uri"
           "quack:0.0.0.0:9494"
-          "--dashboard"
-          "--dashboard.listen"
-          "0.0.0.0:8080"
           "--prometheus.config"
           "/prometheus.yaml"
           "--allow-insecure-non-loopback"
