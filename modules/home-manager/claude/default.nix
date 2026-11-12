@@ -342,6 +342,8 @@ in
     # own directory. One link to the whole package keeps the hooks inside it.
     home.file."${config.programs.claude-code.configDir}/skills/nix-progress".source =
       inputs.nix-progress.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    home.file."${config.programs.claude-code.configDir}/skills/unstuck".source =
+      inputs.claude-unstuck.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
     programs.claude-code = {
       enable = true;
