@@ -52,7 +52,7 @@ let
       effort = "high";
       context1m = true;
     };
-    "claude-fable-5-1" = {
+    "claude-fable-5-2" = {
       alias = "fable";
       effort = "high";
       context1m = true;

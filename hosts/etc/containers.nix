@@ -71,8 +71,8 @@
               alias = "claude-sonnet-5-5";
             }
             {
-              name = "anthropic/claude-fable-5.1";
-              alias = "claude-fable-5-1";
+              name = "anthropic/claude-fable-5.2";
+              alias = "claude-fable-5-2";
             }
           ];
         }
