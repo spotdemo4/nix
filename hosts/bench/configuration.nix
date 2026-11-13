@@ -9,7 +9,10 @@ let
   keys = import (self + /secrets/keys.nix);
 in
 {
-  imports = [ ./hardware.nix ];
+  imports = [
+    ./hardware.nix
+    ./partition.nix
+  ];
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -56,7 +59,7 @@ in
     '';
   };
 
-  # pin clocks at max frequency so benchmark results are stable
+  # keep cores at their highest clock (boost is disabled in partition.nix)
   powerManagement.cpuFreqGovernor = "performance";
 
   networking = {
