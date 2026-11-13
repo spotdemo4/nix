@@ -175,11 +175,19 @@ in
           "bench-ci-register.service"
           "podman.socket"
         ];
-        environment.SLOT = toString slot;
+        environment = {
+          SLOT = toString slot;
+          # the runner caches actions in ~/.cache/act, and the system user's home is
+          # /var/empty; one home per worker keeps them from cloning into the same place
+          HOME = "/var/lib/bench-ci/home-${toString slot}";
+        };
         serviceConfig = {
           User = user;
           Group = user;
-          StateDirectory = "bench-ci";
+          StateDirectory = [
+            "bench-ci"
+            "bench-ci/home-${toString slot}"
+          ];
           StateDirectoryMode = "0700";
           RuntimeDirectory = "bench-ci-${toString slot}";
           ExecStart = lib.getExe worker;
