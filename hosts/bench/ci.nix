@@ -22,6 +22,8 @@ let
   pollInterval = 10;
 
   user = "bench-ci";
+  # systemd's $STATE_DIRECTORY lists every StateDirectory, so scripts get this path instead
+  stateDir = "/var/lib/bench-ci";
   url = "https://trev.zip/";
   socket = "/run/podman/podman.sock";
   labels = (import (self + /lib/forgejo-runner/labels.nix) { inherit lib; }).forgejo;
@@ -60,6 +62,7 @@ let
       jq
     ];
     runtimeEnv = {
+      STATE = stateDir;
       URL = url;
       NAME = config.networking.hostName;
       VERSION = "v${pkgs.forgejo-runner.version}";
@@ -79,7 +82,10 @@ let
       gnugrep
       jq
     ];
-    runtimeEnv.BASE_CONFIG = baseConfig;
+    runtimeEnv = {
+      STATE = stateDir;
+      BASE_CONFIG = baseConfig;
+    };
     text = builtins.readFile ./ci-job.sh;
   };
 
@@ -179,7 +185,7 @@ in
           SLOT = toString slot;
           # the runner caches actions in ~/.cache/act, and the system user's home is
           # /var/empty; one home per worker keeps them from cloning into the same place
-          HOME = "/var/lib/bench-ci/home-${toString slot}";
+          HOME = "${stateDir}/home-${toString slot}";
         };
         serviceConfig = {
           User = user;

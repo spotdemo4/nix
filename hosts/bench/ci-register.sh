@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 # Registers the bench host's runner with each Forgejo scope, and declares its labels.
-# URL, NAME, VERSION, LABELS (registration form) and CONNECTIONS (name=token-file pairs) are
-# set by the Nix wrapper; STATE_DIRECTORY is set by systemd.
+# STATE, URL, NAME, VERSION, LABELS (registration form) and CONNECTIONS (name=token-file pairs)
+# are set by the Nix wrapper.
 
 # writeShellApplication sets errexit, but command substitutions drop it without this.
 shopt -s inherit_errexit
@@ -15,7 +15,7 @@ done
 for entry in $CONNECTIONS; do
   conn="${entry%%=*}"
   secret="${entry#*=}"
-  dir="$STATE_DIRECTORY/$conn"
+  dir="$STATE/$conn"
   mkdir -p "$dir"
 
   if [[ ! -s $dir/.runner ]]; then
