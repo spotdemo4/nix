@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { appendFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { setTimeout as delay } from "node:timers/promises";
 import { pathToFileURL } from "node:url";
 
 const assemblyExpression = `
@@ -100,6 +101,32 @@ export function parseBuildPlan(output) {
   return plan;
 }
 
+// Concurrent CI jobs upload to the same binary cache, so a dry run can see a
+// cached path before the paths it references finish uploading. Retry with a
+// fresh cache lookup to give those uploads time to land.
+export const unknownPathRetryDelays = [15_000, 30_000, 60_000];
+
+export async function queryBuildPlan(
+  query,
+  { delays = unknownPathRetryDelays, sleep = delay, log = console.log } = {},
+) {
+  let plan = await query({ fresh: false });
+
+  for (const [index, ms] of delays.entries()) {
+    if (plan.unknown.length === 0) break;
+
+    log(
+      `::warning::${escapeWorkflowCommand(
+        `Nix does not know how to build ${plan.unknown.length} path(s); retrying in ${ms / 1000}s (${index + 1}/${delays.length}):\n${plan.unknown.join("\n")}`,
+      )}`,
+    );
+    await sleep(ms);
+    plan = await query({ fresh: true });
+  }
+
+  return plan;
+}
+
 function getInput(name, defaultValue) {
   return process.env[`INPUT_${name.toUpperCase()}`]?.trim() || defaultValue;
 }
@@ -154,6 +181,20 @@ function run(command, args, { cwd, input, capture = false, quiet = false } = {})
 
 function formatInstallables(drvPaths) {
   return `${drvPaths.map((drvPath) => `${drvPath}^*`).join("\n")}\n`;
+}
+
+async function dryRun(drvPaths, { cwd, quiet = false, fresh = false }) {
+  const args = ["build", "--stdin", "--dry-run", "--no-link", "--log-format", "raw"];
+  // Nix remembers failed narinfo lookups; ignore them so retries ask the caches again.
+  if (fresh) args.push("--option", "narinfo-cache-negative-ttl", "0");
+
+  const { stderr } = await run("nix", args, {
+    cwd,
+    input: formatInstallables(drvPaths),
+    capture: true,
+    quiet,
+  });
+  return parseBuildPlan(stderr);
 }
 
 function group(name, operation) {
@@ -220,14 +261,9 @@ export async function main() {
   if (candidates.length === 0)
     throw new Error("No dependency derivations remain after excluding assembly outputs");
 
-  const plan = await group("Query binary caches", async () => {
-    const { stderr } = await run(
-      "nix",
-      ["build", "--stdin", "--dry-run", "--no-link", "--log-format", "raw"],
-      { cwd, input: formatInstallables(candidates), capture: true, quiet: true },
-    );
-    return parseBuildPlan(stderr);
-  });
+  const plan = await group("Query binary caches", () =>
+    queryBuildPlan(({ fresh }) => dryRun(candidates, { cwd, quiet: true, fresh })),
+  );
 
   if (plan.unknown.length > 0) {
     throw new Error(`Nix does not know how to build:\n${plan.unknown.join("\n")}`);
@@ -248,14 +284,9 @@ export async function main() {
   const buildPlan =
     plan.willBuild.length === 0
       ? { willBuild: [], willFetch: [], unknown: [], unparsed: [] }
-      : await group("Plan uncached builds", async () => {
-          const { stderr } = await run(
-            "nix",
-            ["build", "--stdin", "--dry-run", "--no-link", "--log-format", "raw"],
-            { cwd, input: formatInstallables(plan.willBuild), capture: true },
-          );
-          return parseBuildPlan(stderr);
-        });
+      : await group("Plan uncached builds", () =>
+          queryBuildPlan(({ fresh }) => dryRun(plan.willBuild, { cwd, fresh })),
+        );
 
   if (buildPlan.unknown.length > 0) {
     throw new Error(`Nix does not know how to build:\n${buildPlan.unknown.join("\n")}`);
