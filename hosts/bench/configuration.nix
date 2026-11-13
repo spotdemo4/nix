@@ -10,6 +10,7 @@ let
 in
 {
   imports = [
+    ./ci.nix
     ./hardware.nix
     ./partition.nix
   ];
