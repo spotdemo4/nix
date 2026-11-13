@@ -4,10 +4,22 @@ in
 {
   # build server
   "builder-key.age".publicKeys = keys.local ++ [ keys.build ];
-  "forgejo.age".publicKeys = keys.local ++ [ keys.build ];
-  "forgejo-org.age".publicKeys = keys.local ++ [ keys.build ];
-  "forgejo-template.age".publicKeys = keys.local ++ [ keys.build ];
-  "forgejo-quanta.age".publicKeys = keys.local ++ [ keys.build ];
+  "forgejo.age".publicKeys = keys.local ++ [
+    keys.build
+    keys.bench
+  ];
+  "forgejo-org.age".publicKeys = keys.local ++ [
+    keys.build
+    keys.bench
+  ];
+  "forgejo-template.age".publicKeys = keys.local ++ [
+    keys.build
+    keys.bench
+  ];
+  "forgejo-quanta.age".publicKeys = keys.local ++ [
+    keys.build
+    keys.bench
+  ];
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
   "quanta-runner.age".publicKeys = keys.local ++ [ keys.build ];
 
