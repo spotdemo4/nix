@@ -190,6 +190,19 @@
           }
         ) (nixpkgs.lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./hosts));
 
+        apps = {
+          # nix run .#macos-runner -- [ssh-host] [runner-name]
+          macos-runner =
+            let
+              app = pkgs.callPackage ./apps/macos-runner { };
+            in
+            {
+              type = "app";
+              program = pkgs.lib.getExe app;
+              inherit (app) meta;
+            };
+        };
+
         devShells = {
           default = pkgs.mkShell {
             shellHook = pkgs.shellhook.ref;
