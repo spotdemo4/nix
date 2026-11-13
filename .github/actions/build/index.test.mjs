@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { normalizeGraph, parseBuildPlan, pruneGraph } from "./index.mjs";
+import { normalizeGraph, parseBuildPlan, pruneGraph, queryBuildPlan } from "./index.mjs";
 
 test("normalizes versioned derivation JSON", () => {
   const graph = normalizeGraph({
@@ -119,4 +119,61 @@ test("reports paths under an unknown heading", () => {
 `);
 
   assert.deepEqual(plan.unparsed, ["/nix/store/aaaaaaaa-one.drv"]);
+});
+
+function fakePlan(unknown = []) {
+  return { willBuild: [], willFetch: [], unknown, unparsed: [] };
+}
+
+test("retries unknown paths with fresh cache lookups until they resolve", async () => {
+  const results = [fakePlan(["/nix/store/aaaaaaaa-missing"]), fakePlan()];
+  const calls = [];
+  const sleeps = [];
+
+  const plan = await queryBuildPlan(
+    async (options) => {
+      calls.push(options);
+      return results.shift();
+    },
+    { delays: [10, 20], sleep: async (ms) => sleeps.push(ms), log: () => {} },
+  );
+
+  assert.deepEqual(plan, fakePlan());
+  assert.deepEqual(calls, [{ fresh: false }, { fresh: true }]);
+  assert.deepEqual(sleeps, [10]);
+});
+
+test("returns unknown paths after exhausting retries", async () => {
+  let calls = 0;
+  const logs = [];
+
+  const plan = await queryBuildPlan(
+    async () => {
+      calls += 1;
+      return fakePlan(["/nix/store/aaaaaaaa-missing"]);
+    },
+    { delays: [10, 20], sleep: async () => {}, log: (message) => logs.push(message) },
+  );
+
+  assert.deepEqual(plan.unknown, ["/nix/store/aaaaaaaa-missing"]);
+  assert.equal(calls, 3);
+  assert.equal(logs.length, 2);
+  assert.match(logs[0], /^::warning::/);
+});
+
+test("does not retry when every path is known", async () => {
+  let calls = 0;
+
+  await queryBuildPlan(
+    async () => {
+      calls += 1;
+      return fakePlan();
+    },
+    {
+      sleep: async () => assert.fail("should not sleep"),
+      log: () => assert.fail("should not log"),
+    },
+  );
+
+  assert.equal(calls, 1);
 });
