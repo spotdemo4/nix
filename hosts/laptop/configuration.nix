@@ -137,15 +137,6 @@ in
     }
   ];
   nix.distributedBuilds = true;
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-  nix.optimise = {
-    automatic = true;
-    dates = "05:00";
-  };
   nix.extraOptions = ''
     warn-dirty = false
     !include ${config.age.secrets.nix-access-tokens.path}
@@ -329,6 +320,7 @@ in
       enable = true;
       hostname = hostname;
       user = "trev";
+      idle.enable = true;
     };
   };
   nixpkgs.config.allowUnfree = true;

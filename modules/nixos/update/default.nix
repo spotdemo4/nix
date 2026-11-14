@@ -6,6 +6,24 @@
 }:
 let
   cfg = config.trev.update;
+
+  # hypridle keeps this file in the user's runtime directory while they're idle (see the
+  # hypridle home-manager module)
+  hypridleCheck = pkgs.writeShellApplication {
+    name = "update-idle-check";
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.procps
+    ];
+    text = ''
+      uid=$(id -u ${lib.escapeShellArg cfg.user})
+      # nothing tracks activity without hypridle, e.g. before the user logs in
+      if ! pgrep -x -u "$uid" hypridle > /dev/null; then
+        exit 0
+      fi
+      test -e "/run/user/$uid/idle"
+    '';
+  };
 in
 {
   options.trev.update = {
@@ -35,12 +53,115 @@ in
       default = "1d";
       description = "Interval between update checks used to recover missed notifications.";
     };
+
+    idle = {
+      enable = lib.mkEnableOption "" // {
+        description = ''
+          Whether automatic updates wait until the host has been idle for
+          {option}`trev.update.idle.minutes` before switching. The `update` command
+          always updates right away.
+        '';
+      };
+
+      minutes = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 15;
+        description = "How long the host has to stay idle before an automatic update switches.";
+      };
+
+      check = lib.mkOption {
+        type = lib.types.nonEmptyListOf lib.types.str;
+        default = [ (lib.getExe hypridleCheck) ];
+        defaultText = lib.literalMD "a check that the user is idle according to hypridle, or isn't running it";
+        description = "Command, checked every minute, that exits 0 while the host is idle.";
+      };
+    };
+
+    gc = {
+      enable = lib.mkEnableOption "" // {
+        default = true;
+        description = ''
+          Whether automatic updates also collect garbage, and optimise the Nix store, once
+          every {option}`trev.update.gc.intervalDays`. They do so after waiting for the host
+          to be idle, and only after a successful switch.
+        '';
+      };
+
+      intervalDays = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 7;
+        description = "Days between garbage collections.";
+      };
+
+      options = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [
+          "--delete-older-than"
+          "7d"
+        ];
+        description = "Options passed to nix-collect-garbage.";
+      };
+
+      optimise = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Whether to optimise the Nix store after collecting garbage.";
+      };
+    };
+
+    wrapper = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      example = lib.literalExpression ''[ "flock" "/run/my-work.lock" ]'';
+      description = "Command prefix the switch runs under, e.g. to keep other work off the host while it switches.";
+    };
   };
 
   config =
     let
-      nixos-rebuild = pkgs.nixos-rebuild.override { nix = config.nix.package.out; };
+      nix = config.nix.package.out;
+      nixos-rebuild = pkgs.nixos-rebuild.override { inherit nix; };
       stateDirectory = "/var/lib/trev-update";
+
+      retryFile = "${stateDirectory}/retry";
+
+      switch = pkgs.writeShellApplication {
+        name = "update-switch";
+
+        runtimeInputs = [
+          pkgs.coreutils
+          pkgs.libnotify
+          pkgs.util-linux
+          nixos-rebuild
+        ];
+
+        text =
+          lib.replaceStrings
+            [ "@hostname@" "@retryFile@" "@user@" ]
+            [
+              (lib.escapeShellArg cfg.hostname)
+              (lib.escapeShellArg retryFile)
+              (lib.escapeShellArg cfg.user)
+            ]
+            (builtins.readFile ./switch.sh);
+      };
+
+      gc = pkgs.writeShellApplication {
+        name = "update-gc";
+
+        runtimeInputs = [
+          pkgs.coreutils
+          pkgs.util-linux
+          nix
+        ];
+
+        text = ''
+          nice -n 19 ionice -c 3 nix-collect-garbage ${lib.escapeShellArgs cfg.gc.options}
+        ''
+        + lib.optionalString cfg.gc.optimise ''
+          nice -n 19 ionice -c 3 nix-store --optimise
+        '';
+      };
 
       updater = pkgs.writeShellApplication {
         name = "update";
@@ -49,15 +170,36 @@ in
           pkgs.coreutils
           pkgs.git
           pkgs.openssh
-          pkgs.libnotify
+          pkgs.systemd
           pkgs.util-linux
-          nixos-rebuild
         ];
 
         text =
           lib.replaceStrings
-            [ "@hostname@" "@stateDirectory@" "@user@" ]
-            [ cfg.hostname stateDirectory cfg.user ]
+            [
+              "@stateDirectory@"
+              "@retryFile@"
+              "@waitForIdle@"
+              "@idleMinutes@"
+              "@idleCheck@"
+              "@wrapper@"
+              "@switch@"
+              "@gcEnable@"
+              "@gcIntervalDays@"
+              "@gc@"
+            ]
+            [
+              (lib.escapeShellArg stateDirectory)
+              (lib.escapeShellArg retryFile)
+              (lib.boolToString cfg.idle.enable)
+              (toString cfg.idle.minutes)
+              (lib.escapeShellArgs cfg.idle.check)
+              (lib.escapeShellArgs cfg.wrapper)
+              (lib.getExe switch)
+              (lib.boolToString cfg.gc.enable)
+              (toString cfg.gc.intervalDays)
+              (lib.getExe gc)
+            ]
             (builtins.readFile ./update.sh);
       };
 
@@ -86,7 +228,7 @@ in
           journal_pid=$!
           trap 'sleep 1; kill "$journal_pid" 2>/dev/null || true' EXIT
 
-          systemctl start update.service
+          systemctl start update-now.service
         '';
       };
 
@@ -102,47 +244,54 @@ in
       };
     in
     lib.mkIf cfg.enable {
+      warnings =
+        lib.optional (
+          cfg.gc.enable && config.nix.gc.automatic
+        ) "trev.update.gc and nix.gc.automatic both collect garbage; disable one of them"
+        ++
+          lib.optional (cfg.gc.enable && cfg.gc.optimise && config.nix.optimise.automatic)
+            "trev.update.gc.optimise and nix.optimise.automatic both optimise the Nix store; disable one of them";
+
       environment.systemPackages = [
         updateNow
         updateLogs
       ];
 
-      systemd.services.update = {
-        description = "Update NixOS";
-        wants = [ "network-online.target" ];
-        after = [ "network-online.target" ];
-        restartIfChanged = false;
-        serviceConfig = {
-          Type = "oneshot";
-          StateDirectory = "trev-update";
-          ExecStart = "${updater}/bin/update";
-        };
-      };
+      systemd.services =
+        let
+          updateService = description: args: {
+            inherit description;
+            wants = [ "network-online.target" ];
+            after = [ "network-online.target" ];
+            restartIfChanged = false;
+            serviceConfig = {
+              Type = "oneshot";
+              StateDirectory = "trev-update";
+              ExecStart = "${lib.getExe updater}${args}";
+            };
+          };
+        in
+        {
+          # started by the fallback timer
+          update = updateService "Update NixOS" "";
+          # started by the update listener
+          "update@" = updateService "Update NixOS to revision %i" " %i";
+          # started by the update command
+          update-now = updateService "Update NixOS without waiting for the host to be idle" " --now";
 
-      systemd.services."update@" = {
-        description = "Update NixOS to revision %i";
-        wants = [ "network-online.target" ];
-        after = [ "network-online.target" ];
-        restartIfChanged = false;
-        serviceConfig = {
-          Type = "oneshot";
-          StateDirectory = "trev-update";
-          ExecStart = "${updater}/bin/update %i";
+          update-listener = {
+            description = "Listen for NixOS update notifications";
+            wantedBy = [ "multi-user.target" ];
+            wants = [ "network-online.target" ];
+            after = [ "network-online.target" ];
+            serviceConfig = {
+              Type = "exec";
+              Restart = "always";
+              RestartSec = "10s";
+              ExecStart = "${updateListener}/bin/update-listener";
+            };
+          };
         };
-      };
-
-      systemd.services.update-listener = {
-        description = "Listen for NixOS update notifications";
-        wantedBy = [ "multi-user.target" ];
-        wants = [ "network-online.target" ];
-        after = [ "network-online.target" ];
-        serviceConfig = {
-          Type = "exec";
-          Restart = "always";
-          RestartSec = "10s";
-          ExecStart = "${updateListener}/bin/update-listener";
-        };
-      };
 
       systemd.timers.update = {
         description = "Fallback NixOS update check";

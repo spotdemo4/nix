@@ -43,15 +43,6 @@
     extra-trusted-public-keys = [ "trev:I39N/EsnHkvfmsbx8RUW+ia5dOzojTQNCTzKYij1chU=" ];
     fallback = true;
   };
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-  nix.optimise = {
-    automatic = true;
-    dates = "05:00";
-  };
   nix.extraOptions = ''
     warn-dirty = false
   '';

@@ -1,4 +1,13 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  # kept while the user is idle, for the NixOS updater's idle check (trev.update.idle)
+  idleFile = "$XDG_RUNTIME_DIR/idle";
+in
 {
   options.trev.services.hypridle.enable = lib.mkEnableOption "Trev's Hypridle configuration";
 
@@ -13,6 +22,11 @@
         };
 
         listener = [
+          {
+            timeout = 300; # 5 minutes
+            on-timeout = "${lib.getExe' pkgs.coreutils "touch"} \"${idleFile}\"";
+            on-resume = "${lib.getExe' pkgs.coreutils "rm"} -f \"${idleFile}\"";
+          }
           {
             timeout = 600; # 10 minutes
             on-timeout = "loginctl lock-session";
@@ -29,5 +43,9 @@
         ];
       };
     };
+
+    # a new hypridle starts out active, so it would never remove a file left by the last one
+    systemd.user.services.hypridle.Service.ExecStartPre =
+      "${lib.getExe' pkgs.coreutils "rm"} -f %t/idle";
   };
 }
