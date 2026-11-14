@@ -45,6 +45,11 @@ in
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
         };
+        "windows" = {
+          HostName = "10.10.10.104";
+          User = "desktop-9totvjp\\trev";
+          ProxyJump = cfg.proxyJump;
+        };
         "etc" = {
           HostName = lan.addresses.etc;
           User = "trev";
