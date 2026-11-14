@@ -55,8 +55,6 @@ in
       ];
       fallback = true;
     };
-    gc.automatic = false;
-    optimise.automatic = false;
     extraOptions = ''
       warn-dirty = false
     '';

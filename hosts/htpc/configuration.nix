@@ -124,15 +124,6 @@
       maxJobs = 20;
     }
   ];
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-  nix.optimise = {
-    automatic = true;
-    dates = "05:00";
-  };
   nix.extraOptions = ''
     warn-dirty = false
   '';

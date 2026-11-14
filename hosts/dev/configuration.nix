@@ -75,15 +75,6 @@ in
       ];
       fallback = true;
     };
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
-    optimise = {
-      automatic = true;
-      dates = "05:00";
-    };
     extraOptions = ''
       warn-dirty = false
       !include ${config.age.secrets.nix-access-tokens.path}

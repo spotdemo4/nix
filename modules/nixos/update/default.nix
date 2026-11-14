@@ -77,6 +77,38 @@ in
       };
     };
 
+    gc = {
+      enable = lib.mkEnableOption "" // {
+        default = true;
+        description = ''
+          Whether automatic updates also collect garbage, and optimise the Nix store, once
+          every {option}`trev.update.gc.intervalDays`. They do so after waiting for the host
+          to be idle, and only after a successful switch.
+        '';
+      };
+
+      intervalDays = lib.mkOption {
+        type = lib.types.ints.positive;
+        default = 7;
+        description = "Days between garbage collections.";
+      };
+
+      options = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [
+          "--delete-older-than"
+          "7d"
+        ];
+        description = "Options passed to nix-collect-garbage.";
+      };
+
+      optimise = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Whether to optimise the Nix store after collecting garbage.";
+      };
+    };
+
     wrapper = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
@@ -87,7 +119,8 @@ in
 
   config =
     let
-      nixos-rebuild = pkgs.nixos-rebuild.override { nix = config.nix.package.out; };
+      nix = config.nix.package.out;
+      nixos-rebuild = pkgs.nixos-rebuild.override { inherit nix; };
       stateDirectory = "/var/lib/trev-update";
 
       retryFile = "${stateDirectory}/retry";
@@ -113,6 +146,23 @@ in
             (builtins.readFile ./switch.sh);
       };
 
+      gc = pkgs.writeShellApplication {
+        name = "update-gc";
+
+        runtimeInputs = [
+          pkgs.coreutils
+          pkgs.util-linux
+          nix
+        ];
+
+        text = ''
+          nice -n 19 ionice -c 3 nix-collect-garbage ${lib.escapeShellArgs cfg.gc.options}
+        ''
+        + lib.optionalString cfg.gc.optimise ''
+          nice -n 19 ionice -c 3 nix-store --optimise
+        '';
+      };
+
       updater = pkgs.writeShellApplication {
         name = "update";
 
@@ -134,6 +184,9 @@ in
               "@idleCheck@"
               "@wrapper@"
               "@switch@"
+              "@gcEnable@"
+              "@gcIntervalDays@"
+              "@gc@"
             ]
             [
               (lib.escapeShellArg stateDirectory)
@@ -143,6 +196,9 @@ in
               (lib.escapeShellArgs cfg.idle.check)
               (lib.escapeShellArgs cfg.wrapper)
               (lib.getExe switch)
+              (lib.boolToString cfg.gc.enable)
+              (toString cfg.gc.intervalDays)
+              (lib.getExe gc)
             ]
             (builtins.readFile ./update.sh);
       };
@@ -188,6 +244,14 @@ in
       };
     in
     lib.mkIf cfg.enable {
+      warnings =
+        lib.optional (
+          cfg.gc.enable && config.nix.gc.automatic
+        ) "trev.update.gc and nix.gc.automatic both collect garbage; disable one of them"
+        ++
+          lib.optional (cfg.gc.enable && cfg.gc.optimise && config.nix.optimise.automatic)
+            "trev.update.gc.optimise and nix.optimise.automatic both optimise the Nix store; disable one of them";
+
       environment.systemPackages = [
         updateNow
         updateLogs

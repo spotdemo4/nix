@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Usage: update [--now] [REVISION]
 #
-# Updates /etc/nixos to origin/main and switches to it. Unless --now is given, it waits
-# until the host has been idle (trev.update.idle) before switching.
+# Updates /etc/nixos to origin/main and switches to it. Automatic updates also collect
+# garbage when it's due (trev.update.gc), after waiting until the host has been idle
+# (trev.update.idle). --now updates right away, and leaves garbage collection to them.
 
 STATE_DIRECTORY=@stateDirectory@
 RETRY_FILE=@retryFile@
@@ -11,8 +12,15 @@ IDLE_MINUTES=@idleMinutes@
 IDLE_CHECK=(@idleCheck@)
 WRAPPER=(@wrapper@)
 SWITCH=@switch@
+GC_ENABLE=@gcEnable@
+GC_INTERVAL_DAYS=@gcIntervalDays@
+GC=@gc@
+# modified when garbage was last collected
+GC_STAMP="$STATE_DIRECTORY/gc"
 
+AUTOMATIC=true
 if [ "${1:-}" = "--now" ]; then
+    AUTOMATIC=false
     WAIT_FOR_IDLE=false
     shift
 fi
@@ -23,7 +31,7 @@ if [ -n "$REVISION" ] && [[ ! "$REVISION" =~ ^[0-9a-f]{40}$ ]]; then
     exit 1
 fi
 
-# Fetches origin and sets TARGET_REVISION, or exits when there's nothing to update to
+# Fetches origin, and sets UPDATE and TARGET_REVISION to whether and what to update to
 function find_update() {
     echo "checking for updates"
     if ! git fetch origin; then
@@ -31,20 +39,43 @@ function find_update() {
         exit 1
     fi
 
+    UPDATE=false
     TARGET_REVISION="$(git rev-parse --verify origin/main)"
     if [ -n "$REVISION" ]; then
         if [ "$REVISION" != "$TARGET_REVISION" ]; then
             echo "ignoring revision that is not the current origin/main: $REVISION" >&2
-            exit 0
+            return
         fi
 
         if ! git merge-base --is-ancestor HEAD "$REVISION"; then
             echo "ignoring revision that is not a descendant of HEAD: $REVISION" >&2
-            exit 0
+            return
         fi
     fi
 
-    if [ "$(git rev-parse HEAD)" = "$TARGET_REVISION" ] && [ ! -e "$RETRY_FILE" ]; then
+    if [ "$(git rev-parse HEAD)" != "$TARGET_REVISION" ] || [ -e "$RETRY_FILE" ]; then
+        UPDATE=true
+    fi
+}
+
+# Sets GC_DUE to whether this run should collect garbage
+function find_gc() {
+    GC_DUE=false
+    if ! $AUTOMATIC || ! $GC_ENABLE; then
+        return
+    fi
+
+    if [ ! -e "$GC_STAMP" ] ||
+        (($(date +%s) - $(stat -c %Y "$GC_STAMP") >= GC_INTERVAL_DAYS * 86400)); then
+        GC_DUE=true
+    fi
+}
+
+# Finds what to do, or exits when there's nothing
+function plan() {
+    find_update
+    find_gc
+    if ! $UPDATE && ! $GC_DUE; then
         exit 0
     fi
 }
@@ -66,7 +97,7 @@ exec 9>"$STATE_DIRECTORY/lock"
 flock 9
 
 cd /etc/nixos || { echo "could not change directory to /etc/nixos"; exit 1; }
-find_update
+plan
 
 if $WAIT_FOR_IDLE; then
     # let other updates (e.g. the update command) run while this one waits
@@ -74,13 +105,36 @@ if $WAIT_FOR_IDLE; then
     wait_for_idle
     flock 9
 
-    # origin/main may have moved on, or another update applied it, while this one waited
-    find_update
+    # origin/main may have moved on, or another run may have done the work, while this one waited
+    plan
 fi
 
-echo "updating to $TARGET_REVISION"
-git reset --hard "$TARGET_REVISION"
+if $GC_DUE; then
+    # claimed while locked, so concurrent runs don't collect garbage too
+    touch "$GC_STAMP"
+fi
 
-# the lock stays held through the switch, since the switch inherits fd 9
-exec systemd-inhibit --what=sleep:shutdown --who=update --why="Updating NixOS" \
-    "${WRAPPER[@]}" "$SWITCH"
+if $UPDATE; then
+    echo "updating to $TARGET_REVISION"
+    git reset --hard "$TARGET_REVISION"
+
+    if ! systemd-inhibit --what=sleep:shutdown --who=update --why="Updating NixOS" \
+        "${WRAPPER[@]}" "$SWITCH"; then
+        # keep older generations to roll back to while the switch fails
+        if $GC_DUE; then
+            rm -f "$GC_STAMP"
+        fi
+        exit 1
+    fi
+fi
+
+# garbage collection doesn't touch the checkout, so the update command can run meanwhile
+flock --unlock 9
+
+if $GC_DUE; then
+    echo "collecting garbage"
+    if ! "${WRAPPER[@]}" "$GC"; then
+        rm -f "$GC_STAMP"
+        exit 1
+    fi
+fi
