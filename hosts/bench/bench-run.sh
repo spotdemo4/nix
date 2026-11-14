@@ -36,6 +36,7 @@ Options:
   -s, --status      show which cores are in use
       --ci          for CI workers: reserve cores only while no benchmark is
                     waiting or running, without waiting; exit ${not_reserved} otherwise
+      --idle        exit 0 if no benchmark is waiting or running, 1 otherwise
   -h, --help        show this help
 EOF
 }
@@ -64,6 +65,14 @@ benchmarks_idle() {
   fi
   exec {fd}>&-
   $idle
+}
+
+# Like benchmarks_idle, but waits out CI workers' brief checks of demand.lock instead of
+# mistaking them for a benchmark
+idle() {
+  local fd
+  exec {fd}<>"$lock_dir/demand.lock"
+  flock -x -w 1 "$fd"
 }
 
 # Describes who holds a core, from its lock file and when it was written
@@ -139,6 +148,10 @@ while (($#)); do
     ;;
   -s | --status)
     status
+    exit 0
+    ;;
+  --idle)
+    idle || exit 1
     exit 0
     ;;
   -h | --help)

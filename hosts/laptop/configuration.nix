@@ -329,6 +329,7 @@ in
       enable = true;
       hostname = hostname;
       user = "trev";
+      idle.enable = true;
     };
   };
   nixpkgs.config.allowUnfree = true;
