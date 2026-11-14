@@ -297,9 +297,11 @@ in
         description = "Fallback NixOS update check";
         wantedBy = [ "timers.target" ];
         timerConfig = {
+          # OnUnitInactiveSec only counts from a run of update.service since boot, so
+          # without this the timer never fires after a reboot
+          OnBootSec = "15min";
           OnUnitInactiveSec = cfg.fallbackInterval;
           RandomizedDelaySec = "1h";
-          Persistent = true;
         };
       };
     };
