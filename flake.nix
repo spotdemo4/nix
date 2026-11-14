@@ -128,7 +128,7 @@
 
     # claude-unstuck
     claude-unstuck = {
-      url = "git+https://trev.zip/llc/claude-unstuck?ref=refs/tags/v0.1.0&shallow=1";
+      url = "git+https://trev.zip/llc/claude-unstuck?ref=refs/tags/v0.1.1&shallow=1";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";

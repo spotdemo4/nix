@@ -135,16 +135,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1794501774,
-        "narHash": "sha256-2br16z+aDpeoSQlxlTsU1pNVp0Tr5IcA8W4SY50k7s0=",
-        "ref": "refs/tags/v0.1.0",
-        "rev": "c62da008308d1ea42b28ceb30022452c2eb129c5",
+        "lastModified": 1794608432,
+        "narHash": "sha256-leyCe222AaMVB0BH1cWNJiAa4tU1ncyoLoSeJLmTJwE=",
+        "ref": "refs/tags/v0.1.1",
+        "rev": "834823c61ede353f6fce110b725d6bd7818b7b43",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/claude-unstuck"
       },
       "original": {
-        "ref": "refs/tags/v0.1.0",
+        "ref": "refs/tags/v0.1.1",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/claude-unstuck"
