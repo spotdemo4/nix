@@ -183,6 +183,7 @@
               trevpkgs.nixosModules.overlay
               ./modules/nixos/journald-upload
               ./modules/nixos/nix
+              ./modules/nixos/nscd
               ./modules/nixos/podman
               ./modules/nixos/proxy
               ./hosts/${hostname}/configuration.nix
