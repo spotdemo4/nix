@@ -34,7 +34,7 @@ in
 {
   options.trev.containers.dispatcharr = {
     enable = mkEnableOption "Dispatcharr container";
-    image = mkImageOption "ghcr.io/dispatcharr/dispatcharr:0.33.0@sha256:96bc548978c68e684677da7895692eeeefb7f0b2edfa38311dac2b702c61d236";
+    image = mkImageOption "ghcr.io/dispatcharr/dispatcharr:0.34.0@sha256:bcf8dda41864e52b00f30136d882d8b61299a1ca6612d61124850186b2320f60";
     uid = mkOption {
       type = types.int;
       default = 1000;
