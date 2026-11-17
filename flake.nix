@@ -98,7 +98,7 @@
 
     # trevbar
     trevbar = {
-      url = "github:spotdemo4/trevbar/v0.8.8";
+      url = "github:spotdemo4/trevbar/v0.8.9";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
