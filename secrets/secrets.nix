@@ -42,6 +42,7 @@ in
   "stack-jwt.age".publicKeys = keys.local ++ [ keys.etc ];
 
   # file server
+  "ci-bridge.age".publicKeys = keys.local ++ [ keys.files ];
   "copyparty.age".publicKeys = keys.local ++ [ keys.files ];
   "forgejo-jwt.age".publicKeys = keys.development ++ [ keys.files ];
   "forgejo-lfs.age".publicKeys = keys.development ++ [ keys.files ];

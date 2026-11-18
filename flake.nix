@@ -136,6 +136,16 @@
       };
     };
 
+    # ci-bridge
+    ci-bridge = {
+      url = "git+https://trev.zip/llc/ci-bridge?ref=refs/tags/v0.2.0&shallow=1";
+      inputs = {
+        systems.follows = "systems";
+        nixpkgs.follows = "nixpkgs";
+        trevpkgs.follows = "trevpkgs";
+      };
+    };
+
     # trevdesk
     trevdesk = {
       url = "git+https://trev.zip/llc/TrevDesk?ref=refs/tags/v0.6.1&shallow=1";
