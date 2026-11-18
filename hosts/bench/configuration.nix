@@ -65,6 +65,7 @@ in
 
   networking = {
     hostName = hostname;
+    timeServers = [ "ntp-01.jeffgeerling.com" ];
     firewall = {
       enable = true;
       allowedTCPPorts = [ 22 ];

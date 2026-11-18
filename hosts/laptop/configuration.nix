@@ -144,6 +144,7 @@ in
 
   networking = {
     hostName = hostname;
+    timeServers = [ "ntp-01.jeffgeerling.com" ];
     networkmanager.enable = true;
     firewall.enable = false;
     hosts = lan.hosts;
