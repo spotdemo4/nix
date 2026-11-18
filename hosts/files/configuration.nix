@@ -1,4 +1,5 @@
 {
+  config,
   hostname,
   inputs,
   pkgs,
@@ -11,6 +12,7 @@
     ./containers.nix
     (self + /modules/nixos/podman-secrets)
     (self + /modules/nixos/update)
+    inputs.ci-bridge.nixosModules.default
   ];
 
   environment.systemPackages = with pkgs; [
@@ -97,6 +99,21 @@
       KbdInteractiveAuthentication = false;
     };
   };
+
+  # Runs Forgejo jobs on Blacksmith's GitHub Actions runners
+  age.secrets."ci-bridge".file = self + /secrets/ci-bridge.age;
+  services.ci-bridge = {
+    enable = true;
+    forgejo.url = "https://trev.zip";
+    github = {
+      repo = "trev-zip/bridge";
+      private = false;
+    };
+    labels = [ "macos-26=blacksmith-6vcpu-macos-26" ];
+    # Sets CI_BRIDGE_FORGEJO_TOKEN and CI_BRIDGE_GITHUB_TOKEN
+    environmentFile = config.age.secrets."ci-bridge".path;
+  };
+
   services.journald.upload = {
     enable = true;
     settings.Upload = {
