@@ -10,8 +10,6 @@ rec {
     "nixos-latest:docker://nixos/nix:2.35.6@sha256:b49cb33f3a7e5cf3933ad8774529de0e3807ec5cf54987aa7ccdfb49f2fc55ed"
   ];
 
-  # Forgejo runners need the platform spelled out to pull the arm64 images
-  forgejo = map (
-    label: label + lib.optionalString (lib.hasInfix "-arm:" label) "?platform=linux/arm64"
-  ) gitea;
+  # Forgejo's arm jobs run on Blacksmith through ci-bridge on the files host
+  forgejo = lib.filter (label: !lib.hasInfix "-arm:" label) gitea;
 }

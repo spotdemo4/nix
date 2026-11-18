@@ -109,7 +109,11 @@
       repo = "trev-zip/bridge";
       private = false;
     };
-    labels = [ "macos-26=blacksmith-6vcpu-macos-26" ];
+    labels = [
+      "macos-26=blacksmith-6vcpu-macos-26"
+      "macos-27=blacksmith-6vcpu-macos-27"
+      "ubuntu-26.04-arm=blacksmith-4vcpu-ubuntu-2604-arm"
+    ];
     # Sets CI_BRIDGE_FORGEJO_TOKEN and CI_BRIDGE_GITHUB_TOKEN
     environmentFile = config.age.secrets."ci-bridge".path;
   };

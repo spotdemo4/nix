@@ -123,12 +123,6 @@ in
   # resolve short image names like gitea/runner-images without asking which registry
   virtualisation.containers.registries.settings.unqualified-search-registries = [ "docker.io" ];
 
-  # the ubuntu-*-arm labels run arm64 images
-  boot.binfmt = {
-    emulatedSystems = [ "aarch64-linux" ];
-    preferStaticEmulators = true;
-  };
-
   users = {
     groups.${user} = { };
     users.${user} = {
