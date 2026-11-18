@@ -67,9 +67,15 @@
     {
       "matchManagers": ["custom.regex"],
       "matchDepTypes": ["image"],
-      "groupName": "docker images",
       "addLabels": ["docker"],
       "pinDigests": true
+    },
+    {
+      "description": "group non-major docker image updates, majors get individual PRs",
+      "matchManagers": ["custom.regex"],
+      "matchDepTypes": ["image"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "pinDigest", "digest"],
+      "groupName": "docker images"
     },
     {
       "description": "minecraft server image digest changes frequently",
