@@ -691,16 +691,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1794866603,
-        "narHash": "sha256-UdSLRYCPFkhBCrJD0vmoAlXmJ4WMjo9Irx8BaPIqGdI=",
-        "ref": "refs/tags/v0.6.0",
-        "rev": "0780b0c82c69adec0c75bab6420b99778bbe917c",
+        "lastModified": 1794952865,
+        "narHash": "sha256-uem2wTeQLxEtGJqtH2vnqGPS5noG/klHa5YzB2JcNLE=",
+        "ref": "refs/tags/v0.6.1",
+        "rev": "1cc4e9050c5c78b2c3a05e20cb4701b8156b9514",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/TrevDesk"
       },
       "original": {
-        "ref": "refs/tags/v0.6.0",
+        "ref": "refs/tags/v0.6.1",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/TrevDesk"
