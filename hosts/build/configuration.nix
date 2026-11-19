@@ -263,10 +263,7 @@ in
   };
 
   # Runner registration tokens
-  age.secrets."forgejo".file = self + /secrets/forgejo.age;
-  age.secrets."forgejo-org".file = self + /secrets/forgejo-org.age;
-  age.secrets."forgejo-template".file = self + /secrets/forgejo-template.age;
-  age.secrets."forgejo-quanta".file = self + /secrets/forgejo-quanta.age;
+  age.secrets."forgejo-runner".file = self + /secrets/forgejo-runner.age;
   age.secrets."quanta-runner".file = self + /secrets/quanta-runner.age;
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];

@@ -28,12 +28,9 @@ let
   socket = "/run/podman/podman.sock";
   labels = (import (self + /lib/forgejo-runner/labels.nix) { inherit lib; }).forgejo;
 
-  # scope -> registration token secret, matching the build host's runners
+  # scope -> registration token secret, matching the build host's runner
   connections = {
-    trev = "forgejo";
-    org = "forgejo-org";
-    template = "forgejo-template";
-    quanta = "forgejo-quanta";
+    global = "forgejo-runner";
   };
 
   # the job script fills in the registration, cache directory and cores
