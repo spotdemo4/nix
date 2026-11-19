@@ -157,6 +157,11 @@ in
           url = forgejo "llc" "bumper";
         }
         {
+          name = "ci-bridge";
+          path = "~/dev/ci-bridge";
+          url = forgejo "llc" "ci-bridge";
+        }
+        {
           name = "codex-action";
           path = "~/dev/codex-action";
           url = forgejo "llc" "codex-action";
