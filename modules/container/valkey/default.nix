@@ -37,7 +37,7 @@ in
             options = {
               enable = mkEnableOption "the ${name} Valkey container";
 
-              image = mkImageOption "docker.io/valkey/valkey:9.1.3-alpine@sha256:bf09d58e96d6b4524a15396b65b242bbe18beebbcc15a04d8ee75ddac62fae0b";
+              image = mkImageOption "docker.io/valkey/valkey:9.2.0-alpine@sha256:4d67e1af80c653bd46c0bbe8de438c81a6535ab5a39b22f2100028f314005663";
               publishPorts = publishPorts;
               networks = networks;
               args = args;
