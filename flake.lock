@@ -790,11 +790,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795036402,
-        "narHash": "sha256-C17ct9cgMYjZf4xBCa32SPMkBOGs9HjHU+tiPNNur0k=",
+        "lastModified": 1795039099,
+        "narHash": "sha256-fCY4Xa7u0WJykxPVQ+XXhBC1ym0L/2mpbS6qVrMCxRY=",
         "owner": "spotdemo4",
         "repo": "trevpkgs",
-        "rev": "cfbb3768d0d71decd60343e60b8ec41e03130772",
+        "rev": "2444fd6e72737ff8d2b9f6d5b4f3af0dcc1119a1",
         "type": "github"
       },
       "original": {
