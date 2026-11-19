@@ -66,7 +66,7 @@ let
     map (domain: "${route.name}: ${domain}") (
       builtins.filter (domain: certificateFor domain == "") route.domains
     )
-  ) (byProtocol "http" ++ byProtocol "tls");
+  ) (terminated "http" ++ terminated "tls");
 
   upstream = route: "${route.address}:${toString route.port}";
   listen = route: "${cfg.listenAddress}:${toString route.listen}";
@@ -120,7 +120,24 @@ let
       upstream = upstream route;
     };
 
+  # The upstream of a passthrough route terminates TLS itself, so the route
+  # takes no certificate and none of the settings that act on decrypted traffic.
+  passthroughRoute =
+    route:
+    common route
+    // {
+      inherit (route) name protocol passthrough;
+      listen = listen route;
+      upstream = upstream route;
+      ${if route.protocol == "http" then "hosts" else "sni"} = route.domains;
+    }
+    // optionalAttrs (route.protocol == "http") {
+      inherit (route) http3;
+      quic_proxy_protocol = route.quicProxyProtocol;
+    };
+
   byProtocol = protocol: builtins.filter (route: route.protocol == protocol) routes;
+  terminated = protocol: builtins.filter (route: !route.passthrough) (byProtocol protocol);
 
   # Stalwart keeps certificates in its database, so a renewal must be pushed to it.
   stalwartPush = pkgs.writeShellApplication {
@@ -153,8 +170,9 @@ let
   };
 
   proxyRoutes = concatLists (
-    map httpRoutes (byProtocol "http")
-    ++ map tlsRoutes (byProtocol "tls")
+    map httpRoutes (terminated "http")
+    ++ map tlsRoutes (terminated "tls")
+    ++ map (route: [ (passthroughRoute route) ]) (builtins.filter (route: route.passthrough) routes)
     ++ map (route: [ (plainRoute route) ]) (byProtocol "tcp" ++ byProtocol "udp")
   );
 in
