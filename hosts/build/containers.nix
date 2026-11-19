@@ -17,11 +17,6 @@ let
       privileged = true;
     };
   };
-  forgejoRunner = runner // {
-    url = "https://trev.zip/";
-    capacity = 4;
-    labels = labels.forgejo;
-  };
 in
 {
   imports = [
@@ -33,19 +28,13 @@ in
   trev.containers = {
     forgejo-runner = {
       enable = true;
-      instances = {
-        trev = forgejoRunner // {
-          tokenFile = config.age.secrets."forgejo".path;
-        };
-        org = forgejoRunner // {
-          tokenFile = config.age.secrets."forgejo-org".path;
-        };
-        template = forgejoRunner // {
-          tokenFile = config.age.secrets."forgejo-template".path;
-        };
-        quanta = forgejoRunner // {
-          tokenFile = config.age.secrets."forgejo-quanta".path;
-        };
+      # Registered instance-wide, so it takes jobs from every user and organization
+      instances.global = runner // {
+        url = "https://trev.zip/";
+        tokenFile = config.age.secrets."forgejo-runner".path;
+        # Matches the four per-scope runners this replaced
+        capacity = 16;
+        labels = labels.forgejo;
       };
     };
 

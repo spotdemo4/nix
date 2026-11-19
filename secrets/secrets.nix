@@ -4,19 +4,7 @@ in
 {
   # build server
   "builder-key.age".publicKeys = keys.local ++ [ keys.build ];
-  "forgejo.age".publicKeys = keys.local ++ [
-    keys.build
-    keys.bench
-  ];
-  "forgejo-org.age".publicKeys = keys.local ++ [
-    keys.build
-    keys.bench
-  ];
-  "forgejo-template.age".publicKeys = keys.local ++ [
-    keys.build
-    keys.bench
-  ];
-  "forgejo-quanta.age".publicKeys = keys.local ++ [
+  "forgejo-runner.age".publicKeys = keys.local ++ [
     keys.build
     keys.bench
   ];

@@ -42,10 +42,7 @@ let
 
   # Connection name -> agenix file with the registration TOKEN, matching hosts/build/containers.nix
   connections = {
-    trev = ../../secrets/forgejo.age;
-    org = ../../secrets/forgejo-org.age;
-    template = ../../secrets/forgejo-template.age;
-    quanta = ../../secrets/forgejo-quanta.age;
+    global = ../../secrets/forgejo-runner.age;
   };
 in
 writeShellApplication {
