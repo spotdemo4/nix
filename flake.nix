@@ -29,7 +29,7 @@
 
     # determinate nix
     determinate = {
-      url = "github:DeterminateSystems/determinate/v3.24.2";
+      url = "github:DeterminateSystems/determinate/v3.24.3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
