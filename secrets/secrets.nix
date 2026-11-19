@@ -39,7 +39,6 @@ in
   "shields-github.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink.age".publicKeys = keys.local ++ [ keys.etc ];
   "shlink-postgresql.age".publicKeys = keys.local ++ [ keys.etc ];
-  "stack-jwt.age".publicKeys = keys.local ++ [ keys.etc ];
 
   # file server
   "ci-bridge.age".publicKeys = keys.local ++ [ keys.files ];

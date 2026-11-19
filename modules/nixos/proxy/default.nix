@@ -99,7 +99,19 @@ let
         proxyProtocol = mkOption {
           type = types.bool;
           default = false;
-          description = "Whether to send a PROXY protocol v2 header to the upstream.";
+          description = "Whether to send a PROXY protocol v2 header to the upstream; over TCP only on a passthrough route.";
+        };
+
+        passthrough = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Whether an http or tls route forwards TLS undecrypted, routed by SNI, to an upstream that terminates it with its own certificate; with http3, QUIC is forwarded the same way over UDP to the upstream's port.";
+        };
+
+        quicProxyProtocol = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Whether a passthrough http route with http3 puts a PROXY protocol v2 header in front of every QUIC datagram; the upstream has to strip it.";
         };
       };
     }
@@ -125,6 +137,22 @@ in
       {
         assertion = route.upstreamProtocol == "h2c" -> route.protocol == "http";
         message = "trev.proxy.routes.${name} can only use an h2c upstream as an http route";
+      }
+      {
+        assertion = route.passthrough -> route.protocol == "http" || route.protocol == "tls";
+        message = "trev.proxy.routes.${name} can only pass TLS through as an http or tls route";
+      }
+      {
+        # The upstream terminates TLS, so the proxy can neither check client
+        # certificates nor change requests.
+        assertion =
+          route.passthrough
+          -> route.auth == null && route.upstreamProtocol == "http/1.1" && route.requestHeaders == { };
+        message = "trev.proxy.routes.${name} can't set auth, upstreamProtocol or requestHeaders as a passthrough route";
+      }
+      {
+        assertion = route.quicProxyProtocol -> route.passthrough && route.http3;
+        message = "trev.proxy.routes.${name} can only send PROXY headers over QUIC as a passthrough route with http3";
       }
     ]) cfg.routes
   );
