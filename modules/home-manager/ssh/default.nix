@@ -101,6 +101,12 @@ in
           UserKnownHostsFile = "/dev/null";
           CheckHostIP = "no";
         };
+        # Detect dead connections (e.g. a stalled ProxyJump leg) so long-lived
+        # ControlMaster sessions, like Zed's, exit instead of hanging forever.
+        "*" = {
+          ServerAliveInterval = 15;
+          ServerAliveCountMax = 3;
+        };
       };
     };
   };
