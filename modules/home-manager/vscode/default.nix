@@ -5,6 +5,14 @@
   inputs,
   ...
 }:
+let
+  # nix4vscode requires a major.minor.patch version, but nixpkgs may ship major.minor (e.g. "1.146")
+  vscodeVersion =
+    let
+      v = pkgs.vscode.version;
+    in
+    if builtins.length (lib.splitVersion v) < 3 then "${v}.0" else v;
+in
 {
   options.trev.programs.vscode.enable = lib.mkEnableOption "Trev's VS Code configuration";
 
@@ -15,7 +23,7 @@
       mutableExtensionsDir = false;
       profiles.default = {
         extensions =
-          inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion pkgs.vscode.version
+          inputs.nix4vscode.lib."${pkgs.stdenv.hostPlatform.system}".forVscodeVersion vscodeVersion
             [
               "a-h.templ"
               "anthropic.claude-code"
