@@ -32,8 +32,7 @@ in
       instances.global = runner // {
         url = "https://trev.zip/";
         tokenFile = config.age.secrets."forgejo-runner".path;
-        # Matches the four per-scope runners this replaced
-        capacity = 16;
+        capacity = 4;
         labels = labels.forgejo;
       };
     };
