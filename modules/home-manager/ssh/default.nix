@@ -25,6 +25,7 @@ in
       settings = {
         "gateway" = {
           HostName = "trev.xyz";
+          Port = 2200;
           User = "trev";
           IdentityFile = "/home/trev/.ssh/id_ed25519";
         };
