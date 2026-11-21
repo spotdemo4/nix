@@ -70,8 +70,10 @@ if [[ -z "$token" || "$token" == *$'\n'* ]]; then
 fi
 
 # Prints the response to a GET request if it's a JSON value of the given type (object or
-# array). Returns 2 when Forgejo rejects the request, and 1 on any other failure, which may
-# clear up on its own: a timeout, a 408, 429, or 5xx response, or a body of the wrong type.
+# array). An array may also be null, which some endpoints, like the issue timeline, return
+# for a page past the last one. Returns 2 when Forgejo rejects the request, and 1 on any
+# other failure, which may clear up on its own: a timeout, a 408, 429, or 5xx response, or a
+# body of the wrong type.
 # Timeouts make a stalled connection fail, and --retry treats that failure as transient.
 # --fail keeps error bodies out of the output, where a retry would append to them.
 api() {
@@ -89,7 +91,7 @@ api() {
     fi
     return 1
   fi
-  if ! jq -e --arg type "$type" 'type == $type' >/dev/null 2>&1 <<<"$body"; then
+  if ! jq -e --arg type "$type" 'type == $type or ($type == "array" and . == null)' >/dev/null 2>&1 <<<"$body"; then
     printf 'forgejo-pr-wait: expected a JSON %s from %s\n' "$type" "$path" >&2
     return 1
   fi
@@ -112,11 +114,14 @@ statuses() {
   printf '%s\n' "$all"
 }
 
-# Every item from an endpoint that returns a paginated JSON array.
+# Every item from an endpoint that returns a paginated JSON array. Stops at the first empty
+# or null page, not at a short one: the timeline filters events after paging, so its pages
+# can come back short before the end.
 paginate() {
   local page=1 all='[]' body
   while :; do
     body="$(api "$1?limit=50&page=$page" array)" || return
+    # null has length 0 in jq.
     jq -e 'length > 0' >/dev/null <<<"$body" || break
     all="$(jq --argjson all "$all" '$all + .' <<<"$body")"
     page=$((page + 1))
