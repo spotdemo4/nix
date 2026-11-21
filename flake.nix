@@ -162,6 +162,12 @@
       url = "git+https://tangled.org/did:plc:j5hmlfdrwkvtxm7cjmu7j2is?ref=refs/tags/v1.20.1&shallow=1";
     };
 
+    # tangled cli
+    tg = {
+      url = "github:alyraffauf/tg/v0.10.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # trevdesk
     trevdesk = {
       url = "git+https://trev.zip/llc/TrevDesk?ref=refs/tags/v0.6.1&shallow=1";

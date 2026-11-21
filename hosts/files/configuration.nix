@@ -171,7 +171,7 @@
 
   trev.knot = {
     enable = true;
-    # trev.tngl.sh
+    # trev.zip
     admins = [ "did:plc:v7ar4oqhsbjmvmmmk4ymx2oq" ];
   };
 

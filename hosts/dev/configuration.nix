@@ -13,6 +13,7 @@ let
     forgejo-mcp = self + /secrets/forgejo-mcp.age;
     github = self + /secrets/github.age;
     kagi = self + /secrets/kagi.age;
+    tangled = self + /secrets/tangled.age;
   };
 in
 {
