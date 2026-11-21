@@ -136,16 +136,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1795042601,
-        "narHash": "sha256-17q6Wa1cmE+/2rJb/IVufa/nAW/OrN009yQ//NATpck=",
-        "ref": "refs/tags/v0.2.0",
-        "rev": "e5e4c4ebd49e70480857be75127f198db735a6a5",
+        "lastModified": 1795209507,
+        "narHash": "sha256-Jm6gLQqxfkeD0jqodnMX2ZTOobjkSOhq1WJlq8YIfB4=",
+        "ref": "refs/tags/v0.3.0",
+        "rev": "8a0da6a674a3bd3c9b0d87f23daa6b96e1b91eb8",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/ci-bridge"
       },
       "original": {
-        "ref": "refs/tags/v0.2.0",
+        "ref": "refs/tags/v0.3.0",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/ci-bridge"

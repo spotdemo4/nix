@@ -138,7 +138,7 @@
 
     # ci-bridge
     ci-bridge = {
-      url = "git+https://trev.zip/llc/ci-bridge?ref=refs/tags/v0.2.0&shallow=1";
+      url = "git+https://trev.zip/llc/ci-bridge?ref=refs/tags/v0.3.0&shallow=1";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
