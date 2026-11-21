@@ -4,6 +4,11 @@ bots:
   - name: allow-raw-json-schemas
     action: ALLOW
     path_regex: ^/[^/]+/[^/]+/raw/.+\.schema\.json$
+  # Image proxies such as Tangled's camo fetch README badges from Cloudflare
+  # Workers, which the default config challenges, so this must come before it.
+  - name: allow-workflow-badges
+    action: ALLOW
+    path_regex: ^/[^/]+/[^/]+/actions/workflows/[^/]+/badge\.svg$
   - import: (data)/meta/default-config.yaml
   - import: (data)/clients/git.yaml
   - import: (data)/clients/go-get.yaml
