@@ -30,10 +30,11 @@ in
       port = 8080;
       auth = "trev";
     };
+    # No client certificate: T3 Code requires its own session, paired with a
+    # one-time token, for everything past its health and session endpoints.
     t3 = {
       domains = [ "t3.trev.zip" ];
       port = 3773;
-      auth = "trev";
     };
   };
 
