@@ -62,10 +62,10 @@ in
     proton-vpn-cli
     ripgrep
     stunnel
-    t3code
     thunderbird
     tor-browser
     trev.helium
+    trev.t3code
     unzip
     vesktop
     wget

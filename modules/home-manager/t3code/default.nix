@@ -11,7 +11,7 @@ in
   options.trev.services.t3code = {
     enable = lib.mkEnableOption "T3 Code server";
 
-    package = lib.mkPackageOption pkgs "t3code" { };
+    package = lib.mkPackageOption pkgs [ "trev" "t3code" ] { };
 
     host = lib.mkOption {
       type = lib.types.str;
