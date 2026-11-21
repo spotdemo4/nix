@@ -21,6 +21,7 @@ in
     ./containers.nix
     (self + /modules/nixos/niks3)
     (self + /modules/nixos/podman-secrets)
+    (self + /modules/nixos/spindle)
     (self + /modules/nixos/update)
   ];
 
@@ -185,6 +186,12 @@ in
       hostname = hostname;
       user = "trev";
     };
+  };
+
+  trev.spindle = {
+    enable = true;
+    # trev.tngl.sh
+    owner = "did:plc:v7ar4oqhsbjmvmmmk4ymx2oq";
   };
 
   nixpkgs.config.allowUnfree = true;
