@@ -10,6 +10,7 @@ in
   ];
   "github-runner.age".publicKeys = keys.local ++ [ keys.build ];
   "quanta-runner.age".publicKeys = keys.local ++ [ keys.build ];
+  "spindle-key.age".publicKeys = keys.local ++ [ keys.build ];
 
   # etc server
   "cliproxyapi.age".publicKeys = [
