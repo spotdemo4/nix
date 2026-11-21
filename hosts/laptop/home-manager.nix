@@ -14,6 +14,7 @@
     (self + /modules/home-manager/cursor)
     (self + /modules/home-manager/device-certificate)
     (self + /modules/home-manager/discord)
+    (self + /modules/home-manager/forgejo-cli)
     (self + /modules/home-manager/gpg)
     (self + /modules/home-manager/gtk)
     (self + /modules/home-manager/hypridle)
@@ -167,6 +168,7 @@
         key = self + /secrets/device-laptop.age;
       };
       discord.enable = true;
+      forgejo-cli.enable = true;
       gpg.enable = true;
       gtk.enable = true;
       hyprlauncher.enable = true;

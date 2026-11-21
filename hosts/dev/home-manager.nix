@@ -39,6 +39,7 @@ in
     (self + /modules/home-manager/claude)
     (self + /modules/home-manager/codex)
     (self + /modules/home-manager/device-certificate)
+    (self + /modules/home-manager/forgejo-cli)
     (self + /modules/home-manager/gpg)
     (self + /modules/home-manager/mcp)
     (self + /modules/home-manager/ssh)
@@ -171,6 +172,7 @@ in
         certificate = ./device.pem;
         key = self + /secrets/device-dev.age;
       };
+      forgejo-cli.enable = true;
       gpg.enable = true;
       starship.enable = true;
       ssh = {
