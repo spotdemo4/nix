@@ -320,6 +320,18 @@
             '';
           };
 
+          forgejo-pr-wait = {
+            root = ./modules/home-manager/claude/forgejo-pr-wait;
+            packages = [
+              (pkgs.callPackage ./modules/home-manager/claude/forgejo-pr-wait {
+                tokenFile = pkgs.writeText "forgejo-token" "test";
+              })
+            ];
+            script = ''
+              bash forgejo-pr-wait.test.sh
+            '';
+          };
+
           actions = {
             root = ./.github;
             filter = file: file.hasExt "yaml" || file.hasExt "yml";
