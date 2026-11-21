@@ -136,6 +136,16 @@
       };
     };
 
+    # claude-caffeine
+    claude-caffeine = {
+      url = "git+https://trev.zip/llc/claude-caffeine?ref=refs/tags/v0.1.0&shallow=1";
+      inputs = {
+        systems.follows = "systems";
+        nixpkgs.follows = "nixpkgs";
+        trevpkgs.follows = "trevpkgs";
+      };
+    };
+
     # ci-bridge
     ci-bridge = {
       url = "git+https://trev.zip/llc/ci-bridge?ref=refs/tags/v0.3.0&shallow=1";
