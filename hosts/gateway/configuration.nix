@@ -87,7 +87,8 @@
   };
   services.openssh = {
     enable = true;
-    ports = [ 22 ];
+    # Port 22 belongs to trev-proxy, which forwards it to the knot.
+    ports = [ 2200 ];
     settings = {
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
