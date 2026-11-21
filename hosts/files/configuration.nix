@@ -10,6 +10,7 @@
   imports = [
     ./hardware.nix
     ./containers.nix
+    (self + /modules/nixos/knot)
     (self + /modules/nixos/podman-secrets)
     (self + /modules/nixos/update)
     inputs.ci-bridge.nixosModules.default
@@ -166,6 +167,12 @@
     enable = true;
     hostname = hostname;
     user = "trev";
+  };
+
+  trev.knot = {
+    enable = true;
+    # trev.tngl.sh
+    admins = [ "did:plc:v7ar4oqhsbjmvmmmk4ymx2oq" ];
   };
 
   nixpkgs.config.allowUnfree = true;
