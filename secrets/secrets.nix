@@ -41,6 +41,7 @@ in
   "garage-nix-secret.age".publicKeys = keys.local ++ [ keys.files ];
   "garage-rpc.age".publicKeys = keys.local ++ [ keys.files ];
   "immich-postgresql.age".publicKeys = keys.local ++ [ keys.files ];
+  "knot-master-key.age".publicKeys = keys.local ++ [ keys.files ];
   "niks3-database-url.age".publicKeys = keys.local ++ [ keys.files ];
   "niks3-postgresql.age".publicKeys = keys.local ++ [ keys.files ];
   "niks3-signing-key.age".publicKeys = keys.local ++ [ keys.files ];
