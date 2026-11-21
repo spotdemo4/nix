@@ -151,6 +151,34 @@
         "url": "https://trev.zip/llc/ci-bridge"
       }
     },
+    "claude-caffeine": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": [
+          "systems"
+        ],
+        "trevpkgs": [
+          "trevpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795237141,
+        "narHash": "sha256-/qHKHLH16iuyPjxcO+2BWiLZhtoWNpFhBgNygi0YRDI=",
+        "ref": "refs/tags/v0.1.0",
+        "rev": "24c4bb3e92175e17614a29d89ee51b6235dbc1f7",
+        "shallow": true,
+        "type": "git",
+        "url": "https://trev.zip/llc/claude-caffeine"
+      },
+      "original": {
+        "ref": "refs/tags/v0.1.0",
+        "shallow": true,
+        "type": "git",
+        "url": "https://trev.zip/llc/claude-caffeine"
+      }
+    },
     "claude-unstuck": {
       "inputs": {
         "nixpkgs": [
@@ -626,6 +654,7 @@
         "catppuccin": "catppuccin",
         "catppuccin-zed-icons": "catppuccin-zed-icons",
         "ci-bridge": "ci-bridge",
+        "claude-caffeine": "claude-caffeine",
         "claude-unstuck": "claude-unstuck",
         "determinate": "determinate",
         "home-manager": "home-manager_2",
