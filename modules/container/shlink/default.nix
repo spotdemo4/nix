@@ -41,7 +41,7 @@ in
   options.trev.containers.shlink = {
     enable = mkEnableOption "Shlink container";
 
-    image = mkImageOption "ghcr.io/shlinkio/shlink:5.1.8@sha256:68a722f7677008a50ccf3a9e570966bc37d7627fe6a870b86be28c5dcf9085ee";
+    image = mkImageOption "ghcr.io/shlinkio/shlink:5.1.9@sha256:248d38c8d7fdba90d9e0c3c7ea9e73ef73ec9f54f7f46faf8f369153cc889aab";
 
     domain = mkOption {
       type = types.str;
