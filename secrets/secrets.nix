@@ -90,6 +90,7 @@ in
   "gpg.age".publicKeys = keys.local ++ [ keys.devTrev ];
   "kagi.age".publicKeys = keys.development;
   "nix-access-tokens.age".publicKeys = keys.development;
+  "tangled.age".publicKeys = keys.development;
 
   # trev-proxy device certificate keys
   "device-desktop.age".publicKeys = [

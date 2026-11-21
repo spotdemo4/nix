@@ -1,5 +1,6 @@
 {
   self,
+  inputs,
   config,
   lib,
   pkgs,
@@ -11,7 +12,9 @@ let
     forgejo-mcp = self + /secrets/forgejo-mcp.age;
     github = self + /secrets/github.age;
     kagi = self + /secrets/kagi.age;
+    tangled = self + /secrets/tangled.age;
   };
+  tg = inputs.tg.packages.${pkgs.stdenv.hostPlatform.system}.default;
   secretPath = name: config.trev.mcp.secretPaths.${name} or config.age.secrets.${name}.path;
   chromeDevtoolsArgs = [
     "--no-usage-statistics"
@@ -64,6 +67,35 @@ let
       exec forgejo-mcp "$@"
     '';
   };
+  # tg keeps the session, not the app password, so log in again from the app
+  # password when there's no session or its refresh token has expired.
+  tgWrapper = pkgs.writeShellApplication {
+    name = "tg";
+    runtimeInputs = with pkgs; [
+      coreutils
+      findutils
+      jq
+    ];
+    text = ''
+      credentials="''${XDG_DATA_HOME:-$HOME/.local/share}/tg/credentials.json"
+
+      login() {
+        ${lib.getExe tg} auth login ${config.trev.mcp.tangledHandle} --password-stdin --insecure \
+          <"${secretPath "tangled"}" >/dev/null
+      }
+
+      if [[ ! -s "$credentials" ]]; then
+        login
+      # tg rewrites the file whenever it refreshes the session, so only check
+      # a session that hasn't been used for a day.
+      elif [[ -n "$(find "$credentials" -mmin +1440)" ]] &&
+        [[ "$(${lib.getExe tg} auth status --json 2>/dev/null | jq -r '.status // empty')" == expired ]]; then
+        login
+      fi
+
+      exec ${lib.getExe tg} "$@"
+    '';
+  };
 in
 {
   options.trev.mcp = {
@@ -76,6 +108,12 @@ in
     };
 
     chromeHeadless = lib.mkEnableOption "headless Chrome for the Chrome DevTools MCP server";
+
+    tangledHandle = lib.mkOption {
+      type = lib.types.str;
+      default = "trev.zip";
+      description = "atproto handle tg logs in to Tangled as, with the app password in secrets/tangled.age.";
+    };
 
     forgejoTokenFile = lib.mkOption {
       type = lib.types.str;
@@ -116,7 +154,13 @@ in
       };
     };
 
+    home.packages = [ tgWrapper ];
+
     home.file = {
+      # The skill tg ships for coding agents, so Claude reaches for tg on Tangled.
+      "${config.programs.claude-code.configDir}/skills/tg/SKILL.md" =
+        lib.mkIf config.programs.claude-code.enable
+          { source = "${inputs.tg}/SKILL.md"; };
       ".local/bin/kagi-mcp-wrapper".source = "${kagiWrapper}/bin/kagi-mcp-wrapper";
       ".local/bin/github-mcp-wrapper".source = "${githubWrapper}/bin/github-mcp-wrapper";
       ".local/bin/context7-mcp-wrapper".source = "${context7Wrapper}/bin/context7-mcp-wrapper";

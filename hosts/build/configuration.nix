@@ -190,7 +190,7 @@ in
 
   trev.spindle = {
     enable = true;
-    # trev.tngl.sh
+    # trev.zip
     owner = "did:plc:v7ar4oqhsbjmvmmmk4ymx2oq";
   };
 
