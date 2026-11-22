@@ -102,6 +102,18 @@ in
         description = "Options passed to nix-collect-garbage.";
       };
 
+      userGenerationsOlderThan = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = "7d";
+        example = "30d";
+        description = ''
+          Age, in the `Nd` form nix-env's `--delete-generations` takes, past which generations
+          of {option}`trev.update.user`'s profiles (e.g. home-manager's) are deleted before
+          collecting garbage. nix-collect-garbage runs as root, so it only deletes old
+          generations of root's and the system's profiles. `null` keeps them all.
+        '';
+      };
+
       optimise = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -155,12 +167,25 @@ in
           nix
         ];
 
-        text = ''
-          nice -n 19 ionice -c 3 nix-collect-garbage ${lib.escapeShellArgs cfg.gc.options}
-        ''
-        + lib.optionalString cfg.gc.optimise ''
-          nice -n 19 ionice -c 3 nix-store --optimise
-        '';
+        text =
+          lib.optionalString (cfg.gc.userGenerationsOlderThan != null) ''
+            home=${lib.escapeShellArg config.users.users.${cfg.user}.home}
+            for profile in "$home"/.local/state/nix/profiles/*; do
+              # each generation is also a <profile>-<n>-link symlink next to its profile
+              if [[ -L $profile && ! $profile =~ -[0-9]+-link$ ]]; then
+                runuser -u ${lib.escapeShellArg cfg.user} -- env HOME="$home" \
+                  nix-env --profile "$profile" \
+                  --delete-generations ${lib.escapeShellArg cfg.gc.userGenerationsOlderThan} ||
+                  echo "failed to delete old generations of $profile" >&2
+              fi
+            done
+          ''
+          + ''
+            nice -n 19 ionice -c 3 nix-collect-garbage ${lib.escapeShellArgs cfg.gc.options}
+          ''
+          + lib.optionalString cfg.gc.optimise ''
+            nice -n 19 ionice -c 3 nix-store --optimise
+          '';
       };
 
       updater = pkgs.writeShellApplication {
