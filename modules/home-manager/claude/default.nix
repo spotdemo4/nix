@@ -396,6 +396,8 @@ in
           lib.filterAttrs (_: model: model.effort != null) cfg.models
         );
         permissions.defaultMode = "bypassPermissions";
+        # The settings file is read-only, so Claude Code can't record accepting the bypass warning.
+        skipDangerousModePermissionPrompt = true;
         skillOverrides."claude-api" = "off";
         workflowSizeGuideline = "medium";
         env = {
