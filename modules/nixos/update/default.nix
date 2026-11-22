@@ -228,6 +228,16 @@ in
           journal_pid=$!
           trap 'sleep 1; kill "$journal_pid" 2>/dev/null || true' EXIT
 
+          # the update runs in the service, so interrupting systemctl alone leaves it running
+          function stop_update() {
+            # ignore further interrupts so the stop isn't abandoned partway
+            trap "" INT TERM
+            echo "stopping update"
+            systemctl stop update-now.service
+            exit 130
+          }
+          trap stop_update INT TERM
+
           systemctl start update-now.service
         '';
       };
