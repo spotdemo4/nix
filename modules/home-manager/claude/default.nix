@@ -367,7 +367,8 @@ in
         - Do not pipe the check straight into `tail`, `head` or `grep`: the pipeline reports the last command's exit status, which hides failures, and `head` can cut the check off.
         - If the check may outlast the timeout, start it with `run_in_background` and wait for its completion notification. Do not poll for it with `sleep` loops, and never wait with `pgrep -f "nix flake check"`: the pattern also matches the waiting shell's own command line, so the loop never ends.
         - Flakes only see files tracked by Git. Intent-to-add new files (`git add -N`) before checking, or the check will not see them.
-      '';
+
+        ${builtins.readFile (self + /lib/agents/bench.md)}'';
 
       settings = {
         attribution = {

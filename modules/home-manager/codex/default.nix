@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  self,
+  ...
+}:
 {
   options.trev.programs.codex.enable = lib.mkEnableOption "Trev's Codex configuration";
 
@@ -7,6 +12,7 @@
       enable = true;
       settings = fromTOML (builtins.readFile ./config.toml);
       enableMcpIntegration = true;
+      context = self + /lib/agents/bench.md;
     };
   };
 }
