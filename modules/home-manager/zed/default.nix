@@ -66,6 +66,7 @@ in
         "toml"
         "tsgo"
         "wgsl"
+        "xml"
         "zig"
       ];
       mutableUserSettings = false;
