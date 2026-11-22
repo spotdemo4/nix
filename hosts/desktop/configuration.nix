@@ -92,6 +92,9 @@ in
     efi.canTouchEfiVariables = true;
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  # /tmp is on the root disk, so result links left there (e.g. by interrupted
+  # nixos-rebuilds) would otherwise keep their closures alive across reboots
+  boot.tmp.cleanOnBoot = true;
 
   catppuccin = {
     enable = true;
