@@ -37,7 +37,14 @@ Options:
       --ci          for CI workers: reserve cores only while no benchmark is
                     waiting or running, without waiting; exit ${not_reserved} otherwise
       --idle        exit 0 if no benchmark is waiting or running, 1 otherwise
-  -h, --help        show this help
+  -h, --help        show this help and the guide to this host
+EOF
+}
+
+# The guide to this host, also shown at login (partition.nix)
+guide() {
+  cat <<'EOF'
+@guide@
 EOF
 }
 
@@ -156,6 +163,8 @@ while (($#)); do
     ;;
   -h | --help)
     usage
+    echo
+    guide
     exit 0
     ;;
   --)

@@ -52,6 +52,49 @@ let
         (builtins.readFile ./resctrl-setup.sh);
   };
 
+  # How to use this host, shown at login and by `bench-run --help`, since agents running
+  # `ssh bench <command>` never see the login message
+  guide =
+    let
+      first = toString (lib.head benchCores);
+      last = toString (lib.last benchCores);
+    in
+    ''
+      Benchmark host: run benchmarks with bench-run, not directly.
+
+        bench-run -- hyperfine './old' './new'   pin to 1 free core (both SMT threads)
+        bench-run -c 4 -- cargo bench            reserve 4 cores for multi-threaded code
+        bench-run --status                       show which cores are busy, and by what
+
+      - Cores ${first}-${last} are for benchmarks, each with its own slice of the L3 cache.
+        bench-run waits until enough are free.
+      - Everything else, this shell included, runs on core ${toString housekeepingCore} (CPUs ${housekeepingCpus}).
+        Use bench-run -c ${toString (lib.length benchCores)} or taskset -c 0-15 for a fast build.
+      - Boost is off, so clocks are fixed: compare relative %, not absolute times.
+      - Only compare results that used the same core count.
+      - Cores stay reserved until the command and everything it started exit.
+      - CI jobs use the benchmark cores when no benchmark needs them. A benchmark waits for
+        running CI jobs to finish, and CI starts no new jobs until every benchmark has exited.
+        bench-run -t 30m gives up after 30 minutes instead of waiting indefinitely.
+
+      Getting code here: build it on your own x86_64-linux machine and copy the result
+      over with nix, instead of building here on the housekeeping core.
+
+        # ../old: e.g. a git worktree of the old revision
+        old=$(nix build --no-link --print-out-paths ../old#foo)
+        new=$(nix build --no-link --print-out-paths .#foo)
+        nix copy -s --to ssh-ng://bench "$old" "$new"
+        ssh bench "bench-run -- hyperfine '$old/bin/foo --flag' '$new/bin/foo --flag'"
+
+      - nix copy -s (--substitute-on-destination) fetches what it can from binary caches
+        here instead of uploading it.
+      - Quote the remote command as a whole, as above: ssh joins its arguments with spaces,
+        so each hyperfine command needs its own quotes inside them.
+      - Copied paths aren't GC roots, and the weekly garbage collection can remove them
+        while no benchmark runs. Copy right before benchmarking; recopying is cheap.
+      - git, hyperfine and numactl are installed; use nix shell nixpkgs#tool for others.
+    '';
+
   benchRun = pkgs.writeShellApplication {
     name = "bench-run";
     runtimeInputs = [
@@ -60,11 +103,12 @@ let
     ];
     text =
       lib.replaceStrings
-        [ "@cores@" "@smtOffset@" "@lockDir@" ]
+        [ "@cores@" "@smtOffset@" "@lockDir@" "@guide@" ]
         [
           (lib.concatMapStringsSep " " toString benchCores)
           (toString smtOffset)
           lockDir
+          (lib.removeSuffix "\n" guide)
         ]
         (builtins.readFile ./bench-run.sh);
   };
@@ -134,30 +178,6 @@ in
 
     environment.systemPackages = [ benchRun ];
 
-    users.motd =
-      let
-        first = toString (lib.head benchCores);
-        last = toString (lib.last benchCores);
-      in
-      ''
-
-        Benchmark host: run benchmarks with bench-run, not directly.
-
-          bench-run -- hyperfine './old' './new'   pin to 1 free core (both SMT threads)
-          bench-run -c 4 -- cargo bench            reserve 4 cores for multi-threaded code
-          bench-run --status                       show which cores are busy, and by what
-
-        - Cores ${first}-${last} are for benchmarks, each with its own slice of the L3 cache.
-          bench-run waits until enough are free.
-        - Everything else, this shell included, runs on core ${toString housekeepingCore} (CPUs ${housekeepingCpus}).
-          Use bench-run -c ${toString (lib.length benchCores)} or taskset -c 0-15 for a fast build.
-        - Boost is off, so clocks are fixed: compare relative %, not absolute times.
-        - Only compare results that used the same core count.
-        - Cores stay reserved until the command and everything it started exit.
-        - CI jobs use the benchmark cores when no benchmark needs them. A benchmark waits for
-          running CI jobs to finish, and CI starts no new jobs until every benchmark has exited.
-          bench-run -t 30m gives up after 30 minutes instead of waiting indefinitely.
-
-      '';
+    users.motd = "\n${guide}\n";
   };
 }
