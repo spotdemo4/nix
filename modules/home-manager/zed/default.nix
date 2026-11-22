@@ -66,6 +66,7 @@ in
         "toml"
         "tsgo"
         "wgsl"
+        "windows-batch"
         "xml"
         "zig"
       ];

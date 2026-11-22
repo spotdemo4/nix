@@ -28,6 +28,7 @@
     "toml": true,
     "tsgo": true,
     "wgsl": true,
+    "windows-batch": true,
     "xml": true,
     "zig": true
   },
