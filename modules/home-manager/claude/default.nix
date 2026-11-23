@@ -58,9 +58,8 @@ let
       context1m = true;
     };
     "console/claude-opus-5-5" = {
-      alias = "console/opus";
-      effort = "high";
-      context1m = true;
+      label = "console/opus";
+      description = "Claude Opus 5.5 from Claude Console";
     };
     "gpt-6-astra" = {
       label = "GPT-6 Astra";
