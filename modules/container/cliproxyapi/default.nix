@@ -100,14 +100,17 @@ let
     // lib.optionalAttrs (provider.prefix != null) { inherit (provider) prefix; }
     // lib.optionalAttrs (provider.headers != { }) { headers = provider.headers; };
 
-  toClaudeConfig = key: {
-    name = key.name;
-    prefix = key.prefix;
-    key-index = key.index;
-    # Forward requests as the client sent them instead of disguising them as
-    # Claude Code, and strip any Claude Code identity a client attaches.
-    key-template.cloak.mode = "never";
-  };
+  toClaudeConfig =
+    key:
+    {
+      name = key.name;
+      priority = key.priority;
+      key-index = key.index;
+      # Forward requests as the client sent them instead of disguising them as
+      # Claude Code, and strip any Claude Code identity a client attaches.
+      key-template.cloak.mode = "never";
+    }
+    // lib.optionalAttrs (key.prefix != null) { inherit (key) prefix; };
 
   configTemplate = jsonFormat.generate "cliproxyapi.json" (
     lib.foldl' lib.recursiveUpdate { } [
@@ -313,12 +316,23 @@ in
               type = types.strMatching "[A-Za-z0-9_-]+";
               description = "Credential group name, also used to name its agenix secret.";
             };
+            priority = mkOption {
+              type = types.int;
+              default = 0;
+              description = ''
+                Selection priority when multiple credentials match. Higher
+                values are preferred; a negative value keeps these keys as a
+                fallback for when Claude OAuth credentials, with the default
+                priority of zero, are rate limited or out of usage.
+              '';
+            };
             prefix = mkOption {
-              type = types.strMatching "[A-Za-z0-9_-]+";
+              type = types.nullOr (types.strMatching "[A-Za-z0-9_-]+");
+              default = null;
               description = ''
                 Model prefix clients must use to reach these keys, as in
-                `<prefix>/claude-sonnet-5-5`. Unprefixed requests, such as
-                Claude Code's, never use them.
+                `<prefix>/claude-sonnet-5-5`. When set, unprefixed requests
+                never use them.
               '';
             };
             apiKeyFile = mkOption {
@@ -333,8 +347,7 @@ in
         Claude Platform API keys, served at api.anthropic.com with every Claude
         model. Requests are forwarded as the client sent them, without Claude
         Code cloaking. API keys are injected from agenix secrets into the
-        API keys are injected from agenix secrets into the generated
-        configuration at container start.
+        generated configuration at container start.
       '';
     };
 

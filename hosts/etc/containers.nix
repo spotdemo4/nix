@@ -36,10 +36,10 @@
       enable = true;
       claudeApiKeys = [
         {
-          # Monthly API credits from the Max plan. They don't cover Claude Code,
-          # so only clients such as OpenCode and pi use them, through console/<model>.
+          # Monthly API credits from the Max plan. Fall back to them once the
+          # Claude OAuth usage runs out, before paying for OpenRouter.
           name = "console";
-          prefix = "console";
+          priority = -5;
           apiKeyFile = self + /secrets/anthropic-console.age;
         }
       ];
