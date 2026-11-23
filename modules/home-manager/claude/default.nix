@@ -57,6 +57,11 @@ let
       effort = "high";
       context1m = true;
     };
+    "console/claude-opus-5-5" = {
+      alias = "console/opus";
+      effort = "high";
+      context1m = true;
+    };
     "gpt-6-astra" = {
       label = "GPT-6 Astra";
       description = "OpenAI GPT-6 Astra via CLIProxyAPI";
