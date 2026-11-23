@@ -13,6 +13,7 @@ in
   "spindle-key.age".publicKeys = keys.local ++ [ keys.build ];
 
   # etc server
+  "anthropic-console.age".publicKeys = keys.local ++ [ keys.etc ];
   "cliproxyapi.age".publicKeys = [
     keys.desktop
     keys.devTrev

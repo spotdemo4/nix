@@ -34,6 +34,15 @@
     cobalt-web.enable = true;
     cliproxyapi = {
       enable = true;
+      claudeApiKeys = [
+        {
+          # Monthly API credits from the Max plan. They don't cover Claude Code,
+          # so only clients such as OpenCode and pi use them, through console/<model>.
+          name = "console";
+          prefix = "console";
+          apiKeyFile = self + /secrets/anthropic-console.age;
+        }
+      ];
       openaiCompatibility = [
         {
           name = "openrouter";

@@ -20,20 +20,66 @@ let
   inherit (config.virtualisation.quadlet) volumes;
   cfg = config.trev.containers.cliproxyapi;
   apiKeyFile = toContentPath cfg.apiKeyFile;
-  reservedSettings = [
-    "api-keys"
-    "auth-dir"
-    "host"
-    "openai-compatibility"
-    "port"
-    "remote-management"
-  ];
-  overriddenSettings = builtins.filter (name: builtins.hasAttr name cfg.settings) reservedSettings;
   jsonFormat = pkgs.formats.json { };
 
-  indexedProviders = lib.imap0 (
-    index: provider: provider // { inherit index; }
+  # The configuration uses the v8 layout, where the root api-keys holds upstream
+  # credentials and client keys live under access.api-keys. Legacy root fields
+  # are rejected so they cannot silently shadow, or be shadowed by, v8 fields.
+  settingsRoots = [
+    "client"
+    "credentials"
+    "models"
+    "multimedia"
+    "oauth"
+    "observability"
+    "plugins"
+    "requests"
+    "routing"
+    "server"
+    "upstream"
+  ];
+  reservedSettings = [
+    [
+      "oauth"
+      "auth-dir"
+    ]
+    [
+      "routing"
+      "force-model-prefix"
+    ]
+    [
+      "server"
+      "host"
+    ]
+    [
+      "server"
+      "port"
+    ]
+  ];
+  unknownSettings = lib.subtractLists settingsRoots (lib.attrNames cfg.settings);
+  overriddenSettings = map (lib.concatStringsSep ".") (
+    builtins.filter (path: lib.hasAttrByPath path cfg.settings) reservedSettings
+  );
+
+  # Every API key file becomes one entry in the generated configuration's
+  # secret list; key-index points a credential group at its entry.
+  keyedProviders = lib.imap0 (
+    index: provider:
+    provider
+    // {
+      inherit index;
+      secretName = "cliproxyapi-${provider.name}";
+    }
   ) cfg.openaiCompatibility;
+  keyedClaudeKeys = lib.imap0 (
+    index: key:
+    key
+    // {
+      index = lib.length keyedProviders + index;
+      secretName = "cliproxyapi-claude-${key.name}";
+    }
+  ) cfg.claudeApiKeys;
+  keyedEntries = keyedProviders ++ keyedClaudeKeys;
 
   toProviderConfig =
     provider:
@@ -46,54 +92,72 @@ let
         model:
         { inherit (model) name; } // lib.optionalAttrs (model.alias != null) { inherit (model) alias; }
       ) provider.models;
-      # Internal marker consumed (and stripped) by generateConfig.
+      # Internal markers consumed (and stripped) by generateConfig.
       key-index = provider.index;
+      # CLIProxyAPI reads proxy-url on each key, not on the provider.
+      key-template = lib.optionalAttrs (provider.proxyUrl != null) { proxy-url = provider.proxyUrl; };
     }
     // lib.optionalAttrs (provider.prefix != null) { inherit (provider) prefix; }
-    // lib.optionalAttrs (provider.headers != { }) { headers = provider.headers; }
-    // lib.optionalAttrs (provider.proxyUrl != null) { proxy-url = provider.proxyUrl; };
+    // lib.optionalAttrs (provider.headers != { }) { headers = provider.headers; };
 
-  providerKeySecret = provider: config.age.secrets."cliproxyapi-${provider.name}".path;
+  toClaudeConfig = key: {
+    name = key.name;
+    prefix = key.prefix;
+    key-index = key.index;
+    # Forward requests as the client sent them instead of disguising them as
+    # Claude Code, and strip any Claude Code identity a client attaches.
+    key-template.cloak.mode = "never";
+  };
 
   configTemplate = jsonFormat.generate "cliproxyapi.json" (
-    lib.recursiveUpdate {
-      debug = false;
-      "request-log" = false;
-      "logging-to-file" = false;
-      "usage-statistics-enabled" = false;
-    } cfg.settings
-    // {
-      host = "0.0.0.0";
-      port = cfg.port;
-      "auth-dir" = "/root/.cli-proxy-api";
-      "api-keys" = [ ];
-      "openai-compatibility" = map toProviderConfig indexedProviders;
-      "remote-management" = {
-        "allow-remote" = false;
-        "secret-key" = "";
-        "disable-control-panel" = true;
-      };
-    }
+    lib.foldl' lib.recursiveUpdate { } [
+      {
+        observability = {
+          logs = {
+            debug = false;
+            request-log = false;
+            logging-to-file = false;
+          };
+          usage.usage-statistics-enabled = false;
+        };
+      }
+      cfg.settings
+      {
+        config-version = 8;
+        server = {
+          host = "0.0.0.0";
+          port = cfg.port;
+        };
+        oauth.auth-dir = "/root/.cli-proxy-api";
+        access.api-keys = [ ];
+        management = {
+          allow-remote = false;
+          secret-key = "";
+          disable-control-panel = true;
+        };
+        # Without this, a prefixed credential also serves unprefixed model names,
+        # so a prefix would only add a route instead of restricting one.
+        routing.force-model-prefix = true;
+        api-keys = {
+          openai-compatibility = map toProviderConfig keyedProviders;
+          claude = map toClaudeConfig keyedClaudeKeys;
+        };
+      }
+    ]
   );
 
-  rawfileArgs = lib.concatStringsSep "\n" (
+  rawfileArgs = lib.concatStringsSep " " (
     map (
-      provider:
-      "--rawfile provider_keys_${toString provider.index} ${lib.escapeShellArg (providerKeySecret provider)}"
-    ) indexedProviders
+      entry:
+      "--rawfile secret_${toString entry.index} ${
+        lib.escapeShellArg config.age.secrets.${entry.secretName}.path
+      }"
+    ) keyedEntries
   );
 
-  keysObject =
-    if indexedProviders == [ ] then
-      "{ }"
-    else
-      "{ "
-      + lib.concatStringsSep ", " (
-        map (
-          provider: ''"${toString provider.index}": $provider_keys_${toString provider.index}''
-        ) indexedProviders
-      )
-      + " }";
+  secretsArray = "[${
+    lib.concatStringsSep ", " (map (entry: "$secret_${toString entry.index}") keyedEntries)
+  }]";
 
   configProgram = ''
     ($api_key | sub("\\r?\\n$"; "")) as $key
@@ -101,23 +165,23 @@ let
         error("CLIProxyAPI API key must be a non-empty single line")
       else . end
     | (
-        ${keysObject}
-        | to_entries
-        | map(.value | sub("\\r?\\n$"; "") | split("\n") | map(select(length > 0)))
+        ${secretsArray}
+        | map(sub("\\r?\\n$"; "") | split("\n") | map(select(length > 0)))
       ) as $all_keys
     | if any($all_keys[]; length == 0) then
-        error("Provider API key file must contain at least one non-empty key")
+        error("Upstream API key file must contain at least one non-empty key")
       else . end
     | if any($all_keys[][]; test("\\r")) then
-        error("Provider API keys must not contain carriage returns")
+        error("Upstream API keys must not contain carriage returns")
       else . end
-    | .["openai-compatibility"] |= map(
+    | .["api-keys"] |= map_values(map(
         if has("key-index") then
-          .["api-key-entries"] = ($all_keys[.["key-index"]] | map({ "api-key": . }))
-          | del(.["key-index"])
+          . as $group
+          | .keys = ($all_keys[$group["key-index"]] | map($group["key-template"] + { "api-key": . }))
+          | del(.["key-index"], .["key-template"])
         else . end
-      )
-    | .["api-keys"] = [$key]
+      ))
+    | .access["api-keys"] = [$key]
   '';
 
   generateConfig = pkgs.writeShellApplication {
@@ -241,10 +305,46 @@ in
       '';
     };
 
+    claudeApiKeys = mkOption {
+      type = types.listOf (
+        types.submodule {
+          options = {
+            name = mkOption {
+              type = types.strMatching "[A-Za-z0-9_-]+";
+              description = "Credential group name, also used to name its agenix secret.";
+            };
+            prefix = mkOption {
+              type = types.strMatching "[A-Za-z0-9_-]+";
+              description = ''
+                Model prefix clients must use to reach these keys, as in
+                `<prefix>/claude-sonnet-5-5`. Unprefixed requests, such as
+                Claude Code's, never use them.
+              '';
+            };
+            apiKeyFile = mkOption {
+              type = types.path;
+              description = "Agenix-encrypted file containing one Claude API key per line.";
+            };
+          };
+        }
+      );
+      default = [ ];
+      description = ''
+        Claude Platform API keys, served at api.anthropic.com with every Claude
+        model. Requests are forwarded as the client sent them, without Claude
+        Code cloaking. API keys are injected from agenix secrets into the
+        API keys are injected from agenix secrets into the generated
+        configuration at container start.
+      '';
+    };
+
     settings = mkOption {
       type = types.attrsOf jsonFormat.type;
       default = { };
-      description = "Non-secret CLIProxyAPI settings merged into the generated configuration.";
+      description = ''
+        Non-secret CLIProxyAPI settings, in the v8 layout, merged into the
+        generated configuration.
+      '';
     };
   };
 
@@ -256,6 +356,10 @@ in
 
     assertions = [
       {
+        assertion = unknownSettings == [ ];
+        message = "trev.containers.cliproxyapi.settings only accepts the v8 sections ${lib.concatStringsSep ", " settingsRoots}; found: ${lib.concatStringsSep ", " unknownSettings}";
+      }
+      {
         assertion = overriddenSettings == [ ];
         message = "trev.containers.cliproxyapi.settings cannot override: ${lib.concatStringsSep ", " overriddenSettings}";
       }
@@ -265,6 +369,11 @@ in
           == lib.length (lib.unique (map (p: p.name) cfg.openaiCompatibility));
         message = "trev.containers.cliproxyapi.openaiCompatibility provider names must be unique";
       }
+      {
+        assertion =
+          lib.length keyedEntries == lib.length (lib.unique (map (entry: entry.secretName) keyedEntries));
+        message = "trev.containers.cliproxyapi: openaiCompatibility and claudeApiKeys names must map to unique secrets";
+      }
     ];
 
     age.secrets = {
@@ -272,11 +381,8 @@ in
     }
     // builtins.listToAttrs (
       map (
-        provider:
-        lib.nameValuePair "cliproxyapi-${provider.name}" {
-          file = toContentPath provider.apiKeyFile;
-        }
-      ) indexedProviders
+        entry: lib.nameValuePair entry.secretName { file = toContentPath entry.apiKeyFile; }
+      ) keyedEntries
     );
 
     virtualisation.quadlet = {
@@ -308,6 +414,6 @@ in
       apiKeyFile
       configTemplate
     ]
-    ++ map (provider: toContentPath provider.apiKeyFile) indexedProviders;
+    ++ map (entry: toContentPath entry.apiKeyFile) keyedEntries;
   };
 }
