@@ -162,6 +162,9 @@
       enable = true;
       acmeEmail = "me@trev.xyz";
       certificates = {
+        # TrevStack terminates TLS itself, so a certificate covering other names
+        # would let browsers coalesce their requests onto its connections.
+        "stack.trev.zip" = [ ];
         "trev.kiwi" = [ "*.trev.kiwi" ];
         "trev.rs" = [ "*.trev.rs" ];
         "trev.xyz" = [ "*.trev.xyz" ];
