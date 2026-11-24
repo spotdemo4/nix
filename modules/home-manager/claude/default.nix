@@ -337,6 +337,10 @@ in
         - If the check may outlast the timeout, start it with `run_in_background` and wait for its completion notification. Do not poll for it with `sleep` loops, and never wait with `pgrep -f "nix flake check"`: the pattern also matches the waiting shell's own command line, so the loop never ends.
         - Flakes only see files tracked by Git. Intent-to-add new files (`git add -N`) before checking, or the check will not see them.
 
+        ## Linking on Gitea and Forgejo
+
+        Gitea and Forgejo resolve shorthand references such as `owner/repo#123` and `owner/repo@sha` against their own instance, so a shorthand that points at another forge (GitHub, GitLab, Codeberg from a self-hosted instance, and so on) renders as a broken link. In issues, pull requests, comments, reviews and release notes on Gitea or Forgejo, write every reference to an issue, pull request or commit on another forge as an explicit Markdown link with the full URL, keeping the shorthand as the link text: `[aiortc/aioquic#875](https://github.com/aiortc/aioquic/issues/875)`. Shorthands for issues and pull requests on the same instance, such as `#123` or `owner/repo#123`, are fine.
+
         ${builtins.readFile (self + /lib/agents/bench.md)}'';
 
       settings = {
