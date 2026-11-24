@@ -40,8 +40,13 @@ in
 
     certificateDirectory = mkOption {
       type = types.str;
-      default = "/mnt/certs/trev.zip";
-      description = "Host directory with the `cert.pem` and `key.pem` covering `domain`, as trev-proxy exports them.";
+      default = "/mnt/certs/${cfg.domain}";
+      defaultText = lib.literalExpression ''"/mnt/certs/''${config.trev.containers.stack.domain}"'';
+      description = ''
+        Host directory with the `cert.pem` and `key.pem` for `domain`, as trev-proxy exports them.
+        The certificate must cover only `domain`: the gateway passes TrevStack's connections
+        through, so a browser would send requests for any other name it covers to TrevStack.
+      '';
     };
 
     certificateGid = mkOption {
