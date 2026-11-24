@@ -85,6 +85,8 @@ in
   ];
 
   # development machines
+  "android-keystore.age".publicKeys = keys.local ++ [ keys.devTrev ];
+  "android-keystore-password.age".publicKeys = keys.local ++ [ keys.devTrev ];
   "context7.age".publicKeys = keys.development;
   "forgejo-mcp.age".publicKeys = keys.development;
   "github.age".publicKeys = keys.development;

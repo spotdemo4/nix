@@ -36,6 +36,7 @@ in
   imports = [
     inputs.catppuccin.homeModules.catppuccin
     inputs.agenix.homeManagerModules.default
+    (self + /modules/home-manager/android-signing)
     (self + /modules/home-manager/claude)
     (self + /modules/home-manager/codex)
     (self + /modules/home-manager/device-certificate)
@@ -165,6 +166,7 @@ in
       chromeHeadless = true;
     };
     programs = {
+      android-signing.enable = true;
       claude.enable = true;
       codex.enable = true;
       device-certificate = {

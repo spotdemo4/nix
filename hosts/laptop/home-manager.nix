@@ -7,6 +7,7 @@
   imports = [
     inputs.catppuccin.homeModules.catppuccin
     inputs.agenix.homeManagerModules.default
+    (self + /modules/home-manager/android-signing)
     (self + /modules/home-manager/chromium)
     (self + /modules/home-manager/claude)
     (self + /modules/home-manager/codex)
@@ -157,6 +158,7 @@
   trev = {
     mcp.enable = true;
     programs = {
+      android-signing.enable = true;
       chromium.enable = true;
       claude.enable = true;
       codex.enable = true;
