@@ -57,21 +57,6 @@ let
       effort = "high";
       context1m = true;
     };
-    "gpt-6-astra" = {
-      label = "GPT-6 Astra";
-      description = "OpenAI GPT-6 Astra via CLIProxyAPI";
-      order = 1;
-    };
-    "gpt-6-sol" = {
-      label = "GPT-6 Sol";
-      description = "OpenAI GPT-6 Sol via CLIProxyAPI";
-      order = 2;
-    };
-    "gpt-6-luna" = {
-      label = "GPT-6 Luna";
-      description = "OpenAI GPT-6 Luna via CLIProxyAPI";
-      order = 3;
-    };
   };
   aliasedModels = lib.filterAttrs (_: model: model.alias != null) cfg.models;
   pickerModels = lib.sortOn (model: model.order) (
@@ -100,7 +85,6 @@ let
   modelEnv = {
     ANTHROPIC_BASE_URL = cfg.baseUrl;
     ANTHROPIC_CUSTOM_MODEL_OPTION = cfg.resolvedModel;
-    CLAUDE_CODE_MAX_CONTEXT_TOKENS = toString cfg.contextWindowTokens;
     CLAUDE_CODE_SUBAGENT_MODEL = modelId cfg.subagentModel;
   }
   // lib.mapAttrs' (
@@ -173,7 +157,7 @@ let
         )
       }
 
-      # The shared settings fall back to models only CLIProxyAPI serves.
+      # The shared settings use model IDs and picker entries meant for CLIProxyAPI.
       exec ${lib.getExe cfg.package} \
         --settings ${
           lib.escapeShellArg (
@@ -285,10 +269,7 @@ in
 
     fallbackModels = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [
-        "gpt-6-sol"
-        "gpt-6-luna"
-      ];
+      default = [ "claude-sonnet-5-5" ];
       description = "Models Claude Code falls back to, in order, when the selected model is unavailable.";
     };
 
@@ -296,12 +277,6 @@ in
       type = lib.types.listOf lib.types.str;
       default = [ "sonnet" ];
       description = "Models claude-local falls back to, in order. Without CLIProxyAPI, aliases resolve to Claude Code's built-in models.";
-    };
-
-    contextWindowTokens = lib.mkOption {
-      type = lib.types.ints.positive;
-      default = 272000;
-      description = "Context window Claude Code assumes for non-Claude models, such as GPT models routed through CLIProxyAPI. Claude models use their own window; see context1m.";
     };
 
     maxOutputTokens = lib.mkOption {
@@ -315,10 +290,6 @@ in
     trev.programs.claude.models = lib.mapAttrs (_: lib.mapAttrs (_: lib.mkDefault)) defaultModels;
 
     assertions = [
-      {
-        assertion = cfg.maxOutputTokens < cfg.contextWindowTokens;
-        message = "trev.programs.claude.maxOutputTokens must be smaller than contextWindowTokens.";
-      }
       {
         assertion = unknownModels == [ ];
         message = "trev.programs.claude references models missing from trev.programs.claude.models: ${lib.concatStringsSep ", " (lib.unique unknownModels)}.";
@@ -354,11 +325,9 @@ in
       inherit skills;
 
       context = ''
-        You run inside Claude Code through CLIProxyAPI, which serves both Anthropic Claude and OpenAI GPT models. Claude Code is the host application, not your model identity.
+        You run inside Claude Code through CLIProxyAPI, which serves Anthropic Claude models.
 
-        Use the current runtime model ID to identify yourself, for example from "You are powered by the model <model-id>." When asked which model you are, answer with that exact model ID. After a /model switch, use the updated runtime model information rather than the startup default or earlier responses.
-
-        A runtime model ID starting with `claude-` identifies an Anthropic Claude model; one starting with `gpt-` identifies an OpenAI GPT model. Either provider may be active. Do not infer model identity from the Claude Code name, tool names, API format, alias labels, or previous responses. If no reliable runtime model ID is provided, say that the model identity is unknown instead of guessing.
+        Use the current runtime model ID to identify yourself, for example from "You are powered by the model <model-id>." When asked which model you are, answer with that exact model ID. After a /model switch, use the updated runtime model information rather than the startup default or earlier responses. Do not infer model identity from alias labels or previous responses. If no reliable runtime model ID is provided, say that the model identity is unknown instead of guessing.
 
         ## Running `nix flake check`
 
