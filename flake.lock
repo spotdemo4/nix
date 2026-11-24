@@ -164,16 +164,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1795237141,
-        "narHash": "sha256-/qHKHLH16iuyPjxcO+2BWiLZhtoWNpFhBgNygi0YRDI=",
-        "ref": "refs/tags/v0.1.0",
-        "rev": "24c4bb3e92175e17614a29d89ee51b6235dbc1f7",
+        "lastModified": 1795471337,
+        "narHash": "sha256-xXMoag0qRlCGTK3jGpkjKHssRPf6KT9PC0+tPGWrYoE=",
+        "ref": "refs/tags/v0.1.1",
+        "rev": "40cd6dae32a073315701296c93ed269e73db8784",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/claude-caffeine"
       },
       "original": {
-        "ref": "refs/tags/v0.1.0",
+        "ref": "refs/tags/v0.1.1",
         "shallow": true,
         "type": "git",
         "url": "https://trev.zip/llc/claude-caffeine"
