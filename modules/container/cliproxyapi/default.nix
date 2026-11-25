@@ -214,7 +214,7 @@ in
   options.trev.containers.cliproxyapi = {
     enable = mkEnableOption "CLIProxyAPI container";
 
-    image = mkImageOption "docker.io/eceasy/cli-proxy-api:v8.1.3@sha256:784019627af9654e5d595aa74b6bdeb819c5a2a6f9ebade5461dcf2a8ba65d3a";
+    image = mkImageOption "docker.io/eceasy/cli-proxy-api:v8.1.4@sha256:32fb7dfc272bf63daee4dcaaa679095aad431ceed31416f98ea55f3d1d7db77a";
 
     domain = mkOption {
       type = types.str;
