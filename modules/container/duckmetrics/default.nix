@@ -31,7 +31,7 @@ in
 {
   options.trev.containers.duckmetrics = {
     enable = mkEnableOption "the DuckMetrics container";
-    image = mkImageOption "trev.zip/llc/duckmetrics:3.0.2@sha256:255dd6a0d5d2361aa506c68debf798a23645ef57c371ebae8e63136588e26f79";
+    image = mkImageOption "trev.zip/llc/duckmetrics:3.0.3@sha256:96b10817db881d2b9ff5c406d18d56d7140555270fcc872247f3089906198e9a";
 
     prometheusConfigFile = mkOption {
       type = types.path;

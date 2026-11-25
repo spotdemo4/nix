@@ -23,7 +23,7 @@ in
 {
   options.trev.containers.satisfactory = {
     enable = mkEnableOption "the Satisfactory container";
-    image = mkImageOption "ghcr.io/robtme/satisfactory-server:v1.9.11@sha256:ac252dba41653eb21c6feed94b577f98fa152f5792b1aeff2ce11fe364355137";
+    image = mkImageOption "ghcr.io/robtme/satisfactory-server:v1.10.0@sha256:ca895e72c78a586c4b9f50774a852f53915dc7299977af5ba26978607fad9213";
 
     environments = mkOption {
       type = types.attrsOf types.str;
