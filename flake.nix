@@ -170,7 +170,7 @@
 
     # trevdesk
     trevdesk = {
-      url = "git+https://trev.zip/llc/TrevDesk?ref=refs/tags/v0.6.1&shallow=1";
+      url = "git+https://trev.zip/llc/TrevDesk?ref=refs/tags/v0.6.2&shallow=1";
       inputs = {
         systems.follows = "systems";
         nixpkgs.follows = "nixpkgs";
